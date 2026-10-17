@@ -76,9 +76,11 @@ Excel中的质量合计、平行轴换算和等效偏航公式可以重算；基
 
 ## MATLAB
 
+新增三维闭环动力学仿真位于仓库根目录 `matlab/`，运行 `start_balance_3d`；使用本模型三刚体、STL外形及完整惯量，添加六自由度基座、空间轮地接触、六状态LQR及带两个误差积分的LQI。可通过 `run_balance_case` 选择行驶、转向、外力与起伏地形；详细假设与验证范围见 `matlab/README.md`。
+
 在MATLAB运行 `仿真模型/MATLAB/打开模型.m`。使用Robotics System Toolbox导入URDF并显示模型；本机R2025b已验证导入成功，左右轮组质量均为0.0627kg。rigidBodyTree预览固定基座，不能据此当作浮动基座的平衡车接触仿真。
 
-本机未安装Simscape Multibody，所以未生成或声称验证SLX动力学工程。脚本中留有 `smimport` 入口；安装对应工具箱后可导入，再设置浮动基座、重力、轮地接触和控制器。
+更新：已确认本机R2025b装有Simscape Multibody，并生成 `matlab/balance_car_3d.slx`，通过5秒三维平衡恢复求解。原URDF预览脚本仍只显示固定基座；请从仓库根目录的三维仿真入口运行动力学。
 
 ## ROS2与Gazebo
 

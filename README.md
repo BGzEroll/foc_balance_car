@@ -23,6 +23,8 @@ GitHub网页上的“Download ZIP”是否包含LFS实体文件取决于仓库�
 
 ## 文件入口
 
+MATLAB三维动力学仿真：初次使用打开 [`matlab/launch_balance_panel.m`](matlab/launch_balance_panel.m)，点击MATLAB的“运行”，用中文面板选择动作和LQR/LQI，再更新原生3D动画。扩展版使用三刚体、六自由度基座和轮地接触，包含行驶、转向、外力与起伏地形；详细说明及命令入口见 [`matlab/README.md`](matlab/README.md)。
+
 | 入口 | 用途 |
 |---|---|
 | [模型说明](模型/README_从这里开始.md) | 工程树、坐标、质量口径、建模假设和各软件使用说明 |
@@ -32,7 +34,7 @@ GitHub网页上的“Download ZIP”是否包含LFS实体文件取决于仓库�
 | `模型/参数与图片/` | 机械参数与验证记录 |
 | `模型/源数据与依据/整理前_R6.FCStd` | 整理前完整元件模型 |
 
-已完成FreeCAD装配关系核对、STEP回读、MATLAB URDF导入和MuJoCo短时步进验证。ROS2/Gazebo尚未实际启动；模型未包含调好的平衡控制器，接触、驱动和传感器参数仍需按实物标定。
+已完成FreeCAD装配关系核对、STEP回读、MATLAB URDF导入、MuJoCo短时步进和Simscape Multibody三维平衡恢复验证。ROS2/Gazebo尚未实际启动；接触、驱动和传感器参数仍需按实物标定。
 
 ## 文件管理
 

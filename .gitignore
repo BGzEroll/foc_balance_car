@@ -17,3 +17,11 @@ Thumbs.db
 /模型/参数与图片/动作演示/
 /模型/参数与图片/整理进度.txt
 /模型/参数与图片/最终工程就绪.txt
+
+# MATLAB local preferences and generated simulation output.
+/matlab/.matlab_prefs/
+/matlab/results/
+*.asv
+slprj/
+*.slxc
+/matlab/*.slx.autosave
