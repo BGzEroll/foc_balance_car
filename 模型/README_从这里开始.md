@@ -76,7 +76,7 @@ Excel中的质量合计、平行轴换算和等效偏航公式可以重算；基
 
 ## MATLAB
 
-新增三维闭环动力学仿真位于仓库根目录 `matlab/`，运行 `start_balance_3d`；使用本模型三刚体、STL外形及完整惯量，添加六自由度基座、空间轮地接触、六状态LQR及带两个误差积分的LQI。可通过 `run_balance_case` 选择行驶、转向、外力与起伏地形；详细假设与验证范围见 `matlab/README.md`。
+新增三维闭环动力学仿真位于仓库根目录 `matlab/`，运行 `start_balance_3d`；使用本模型三刚体、STL外形及完整惯量，添加六自由度基座、空间轮地接触与六状态LQR。可通过 `run_balance_case` 选择行驶、转向、外力与起伏地形；详细假设与验证范围见 `matlab/README.md`。
 
 在MATLAB运行 `仿真模型/MATLAB/打开模型.m`。使用Robotics System Toolbox导入URDF并显示模型；本机R2025b已验证导入成功，左右轮组质量均为0.0627kg。rigidBodyTree预览固定基座，不能据此当作浮动基座的平衡车接触仿真。
 

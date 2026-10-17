@@ -1,9 +1,9 @@
 function out=balance_suite_controller(raw,cfg)
 %#codegen
 % raw=[time x vx y vy z vz qw qx qy qz wx wy wz]，角速度在世界坐标。
-% out=[tauL tauR state(6) reference(6) integral(2) forceWorld(3) torqueWorld(3)]。
-persistent distance integral prevV
-if isempty(distance),distance=0;integral=zeros(2,1);prevV=0;end
+% out=[tauL tauR state(6) reference(6) forceWorld(3) torqueWorld(3) fall]。
+persistent distance prevV
+if isempty(distance),distance=0;prevV=0;end
 t=raw(1); qw=raw(8);qx=raw(9);qy=raw(10);qz=raw(11);
 R=[1-2*(qy^2+qz^2) 2*(qx*qy-qw*qz) 2*(qx*qz+qw*qy); ...
    2*(qx*qy+qw*qz) 1-2*(qx^2+qz^2) 2*(qy*qz-qw*qx); ...
@@ -15,8 +15,8 @@ yawRate=(sin(roll)*wb(2)+cos(roll)*wb(3))/cos(pitch);
 v=cos(yaw)*raw(3)+sin(yaw)*raw(5);
 if t>0,distance=distance+.005*(prevV+v)/2;end
 prevV=v;
-state=[distance;v;pitch-cfg(4);pitchRate;yaw;yawRate];
-ref=zeros(6,1);F=zeros(3,1);T=zeros(3,1);scenario=round(cfg(2));
+state=[distance;v;pitch-cfg(3);pitchRate;yaw;yawRate];
+ref=zeros(6,1);F=zeros(3,1);T=zeros(3,1);scenario=round(cfg(1));
 if scenario==2 % 指令行驶：0.3m前进，随后后退到0.1m。
  [p1,v1]=smoothmove(t,1,3,.30);[p2,v2]=smoothmove(t,6,2,-.20);
  ref(1)=p1+p2;ref(2)=v1+v2;
@@ -31,27 +31,17 @@ elseif scenario==5 % 轮轴处的外力及绕竖直轴的外转矩脉冲。
  if t>=4 && t<4.15,T(3)=.002;end
 elseif scenario==6 % 地形路线：经过缓坡、平台、下坡和单侧小凸起。
  [s,vs]=smoothmove(t,1,8,.75);ref(1)=s;ref(2)=vs;
-elseif scenario==7 % 恒定扰动：比较LQR/LQI静态位置误差。
+elseif scenario==7 % 恒定扰动：观察LQR稳态误差。
  if t>=2,F(1)=.08;T(3)=.0004;end
 end
 error=state-ref;
-K=reshape(cfg(5:16),2,6);Ki=reshape(cfg(17:32),2,8);
-candidate=integral;
-if cfg(1)>.5 && t>0
- candidate=integral-.005*[error(1);error(5)];
- candidate=max([-0.3;-1],min([0.3;1],candidate));
-end
-if cfg(1)>.5,effort=-Ki*[error;candidate];else,effort=-K*error;end
+K=reshape(cfg(4:15),2,6);
+effort=-K*error;
 % effort(1)=左右转矩和，effort(2)=右减左。
 tau=[(effort(1)-effort(2))/2;(effort(1)+effort(2))/2];
-limit=cfg(3);
-if all(abs(tau)<=limit) || cfg(1)<.5
- integral=candidate;
-elseif cfg(1)>.5 % 饱和时冻结积分，并重新计算输出。
- effort=-Ki*[error;integral];tau=[(effort(1)-effort(2))/2;(effort(1)+effort(2))/2];
-end
+limit=cfg(2);
 tau=max(-limit,min(limit,tau));
-out=[tau;state;ref;integral;F;T;double(abs(pitch)>pi/4 || abs(roll)>pi/6)];
+out=[tau;state;ref;F;T;double(abs(pitch)>pi/4 || abs(roll)>pi/6)];
 end
 
 function [p,v]=smoothmove(t,start,duration,amplitude)

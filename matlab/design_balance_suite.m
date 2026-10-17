@@ -11,13 +11,10 @@ Ts=.005;E=expm([A B;zeros(2,8)]*Ts);Ad=E(1:6,1:6);Bd=E(1:6,7:8);
 Q=diag([100 4 1/deg2rad(8)^2 .25 1/deg2rad(20)^2 .2]);R=diag([625 625]);
 assert(rank(ctrb(Ad,Bd))==6,'Six-state model not controllable');
 K=dlqr(Ad,Bd,Q,R);
-C=zeros(2,6);C(1,1)=1;C(2,5)=1;
-Ai=[Ad zeros(6,2);-Ts*C eye(2)];Bi=[Bd;zeros(2)];
-Ki=dlqr(Ai,Bi,blkdiag(Q,diag([300 15])),R);
-assert(max(abs(eig(Ai-Bi*Ki)))<1,'LQI not stabilizable');
-d=struct('Ts',Ts,'K',K,'Ki',Ki,'A',A,'B',B,'Ad',Ad,'Bd',Bd, ...
+assert(max(abs(eig(Ad-Bd*K)))<1,'Discrete LQR not stable');
+d=struct('Ts',Ts,'K',K,'A',A,'B',B,'Ad',Ad,'Bd',Bd, ...
  'pitch_trim',atan2(-p.body_com_forward_offset_m,p.body_com_height_above_axle_m), ...
  'torque_limit_each',.10,'source',src.mass_kg,'track',p.contact_track_m,'radius',r);
-% cfg=[mode scenario limit trim K(:)' Ki(:)']; mode=0 LQR, mode=1 LQI.
-d.config=[0 1 d.torque_limit_each d.pitch_trim K(:)' Ki(:)'];
+% cfg=[scenario limit trim K(:)']。
+d.config=[1 d.torque_limit_each d.pitch_trim K(:)'];
 end

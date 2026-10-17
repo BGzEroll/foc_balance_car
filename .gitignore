@@ -20,6 +20,7 @@ Thumbs.db
 
 # MATLAB local preferences and generated simulation output.
 /matlab/.matlab_prefs/
+/matlab/.cache/
 /matlab/results/
 *.asv
 slprj/

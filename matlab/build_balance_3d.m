@@ -1,6 +1,6 @@
 function modelFile=build_balance_3d
 % BUILD_BALANCE_3D 导入原有URDF，添加自由基座、空间接触和采样转矩反馈。
-here=fileparts(mfilename('fullpath')); original=pwd; cleanup=onCleanup(@()cd(original)); cd(here);
+here=fileparts(mfilename('fullpath')); original=pwd; cleanup=onCleanup(@()cd(original)); cd(here); configure_balance_cache;
 meshDir=fullfile(here,'..','模型','仿真模型','通用URDF','meshes'); addpath(meshDir);
 data=jsondecode(fileread(fullfile(here,'..','模型','参数与图片','仿真刚体参数_SI.json')));
 M=data.links(1).mass; m=data.links(2).mass; r=.0325;
@@ -91,7 +91,7 @@ end
 set_param(model,'Solver','ode15s','MaxStep','0.001','RelTol','1e-5','AbsTol','1e-7', ...
  'StopTime','5','SimscapeLogType','all','ReturnWorkspaceOutputs','on', ...
  'SimMechanicsOpenEditorOnUpdate','off');
-callback="addpath(fullfile(fileparts(get_param(bdroot,'FileName')),'..','模型','仿真模型','通用URDF','meshes'));";
+callback="addpath(fileparts(get_param(bdroot,'FileName')));configure_balance_cache;addpath(fullfile(fileparts(get_param(bdroot,'FileName')),'..','模型','仿真模型','通用URDF','meshes'));";
 set_param(model,'PostLoadFcn',char(callback));
 Simulink.BlockDiagram.arrangeSystem(model);
 save_system(model,modelFile);

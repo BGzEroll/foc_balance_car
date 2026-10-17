@@ -1,8 +1,11 @@
 function fig=balance_demo_panel
 % BALANCE_DEMO_PANEL 中文工况选择入口；直接调用原有3D多体仿真API。
 tag='balance_car_demo_panel';existing=findall(groot,'Type','figure','Tag',tag);
-if ~isempty(existing),fig=existing(1);figure(fig);return;end
-here=fileparts(mfilename('fullpath'));addpath(here);
+if ~isempty(existing)
+ if isequal(existing(1).UserData,'lqr-only-v1'),fig=existing(1);figure(fig);return;end
+ delete(existing);
+end
+here=fileparts(mfilename('fullpath'));addpath(here);configure_balance_cache;
 names={'recover','drive','turn','route','push','terrain','bias'};
 labels={'倾斜恢复：前倾8°后站稳','前进与后退：先前进30厘米，再后退20厘米', ...
  '原地转向：转到60°，再回到20°','边走边转：前进60厘米，途中转向60°', ...
@@ -15,17 +18,16 @@ descriptions={ ...
  '10秒。小车沿弯曲路径行驶，而不是原地转。观察行驶方向逐渐改变。', ...
  '9秒。2秒时受水平推力，4秒时受偏航转矩；外力消失后尝试回到原位和原航向。', ...
  '13秒。向前经过3毫米坡台和左轮0.8毫米凸起，观察升降与短暂侧倾。', ...
- '18秒。2秒后持续施加扰动。分别选LQR和LQI运行，再查看曲线比较稳态误差。'};
+ '18秒。2秒后持续施加扰动，查看LQR在恒定外力下的稳态误差。'};
 fig=figure('Name','平衡车3D仿真：选择工况','NumberTitle','off','Tag',tag, ...
- 'MenuBar','none','ToolBar','none','Color',[.96 .97 .98],'Position',[90 80 880 650]);
+ 'MenuBar','none','ToolBar','none','Color',[.96 .97 .98],'Position',[90 80 880 650],'UserData','lqr-only-v1');
 textBox([.04 .87 .92 .10],{'每次选择一个工况 → 点击运行 → 在 Multibody Explorer 点击播放', ...
  '切换下拉框不会自动改变3D动画；运行后，同一3D标签会更新为新工况。'},14);
 textBox([.04 .79 .16 .045],'仿真工况',12);
 pick=uicontrol(fig,'Style','popupmenu','String',labels,'Value',3,'Tag','case_selector','Units','normalized', ...
  'Position',[.20 .79 .75 .05],'FontSize',12,'Callback',@describe);
 textBox([.04 .71 .16 .045],'控制器',12);
-kind=uicontrol(fig,'Style','popupmenu','String',{'LQR：六状态反馈','LQI：六状态 + 两项误差积分'},'Tag','controller_selector', ...
- 'Units','normalized','Position',[.20 .71 .38 .05],'FontSize',12,'Callback',@describe);
+textBox([.20 .71 .38 .045],'LQR：六状态反馈',12);
 textBox([.60 .71 .20 .045],'单轮转矩上限',12);
 limit=uicontrol(fig,'Style','edit','String','0.10','Tag','torque_limit','Units','normalized', ...
  'Position',[.80 .71 .15 .05],'FontSize',12,'BackgroundColor','w');
@@ -55,15 +57,15 @@ textBox([.04 .08 .91 .16],{'三个窗口各管一件事：', ...
         if ~isscalar(cap)||isnan(cap)||cap<=0
             status.String='转矩上限请输入正数，例如0.10；也可以输入Inf。';return;
         end
-        mode={'LQR','LQI'};name=names{pick.Value};controller=mode{kind.Value};
-        controls=[pick kind limit runButton curveButton];set(controls,'Enable','off');
-        status.String={['正在计算：' labels{pick.Value} ' / ' controller], ...
+        name=names{pick.Value};
+        controls=[pick limit runButton curveButton];set(controls,'Enable','off');
+        status.String={['正在计算：' labels{pick.Value} ' / LQR'], ...
             '稍后会更新Multibody Explorer。请等待计算完成。'};drawnow;
         try
-            [simout,report]=run_balance_case(name,controller,true,cap);
+            [simout,report]=run_balance_case(name,true,cap);
             assignin('base','simout_selected',simout);assignin('base','report_selected',report);
             if isgraphics(fig)
-                status.String={sprintf('已完成：%s / %s，%.0f秒，检查通过=%d。',name,controller,report.duration_s,report.pass), ...
+                status.String={sprintf('已完成：%s / LQR，%.0f秒，检查通过=%d。',name,report.duration_s,report.pass), ...
                  '切到 Multibody Explorer 的 balance_car_3d_suite 标签，点击 ▶ 播放。', ...
                  '可拖动时间轴查看某一瞬间；同一标签现在已替换为这次工况。'};
             end
@@ -74,9 +76,9 @@ textBox([.04 .08 .91 .16],{'三个窗口各管一件事：', ...
         if isgraphics(fig),set(controls,'Enable','on');end
     end
     function showCurves(~,~)
-        mode={'lqr','lqi'};file=fullfile(here,'results','suite',[names{pick.Value} '_' mode{kind.Value}],'results.png');
+        file=fullfile(here,'results','suite',[names{pick.Value} '_lqr'],'results.png');
         if ~isfile(file),status.String='这个组合还没有保存的曲线，请先运行。';return;end
-        f=figure('Name',['仿真曲线：' labels{pick.Value} ' / ' upper(mode{kind.Value})],'NumberTitle','off','Color','w');
+        f=figure('Name',['仿真曲线：' labels{pick.Value} ' / LQR'],'NumberTitle','off','Color','w');
         ax=axes(f);image(ax,imread(file));axis(ax,'image');axis(ax,'off');
     end
 end

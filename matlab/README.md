@@ -1,88 +1,82 @@
-# 原始3D模型：六状态LQR / LQI对照仿真
+# 原始3D模型：六状态LQR仿真
 
-初学者请先打开 `launch_balance_panel.m`，点击MATLAB编辑器上方绿色“运行”，进入中文工况选择面板；也可以在命令窗口输入 `balance_demo_panel`。面板默认选“原地转向”，选择LQR或LQI后点击“运行所选工况，更新3D窗口”。
+初学者打开`launch_balance_panel.m`，点击MATLAB编辑器的绿色“运行”，出现中文工况面板。控制器固定为六状态LQR，选动作后点“运行所选工况，更新3D窗口”。
 
-重复运行入口会复用当前MATLAB内的同一个面板。Windows脚本`open_balance_panel.ps1`会先检查已有MATLAB桌面，有实例时不会再新开一个；切换工况应在已有面板中进行。命令行批量计算与交互观看不需要各自保留多个桌面实例。
+Multibody Explorer一次显示当前一个工况，不会把所有已计算结果自动轮流播放。计算结束后，在本次弹出的`balance_car_3d_suite`窗口点击动画播放或拖动时间轴。换动作请回面板重新选择并运行。详细步骤见`演示面板使用说明.md`。
 
-**Multibody Explorer一次显示一个工况，不会把已算完的14组自动轮流播放。** 计算完成后，在它的`balance_car_3d_suite`标签中点击播放，或拖动时间轴查看过程。换工况需要回到面板重新选择并运行；仅切换下拉框不会更新动画。`run_balance_suite`用于后台批量验证，不适合初学者用来依次观看动画，因为同一个模型最终只留下最后一组的3D结果。
+入口会复用当前MATLAB中的面板；Windows脚本`open_balance_panel.ps1`检测到已有MATLAB时不会再启动第二个桌面实例。
 
-建议第一次依次看“原地转向”“边走边转”“外力推扰”“起伏地形”，先保留LQR和0.10N·m上限。转向工况1～3秒转至60°，5～7秒回到20°；从俯视角看车身、轮轴方向的变化更明显。面板中的“查看所选工况的曲线”可查看指令与实际运动的对应关系。
-
-在 MATLAB 将本目录设为当前文件夹，执行：
+Simulink缓存与代码生成文件统一写入`matlab/.cache/`，仿真报告写入`matlab/results/`。`.cache`内的文件可删除，下次运行会自动生成；`.m`脚本和`.slx`模型是工程文件，应保留。
 
 ```matlab
-start_balance_3d                         % 前台打开扩展工程，运行LQR倾斜恢复
-run_balance_case('turn','LQR')            % 原地转向
-run_balance_case('drive','LQR')           % 前进和后退
-run_balance_case('route','LQI')           % 行驶中转弯
-run_balance_case('push','LQI')            % 水平推力、偏航外转矩脉冲
-run_balance_case('terrain','LQI')         % 缓坡、平台、下坡、单侧小凸起
-run_balance_case('bias','LQR')            % 恒定扰动，观察稳态误差
-run_balance_case('bias','LQI')            % 同样扰动，观察积分补偿
-summary = run_balance_suite;             % 后台逐一跑全部14组
-run_balance_case('recover','LQR',false)   % 仅计算和保存结果
-run_balance_case('recover','LQR',true,Inf)% 取消转矩限幅
+balance_demo_panel                   % 中文选择面板
+run_balance_case('turn')              % 原地转向，打开3D窗口
+run_balance_case('drive')             % 前进与后退
+run_balance_case('route')             % 行驶中转弯
+run_balance_case('push')              % 推力和偏航转矩脉冲
+run_balance_case('terrain')           % 缓坡、平台、下坡、单侧凸起
+run_balance_case('bias')              % 恒定扰动，观察稳态误差
+run_balance_case('recover',false)      % 后台计算倾斜恢复
+run_balance_case('recover',true,Inf)   % 取消单轮转矩限幅
+summary = run_balance_suite;          % 后台验证全部七个LQR工况
 ```
 
-全部工况由 Simscape Multibody 求解原有三刚体模型，通过 MATLAB 原生API打开 Simulink 和 Multibody Explorer，不使用桌面点击自动化。运行结束后可在原生查看器播放、拖动时间轴和旋转观察。需要 MATLAB、Simulink、Simscape、Simscape Multibody、Control System Toolbox。
+所有运动由Simscape Multibody求解原有三刚体模型，通过原生API打开Simulink和Multibody Explorer。需要MATLAB、Simulink、Simscape、Simscape Multibody及Control System Toolbox。
 
-## 工程与模型
+## 模型与控制器
 
-`balance_car_3d_suite.slx`是扩展工程，`build_balance_suite.m`可从URDF重建。重建前先保存并关闭该模型；重建会覆盖生成的SLX。原四状态恢复工程`balance_car_3d.slx`和其构建脚本作为基线保留。
+扩展工程为`balance_car_3d_suite.slx`，运行`build_balance_suite`可从URDF重新生成。重建前先保存并关闭该工程，生成过程会覆盖SLX。原四状态基础工程`balance_car_3d.slx`作为基线保留。
 
-三刚体、两轮关节、完整质心和惯量来自`模型/仿真模型/通用URDF`；控制设计读取`模型/参数与图片/机械参数.json`。外形直接使用原仿真STL，车身9万面、单轮组4万面，显示简化不改变显式质量与惯量。车身采用六自由度基座，横滚、横移和升降均未锁死。
+三刚体、两轮关节、完整质心与惯量来自`模型/仿真模型/通用URDF`；设计读取`模型/参数与图片/机械参数.json`。外形采用原仿真STL：车身9万面、单轮组4万面；显示简化不改变显式质量和惯量。车身六自由度基座允许横滚、横移和升降。
 
-电机继续采用理想转矩输入，传感器直接读取求解器状态，保持无噪声、无额外传输延迟；控制采样5ms。单轮转矩从±0.02放宽到**±0.10N·m**，入口第四个参数可以改为任意正值或`Inf`。这是仿真约束，不代表电机额定能力。控制权重独立于限幅，调整限幅不会更换增益。
-
-## 六状态和LQI
-
-状态顺序为：
+控制状态按顺序为：
 
 ```text
-[纵向路程s，纵向速度v，俯仰角偏差α，俯仰角速度，偏航角ψ，偏航角速度]
+[纵向路程s，纵向速度v，俯仰角偏差，俯仰角速度，偏航角，偏航角速度]
 ```
 
-纵向路程由轮轴中心实际水平速度投影到车头方向后积分得到，非世界X坐标，也不是编码器相对轮速。报告同时记录世界X/Y实际轨迹。转弯测试控制路程和航向指令，尚未加入世界坐标航点导航与侧向位置闭环。
+纵向路程由轮轴中心实际水平速度投影到车头方向后积分得到；这是路程测量，不是误差积分控制。报告同时记录世界X/Y轨迹。当前控制路程和航向指令，没有加入世界坐标航点导航或侧向位置闭环。
 
-控制设计采用平衡点处的俯仰/前进线性模型及理想差速偏航模型，准确离散化后求LQR增益。**受控对象始终是非线性空间多体模型**。两输入为转矩和U及右减左的转矩差V：
+`design_balance_suite.m`根据平衡点处的前进/俯仰线性模型和差速偏航模型，精确离散化后求LQR增益。被控对象仍是完整非线性空间多体系统。
 
 ```text
+[U; V] = -K * (state-reference)
 tau_left  = (U-V)/2
 tau_right = (U+V)/2
 ```
 
-LQI在六状态上增加“路程指令−实际路程”和“偏航指令−实际偏航”两项误差积分，共八个控制器状态。积分按5ms前向Euler更新，与增广模型一致；限幅为±0.3m·s、±1rad·s，任一轮转矩饱和时冻结积分。LQR模式关闭积分。
+U为双轮转矩和，V为右减左转矩差。配置向量为`[工况编号 单轮限幅 平衡角 K(:)']`；不包含控制模式或额外误差积分状态。嵌入SLX的代码来自`balance_suite_controller.m`，修改后须重建工程。
 
-`design_balance_suite.m`设计并检查增益；`balance_suite_controller.m`是嵌入SLX的MATLAB Function代码。修改控制代码后须重建工程，单独改M文件不会自动更新SLX中的代码。
+电机保持理想转矩输入，传感器无噪声、无额外传输延迟；采样周期5ms。单轮限幅默认±0.10N·m，可通过入口第三个参数改为任意正数或Inf。它是仿真约束，不代表实物额定性能，改变限幅不改变LQR增益。
 
-## 可重复工况
+## 七个工况
 
 | 名称 | 内容 | 时长 |
 |---|---|---:|
 | recover | 相对平衡点前倾8°，恢复并回原位 | 6s |
-| drive | 平滑前进0.3m，随后后退0.2m，目标路程0.1m | 11s |
-| turn | 原地转到60°，随后回到20° | 9s |
-| route | 前进0.6m，途中将航向转到60° | 10s |
+| drive | 前进0.3m，再后退0.2m，最后路程0.1m | 11s |
+| turn | 原地转至60°，再回到20° | 9s |
+| route | 前进0.6m，途中将航向转至60° | 10s |
 | push | 2秒时施加0.4N水平力0.15s，4秒时施加0.002N·m偏航转矩0.15s | 9s |
-| terrain | 路程0.75m，经过3mm缓坡/平台/下坡及左轮0.8mm凸起 | 13s |
-| bias | 2秒后持续施加0.08N水平力与0.0004N·m偏航转矩，比较稳态误差 | 18s |
+| terrain | 行进0.75m，通过3mm坡台和左轮0.8mm凸起 | 13s |
+| bias | 2秒后持续施加0.08N水平力及0.0004N·m偏航转矩 | 18s |
 
-初始速度均为零；除recover外，起始俯仰为重心偏置对应的平衡姿态。外力作用在轮轴中点，按世界坐标给定。指令用五次平滑曲线，同时提供位置和速度目标；未强制车体按指令运动。
+初始速度均为零；除recover外，从重心偏置对应的平衡姿态出发。指令用五次平滑曲线，同时提供路程和速度、航向和角速度目标；没有强制车体按目标运动。外力施加在轮轴中点，按世界坐标给定。
 
-## 地形与接触
+## 地形和数值设置
 
-平地为Infinite Plane，轮胎中面为半径32.5mm的Disk接触几何。地形由固定在世界坐标的Brick Solid构成，每块通过独立Spatial Contact Force与两轮接触；平地工况将其移到地面下1m。
+平地用Infinite Plane，轮胎中面用半径32.5mm的Disk接触几何。起伏路段由固定在世界坐标的Brick Solid构成，通过独立Spatial Contact Force与两轮接触；平地工况将地形移至地面下1m。
 
-地形沿世界X布置：0.18～0.30m上坡，0.30～0.40m平台，0.40～0.52m下坡，0.60～0.64m有仅左轮经过的小凸起。平台高3mm，单侧凸起高0.8mm。这是明确尺寸的复杂接触路段，不等于任意复杂地形的通行能力验证。
+世界X方向0.18～0.30m上坡、0.30～0.40m平台、0.40～0.52m下坡，0.60～0.64m有仅左轮经过的凸起。平台高3mm、单侧凸起高0.8mm，验证范围仅限这些明确尺寸的路段。
 
-接触假设：刚度10000N/m，阻尼10N·s/m，静/动摩擦系数0.9/0.8，临界速度0.001m/s，过渡区0.1mm。求解器ode15s，最大步长1ms，相对容差1e-5、绝对容差1e-7。原生[Spatial Contact Force](https://www.mathworks.com/help/sm/ref/spatialcontactforce.html)计算接触力，不强制无滑动。轮胎宽度、变形和胎纹未建模，车身未添加倒地碰撞；俯仰超过45°或横滚超过30°提前停止，判为失败。
+接触假设：刚度10000N/m、阻尼10N·s/m、静/动摩擦系数0.9/0.8、临界速度0.001m/s、过渡区0.1mm。求解器ode15s，最大步长1ms，相对/绝对容差1e-5/1e-7。轮胎宽度、变形、胎纹和车身倒地碰撞未建模；俯仰超过45°或横滚超过30°提前停止并判失败。
 
-## 结果与检查
+## 输出与验证
 
-`results/suite/工况_控制器/`保存原始MAT、状态/指令CSV、世界姿态CSV、曲线PNG、平面行驶轨迹PNG及验证JSON。`summary.csv/json`汇总14组结果。
+`results/suite/工况_lqr/`保存MAT原始数据、控制状态/指令CSV、世界姿态CSV、曲线PNG、平面轨迹PNG及验证JSON。`summary.csv/json`只汇总七个LQR工况。
 
-检查完整结束、未倾倒、最大倾角与横滚、末端路程/偏航误差和速度、实际行驶/转向幅度。地形工况还要求地形产生真实支持力、轮轴对应抬升；扰动工况检查实际输入脉冲。持续扰动允许LQR保留稳态误差，LQI另要求误差足够小，且全套检查要求位置误差小于LQR的10%。末端误差取最后0.5秒平均值。
+检查完整结束、未倾倒、姿态范围、末端跟踪误差与速度、实际行驶/转向幅度。地形要求真实接触支持力与抬升，推扰要求对应输入脉冲。末端误差取最后0.5秒平均值。持续扰动工况用于观察LQR的稳态偏差，不要求它消除恒定扰动造成的误差。
 
-通过这些检查代表所列假设和工况内的仿真结果，不是实物性能或任意地形的保证。
+验证结果只代表所列理想模型、参数与工况，不等于实物性能验证。
 
-本机R2025b已实际完成14/14组测试，均通过。全部工况的最大单轮转矩约0.02936N·m，未触发±0.10N·m限幅。持续扰动下，LQR末端路程偏差约22.97mm，LQI降至接近零。LQI并非所有瞬态指标都更好：地形工况的最大俯仰偏差分别约2.73°（LQR）和3.39°（LQI）。对照图保存在`results/suite/comparison.png`，运行`plot_balance_comparison`可从已保存的数据重画。
+当前仅含LQR的工程已在本机R2025b重建并复测，七个工况全部通过；汇总见`results/suite/summary.csv`。

@@ -23,7 +23,7 @@ GitHub网页上的“Download ZIP”是否包含LFS实体文件取决于仓库�
 
 ## 文件入口
 
-MATLAB三维动力学仿真：初次使用打开 [`matlab/launch_balance_panel.m`](matlab/launch_balance_panel.m)，点击MATLAB的“运行”，用中文面板选择动作和LQR/LQI，再更新原生3D动画。扩展版使用三刚体、六自由度基座和轮地接触，包含行驶、转向、外力与起伏地形；详细说明及命令入口见 [`matlab/README.md`](matlab/README.md)。
+MATLAB三维动力学仿真：初次使用打开 [`matlab/launch_balance_panel.m`](matlab/launch_balance_panel.m)，点击MATLAB的“运行”，用中文面板选择动作，再更新原生3D动画。控制器采用六状态LQR；模型使用三刚体、六自由度基座和轮地接触，包含行驶、转向、外力与起伏地形；详细说明及命令入口见 [`matlab/README.md`](matlab/README.md)。
 
 | 入口 | 用途 |
 |---|---|
