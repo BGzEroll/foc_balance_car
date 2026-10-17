@@ -1,0 +1,13 @@
+{
+  "robotics_available": true,
+  "simscape_multibody_available": false,
+  "body_names": [
+    "left_wheel",
+    "right_wheel"
+  ],
+  "wheel_masses": [
+    0.0627,
+    0.0627
+  ],
+  "robotics_import_pass": true
+}

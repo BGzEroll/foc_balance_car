@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="balance_car_zd2808">
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-5.71393596063e-05 -4.53146929236e-05 0.0365292274203" rpy="0 0 0" />
+      <mass value="0.2771" />
+      <inertia ixx="0.0006191390109428378" iyy="0.00031184766836104503" izz="0.000388176637385571" ixy="2.823397326959528e-07" ixz="-3.850274462317628e-08" iyz="-1.767576624229698e-07" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/body.stl" scale="1 1 1" />
+      </geometry>
+      <material name="body_blue">
+        <color rgba=".12 .4 .65 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.005" rpy="0 0 0" />
+      <geometry>
+        <box size="0.056 0.096 0.038" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 0 0.0713" rpy="0 0 0" />
+      <geometry>
+        <box size="0.038 0.093 0.02" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="left_wheel">
+    <inertial>
+      <origin xyz="3.60871449673e-09 -0.00137780420767 -5.37617755869e-09" rpy="0 0 0" />
+      <mass value="0.0627" />
+      <inertia ixx="1.917831991019924e-05" iyy="2.9967889984095832e-05" izz="1.9178318300827144e-05" ixy="3.83369315636605e-12" ixz="-7.2526409580732555e-12" iyz="1.2658484508120812e-12" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/left_wheel.stl" scale="1 1 1" />
+      </geometry>
+      <material name="wheel_dark">
+        <color rgba=".16 .18 .16 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.0325" length=".028" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="right_wheel">
+    <inertial>
+      <origin xyz="-3.60871449808e-09 0.00137780420767 -5.37617755869e-09" rpy="0 0 0" />
+      <mass value="0.0627" />
+      <inertia ixx="1.9178319910199227e-05" iyy="2.9967889984095832e-05" izz="1.9178318300827144e-05" ixy="3.833693155565584e-12" ixz="7.252640957165455e-12" iyz="-1.2658484479289835e-12" />
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="../meshes/right_wheel.stl" scale="1 1 1" />
+      </geometry>
+      <material name="wheel_dark">
+        <color rgba=".16 .18 .16 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.5707963267948966 0 0" />
+      <geometry>
+        <cylinder radius="0.0325" length=".028" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="left_wheel" />
+    <origin xyz="0 0.0662682 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link" />
+    <child link="right_wheel" />
+    <origin xyz="0 -0.0662682 0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+  </joint>
+</robot>

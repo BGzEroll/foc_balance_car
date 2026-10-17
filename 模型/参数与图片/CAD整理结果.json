@@ -1,0 +1,99 @@
+{
+  "source_objects": 1275,
+  "final_objects": 97,
+  "merged_geometry_objects": 23,
+  "total_mass_kg": 0.4025,
+  "cad_bbox_mm": {
+    "x": 169.7364044189453,
+    "y": 64.96369934082031,
+    "z": 112.77419912070036
+  },
+  "dimensions": [
+    {
+      "name": "整车宽",
+      "length_mm": 169.7364
+    },
+    {
+      "name": "前后外形",
+      "length_mm": 65.0
+    },
+    {
+      "name": "整车高",
+      "length_mm": 112.8000254
+    },
+    {
+      "name": "车架宽",
+      "length_mm": 96.0
+    },
+    {
+      "name": "车架前后",
+      "length_mm": 56.043
+    },
+    {
+      "name": "车架高",
+      "length_mm": 38.0
+    },
+    {
+      "name": "主板宽",
+      "length_mm": 81.9746
+    },
+    {
+      "name": "主板前后",
+      "length_mm": 56.0182
+    },
+    {
+      "name": "M3孔横距",
+      "length_mm": 75.0
+    },
+    {
+      "name": "M3孔纵距",
+      "length_mm": 46.4
+    },
+    {
+      "name": "轮胎外径",
+      "length_mm": 65.0
+    },
+    {
+      "name": "胎宽",
+      "length_mm": 27.999999999999993
+    },
+    {
+      "name": "电机主体长",
+      "length_mm": 18.0
+    },
+    {
+      "name": "电机直径",
+      "length_mm": 35.0
+    },
+    {
+      "name": "下支柱",
+      "length_mm": 5.0
+    },
+    {
+      "name": "上支柱",
+      "length_mm": 30.000000000000007
+    },
+    {
+      "name": "轮轴离地",
+      "length_mm": 32.5
+    },
+    {
+      "name": "电芯主体长",
+      "length_mm": 65.0
+    },
+    {
+      "name": "编码器板长",
+      "length_mm": 26.9746
+    },
+    {
+      "name": "板宽",
+      "length_mm": 10.974599999999995
+    },
+    {
+      "name": "编码器孔距",
+      "length_mm": 22.0
+    }
+  ],
+  "native_file": "C:\\Users\\16004\\Desktop\\freeCAD测试\\平衡车3D_最终\\freeCAD工程\\平衡车_最终.FCStd",
+  "status": "CAD_EXPORT_COMPLETE"
+}

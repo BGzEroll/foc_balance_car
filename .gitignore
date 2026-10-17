@@ -1,0 +1,19 @@
+# Complete CAD exports are distributed as GitHub Release assets.
+/模型/导出的模型/
+
+# Local CAD automatic backups and caches.
+*.FCBak
+*.FCStd1
+*.FCStd2
+/模型/源数据与依据/整理过程自动备份/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Generated recordings and local progress output.
+/模型/参数与图片/动作演示/
+/模型/参数与图片/整理进度.txt
+/模型/参数与图片/最终工程就绪.txt

@@ -1,0 +1,417 @@
+[
+  {
+    "file": "freeCAD工程/mechanics_panel.py",
+    "bytes": 1547,
+    "sha256": "f9dba2d4a264b0fc23070f6b5839ea0ca1db86c44610f500a8fcb09734411a21"
+  },
+  {
+    "file": "freeCAD工程/motion_panel.py",
+    "bytes": 5534,
+    "sha256": "90d89f6c6c3758708c439bc8a74e02dddc8d924f4af64c7f75daadadb296087e"
+  },
+  {
+    "file": "freeCAD工程/平衡车_最终.FCStd",
+    "bytes": 33631953,
+    "sha256": "8e3d727f928708becbe904bbc08a702df39a8cb235c80869cc4f6a2ff77e38bb"
+  },
+  {
+    "file": "freeCAD工程/平衡车_最终.FCStd.d03d85c7-b4c3-4f47-a273-604b0a4ee046",
+    "bytes": 20073198,
+    "sha256": "6a2cc1e580f086d63c8637005af14554f7a81cabf31a45faba6f815f9fba71c8"
+  },
+  {
+    "file": "freeCAD工程/打开机械参数清单.FCMacro",
+    "bytes": 552,
+    "sha256": "26dc9530ba20a0095bef509639c4a2ea22ed57d3e54735ed51d73cb79003230d"
+  },
+  {
+    "file": "freeCAD工程/打开模型与运动控制.FCMacro",
+    "bytes": 546,
+    "sha256": "71468dde24da5db7c193758c69dc33dfd45324ef18622eb9d4dab794d556ba4f"
+  },
+  {
+    "file": "README_从这里开始.md",
+    "bytes": 9725,
+    "sha256": "00f31ebc6bd52665b37ba8f489eb7ebb512e37c0ad109ab81143fe98d1335568"
+  },
+  {
+    "file": "仿真模型/Gazebo_SDF/model.config",
+    "bytes": 221,
+    "sha256": "524a6d22eb29f0e8a8e4849fd597c8a6d7aaae5f871c7dba9f7597048eb2eed3"
+  },
+  {
+    "file": "仿真模型/Gazebo_SDF/model.sdf",
+    "bytes": 3882,
+    "sha256": "934c3834b9a0f7fe89f2d9c4cd16622122343232c0da7e9e7b981b98cf5eebe6"
+  },
+  {
+    "file": "仿真模型/MATLAB/lqr_mechanical_params.m",
+    "bytes": 1010,
+    "sha256": "4c8f37857115b09305975218e609f5105929bbfa2bbe9e6cf37c79de1361a971"
+  },
+  {
+    "file": "仿真模型/MATLAB/lqr_mechanical_params.py",
+    "bytes": 1115,
+    "sha256": "21ef6b08a3a1dd9e98986e4198cee86eb64d76c202ef112cf713399f3c024abd"
+  },
+  {
+    "file": "仿真模型/MATLAB/打开模型.m",
+    "bytes": 803,
+    "sha256": "6d2b5bc4509738045c010f1c3f4104c5ce596482c052f75aecf2a766cfbaf15a"
+  },
+  {
+    "file": "仿真模型/MuJoCo/balance_car.xml",
+    "bytes": 2962,
+    "sha256": "6d4901cda790616405fd57f998db989e73b05235d7866e328f2e3f5f740d370a"
+  },
+  {
+    "file": "仿真模型/MuJoCo/load_model.py",
+    "bytes": 510,
+    "sha256": "95d2e97b25f06122927db00a02e129539eecbd891cdf435ec72c5e9ee4553e9f"
+  },
+  {
+    "file": "仿真模型/MuJoCo/meshes/body.stl",
+    "bytes": 4500084,
+    "sha256": "a5795e3a6d70fe1ab5b48b8f7282af1a9d14194bdcca2f9daa1b9114d50e249f"
+  },
+  {
+    "file": "仿真模型/MuJoCo/meshes/left_wheel.stl",
+    "bytes": 2000084,
+    "sha256": "2fd861c353fc20b4364ad7570a54c8a1ad7e88d4cc87961d71b01ebb271b67c5"
+  },
+  {
+    "file": "仿真模型/MuJoCo/meshes/right_wheel.stl",
+    "bytes": 2000084,
+    "sha256": "945199b2ac911f383b39fecbca209fab6cdf57b7ac7591141c946f2667ce1c59"
+  },
+  {
+    "file": "仿真模型/MuJoCo/requirements.txt",
+    "bytes": 13,
+    "sha256": "4053d16e893f0b013e00a0cb43ba26fb5374820cd1c31ad7e6613091f21b4001"
+  },
+  {
+    "file": "仿真模型/MuJoCo/run_demo.py",
+    "bytes": 585,
+    "sha256": "7689a1e8f89eb183785493391c2d5d1c60588203df68fe21a148096c61553408"
+  },
+  {
+    "file": "仿真模型/ROS2/balance_car_description/CMakeLists.txt",
+    "bytes": 202,
+    "sha256": "f59c47006776881b7ff47ac2936058d7a4e73a8b1a61f507ac8cd8f0a5cb0df4"
+  },
+  {
+    "file": "仿真模型/ROS2/balance_car_description/launch/display.launch.py",
+    "bytes": 671,
+    "sha256": "f290c35b7b01d3e61489629ab900228729b6bd2d6cc9296385561d363f6c9718"
+  },
+  {
+    "file": "仿真模型/ROS2/balance_car_description/meshes/body.stl",
+    "bytes": 4500084,
+    "sha256": "a5795e3a6d70fe1ab5b48b8f7282af1a9d14194bdcca2f9daa1b9114d50e249f"
+  },
+  {
+    "file": "仿真模型/ROS2/balance_car_description/meshes/left_wheel.stl",
+    "bytes": 2000084,
+    "sha256": "2fd861c353fc20b4364ad7570a54c8a1ad7e88d4cc87961d71b01ebb271b67c5"
+  },
+  {
+    "file": "仿真模型/ROS2/balance_car_description/meshes/right_wheel.stl",
+    "bytes": 2000084,
+    "sha256": "945199b2ac911f383b39fecbca209fab6cdf57b7ac7591141c946f2667ce1c59"
+  },
+  {
+    "file": "仿真模型/ROS2/balance_car_description/package.xml",
+    "bytes": 614,
+    "sha256": "1b3c1469d0f4947c8d38d6817364ad11daa471a69dcbd995885d22dcedda8e1f"
+  },
+  {
+    "file": "仿真模型/ROS2/balance_car_description/rviz/balance_car.rviz",
+    "bytes": 618,
+    "sha256": "db300c91fd7a61322a078cb66c692cf2869be8918713e6b4cdcf4610a24c8439"
+  },
+  {
+    "file": "仿真模型/ROS2/balance_car_description/urdf/balance_car.urdf",
+    "bytes": 3108,
+    "sha256": "c9f97a631a4a2974f376d563ee54414f2e98f8be74bb992f40bc57df96fcdd6c"
+  },
+  {
+    "file": "仿真模型/通用URDF/meshes/body.mtl",
+    "bytes": 796,
+    "sha256": "952486e68ffaffd2cc95d310d3848f0d8a8468ead637b09bcf571948be39708d"
+  },
+  {
+    "file": "仿真模型/通用URDF/meshes/body.obj",
+    "bytes": 46302734,
+    "sha256": "baad91976b2896160a708fe9daba45a3d6a6480ee9081df2c26fbf24150e2235"
+  },
+  {
+    "file": "仿真模型/通用URDF/meshes/body.stl",
+    "bytes": 4500084,
+    "sha256": "a5795e3a6d70fe1ab5b48b8f7282af1a9d14194bdcca2f9daa1b9114d50e249f"
+  },
+  {
+    "file": "仿真模型/通用URDF/meshes/left_wheel.mtl",
+    "bytes": 305,
+    "sha256": "0bd356f045a7df002f6134b5a483d302db9a3b21bb554f4ef8f3710a5b793ff1"
+  },
+  {
+    "file": "仿真模型/通用URDF/meshes/left_wheel.obj",
+    "bytes": 1894691,
+    "sha256": "3dcbe42b022de483766c36195110abf6224dd6b6b0cb955dbbe917f1ee6dc114"
+  },
+  {
+    "file": "仿真模型/通用URDF/meshes/left_wheel.stl",
+    "bytes": 2000084,
+    "sha256": "2fd861c353fc20b4364ad7570a54c8a1ad7e88d4cc87961d71b01ebb271b67c5"
+  },
+  {
+    "file": "仿真模型/通用URDF/meshes/right_wheel.mtl",
+    "bytes": 305,
+    "sha256": "0bd356f045a7df002f6134b5a483d302db9a3b21bb554f4ef8f3710a5b793ff1"
+  },
+  {
+    "file": "仿真模型/通用URDF/meshes/right_wheel.obj",
+    "bytes": 1907181,
+    "sha256": "b24382d1809d9e9b0dc0585586b83ac4f2881a0ce74aed30e7ae64ee3b9ea45a"
+  },
+  {
+    "file": "仿真模型/通用URDF/meshes/right_wheel.stl",
+    "bytes": 2000084,
+    "sha256": "945199b2ac911f383b39fecbca209fab6cdf57b7ac7591141c946f2667ce1c59"
+  },
+  {
+    "file": "仿真模型/通用URDF/urdf/balance_car.urdf",
+    "bytes": 3015,
+    "sha256": "ca658e60026bc397609259893684ec86d8f0db500bfdceccc8baeb84723991e9"
+  },
+  {
+    "file": "参数与图片/CAD整理结果.json",
+    "bytes": 1941,
+    "sha256": "6f816677cef9566d85c958084327e0472ef5b320a87f055d49ea3c68958eaef9"
+  },
+  {
+    "file": "参数与图片/Excel保存验证.json",
+    "bytes": 171,
+    "sha256": "510c11a223951b8dae57411589480df3062754e836a2a1b032e3de8be487fa18"
+  },
+  {
+    "file": "参数与图片/Excel导出检查.ndjson",
+    "bytes": 139131,
+    "sha256": "d15bcf7c49b8c3ce0fdeddb5d90ba09a4e364679c8ab0cce62dda61be80d03fa"
+  },
+  {
+    "file": "参数与图片/FreeCAD整理验证.json",
+    "bytes": 508,
+    "sha256": "3bb4a944f6de6bdc14dad2a355988ba182ceebb0cfe4680d4a2481edfde488e7"
+  },
+  {
+    "file": "参数与图片/MATLAB导入验证.png",
+    "bytes": 178840,
+    "sha256": "91520c70d1a27d085eb5ec3f816b95dd35ce9ac1e519849c470f79d2026fd05b"
+  },
+  {
+    "file": "参数与图片/MATLAB验证.json",
+    "bytes": 212,
+    "sha256": "894da5f47a144edb9452e2230f045f670290438426e8631eb6dd5625d05eb0ae"
+  },
+  {
+    "file": "参数与图片/STEP导入验证.json",
+    "bytes": 454,
+    "sha256": "39e2c9effe05535287597252b24dc7c13c7b68a38f78e7b65281115efbf348f4"
+  },
+  {
+    "file": "参数与图片/仿真刚体参数_SI.json",
+    "bytes": 2189,
+    "sha256": "8a9662f2962b9160400c5c7b3b9f9c88cde707abb803ebb4cb4135cb9c90d764"
+  },
+  {
+    "file": "参数与图片/仿真文件验证.json",
+    "bytes": 748,
+    "sha256": "bb1400a394fb9b07fd8caddc6f20d93b15713ae738acfe22905f8a389a7bdb2a"
+  },
+  {
+    "file": "参数与图片/仿真网格简化.json",
+    "bytes": 683,
+    "sha256": "16645084aa31e0a810438c62876f0954bf66bdda7cd3cd623c2376912f5fd7c5"
+  },
+  {
+    "file": "参数与图片/侧视图.png",
+    "bytes": 63965,
+    "sha256": "24321e3f3c0f3e85aead7e9e3068d6062f107cc087b3936382bb4e413b3b31ed"
+  },
+  {
+    "file": "参数与图片/俯视图.png",
+    "bytes": 42976,
+    "sha256": "3f8eab5ace5162b4935e916198b30a7480c8c9b9ef68a806045b3d75b15ea87f"
+  },
+  {
+    "file": "参数与图片/工程树映射.json",
+    "bytes": 31260,
+    "sha256": "420ee5463461962af396d9afba52c90b8c9db8d4ecf38170e82b4644f13ea0da"
+  },
+  {
+    "file": "参数与图片/整理进度.txt",
+    "bytes": 774,
+    "sha256": "bd388191fb62cf12548d98a22ef9cc89458e49ffe63b246378a4f9151d6d36d1"
+  },
+  {
+    "file": "参数与图片/整车轴测图.png",
+    "bytes": 129609,
+    "sha256": "f423ce14a7c38d7864250e4e7ee9903c1bb88db73beef38f57296ab954093236"
+  },
+  {
+    "file": "参数与图片/最终工程就绪.txt",
+    "bytes": 92,
+    "sha256": "c73cdd2ce79ff25779b144c206b54517b6ef853aa7f379750371e02c94f6c828"
+  },
+  {
+    "file": "参数与图片/机械参数.json",
+    "bytes": 62442,
+    "sha256": "1d7bfcc3793d46f9593c9c8ac35b7f58f181742b82d1f6d002e27980491d7068"
+  },
+  {
+    "file": "参数与图片/机械参数.m",
+    "bytes": 1010,
+    "sha256": "4c8f37857115b09305975218e609f5105929bbfa2bbe9e6cf37c79de1361a971"
+  },
+  {
+    "file": "参数与图片/机械参数.py",
+    "bytes": 1115,
+    "sha256": "21ef6b08a3a1dd9e98986e4198cee86eb64d76c202ef112cf713399f3c024abd"
+  },
+  {
+    "file": "参数与图片/档案_侧视图.png",
+    "bytes": 56459,
+    "sha256": "4c51e7bd6d5d25bee51b61e52e5368c1aedbbace03bc5ed85690285b7fae6930"
+  },
+  {
+    "file": "参数与图片/档案_俯视图.png",
+    "bytes": 34741,
+    "sha256": "a2d87569b3c903a2a6b1984241fb305015af6983a3a904dffaa5230995391d7e"
+  },
+  {
+    "file": "参数与图片/档案_整车轴测图.png",
+    "bytes": 112637,
+    "sha256": "7c98457ffe520de66a1279b32c9939ab16731fcbdf32e7f65721f6219ea90cd3"
+  },
+  {
+    "file": "参数与图片/档案_正视图.png",
+    "bytes": 37782,
+    "sha256": "476eefb328424830ea1c92f1c6546f796c48f70f97811cc6946f29b7fb1d9927"
+  },
+  {
+    "file": "参数与图片/正视图.png",
+    "bytes": 45225,
+    "sha256": "0778db3a75902db23dd3ae1b18eacedc51b1d1db54990198267c9cf50e8bd99a"
+  },
+  {
+    "file": "参数与图片/重心与俯仰惯量说明图.png",
+    "bytes": 205286,
+    "sha256": "5cd95b66b4af121500181f0fc9e564eb791e3bed8eac0863ba773a31fea016ae"
+  },
+  {
+    "file": "导出的模型/OBJ_mm/balance_car_assembly.mtl",
+    "bytes": 1416,
+    "sha256": "8c4524fae2ac1268cc334fb06db41a9f8e70e285a9c293d037f1e03eb9f468dd"
+  },
+  {
+    "file": "导出的模型/OBJ_mm/balance_car_assembly.obj",
+    "bytes": 46549055,
+    "sha256": "26bebb841d041cefa9b5770f0ef0063eb237b9f6301290ed4687110c9775a489"
+  },
+  {
+    "file": "导出的模型/STEP_mm/balance_car_assembly.step",
+    "bytes": 310168559,
+    "sha256": "40d4402a4744e825c3aa9e757684981f9151012e85c8a56af2f7740199bfea93"
+  },
+  {
+    "file": "导出的模型/STL_mm/balance_car_assembly.stl",
+    "bytes": 56079384,
+    "sha256": "5de27cd50782ae3d0f3136bcea7fa1aa82f167fca4789d75a23a1c2053a0b622"
+  },
+  {
+    "file": "导出的模型/STL_mm/body.stl",
+    "bytes": 51510584,
+    "sha256": "3df4baf5dde0ec84aeb93c0f2fbf4268540cc746012e040fdb1ddadfff26ed68"
+  },
+  {
+    "file": "导出的模型/STL_mm/left_wheel.stl",
+    "bytes": 2284484,
+    "sha256": "70fcea7cc7d596d3ffecf22a1a3f05818edf3f7e98bfe7fd3f92095f3ff58002"
+  },
+  {
+    "file": "导出的模型/STL_mm/right_wheel.stl",
+    "bytes": 2284484,
+    "sha256": "4c369a1c24be1a6849db276db4e567bb2719698bd26e80da84469ccc6b24bd3e"
+  },
+  {
+    "file": "工具/build_final_cad.py",
+    "bytes": 15240,
+    "sha256": "ace9b1bc5a6490b7f56af816fa3f9551080e4306da0e70474738187f3a3790ea"
+  },
+  {
+    "file": "工具/build_final_sim.py",
+    "bytes": 11885,
+    "sha256": "c8b723fa048c7363371f0a2e693b00d102d2208fc729d21dd6fd4272953935ee"
+  },
+  {
+    "file": "工具/polish_images.py",
+    "bytes": 759,
+    "sha256": "dfb99b6638c025a9ec0b56abeab3fdde458935fccf8463d7a8fa4ba7a435617c"
+  },
+  {
+    "file": "工具/simplify_sim_meshes.py",
+    "bytes": 913,
+    "sha256": "85f7a87fbb3cbd8376599a5a8026e434b3f584a4e27e95912187d2b2275d44e1"
+  },
+  {
+    "file": "工具/validate_final_sim.py",
+    "bytes": 2404,
+    "sha256": "ec9f3e2df33f36820d0dd547aedc8b63c3d1a0c96a3fd01d80808b9bdf1f2b59"
+  },
+  {
+    "file": "工具/verify_final_cad.py",
+    "bytes": 2414,
+    "sha256": "1a9755f3e65a016a638013bdb5efdf85c1e216223ea16dac38efc265aee7ac36"
+  },
+  {
+    "file": "平衡车模型档案.xlsx",
+    "bytes": 246318,
+    "sha256": "5cf04e095b5fe300e407688d88ab66afd346dd36080b6c57377d55baffc9336d"
+  },
+  {
+    "file": "源数据与依据/实物参考图/ZD2808尺寸图.jpg",
+    "bytes": 1606748,
+    "sha256": "468ab7a9abffbfbb90b8d238867fccc6d7b1ca6dd062b81985217f9eead54b1e"
+  },
+  {
+    "file": "源数据与依据/实物参考图/ZD2808电机外观.jpg",
+    "bytes": 1577692,
+    "sha256": "e8aa6f1eaa0eb530d9c06a46bd6a0a841c8bb89ad6b73419c29654dce49b593b"
+  },
+  {
+    "file": "源数据与依据/实物参考图/编码器实物安装.png",
+    "bytes": 104890,
+    "sha256": "6bc861e231a6d95d51375d9cdd97f0d2b39c81c07039ca2bef41c7ec34cb27ab"
+  },
+  {
+    "file": "源数据与依据/整理前_R6.FCStd",
+    "bytes": 34452542,
+    "sha256": "a03725a7417ea8dbe63edeeeb4ff0dda72f062eb7494d1638580dc316030a5df"
+  },
+  {
+    "file": "源数据与依据/整理过程自动备份/平衡车_最终.20261017-173057.FCBak",
+    "bytes": 33630116,
+    "sha256": "c5a1bd8d9391ed56436f6ab8452c12bf59a2a7a2e61df9096801d43f7d3e8959"
+  },
+  {
+    "file": "源数据与依据/整理过程自动备份/平衡车_最终.20261017-173238.FCBak",
+    "bytes": 33630112,
+    "sha256": "67cc890cea151baae1d0dfcafc6d11c6f838052e0febb938358f4be72d0c985f"
+  },
+  {
+    "file": "源数据与依据/机械参数计算依据.md",
+    "bytes": 6714,
+    "sha256": "e82fc497e58f90ba9995b5d302fbc919c18ba2f5874f24a372b2646269a383f9"
+  }
+]

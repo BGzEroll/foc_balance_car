@@ -1,0 +1,10 @@
+import FreeCAD as App,FreeCADGui as Gui
+from pathlib import Path
+folder=Path(__file__).resolve().parent
+target=str(folder/'平衡车_最终.FCStd')
+d=next((x for x in App.listDocuments().values() if Path(x.FileName)==Path(target)),None)
+if d is None:d=App.openDocument(target)
+App.setActiveDocument(d.Name)
+Gui.activateWorkbench('PartWorkbench')
+exec(compile((folder/'mechanics_panel.py').read_text(encoding='utf-8'),'mechanics_panel.py','exec'))
+Gui.activeDocument().activeView().viewAxonometric();Gui.activeDocument().activeView().fitAll()

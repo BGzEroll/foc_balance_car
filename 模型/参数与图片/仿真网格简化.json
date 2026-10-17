@@ -1,0 +1,20 @@
+[
+  {
+    "name": "body",
+    "original_faces": 991926,
+    "simulation_visual_faces": 90000,
+    "note": "仅简化仿真显示网格；显式质量惯量与简化碰撞体不变。CAD导出保留完整网格。"
+  },
+  {
+    "name": "left_wheel",
+    "original_faces": 45688,
+    "simulation_visual_faces": 40000,
+    "note": "仅简化仿真显示网格；显式质量惯量与简化碰撞体不变。CAD导出保留完整网格。"
+  },
+  {
+    "name": "right_wheel",
+    "original_faces": 45688,
+    "simulation_visual_faces": 40000,
+    "note": "仅简化仿真显示网格；显式质量惯量与简化碰撞体不变。CAD导出保留完整网格。"
+  }
+]

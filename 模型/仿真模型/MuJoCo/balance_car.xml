@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="balance_car">
+  <compiler angle="radian" meshdir="meshes" inertiafromgeom="false" />
+  <option timestep=".001" gravity="0 0 -9.80665" integrator="implicitfast" />
+  <default>
+    <geom friction="1 .005 .0001" condim="3" />
+    <joint damping="0" />
+  </default>
+  <asset>
+    <mesh name="body" file="body.stl" />
+    <mesh name="left_wheel" file="left_wheel.stl" />
+    <mesh name="right_wheel" file="right_wheel.stl" />
+  </asset>
+  <worldbody>
+    <light pos="0 -1 2" dir="0 0 -1" />
+    <geom name="ground" type="plane" size="2 2 .05" rgba=".8 .82 .85 1" />
+    <body name="base_link" pos="0 0 .0335">
+      <freejoint name="floating_base" />
+      <inertial pos="-5.71393596063e-05 -4.53146929236e-05 0.0365292274203" mass="0.2771" fullinertia="0.000619139010943 0.000311847668361 0.000388176637386 2.82339732696e-07 -3.85027446232e-08 -1.76757662423e-07" />
+      <geom name="body_visual" type="mesh" mesh="body" contype="0" conaffinity="0" group="2" rgba=".15 .45 .65 1" />
+      <site name="imu" pos="0 0 .03" size=".002" />
+      <geom name="body_contact_0" type="box" pos="0 0 0.005" size="0.028 0.048 0.019" group="3" rgba=".3 .5 .8 .15" />
+      <geom name="body_contact_1" type="box" pos="0 0 0.0713" size="0.019 0.0465 0.01" group="3" rgba=".3 .5 .8 .15" />
+      <body name="left_wheel" pos="0 0.0662682 0">
+        <inertial pos="3.60871449673e-09 -0.00137780420767 -5.37617755869e-09" mass="0.0627" fullinertia="1.91783199102e-05 2.99678899841e-05 1.91783183008e-05 3.83369315637e-12 -7.25264095807e-12 1.26584845081e-12" />
+        <geom name="left_wheel_visual" type="mesh" mesh="left_wheel" contype="0" conaffinity="0" group="2" rgba=".15 .18 .15 1" />
+        <joint name="left_wheel_joint" type="hinge" axis="0 1 0" />
+        <geom name="left_wheel_contact" type="cylinder" size="0.0325 .014" quat=".707106781187 .707106781187 0 0" group="3" rgba=".2 .2 .2 .15" />
+      </body>
+      <body name="right_wheel" pos="0 -0.0662682 0">
+        <inertial pos="-3.60871449808e-09 0.00137780420767 -5.37617755869e-09" mass="0.0627" fullinertia="1.91783199102e-05 2.99678899841e-05 1.91783183008e-05 3.83369315557e-12 7.25264095717e-12 -1.26584844793e-12" />
+        <geom name="right_wheel_visual" type="mesh" mesh="right_wheel" contype="0" conaffinity="0" group="2" rgba=".15 .18 .15 1" />
+        <joint name="right_wheel_joint" type="hinge" axis="0 1 0" />
+        <geom name="right_wheel_contact" type="cylinder" size="0.0325 .014" quat=".707106781187 .707106781187 0 0" group="3" rgba=".2 .2 .2 .15" />
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <motor name="left_wheel_torque" joint="left_wheel_joint" gear="1" />
+    <motor name="right_wheel_torque" joint="right_wheel_joint" gear="1" />
+  </actuator>
+  <sensor>
+    <gyro name="body_gyro" site="imu" />
+    <accelerometer name="body_accel" site="imu" />
+  </sensor>
+</mujoco>

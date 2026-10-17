@@ -1,0 +1,29 @@
+{
+  "通用URDF": {
+    "links": 3,
+    "continuous_joints": 2,
+    "mass_kg": 0.4025,
+    "mesh_paths_passed": true
+  },
+  "balance_car_description": {
+    "links": 3,
+    "continuous_joints": 2,
+    "mass_kg": 0.4025,
+    "mesh_paths_passed": true
+  },
+  "mujoco": {
+    "version": "3.16.0",
+    "nq": 9,
+    "nv": 8,
+    "actuators": 2,
+    "mass_kg": 0.40249999999999997,
+    "yaw_equivalent_from_kinetic_energy_kgm2": 0.0012037538259025335,
+    "yaw_relative_error": 1.5678237872064041e-07,
+    "yaw_relative_tolerance": 1e-06,
+    "time_s": 1.0000000000000007,
+    "steps": 1000,
+    "finite_state": true,
+    "warnings": 0,
+    "note": "零转矩步进仅验证数值可运行，不是平衡闭环验证。"
+  }
+}

@@ -1,0 +1,2378 @@
+{
+  "mass_kg": {
+    "body": 0.2771,
+    "left_drive": 0.0627,
+    "right_drive": 0.0627,
+    "total": 0.4025
+  },
+  "coordinates": {
+    "axes": "X左右轮轴，Y前进方向，Z向上；地面Z=0；轮轴Z=32.5mm",
+    "body_com_m": [
+      4.531469292364549e-05,
+      -5.7139359606250176e-05,
+      0.06902922742030107
+    ],
+    "total_com_m": [
+      3.119677368730979e-05,
+      -3.933743241463853e-05,
+      0.05764844284221802
+    ],
+    "left_drive_com_m": [
+      -0.06489039579232754,
+      3.608714496734075e-09,
+      0.03249999462382244
+    ],
+    "right_drive_com_m": [
+      0.06489039579232754,
+      -3.6087144980773533e-09,
+      0.03249999462382244
+    ],
+    "axle_point_m": [
+      0.0,
+      0.0,
+      0.0325
+    ]
+  },
+  "balance_parameters": {
+    "wheel_radius_m": 0.0325,
+    "contact_track_m": 0.1325364,
+    "old_motion_track_m": 0.1315364,
+    "body_com_height_above_axle_m": 0.03652922742030107,
+    "body_com_forward_offset_m": -5.7139359606250176e-05,
+    "body_com_distance_to_axle_m": 0.03652927210923442,
+    "static_pitch_trim_deg": -0.0896225217620993,
+    "body_Ixx_at_com_kg_m2": 0.00031184766836104503,
+    "body_Ixx_at_axle_kg_m2": 0.0006816065058031743,
+    "left_drive_J_axis_kg_m2": 2.996788998409844e-05,
+    "right_drive_J_axis_kg_m2": 2.996788998409844e-05,
+    "equivalent_translation_mass_m_plus_2J_over_r2_kg": 0.4592439336977012,
+    "whole_Izz_at_com_kg_m2": 0.0009545634717723205,
+    "whole_Izz_at_axle_midpoint_kg_m2": 0.0009545644863429122,
+    "wheel_spin_yaw_addition_kg_m2": 0.00024918952828703925,
+    "effective_inplace_yaw_kg_m2": 0.0012037540146299514
+  },
+  "inertia_tensors_kg_m2": {
+    "body_at_com": [
+      [
+        0.00031184766836104503,
+        -2.823397326959528e-07,
+        1.767576624229698e-07
+      ],
+      [
+        -2.823397326959528e-07,
+        0.0006191390109428378,
+        -3.850274462317628e-08
+      ],
+      [
+        1.767576624229698e-07,
+        -3.850274462317628e-08,
+        0.000388176637385571
+      ]
+    ],
+    "body_at_axle_origin": [
+      [
+        0.0006816065058031743,
+        -2.816222508186675e-07,
+        -2.8192893900039927e-07
+      ],
+      [
+        -2.816222508186675e-07,
+        0.0009888975126824675,
+        5.39876076335855e-07
+      ],
+      [
+        -2.8192893900039927e-07,
+        5.39876076335855e-07,
+        0.0003881781110942074
+      ]
+    ],
+    "whole_at_com": [
+      [
+        0.00048698288153055765,
+        -2.8209450156564297e-07,
+        3.3852548674225025e-08
+      ],
+      [
+        -2.8209450156564297e-07,
+        0.0013007247180225523,
+        1.4169282015358934e-07
+      ],
+      [
+        3.3852548674225025e-08,
+        1.4169282015358934e-07,
+        0.0009545634717723205
+      ]
+    ],
+    "whole_at_axle_origin": [
+      [
+        0.0007415422857713706,
+        -2.8160055317261004e-07,
+        -2.819289390003859e-07
+      ],
+      [
+        -2.8160055317261004e-07,
+        0.001555283891149918,
+        5.398760763358479e-07
+      ],
+      [
+        -2.819289390003859e-07,
+        5.398760763358479e-07,
+        0.0009545644863429122
+      ]
+    ],
+    "left_drive_at_com": [
+      [
+        2.9967889984095832e-05,
+        -3.83369315636605e-12,
+        -1.2658484508120812e-12
+      ],
+      [
+        -3.83369315636605e-12,
+        1.917831991019924e-05,
+        -7.2526409580732555e-12
+      ],
+      [
+        -1.2658484508120812e-12,
+        -7.2526409580732555e-12,
+        1.9178318300827144e-05
+      ]
+    ],
+    "right_drive_at_com": [
+      [
+        2.9967889984095832e-05,
+        -3.833693155565584e-12,
+        1.2658484479289835e-12
+      ],
+      [
+        -3.833693155565584e-12,
+        1.9178319910199227e-05,
+        7.252640957165455e-12
+      ],
+      [
+        1.2658484479289835e-12,
+        7.252640957165455e-12,
+        1.9178318300827144e-05
+      ]
+    ]
+  },
+  "components": [
+    {
+      "label": "车架＋4颗短铜柱连接螺钉",
+      "mass_kg": 0.045399999999999996,
+      "com_m": [
+        1.1947966869035374e-05,
+        -5.335150911211362e-09,
+        0.0445101579361983
+      ],
+      "J_com_kg_m2": [
+        [
+          1.5059637427078174e-05,
+          6.55112324959884e-10,
+          2.7781455217437466e-09
+        ],
+        [
+          6.55112324959884e-10,
+          6.244517079747934e-05,
+          1.6253276684114523e-11
+        ],
+        [
+          2.7781455217437466e-09,
+          1.6253276684114523e-11,
+          6.846646864829921e-05
+        ]
+      ],
+      "geometry_volume_mm3": 34677.39123090217,
+      "objects": [
+        "FrameMesh"
+      ],
+      "method": "含螺钉合称质量等效均布于原STL车架；螺钉未单独分重"
+    },
+    {
+      "label": "主控板",
+      "mass_kg": 0.0237,
+      "com_m": [
+        0.0007396792796300623,
+        -0.0004464495314342976,
+        0.06245698049745078
+      ],
+      "J_com_kg_m2": [
+        [
+          4.87030377544039e-06,
+          -2.2691361326443012e-07,
+          -7.285764370720499e-08
+        ],
+        [
+          -2.2691361326443012e-07,
+          1.3261274178658322e-05,
+          -8.493065584565324e-08
+        ],
+        [
+          -7.285764370720499e-08,
+          -8.493065584565324e-08,
+          1.799788170712228e-05
+        ]
+      ],
+      "geometry_volume_mm3": 8658.685500434569,
+      "objects": [
+        "MainPCB_0000",
+        "MainPCB_0001",
+        "MainPCB_0002",
+        "MainPCB_0003",
+        "MainPCB_0004",
+        "MainPCB_0005",
+        "MainPCB_0006",
+        "MainPCB_0007",
+        "MainPCB_0008",
+        "MainPCB_0009",
+        "MainPCB_0010",
+        "MainPCB_0011",
+        "MainPCB_0012",
+        "MainPCB_0013",
+        "MainPCB_0014",
+        "MainPCB_0015",
+        "MainPCB_0016",
+        "MainPCB_0017",
+        "MainPCB_0018",
+        "MainPCB_0019",
+        "MainPCB_0020",
+        "MainPCB_0021",
+        "MainPCB_0022",
+        "MainPCB_0023",
+        "MainPCB_0024",
+        "MainPCB_0025",
+        "MainPCB_0026",
+        "MainPCB_0027",
+        "MainPCB_0028",
+        "MainPCB_0029",
+        "MainPCB_0030",
+        "MainPCB_0031",
+        "MainPCB_0032",
+        "MainPCB_0033",
+        "MainPCB_0034",
+        "MainPCB_0035",
+        "MainPCB_0036",
+        "MainPCB_0037",
+        "MainPCB_0038",
+        "MainPCB_0039",
+        "MainPCB_0040",
+        "MainPCB_0041",
+        "MainPCB_0042",
+        "MainPCB_0043",
+        "MainPCB_0044",
+        "MainPCB_0045",
+        "MainPCB_0046",
+        "MainPCB_0047",
+        "MainPCB_0048",
+        "MainPCB_0049",
+        "MainPCB_0050",
+        "MainPCB_0051",
+        "MainPCB_0052",
+        "MainPCB_0053",
+        "MainPCB_0054",
+        "MainPCB_0055",
+        "MainPCB_0056",
+        "MainPCB_0057",
+        "MainPCB_0058",
+        "MainPCB_0059",
+        "MainPCB_0060",
+        "MainPCB_0061",
+        "MainPCB_0062",
+        "MainPCB_0063",
+        "MainPCB_0064",
+        "MainPCB_0065",
+        "MainPCB_0066",
+        "MainPCB_0067",
+        "MainPCB_0068",
+        "MainPCB_0069",
+        "MainPCB_0070",
+        "MainPCB_0071",
+        "MainPCB_0072",
+        "MainPCB_0073",
+        "MainPCB_0074",
+        "MainPCB_0075",
+        "MainPCB_0076",
+        "MainPCB_0077",
+        "MainPCB_0078",
+        "MainPCB_0079",
+        "MainPCB_0080",
+        "MainPCB_0081",
+        "MainPCB_0082",
+        "MainPCB_0083",
+        "MainPCB_0084",
+        "MainPCB_0085",
+        "MainPCB_0086",
+        "MainPCB_0087",
+        "MainPCB_0088",
+        "MainPCB_0089",
+        "MainPCB_0090",
+        "MainPCB_0091",
+        "MainPCB_0092",
+        "MainPCB_0093",
+        "MainPCB_0094",
+        "MainPCB_0095",
+        "MainPCB_0096",
+        "MainPCB_0097",
+        "MainPCB_0098",
+        "MainPCB_0099",
+        "MainPCB_0100",
+        "MainPCB_0101",
+        "MainPCB_0102",
+        "MainPCB_0103",
+        "MainPCB_0104",
+        "MainPCB_0105",
+        "MainPCB_0106",
+        "MainPCB_0107",
+        "MainPCB_0108",
+        "MainPCB_0109",
+        "MainPCB_0110",
+        "MainPCB_0111",
+        "MainPCB_0112",
+        "MainPCB_0113",
+        "MainPCB_0114",
+        "MainPCB_0115",
+        "MainPCB_0116",
+        "MainPCB_0117",
+        "MainPCB_0118",
+        "MainPCB_0119",
+        "MainPCB_0120",
+        "MainPCB_0121",
+        "MainPCB_0122",
+        "MainPCB_0123",
+        "MainPCB_0124",
+        "MainPCB_0125",
+        "MainPCB_0126",
+        "MainPCB_0127",
+        "MainPCB_0128",
+        "MainPCB_0129",
+        "MainPCB_0130",
+        "MainPCB_0131",
+        "MainPCB_0132",
+        "MainPCB_0133",
+        "MainPCB_0134",
+        "MainPCB_0135",
+        "MainPCB_0136",
+        "MainPCB_0137",
+        "MainPCB_0138",
+        "MainPCB_0139",
+        "MainPCB_0140",
+        "MainPCB_0141",
+        "MainPCB_0142",
+        "MainPCB_0143",
+        "MainPCB_0144",
+        "MainPCB_0145",
+        "MainPCB_0146",
+        "MainPCB_0147",
+        "MainPCB_0148",
+        "MainPCB_0149",
+        "MainPCB_0150",
+        "MainPCB_0151",
+        "MainPCB_0152",
+        "MainPCB_0153",
+        "MainPCB_0154",
+        "MainPCB_0155",
+        "MainPCB_0156",
+        "MainPCB_0157",
+        "MainPCB_0158",
+        "MainPCB_0159",
+        "MainPCB_0160",
+        "MainPCB_0161",
+        "MainPCB_0162",
+        "MainPCB_0163",
+        "MainPCB_0164",
+        "MainPCB_0165",
+        "MainPCB_0166",
+        "MainPCB_0167",
+        "MainPCB_0168",
+        "MainPCB_0169",
+        "MainPCB_0170",
+        "MainPCB_0171",
+        "MainPCB_0172",
+        "MainPCB_0173",
+        "MainPCB_0174",
+        "MainPCB_0175",
+        "MainPCB_0176",
+        "MainPCB_0177",
+        "MainPCB_0178",
+        "MainPCB_0179",
+        "MainPCB_0180",
+        "MainPCB_0181",
+        "MainPCB_0182",
+        "MainPCB_0183",
+        "MainPCB_0184",
+        "MainPCB_0185",
+        "MainPCB_0186",
+        "MainPCB_0187",
+        "MainPCB_0188",
+        "MainPCB_0189",
+        "MainPCB_0190",
+        "MainPCB_0191",
+        "MainPCB_0192",
+        "MainPCB_0193",
+        "MainPCB_0194",
+        "MainPCB_0195",
+        "MainPCB_0196",
+        "MainPCB_0197",
+        "MainPCB_0198",
+        "MainPCB_0199",
+        "MainPCB_0200",
+        "MainPCB_0201",
+        "MainPCB_0202",
+        "MainPCB_0203",
+        "MainPCB_0204",
+        "MainPCB_0205",
+        "MainPCB_0206",
+        "MainPCB_0207",
+        "MainPCB_0208",
+        "MainPCB_0209",
+        "MainPCB_0210",
+        "MainPCB_0211",
+        "MainPCB_0212",
+        "MainPCB_0213",
+        "MainPCB_0214",
+        "MainPCB_0215",
+        "MainPCB_0216",
+        "MainPCB_0217",
+        "MainPCB_0218",
+        "MainPCB_0219",
+        "MainPCB_0220",
+        "MainPCB_0221",
+        "MainPCB_0222",
+        "MainPCB_0223",
+        "MainPCB_0224",
+        "MainPCB_0225",
+        "MainPCB_0226",
+        "MainPCB_0227",
+        "MainPCB_0228",
+        "MainPCB_0229",
+        "MainPCB_0230",
+        "MainPCB_0231",
+        "MainPCB_0232",
+        "MainPCB_0233",
+        "MainPCB_0234",
+        "MainPCB_0235",
+        "MainPCB_0236",
+        "MainPCB_0237",
+        "MainPCB_0238",
+        "MainPCB_0239",
+        "MainPCB_0240",
+        "MainPCB_0241",
+        "MainPCB_0242",
+        "MainPCB_0243",
+        "MainPCB_0244",
+        "MainPCB_0245",
+        "MainPCB_0246",
+        "MainPCB_0247",
+        "MainPCB_0248",
+        "MainPCB_0249",
+        "MainPCB_0250",
+        "MainPCB_0251",
+        "MainPCB_0252",
+        "MainPCB_0253",
+        "MainPCB_0254",
+        "MainPCB_0255",
+        "MainPCB_0256",
+        "MainPCB_0257",
+        "MainPCB_0258",
+        "MainPCB_0259",
+        "MainPCB_0260",
+        "MainPCB_0261",
+        "MainPCB_0262",
+        "MainPCB_0263",
+        "MainPCB_0264",
+        "MainPCB_0265",
+        "MainPCB_0266",
+        "MainPCB_0267",
+        "MainPCB_0268",
+        "MainPCB_0269",
+        "MainPCB_0270",
+        "MainPCB_0271",
+        "MainPCB_0272",
+        "MainPCB_0273",
+        "MainPCB_0274",
+        "MainPCB_0275",
+        "MainPCB_0276",
+        "MainPCB_0277",
+        "MainPCB_0278",
+        "MainPCB_0279",
+        "MainPCB_0280",
+        "MainPCB_0281",
+        "MainPCB_0282",
+        "MainPCB_0283",
+        "MainPCB_0284",
+        "MainPCB_0285",
+        "MainPCB_0286",
+        "MainPCB_0287",
+        "MainPCB_0288",
+        "MainPCB_0289",
+        "MainPCB_0290",
+        "MainPCB_0291",
+        "MainPCB_0292",
+        "MainPCB_0293",
+        "MainPCB_0294",
+        "MainPCB_0295",
+        "MainPCB_0296",
+        "MainPCB_0297",
+        "MainPCB_0298",
+        "MainPCB_0299",
+        "MainPCB_0300",
+        "MainPCB_0301",
+        "MainPCB_0302",
+        "MainPCB_0303",
+        "MainPCB_0304",
+        "MainPCB_0305",
+        "MainPCB_0306",
+        "MainPCB_0307",
+        "MainPCB_0308",
+        "MainPCB_0309",
+        "MainPCB_0310",
+        "MainPCB_0311",
+        "MainPCB_0312",
+        "MainPCB_0313",
+        "MainPCB_0314",
+        "MainPCB_0315",
+        "MainPCB_0316",
+        "MainPCB_0317",
+        "MainPCB_0318",
+        "MainPCB_0319",
+        "MainPCB_0320",
+        "MainPCB_0321",
+        "MainPCB_0322",
+        "MainPCB_0323",
+        "MainPCB_0324",
+        "MainPCB_0325",
+        "MainPCB_0326",
+        "MainPCB_0327",
+        "MainPCB_0328",
+        "MainPCB_0329",
+        "MainPCB_0330",
+        "MainPCB_0331",
+        "MainPCB_0332",
+        "MainPCB_0333",
+        "MainPCB_0334",
+        "MainPCB_0335",
+        "MainPCB_0336",
+        "MainPCB_0337",
+        "MainPCB_0338",
+        "MainPCB_0339",
+        "MainPCB_0340",
+        "MainPCB_0341",
+        "MainPCB_0342",
+        "MainPCB_0343",
+        "MainPCB_0344",
+        "MainPCB_0345",
+        "MainPCB_0346",
+        "MainPCB_0347",
+        "MainPCB_0348",
+        "MainPCB_0349",
+        "MainPCB_0350",
+        "MainPCB_0351",
+        "MainPCB_0352",
+        "MainPCB_0353",
+        "MainPCB_0354",
+        "MainPCB_0355",
+        "MainPCB_0356",
+        "MainPCB_0357",
+        "MainPCB_0358",
+        "MainPCB_0359",
+        "MainPCB_0360",
+        "MainPCB_0361",
+        "MainPCB_0362",
+        "MainPCB_0363",
+        "MainPCB_0364",
+        "MainPCB_0365",
+        "MainPCB_0366",
+        "MainPCB_0367",
+        "MainPCB_0368",
+        "MainPCB_0369",
+        "MainPCB_0370",
+        "MainPCB_0371",
+        "MainPCB_0372",
+        "MainPCB_0373",
+        "MainPCB_0374",
+        "MainPCB_0375",
+        "MainPCB_0376",
+        "MainPCB_0377",
+        "MainPCB_0378",
+        "MainPCB_0379",
+        "MainPCB_0380",
+        "MainPCB_0381",
+        "MainPCB_0382",
+        "MainPCB_0383",
+        "MainPCB_0384",
+        "MainPCB_0385",
+        "MainPCB_0386",
+        "MainPCB_0387",
+        "MainPCB_0388",
+        "MainPCB_0389",
+        "MainPCB_0390",
+        "MainPCB_0391",
+        "MainPCB_0392",
+        "MainPCB_0393",
+        "MainPCB_0394",
+        "MainPCB_0395",
+        "MainPCB_0396",
+        "MainPCB_0397",
+        "MainPCB_0398",
+        "MainPCB_0399",
+        "MainPCB_0400",
+        "MainPCB_0401",
+        "MainPCB_0402",
+        "MainPCB_0403",
+        "MainPCB_0404",
+        "MainPCB_0405",
+        "MainPCB_0406",
+        "MainPCB_0407",
+        "MainPCB_0408",
+        "MainPCB_0409",
+        "MainPCB_0410",
+        "MainPCB_0411",
+        "MainPCB_0412",
+        "MainPCB_0413",
+        "MainPCB_0414",
+        "MainPCB_0415",
+        "MainPCB_0416",
+        "MainPCB_0417",
+        "MainPCB_0418",
+        "MainPCB_0419",
+        "MainPCB_0420",
+        "MainPCB_0421",
+        "MainPCB_0422",
+        "MainPCB_0423",
+        "MainPCB_0424",
+        "MainPCB_0425",
+        "MainPCB_0426",
+        "MainPCB_0427",
+        "MainPCB_0428",
+        "MainPCB_0429",
+        "MainPCB_0430",
+        "MainPCB_0431",
+        "MainPCB_0432",
+        "MainPCB_0433",
+        "MainPCB_0434",
+        "MainPCB_0435",
+        "MainPCB_0436",
+        "MainPCB_0437",
+        "MainPCB_0438",
+        "MainPCB_0439",
+        "MainPCB_0440",
+        "MainPCB_0441",
+        "MainPCB_0442",
+        "MainPCB_0443",
+        "MainPCB_0444",
+        "MainPCB_0445",
+        "MainPCB_0446",
+        "MainPCB_0447",
+        "MainPCB_0448",
+        "MainPCB_0449",
+        "MainPCB_0450",
+        "MainPCB_0451",
+        "MainPCB_0452",
+        "MainPCB_0453",
+        "MainPCB_0454",
+        "MainPCB_0455",
+        "MainPCB_0456",
+        "MainPCB_0457",
+        "MainPCB_0458",
+        "MainPCB_0459",
+        "MainPCB_0460",
+        "MainPCB_0461",
+        "MainPCB_0462",
+        "MainPCB_0463",
+        "MainPCB_0464",
+        "MainPCB_0465",
+        "MainPCB_0466",
+        "MainPCB_0467",
+        "MainPCB_0468",
+        "MainPCB_0469",
+        "MainPCB_0470",
+        "MainPCB_0471",
+        "MainPCB_0472",
+        "MainPCB_0473",
+        "MainPCB_0474",
+        "MainPCB_0475",
+        "MainPCB_0476",
+        "MainPCB_0477",
+        "MainPCB_0478",
+        "MainPCB_0479",
+        "MainPCB_0480",
+        "MainPCB_0481",
+        "MainPCB_0482",
+        "MainPCB_0483",
+        "MainPCB_0484",
+        "MainPCB_0485",
+        "MainPCB_0486",
+        "MainPCB_0487",
+        "MainPCB_0488",
+        "MainPCB_0489",
+        "MainPCB_0490",
+        "MainPCB_0491",
+        "MainPCB_0492",
+        "MainPCB_0493",
+        "MainPCB_0494",
+        "MainPCB_0495",
+        "MainPCB_0496",
+        "MainPCB_0497",
+        "MainPCB_0498",
+        "MainPCB_0499",
+        "MainPCB_0500",
+        "MainPCB_0501",
+        "MainPCB_0502",
+        "MainPCB_0503",
+        "MainPCB_0504",
+        "MainPCB_0505",
+        "MainPCB_0506",
+        "MainPCB_0507",
+        "MainPCB_0508",
+        "MainPCB_0509",
+        "MainPCB_0510",
+        "MainPCB_0511",
+        "MainPCB_0512",
+        "MainPCB_0513",
+        "MainPCB_0514",
+        "MainPCB_0515",
+        "MainPCB_0516",
+        "MainPCB_0517",
+        "MainPCB_0518",
+        "MainPCB_0519",
+        "MainPCB_0520",
+        "MainPCB_0521",
+        "MainPCB_0522",
+        "MainPCB_0523",
+        "MainPCB_0524",
+        "MainPCB_0525",
+        "MainPCB_0526",
+        "MainPCB_0527",
+        "MainPCB_0528",
+        "MainPCB_0529",
+        "MainPCB_0530",
+        "MainPCB_0531",
+        "MainPCB_0532",
+        "MainPCB_0533",
+        "MainPCB_0534",
+        "MainPCB_0535",
+        "MainPCB_0536",
+        "MainPCB_0537",
+        "MainPCB_0538",
+        "MainPCB_0539",
+        "MainPCB_0540",
+        "MainPCB_0541",
+        "MainPCB_0542",
+        "MainPCB_0543",
+        "MainPCB_0544",
+        "MainPCB_0545",
+        "MainPCB_0546",
+        "MainPCB_0547",
+        "MainPCB_0548",
+        "MainPCB_0549",
+        "MainPCB_0550",
+        "MainPCB_0551",
+        "MainPCB_0552",
+        "MainPCB_0553",
+        "MainPCB_0554",
+        "MainPCB_0555",
+        "MainPCB_0556",
+        "MainPCB_0557",
+        "MainPCB_0558",
+        "MainPCB_0559",
+        "MainPCB_0560",
+        "MainPCB_0561",
+        "MainPCB_0562",
+        "MainPCB_0563",
+        "MainPCB_0564",
+        "MainPCB_0565",
+        "MainPCB_0566",
+        "MainPCB_0567",
+        "MainPCB_0568",
+        "MainPCB_0569",
+        "MainPCB_0570",
+        "MainPCB_0571",
+        "MainPCB_0572",
+        "MainPCB_0573",
+        "MainPCB_0574",
+        "MainPCB_0575",
+        "MainPCB_0576",
+        "MainPCB_0577",
+        "MainPCB_0578",
+        "MainPCB_0579",
+        "MainPCB_0580",
+        "MainPCB_0581",
+        "MainPCB_0582",
+        "MainPCB_0583",
+        "MainPCB_0584",
+        "MainPCB_0585",
+        "MainPCB_0586",
+        "MainPCB_0587",
+        "MainPCB_0588",
+        "MainPCB_0589",
+        "MainPCB_0590",
+        "MainPCB_0591",
+        "MainPCB_0592",
+        "MainPCB_0593",
+        "MainPCB_0594",
+        "MainPCB_0595",
+        "MainPCB_0596",
+        "MainPCB_0597",
+        "MainPCB_0598",
+        "MainPCB_0599",
+        "MainPCB_0600",
+        "MainPCB_0601",
+        "MainPCB_0602",
+        "MainPCB_0603",
+        "MainPCB_0604",
+        "MainPCB_0605",
+        "MainPCB_0606",
+        "MainPCB_0607",
+        "MainPCB_0608",
+        "MainPCB_0609",
+        "MainPCB_0610",
+        "MainPCB_0611",
+        "MainPCB_0612",
+        "MainPCB_0613",
+        "MainPCB_0614",
+        "MainPCB_0615",
+        "MainPCB_0616",
+        "MainPCB_0617",
+        "MainPCB_0618",
+        "MainPCB_0619",
+        "MainPCB_0620",
+        "MainPCB_0621",
+        "MainPCB_0622",
+        "MainPCB_0623",
+        "MainPCB_0624",
+        "MainPCB_0625",
+        "MainPCB_0626",
+        "MainPCB_0627",
+        "MainPCB_0628",
+        "MainPCB_0629",
+        "MainPCB_0630",
+        "MainPCB_0631",
+        "MainPCB_0632",
+        "MainPCB_0633",
+        "MainPCB_0634",
+        "MainPCB_0635",
+        "MainPCB_0636",
+        "MainPCB_0637",
+        "MainPCB_0638",
+        "MainPCB_0639",
+        "MainPCB_0640",
+        "MainPCB_0641",
+        "MainPCB_0642",
+        "MainPCB_0643",
+        "MainPCB_0644",
+        "MainPCB_0645",
+        "MainPCB_0646",
+        "MainPCB_0647",
+        "MainPCB_0648",
+        "MainPCB_0649",
+        "MainPCB_0650",
+        "MainPCB_0651",
+        "MainPCB_0652",
+        "MainPCB_0653",
+        "MainPCB_0654",
+        "MainPCB_0655",
+        "MainPCB_0656",
+        "MainPCB_0657",
+        "MainPCB_0658",
+        "MainPCB_0659",
+        "MainPCB_0660",
+        "MainPCB_0661",
+        "MainPCB_0662",
+        "MainPCB_0663",
+        "MainPCB_0664",
+        "MainPCB_0665",
+        "MainPCB_0666",
+        "MainPCB_0667",
+        "MainPCB_0668",
+        "MainPCB_0669",
+        "MainPCB_0670",
+        "MainPCB_0671",
+        "MainPCB_0672",
+        "MainPCB_0673",
+        "MainPCB_0674",
+        "MainPCB_0675",
+        "MainPCB_0676",
+        "MainPCB_0677",
+        "MainPCB_0678",
+        "MainPCB_0679",
+        "MainPCB_0680",
+        "MainPCB_0681",
+        "MainPCB_0682",
+        "MainPCB_0683",
+        "MainPCB_0684",
+        "MainPCB_0685",
+        "MainPCB_0686",
+        "MainPCB_0687"
+      ],
+      "method": "等效均匀密度，按该称重组合内各实体体积归一化"
+    },
+    {
+      "label": "电池座＋PCB＋4颗上板螺钉",
+      "mass_kg": 0.036899999999999995,
+      "com_m": [
+        -0.00014948875918549092,
+        -0.0001423365971828618,
+        0.09407122404148875
+      ],
+      "J_com_kg_m2": [
+        [
+          7.180324005573865e-06,
+          -6.235267191496968e-08,
+          -1.9812056742444148e-08
+        ],
+        [
+          -6.235267191496968e-08,
+          2.352671563786537e-05,
+          -1.5568505107656713e-08
+        ],
+        [
+          -1.9812056742444148e-08,
+          -1.5568505107656713e-08,
+          3.0439911876234567e-05
+        ]
+      ],
+      "geometry_volume_mm3": 6903.654526179214,
+      "objects": [
+        "BatteryPCB_0000",
+        "BatteryPCB_0001",
+        "BatteryPCB_0002",
+        "BatteryPCB_0003",
+        "BatteryPCB_0004",
+        "BatteryPCB_0005",
+        "BatteryPCB_0006",
+        "BatteryPCB_0007",
+        "BatteryPCB_0008",
+        "BatteryPCB_0009",
+        "BatteryPCB_0010",
+        "BatteryPCB_0011",
+        "BatteryPCB_0012",
+        "BatteryPCB_0013",
+        "BatteryPCB_0014",
+        "BatteryPCB_0015",
+        "BatteryPCB_0016",
+        "BatteryPCB_0017",
+        "BatteryPCB_0018",
+        "BatteryPCB_0019",
+        "BatteryPCB_0020",
+        "BatteryPCB_0021",
+        "BatteryPCB_0022",
+        "BatteryPCB_0023",
+        "BatteryPCB_0024",
+        "BatteryPCB_0025",
+        "BatteryPCB_0026",
+        "BatteryPCB_0027",
+        "BatteryPCB_0028",
+        "BatteryPCB_0029",
+        "BatteryPCB_0030",
+        "BatteryPCB_0031",
+        "BatteryPCB_0032",
+        "BatteryPCB_0033",
+        "BatteryPCB_0034",
+        "BatteryPCB_0035",
+        "BatteryPCB_0036",
+        "BatteryPCB_0037",
+        "BatteryPCB_0038",
+        "BatteryPCB_0039",
+        "BatteryPCB_0040",
+        "BatteryPCB_0041",
+        "BatteryPCB_0042",
+        "BatteryPCB_0043",
+        "BatteryPCB_0044",
+        "BatteryPCB_0045",
+        "BatteryPCB_0046",
+        "BatteryPCB_0047",
+        "BatteryPCB_0048",
+        "BatteryPCB_0049",
+        "BatteryPCB_0050",
+        "BatteryPCB_0051",
+        "BatteryPCB_0052",
+        "BatteryPCB_0053",
+        "BatteryPCB_0054",
+        "BatteryPCB_0055",
+        "BatteryPCB_0056",
+        "BatteryPCB_0057",
+        "BatteryPCB_0058",
+        "BatteryPCB_0059",
+        "BatteryPCB_0060",
+        "BatteryPCB_0061",
+        "BatteryPCB_0062",
+        "BatteryPCB_0063",
+        "BatteryPCB_0064",
+        "BatteryPCB_0065",
+        "BatteryPCB_0066",
+        "BatteryPCB_0067",
+        "BatteryPCB_0068",
+        "BatteryPCB_0069",
+        "BatteryPCB_0070",
+        "BatteryPCB_0071",
+        "BatteryPCB_0072",
+        "BatteryPCB_0073",
+        "BatteryPCB_0074",
+        "BatteryPCB_0075",
+        "BatteryPCB_0076",
+        "BatteryPCB_0077",
+        "BatteryPCB_0078",
+        "BatteryPCB_0079",
+        "BatteryPCB_0080",
+        "BatteryPCB_0081",
+        "BatteryPCB_0082",
+        "BatteryPCB_0083",
+        "BatteryPCB_0084",
+        "BatteryPCB_0085",
+        "BatteryPCB_0086",
+        "BatteryPCB_0087",
+        "BatteryPCB_0088",
+        "BatteryPCB_0089",
+        "BatteryPCB_0090",
+        "BatteryPCB_0091",
+        "BatteryPCB_0092",
+        "BatteryPCB_0093",
+        "BatteryPCB_0094",
+        "BatteryPCB_0095",
+        "BatteryPCB_0096",
+        "BatteryPCB_0097",
+        "BatteryPCB_0098",
+        "BatteryPCB_0099",
+        "BatteryPCB_0100",
+        "BatteryPCB_0101",
+        "BatteryPCB_0102",
+        "BatteryPCB_0103",
+        "BatteryPCB_0104",
+        "BatteryPCB_0105",
+        "BatteryPCB_0106",
+        "BatteryPCB_0107",
+        "BatteryPCB_0108",
+        "BatteryPCB_0109",
+        "BatteryPCB_0110",
+        "BatteryPCB_0111",
+        "BatteryPCB_0112",
+        "BatteryPCB_0113",
+        "BatteryPCB_0114",
+        "BatteryPCB_0115",
+        "BatteryPCB_0116",
+        "BatteryPCB_0117",
+        "BatteryPCB_0118",
+        "BatteryPCB_0119",
+        "BatteryPCB_0120",
+        "BatteryPCB_0121",
+        "BatteryPCB_0122",
+        "BatteryPCB_0123",
+        "BatteryPCB_0124",
+        "BatteryPCB_0125",
+        "BatteryPCB_0126",
+        "BatteryPCB_0127",
+        "BatteryPCB_0128",
+        "BatteryPCB_0129",
+        "BatteryPCB_0130",
+        "BatteryPCB_0131",
+        "BatteryPCB_0132",
+        "BatteryPCB_0133",
+        "BatteryPCB_0134",
+        "BatteryPCB_0135",
+        "BatteryPCB_0136",
+        "BatteryPCB_0137",
+        "BatteryPCB_0138",
+        "BatteryPCB_0139",
+        "BatteryPCB_0140",
+        "BatteryPCB_0141",
+        "BatteryPCB_0142",
+        "BatteryPCB_0143",
+        "BatteryPCB_0144",
+        "BatteryPCB_0145",
+        "BatteryPCB_0146",
+        "BatteryPCB_0147",
+        "BatteryPCB_0148",
+        "BatteryPCB_0149",
+        "BatteryPCB_0150",
+        "BatteryPCB_0151",
+        "BatteryPCB_0152",
+        "BatteryPCB_0153",
+        "BatteryPCB_0154",
+        "BatteryPCB_0155",
+        "BatteryPCB_0156",
+        "BatteryPCB_0157",
+        "BatteryPCB_0158",
+        "BatteryPCB_0159",
+        "BatteryPCB_0160",
+        "BatteryPCB_0161",
+        "BatteryPCB_0162",
+        "BatteryPCB_0163",
+        "BatteryPCB_0164",
+        "BatteryPCB_0165",
+        "BatteryPCB_0166",
+        "BatteryPCB_0167",
+        "BatteryPCB_0168",
+        "BatteryPCB_0169",
+        "BatteryPCB_0170",
+        "BatteryPCB_0171",
+        "BatteryPCB_0172",
+        "BatteryPCB_0173",
+        "BatteryPCB_0174",
+        "BatteryPCB_0175",
+        "BatteryPCB_0176",
+        "BatteryPCB_0177",
+        "BatteryPCB_0178",
+        "BatteryPCB_0179",
+        "BatteryPCB_0180",
+        "BatteryPCB_0181",
+        "BatteryPCB_0182",
+        "BatteryPCB_0183",
+        "BatteryPCB_0184",
+        "BatteryPCB_0185",
+        "BatteryPCB_0186",
+        "BatteryPCB_0187",
+        "BatteryPCB_0188",
+        "BatteryPCB_0189",
+        "BatteryPCB_0190",
+        "BatteryPCB_0191",
+        "BatteryPCB_0192",
+        "BatteryPCB_0193",
+        "BatteryPCB_0194",
+        "BatteryPCB_0195",
+        "BatteryPCB_0196",
+        "BatteryPCB_0197",
+        "BatteryPCB_0198",
+        "BatteryPCB_0199",
+        "BatteryPCB_0200",
+        "BatteryPCB_0201",
+        "BatteryPCB_0202",
+        "BatteryPCB_0203",
+        "BatteryPCB_0204",
+        "BatteryPCB_0205",
+        "BatteryPCB_0206",
+        "BatteryPCB_0207",
+        "BatteryPCB_0208",
+        "BatteryPCB_0209",
+        "BatteryPCB_0210",
+        "BatteryPCB_0211",
+        "BatteryPCB_0212",
+        "BatteryPCB_0213",
+        "BatteryPCB_0214",
+        "BatteryPCB_0215",
+        "BatteryPCB_0216",
+        "BatteryPCB_0217",
+        "BatteryPCB_0218",
+        "BatteryPCB_0219",
+        "BatteryPCB_0220",
+        "BatteryPCB_0221",
+        "BatteryPCB_0222",
+        "BatteryPCB_0223",
+        "BatteryPCB_0224",
+        "BatteryPCB_0225",
+        "BatteryPCB_0226",
+        "BatteryPCB_0227",
+        "BatteryPCB_0228",
+        "BatteryPCB_0229",
+        "BatteryPCB_0230",
+        "BatteryPCB_0231",
+        "BatteryPCB_0232",
+        "BatteryPCB_0233",
+        "BatteryPCB_0234",
+        "BatteryPCB_0235",
+        "BatteryPCB_0236",
+        "BatteryPCB_0237",
+        "BatteryPCB_0238",
+        "BatteryPCB_0239",
+        "BatteryPCB_0240",
+        "BatteryPCB_0241",
+        "BatteryPCB_0242",
+        "BatteryPCB_0243",
+        "BatteryPCB_0244",
+        "BatteryPCB_0245",
+        "BatteryPCB_0246",
+        "BatteryPCB_0247",
+        "BatteryPCB_0248",
+        "BatteryPCB_0249",
+        "BatteryPCB_0250",
+        "BatteryPCB_0251",
+        "BatteryPCB_0252",
+        "BatteryPCB_0253",
+        "TopBolt0",
+        "TopBolt1",
+        "TopBolt2",
+        "TopBolt3"
+      ],
+      "method": "等效均匀密度，按该称重组合内各实体体积归一化"
+    },
+    {
+      "label": "塑料长柱1",
+      "mass_kg": 0.00075,
+      "com_m": [
+        -0.037500000000000006,
+        -0.0232,
+        0.07810002540000001
+      ],
+      "J_com_kg_m2": [
+        [
+          5.825140245888687e-08,
+          1.5220356340962311e-22,
+          -9.132213804577388e-22
+        ],
+        [
+          1.5220356340962311e-22,
+          5.825140245888626e-08,
+          -1.5220356340962311e-22
+        ],
+        [
+          -9.132213804577388e-22,
+          -1.5220356340962311e-22,
+          4.002804917773128e-09
+        ]
+      ],
+      "geometry_volume_mm3": 573.649456124894,
+      "objects": [
+        "TopSpacer0"
+      ],
+      "method": "4根合称3g后等分；各柱按均匀几何体"
+    },
+    {
+      "label": "短铜柱1",
+      "mass_kg": 0.000925,
+      "com_m": [
+        -0.03749999999999999,
+        -0.02319999999999999,
+        0.059000000000000004
+      ],
+      "J_com_kg_m2": [
+        [
+          4.395479699292642e-09,
+          -1.4078829615390135e-22,
+          -2.815765923078027e-22
+        ],
+        [
+          -1.4078829615390135e-22,
+          4.395479699293768e-09,
+          1.4078829615390135e-22
+        ],
+        [
+          -2.815765923078027e-22,
+          1.4078829615390135e-22,
+          4.936792731920661e-09
+        ]
+      ],
+      "geometry_volume_mm3": 95.60824268748233,
+      "objects": [
+        "LowSpacer0"
+      ],
+      "method": "4个合称3.7g后等分；各柱按均匀几何体"
+    },
+    {
+      "label": "塑料长柱2",
+      "mass_kg": 0.00075,
+      "com_m": [
+        -0.0375,
+        0.0232,
+        0.07810002540000001
+      ],
+      "J_com_kg_m2": [
+        [
+          5.825140245888687e-08,
+          1.5220356340962311e-22,
+          6.088142536384925e-22
+        ],
+        [
+          1.5220356340962311e-22,
+          5.825140245888626e-08,
+          -1.5220356340962311e-22
+        ],
+        [
+          6.088142536384925e-22,
+          -1.5220356340962311e-22,
+          4.002804917773432e-09
+        ]
+      ],
+      "geometry_volume_mm3": 573.649456124894,
+      "objects": [
+        "TopSpacer1"
+      ],
+      "method": "4根合称3g后等分；各柱按均匀几何体"
+    },
+    {
+      "label": "短铜柱2",
+      "mass_kg": 0.000925,
+      "com_m": [
+        -0.03749999999999999,
+        0.0232,
+        0.059
+      ],
+      "J_com_kg_m2": [
+        [
+          4.395479699293204e-09,
+          0.0,
+          -2.815765923078027e-22
+        ],
+        [
+          0.0,
+          4.395479699293204e-09,
+          0.0
+        ],
+        [
+          -2.815765923078027e-22,
+          0.0,
+          4.936792731920378e-09
+        ]
+      ],
+      "geometry_volume_mm3": 95.60824268748235,
+      "objects": [
+        "LowSpacer1"
+      ],
+      "method": "4个合称3.7g后等分；各柱按均匀几何体"
+    },
+    {
+      "label": "塑料长柱3",
+      "mass_kg": 0.00075,
+      "com_m": [
+        0.037500000000000006,
+        -0.0232,
+        0.0781000254
+      ],
+      "J_com_kg_m2": [
+        [
+          5.8251402458889316e-08,
+          -7.610178170481156e-23,
+          0.0
+        ],
+        [
+          -7.610178170481156e-23,
+          5.8251402458888694e-08,
+          3.0440712681924623e-22
+        ],
+        [
+          0.0,
+          3.0440712681924623e-22,
+          4.002804917773128e-09
+        ]
+      ],
+      "geometry_volume_mm3": 573.649456124894,
+      "objects": [
+        "TopSpacer2"
+      ],
+      "method": "4根合称3g后等分；各柱按均匀几何体"
+    },
+    {
+      "label": "短铜柱3",
+      "mass_kg": 0.000925,
+      "com_m": [
+        0.0375,
+        -0.02319999999999999,
+        0.059000000000000004
+      ],
+      "J_com_kg_m2": [
+        [
+          4.395479699292642e-09,
+          4.223648884617041e-22,
+          5.631531846156054e-22
+        ],
+        [
+          4.223648884617041e-22,
+          4.395479699293768e-09,
+          1.4078829615390135e-22
+        ],
+        [
+          5.631531846156054e-22,
+          1.4078829615390135e-22,
+          4.936792731920097e-09
+        ]
+      ],
+      "geometry_volume_mm3": 95.60824268748233,
+      "objects": [
+        "LowSpacer2"
+      ],
+      "method": "4个合称3.7g后等分；各柱按均匀几何体"
+    },
+    {
+      "label": "塑料长柱4",
+      "mass_kg": 0.00075,
+      "com_m": [
+        0.0375,
+        0.0232,
+        0.07810002540000001
+      ],
+      "J_com_kg_m2": [
+        [
+          5.825140245888687e-08,
+          -7.610178170481156e-23,
+          -6.088142536384925e-22
+        ],
+        [
+          -7.610178170481156e-23,
+          5.825140245888626e-08,
+          -4.566106902288694e-22
+        ],
+        [
+          -6.088142536384925e-22,
+          -4.566106902288694e-22,
+          4.002804917773432e-09
+        ]
+      ],
+      "geometry_volume_mm3": 573.649456124894,
+      "objects": [
+        "TopSpacer3"
+      ],
+      "method": "4根合称3g后等分；各柱按均匀几何体"
+    },
+    {
+      "label": "短铜柱4",
+      "mass_kg": 0.000925,
+      "com_m": [
+        0.0375,
+        0.023200000000000005,
+        0.059000000000000004
+      ],
+      "J_com_kg_m2": [
+        [
+          4.3954796992932045e-09,
+          4.223648884617041e-22,
+          5.631531846156054e-22
+        ],
+        [
+          4.223648884617041e-22,
+          4.395479699293768e-09,
+          4.223648884617041e-22
+        ],
+        [
+          5.631531846156054e-22,
+          4.223648884617041e-22,
+          4.936792731920379e-09
+        ]
+      ],
+      "geometry_volume_mm3": 95.60824268748233,
+      "objects": [
+        "LowSpacer3"
+      ],
+      "method": "4个合称3.7g后等分；各柱按均匀几何体"
+    },
+    {
+      "label": "18650电芯1",
+      "mass_kg": 0.0446,
+      "com_m": [
+        0.0,
+        -0.0095631,
+        0.10380002540000001
+      ],
+      "J_com_kg_m2": [
+        [
+          1.8062999999999873e-06,
+          0.0,
+          -2.5112314434170276e-21
+        ],
+        [
+          0.0,
+          1.6606066666666602e-05,
+          -5.022462886834055e-21
+        ],
+        [
+          -2.5112314434170276e-21,
+          -5.022462886834055e-21,
+          1.6606066666666677e-05
+        ]
+      ],
+      "geometry_volume_mm3": 16540.485321150267,
+      "objects": [
+        "Cell0"
+      ],
+      "method": "整节质量归一化到18×65mm圆柱；端子已包含在称重内，不重复加"
+    },
+    {
+      "label": "18650电芯2",
+      "mass_kg": 0.0446,
+      "com_m": [
+        0.0,
+        0.009563099999999998,
+        0.10380002540000001
+      ],
+      "J_com_kg_m2": [
+        [
+          1.8062999999999873e-06,
+          0.0,
+          -2.5112314434170276e-21
+        ],
+        [
+          0.0,
+          1.6606066666666602e-05,
+          0.0
+        ],
+        [
+          -2.5112314434170276e-21,
+          0.0,
+          1.6606066666666674e-05
+        ]
+      ],
+      "geometry_volume_mm3": 16540.485321150267,
+      "objects": [
+        "Cell1"
+      ],
+      "method": "整节质量归一化到18×65mm圆柱；端子已包含在称重内，不重复加"
+    },
+    {
+      "label": "Left编码器",
+      "mass_kg": 0.001,
+      "com_m": [
+        -0.0386453176816802,
+        -6.518360592240887e-07,
+        0.03260840053074658
+      ],
+      "J_com_kg_m2": [
+        [
+          4.3365896530684306e-08,
+          -9.952530071720919e-13,
+          -2.945803860244104e-11
+        ],
+        [
+          -9.952530071720919e-13,
+          7.06855844127841e-09,
+          2.0919449139483836e-12
+        ],
+        [
+          -2.945803860244104e-11,
+          2.0919449139483836e-12,
+          3.855639547730567e-08
+        ]
+      ],
+      "geometry_volume_mm3": 411.96039455807323,
+      "objects": [
+        "EncoderLeft_0000",
+        "EncoderLeft_0001",
+        "EncoderLeft_0002",
+        "EncoderLeft_0003",
+        "EncoderLeft_0004",
+        "EncoderLeft_0005",
+        "EncoderLeft_0006",
+        "EncoderLeft_0007",
+        "EncoderLeft_0008",
+        "EncoderLeft_0009",
+        "EncoderLeft_0010",
+        "EncoderLeft_0011",
+        "EncoderLeft_0012",
+        "EncoderLeft_0013",
+        "EncoderLeft_0014",
+        "EncoderLeft_0015",
+        "EncoderLeft_0016"
+      ],
+      "method": "等效均匀密度，按该称重组合内各实体体积归一化"
+    },
+    {
+      "label": "Left电机定子",
+      "mass_kg": 0.0342,
+      "com_m": [
+        -0.053792373822599944,
+        7.61068828563677e-19,
+        0.03250000000000001
+      ],
+      "J_com_kg_m2": [
+        [
+          4.0727093248069864e-06,
+          8.533952110451723e-24,
+          -4.932624319841096e-22
+        ],
+        [
+          8.533952110451723e-24,
+          2.451975631330107e-06,
+          -1.862428128575044e-08
+        ],
+        [
+          -4.932624319841096e-22,
+          -1.862428128575044e-08,
+          2.451975631330107e-06
+        ]
+      ],
+      "geometry_volume_mm3": 2278.0124611417946,
+      "objects": [
+        "MountSpiderLeft",
+        "BearingRearLeft",
+        "Tooth0Left",
+        "Coil0Left",
+        "Tooth1Left",
+        "Coil1Left",
+        "Tooth2Left",
+        "Coil2Left",
+        "Tooth3Left",
+        "Coil3Left",
+        "Tooth4Left",
+        "Coil4Left",
+        "Tooth5Left",
+        "Coil5Left",
+        "Tooth6Left",
+        "Coil6Left",
+        "Tooth7Left",
+        "Coil7Left",
+        "Tooth8Left",
+        "Coil8Left",
+        "Tooth9Left",
+        "Coil9Left",
+        "Tooth10Left",
+        "Coil10Left",
+        "Tooth11Left",
+        "Coil11Left"
+      ],
+      "method": "34.2g归一化到后座、后轴承、铁芯和绕组示意几何；各材料密度差异未分配"
+    },
+    {
+      "label": "Left电机安装螺钉1",
+      "mass_kg": 0.0006,
+      "com_m": [
+        -0.04700000000000001,
+        -0.00901561146012848,
+        0.041515611460128485
+      ],
+      "J_com_kg_m2": [
+        [
+          6.750000000000309e-10,
+          0.0,
+          -2.0586748800433884e-22
+        ],
+        [
+          0.0,
+          2.137500000000064e-09,
+          0.0
+        ],
+        [
+          -2.0586748800433884e-22,
+          0.0,
+          2.137499999999858e-09
+        ]
+      ],
+      "method": "FreeCAD原生圆柱质量属性，以实测质量归一化"
+    },
+    {
+      "label": "Left电机安装螺钉2",
+      "mass_kg": 0.0006,
+      "com_m": [
+        -0.04700000000000001,
+        0.009015611460128484,
+        0.02348438853987152
+      ],
+      "J_com_kg_m2": [
+        [
+          6.749999999999278e-10,
+          -5.1466872001084705e-23,
+          -2.0586748800433882e-22
+        ],
+        [
+          -5.1466872001084705e-23,
+          2.137499999999446e-09,
+          5.1466872001084705e-23
+        ],
+        [
+          -2.0586748800433882e-22,
+          5.1466872001084705e-23,
+          2.1374999999998574e-09
+        ]
+      ],
+      "method": "FreeCAD原生圆柱质量属性，以实测质量归一化"
+    },
+    {
+      "label": "Left电机安装螺钉3",
+      "mass_kg": 0.0006,
+      "com_m": [
+        -0.04700000000000001,
+        0.006894291116568839,
+        0.03939429111656884
+      ],
+      "J_com_kg_m2": [
+        [
+          6.74999999999825e-10,
+          0.0,
+          -4.1173497600867764e-22
+        ],
+        [
+          0.0,
+          2.1374999999996515e-09,
+          5.1466872001084705e-23
+        ],
+        [
+          -4.1173497600867764e-22,
+          5.1466872001084705e-23,
+          2.1375000000000634e-09
+        ]
+      ],
+      "method": "FreeCAD原生圆柱质量属性，以实测质量归一化"
+    },
+    {
+      "label": "Left电机安装螺钉4",
+      "mass_kg": 0.0006,
+      "com_m": [
+        -0.04700000000000001,
+        -0.006894291116568837,
+        0.025605708883431163
+      ],
+      "J_com_kg_m2": [
+        [
+          6.749999999999791e-10,
+          2.5733436000542344e-23,
+          -2.0586748800433875e-22
+        ],
+        [
+          2.5733436000542344e-23,
+          2.137499999999651e-09,
+          0.0
+        ],
+        [
+          -2.0586748800433875e-22,
+          0.0,
+          2.1374999999998566e-09
+        ]
+      ],
+      "method": "FreeCAD原生圆柱质量属性，以实测质量归一化"
+    },
+    {
+      "label": "Right编码器",
+      "mass_kg": 0.001,
+      "com_m": [
+        0.0386453176816802,
+        6.51836059222187e-07,
+        0.03260840053074658
+      ],
+      "J_com_kg_m2": [
+        [
+          4.3365896530684306e-08,
+          -9.95253007173149e-13,
+          2.945803860244017e-11
+        ],
+        [
+          -9.95253007173149e-13,
+          7.0685584412784104e-09,
+          -2.0919449139332e-12
+        ],
+        [
+          2.945803860244017e-11,
+          -2.0919449139332e-12,
+          3.855639547730569e-08
+        ]
+      ],
+      "geometry_volume_mm3": 411.9603945580735,
+      "objects": [
+        "EncoderRight_0000",
+        "EncoderRight_0001",
+        "EncoderRight_0002",
+        "EncoderRight_0003",
+        "EncoderRight_0004",
+        "EncoderRight_0005",
+        "EncoderRight_0006",
+        "EncoderRight_0007",
+        "EncoderRight_0008",
+        "EncoderRight_0009",
+        "EncoderRight_0010",
+        "EncoderRight_0011",
+        "EncoderRight_0012",
+        "EncoderRight_0013",
+        "EncoderRight_0014",
+        "EncoderRight_0015",
+        "EncoderRight_0016"
+      ],
+      "method": "等效均匀密度，按该称重组合内各实体体积归一化"
+    },
+    {
+      "label": "Right电机定子",
+      "mass_kg": 0.0342,
+      "com_m": [
+        0.05379237382259994,
+        -8.23451519429552e-19,
+        0.03250000000000001
+      ],
+      "J_com_kg_m2": [
+        [
+          4.0727093248069864e-06,
+          1.2630249123468547e-22,
+          4.480324857987154e-22
+        ],
+        [
+          1.2630249123468547e-22,
+          2.451975631330107e-06,
+          1.8624281285750187e-08
+        ],
+        [
+          4.480324857987154e-22,
+          1.8624281285750187e-08,
+          2.4519756313301067e-06
+        ]
+      ],
+      "geometry_volume_mm3": 2278.012461141795,
+      "objects": [
+        "MountSpiderRight",
+        "BearingRearRight",
+        "Tooth0Right",
+        "Coil0Right",
+        "Tooth1Right",
+        "Coil1Right",
+        "Tooth2Right",
+        "Coil2Right",
+        "Tooth3Right",
+        "Coil3Right",
+        "Tooth4Right",
+        "Coil4Right",
+        "Tooth5Right",
+        "Coil5Right",
+        "Tooth6Right",
+        "Coil6Right",
+        "Tooth7Right",
+        "Coil7Right",
+        "Tooth8Right",
+        "Coil8Right",
+        "Tooth9Right",
+        "Coil9Right",
+        "Tooth10Right",
+        "Coil10Right",
+        "Tooth11Right",
+        "Coil11Right"
+      ],
+      "method": "34.2g归一化到后座、后轴承、铁芯和绕组示意几何；各材料密度差异未分配"
+    },
+    {
+      "label": "Right电机安装螺钉1",
+      "mass_kg": 0.0006,
+      "com_m": [
+        0.04700000000000001,
+        0.009015611460128482,
+        0.041515611460128485
+      ],
+      "J_com_kg_m2": [
+        [
+          6.750000000002367e-10,
+          5.1466872001084705e-23,
+          2.0586748800433882e-22
+        ],
+        [
+          5.1466872001084705e-23,
+          2.137500000000475e-09,
+          2.5733436000542352e-23
+        ],
+        [
+          2.0586748800433882e-22,
+          2.5733436000542352e-23,
+          2.1374999999998574e-09
+        ]
+      ],
+      "method": "FreeCAD原生圆柱质量属性，以实测质量归一化"
+    },
+    {
+      "label": "Right电机安装螺钉2",
+      "mass_kg": 0.0006,
+      "com_m": [
+        0.04700000000000001,
+        -0.009015611460128484,
+        0.02348438853987152
+      ],
+      "J_com_kg_m2": [
+        [
+          6.749999999999278e-10,
+          -5.1466872001084705e-23,
+          2.0586748800433882e-22
+        ],
+        [
+          -5.1466872001084705e-23,
+          2.1374999999996515e-09,
+          -5.1466872001084705e-23
+        ],
+        [
+          2.0586748800433882e-22,
+          -5.1466872001084705e-23,
+          2.1374999999998574e-09
+        ]
+      ],
+      "method": "FreeCAD原生圆柱质量属性，以实测质量归一化"
+    },
+    {
+      "label": "Right电机安装螺钉3",
+      "mass_kg": 0.0006,
+      "com_m": [
+        0.04700000000000001,
+        -0.006894291116568839,
+        0.03939429111656884
+      ],
+      "J_com_kg_m2": [
+        [
+          6.74999999999825e-10,
+          0.0,
+          4.1173497600867764e-22
+        ],
+        [
+          0.0,
+          2.1374999999996515e-09,
+          -5.1466872001084705e-23
+        ],
+        [
+          4.1173497600867764e-22,
+          -5.1466872001084705e-23,
+          2.1375000000000634e-09
+        ]
+      ],
+      "method": "FreeCAD原生圆柱质量属性，以实测质量归一化"
+    },
+    {
+      "label": "Right电机安装螺钉4",
+      "mass_kg": 0.0006,
+      "com_m": [
+        0.04700000000000001,
+        0.006894291116568837,
+        0.025605708883431163
+      ],
+      "J_com_kg_m2": [
+        [
+          6.749999999999791e-10,
+          0.0,
+          2.0586748800433875e-22
+        ],
+        [
+          0.0,
+          2.137499999999651e-09,
+          0.0
+        ],
+        [
+          2.0586748800433875e-22,
+          0.0,
+          2.1374999999998566e-09
+        ]
+      ],
+      "method": "FreeCAD原生圆柱质量属性，以实测质量归一化"
+    },
+    {
+      "label": "Left轮毂",
+      "mass_kg": 0.020300000000000002,
+      "com_m": [
+        -0.06881632105934074,
+        1.1146128029588349e-08,
+        0.032499983394761914
+      ],
+      "J_com_kg_m2": [
+        [
+          8.084886384365878e-06,
+          -4.721998129234885e-12,
+          5.752730072521743e-14
+        ],
+        [
+          -4.721998129234885e-12,
+          5.241380100773094e-06,
+          -7.252643499533798e-12
+        ],
+        [
+          5.752730072521743e-14,
+          -7.252643499533798e-12,
+          5.241378491402836e-06
+        ]
+      ],
+      "geometry_volume_mm3": 17761.58262632027,
+      "objects": [
+        "RimLeft"
+      ],
+      "method": "轮毂单独实测20.3g；原STL转为闭合实体后，由FreeCAD原生体积、质心和惯量矩阵计算"
+    },
+    {
+      "label": "Left轮胎",
+      "mass_kg": 0.020300000000000002,
+      "com_m": [
+        -0.0662682,
+        -1.1446430878084404e-18,
+        0.03249999999999998
+      ],
+      "J_com_kg_m2": [
+        [
+          1.6714411000000075e-05,
+          -3.430013248885554e-22,
+          -2.02606055663408e-21
+        ],
+        [
+          -3.430013248885554e-22,
+          9.683472166666614e-06,
+          1.3008545345920038e-22
+        ],
+        [
+          -2.02606055663408e-21,
+          1.3008545345920038e-22,
+          9.683472166666798e-06
+        ]
+      ],
+      "geometry_volume_mm3": 40970.38944140749,
+      "objects": [
+        "TyreLeft"
+      ],
+      "method": "轮胎单独实测20.3g；外径65和壁厚8.2mm构成惯量等效环，内径48.6mm；并非声称该矩形截面与轮毂无干涉"
+    },
+    {
+      "label": "Left电机转子",
+      "mass_kg": 0.0212,
+      "com_m": [
+        -0.0601500744657698,
+        -1.52981460204631e-18,
+        0.03250000000000001
+      ],
+      "J_com_kg_m2": [
+        [
+          5.165958224724388e-06,
+          1.55956989031757e-22,
+          4.335506420991725e-21
+        ],
+        [
+          1.55956989031757e-22,
+          3.037532660510036e-06,
+          5.715147986010638e-22
+        ],
+        [
+          4.335506420991725e-21,
+          5.715147986010638e-22,
+          3.037532660510096e-06
+        ]
+      ],
+      "geometry_volume_mm3": 3371.2093020029256,
+      "objects": [
+        "RotorBellLeft",
+        "BearingFrontLeft",
+        "RearAdaptShaftLeft"
+      ],
+      "method": "21.2g归一化到转子外壳、前轴承和改轴示意；未单独细建的内壁永磁体等效并入转子"
+    },
+    {
+      "label": "Left编码器小磁铁",
+      "mass_kg": 0.0006,
+      "com_m": [
+        -0.0434,
+        -6.800013700726052e-19,
+        0.0325
+      ],
+      "J_com_kg_m2": [
+        [
+          1.8750000000000106e-09,
+          7.362166432044712e-26,
+          -1.661012876847506e-24
+        ],
+        [
+          7.362166432044712e-26,
+          1.387499999999998e-09,
+          -9.485467966641157e-26
+        ],
+        [
+          -1.661012876847506e-24,
+          -9.485467966641157e-26,
+          1.3875000000000168e-09
+        ]
+      ],
+      "geometry_volume_mm3": 58.904862254808634,
+      "objects": [
+        "MagnetLeft"
+      ],
+      "method": "等效均匀密度，按该称重组合内各实体体积归一化"
+    },
+    {
+      "label": "Left轮毂中轴螺钉",
+      "mass_kg": 0.0003,
+      "com_m": [
+        -0.08396819999999999,
+        2.1977704337819696e-18,
+        0.0325
+      ],
+      "J_com_kg_m2": [
+        [
+          7.593750000000036e-10,
+          1.9754431286925262e-26,
+          2.4311246684540095e-24
+        ],
+        [
+          1.9754431286925262e-26,
+          4.6068750000000415e-10,
+          -5.1252155240443666e-26
+        ],
+        [
+          2.4311246684540095e-24,
+          -5.1252155240443666e-26,
+          4.6068750000002323e-10
+        ]
+      ],
+      "geometry_volume_mm3": 28.62776305583705,
+      "objects": [
+        "WheelBoltLeft"
+      ],
+      "method": "等效均匀密度，按该称重组合内各实体体积归一化"
+    },
+    {
+      "label": "Right轮毂",
+      "mass_kg": 0.020300000000000002,
+      "com_m": [
+        0.06881632105934074,
+        -1.1146128031649383e-08,
+        0.032499983394761914
+      ],
+      "J_com_kg_m2": [
+        [
+          8.084886384365878e-06,
+          -4.721998129300048e-12,
+          -5.752730093856576e-14
+        ],
+        [
+          -4.721998129300048e-12,
+          5.241380100773096e-06,
+          7.252643499365732e-12
+        ],
+        [
+          -5.752730093856576e-14,
+          7.252643499365732e-12,
+          5.241378491402838e-06
+        ]
+      ],
+      "geometry_volume_mm3": 17761.58262632026,
+      "objects": [
+        "RimRight"
+      ],
+      "method": "轮毂单独实测20.3g；原STL转为闭合实体后，由FreeCAD原生体积、质心和惯量矩阵计算"
+    },
+    {
+      "label": "Right轮胎",
+      "mass_kg": 0.020300000000000002,
+      "com_m": [
+        0.0662682,
+        5.982412185037972e-19,
+        0.03249999999999998
+      ],
+      "J_com_kg_m2": [
+        [
+          1.6714411000000075e-05,
+          2.7252523685199e-23,
+          -6.236805628072877e-22
+        ],
+        [
+          2.7252523685199e-23,
+          9.683472166666607e-06,
+          -6.040725383929856e-22
+        ],
+        [
+          -6.236805628072877e-22,
+          -6.040725383929856e-22,
+          9.683472166666798e-06
+        ]
+      ],
+      "geometry_volume_mm3": 40970.38944140749,
+      "objects": [
+        "TyreRight"
+      ],
+      "method": "轮胎单独实测20.3g；外径65和壁厚8.2mm构成惯量等效环，内径48.6mm；并非声称该矩形截面与轮毂无干涉"
+    },
+    {
+      "label": "Right电机转子",
+      "mass_kg": 0.0212,
+      "com_m": [
+        0.0601500744657698,
+        3.944614820279802e-20,
+        0.03250000000000001
+      ],
+      "J_com_kg_m2": [
+        [
+          5.165958224724388e-06,
+          6.417067804074751e-22,
+          -4.3563895476979205e-21
+        ],
+        [
+          6.417067804074751e-22,
+          3.0375326605100265e-06,
+          -8.372655542073051e-22
+        ],
+        [
+          -4.3563895476979205e-21,
+          -8.372655542073051e-22,
+          3.0375326605100913e-06
+        ]
+      ],
+      "geometry_volume_mm3": 3371.2093020029256,
+      "objects": [
+        "RotorBellRight",
+        "BearingFrontRight",
+        "RearAdaptShaftRight"
+      ],
+      "method": "21.2g归一化到转子外壳、前轴承和改轴示意；未单独细建的内壁永磁体等效并入转子"
+    },
+    {
+      "label": "Right编码器小磁铁",
+      "mass_kg": 0.0006,
+      "com_m": [
+        0.0434,
+        9.378045614971627e-20,
+        0.0325
+      ],
+      "J_com_kg_m2": [
+        [
+          1.87500000000001e-09,
+          5.8009153036580996e-27,
+          1.753291370005701e-24
+        ],
+        [
+          5.8009153036580996e-27,
+          1.387499999999998e-09,
+          1.479649736069178e-25
+        ],
+        [
+          1.753291370005701e-24,
+          1.479649736069178e-25,
+          1.3875000000000168e-09
+        ]
+      ],
+      "geometry_volume_mm3": 58.904862254808634,
+      "objects": [
+        "MagnetRight"
+      ],
+      "method": "等效均匀密度，按该称重组合内各实体体积归一化"
+    },
+    {
+      "label": "Right轮毂中轴螺钉",
+      "mass_kg": 0.0003,
+      "com_m": [
+        0.08396819999999999,
+        -1.46680782584535e-20,
+        0.0325
+      ],
+      "J_com_kg_m2": [
+        [
+          7.593750000000036e-10,
+          8.138208899181933e-29,
+          -1.6483620933507081e-24
+        ],
+        [
+          8.138208899181933e-29,
+          4.6068750000000415e-10,
+          4.004855432190095e-28
+        ],
+        [
+          -1.6483620933507081e-24,
+          4.004855432190095e-28,
+          4.606875000000423e-10
+        ]
+      ],
+      "geometry_volume_mm3": 28.62776305583705,
+      "objects": [
+        "WheelBoltRight"
+      ],
+      "method": "等效均匀密度，按该称重组合内各实体体积归一化"
+    }
+  ],
+  "warnings": [
+    {
+      "group": "电池座＋PCB＋4颗上板螺钉",
+      "zero_volume_shapes_omitted": [
+        "BatteryPCB_0046",
+        "BatteryPCB_0047"
+      ]
+    }
+  ],
+  "sensitivity_cases": [
+    {
+      "tyre_distribution": "wall8p2_equivalent",
+      "rotor_distribution": "geometry",
+      "left_J_axis_kg_m2": 2.996788998409844e-05
+    },
+    {
+      "tyre_distribution": "wall8p2_equivalent",
+      "rotor_distribution": "solid_disk",
+      "left_J_axis_kg_m2": 2.804818175937407e-05
+    },
+    {
+      "tyre_distribution": "wall8p2_equivalent",
+      "rotor_distribution": "thin_ring",
+      "left_J_axis_kg_m2": 3.1290722819373956e-05
+    },
+    {
+      "tyre_distribution": "existing_fitted_CAD",
+      "rotor_distribution": "geometry",
+      "left_J_axis_kg_m2": 3.0817789927577654e-05
+    },
+    {
+      "tyre_distribution": "existing_fitted_CAD",
+      "rotor_distribution": "solid_disk",
+      "left_J_axis_kg_m2": 2.8898081702853288e-05
+    },
+    {
+      "tyre_distribution": "existing_fitted_CAD",
+      "rotor_distribution": "thin_ring",
+      "left_J_axis_kg_m2": 3.2140622762853175e-05
+    }
+  ],
+  "engine": "FreeCAD/OCCT原生Solid.Volume、CenterOfMass、MatrixOfInertia；STL先转实体。质量归一化、组合及平行轴由脚本完成。",
+  "new_measurements": {
+    "rim_each_g": 20.3,
+    "tyre_each_g": 20.3,
+    "outer_diameter_mm": 65,
+    "radial_wall_mm": 8.2,
+    "equivalent_inner_diameter_mm": 48.6,
+    "fitted_rim_seat_diameter_mm": 52.03,
+    "cross_section_status": "厚度等效环与装配座尺寸不同；不修改已匹配的原装配，以两种截面作敏感性对照。"
+  },
+  "checks": {
+    "mass_closure_passed": true,
+    "parallel_axis_identity_passed": true,
+    "component_inertia_positive_semidefinite": true,
+    "left_right_axial_inertia_relative_difference": 0.0
+  },
+  "parameter_list": [
+    {
+      "description": "整车总质量（车身＋左右旋转组）",
+      "value": "402.5 g",
+      "definition": "全部已计重部件"
+    },
+    {
+      "description": "车身质量（不含左右旋转组）",
+      "value": "277.1 g",
+      "definition": "含车架、定子、PCB、电池等随车身俯仰的部件"
+    },
+    {
+      "description": "单侧旋转组质量（随轮自转）",
+      "value": "62.7 g",
+      "definition": "单侧轮毂、轮胎、电机转子、编码器磁铁、中轴螺钉"
+    },
+    {
+      "description": "车身重心至轮轴的竖直高度",
+      "value": "36.53 mm",
+      "definition": "直立姿态；平衡模型常用高度 h"
+    },
+    {
+      "description": "整车重心离地高度",
+      "value": "57.65 mm",
+      "definition": "直立姿态；包含两侧旋转组"
+    },
+    {
+      "description": "车身俯仰惯量：过车身重心的 X 平行轴",
+      "value": "0.000311848 kg·m²",
+      "definition": "只计车身；过车身重心且平行于左右轮轴"
+    },
+    {
+      "description": "车身俯仰惯量：实际左右轮轴 X",
+      "value": "0.000681607 kg·m²",
+      "definition": "只计车身；已含从车身重心移至轮轴的平行轴项"
+    },
+    {
+      "description": "单侧旋转组自转惯量：该侧轮轴 X",
+      "value": "2.99679e-05 kg·m²",
+      "definition": "一侧随轮自转部件；左右各一份，不是整车偏航惯量"
+    },
+    {
+      "description": "整车偏航惯量：过整车重心的竖直 Z 轴",
+      "value": "0.000954563 kg·m²",
+      "definition": "全部部件作为整体绕此竖直轴旋转；不附加相对车身的轮组自转能量"
+    },
+    {
+      "description": "整车偏航惯量：过轮轴中点 O 的竖直轴",
+      "value": "0.000954564 kg·m²",
+      "definition": "用于原地转向中心 O；全部部件作为整体，已从整车重心作平行轴换算"
+    },
+    {
+      "description": "原地差速转向：轮组滚动附加等效惯量",
+      "value": "0.00024919 kg·m²",
+      "definition": "b²/(4r²) × (J左＋J右)，折算到偏航角速度"
+    },
+    {
+      "description": "原地差速转向：总等效偏航惯量",
+      "value": "0.00120375 kg·m²",
+      "definition": "整车绕 O 的偏航惯量＋轮组滚动附加项；直立、刚性、纯滚动、忽略微小惯性积耦合"
+    },
+    {
+      "description": "轮胎滚动半径 r",
+      "value": "32.5 mm",
+      "definition": "按外径65mm；未计承载变形"
+    },
+    {
+      "description": "左右轮胎接触中面间距 b",
+      "value": "132.536 mm",
+      "definition": "用于理想差速纯滚动关系，不是轮组原点间距"
+    }
+  ],
+  "yaw_model": {
+    "formula": "I_yaw_eq = I_whole_z_O + b^2/(4*r^2)*(J_left + J_right)",
+    "pose": "直立姿态，O=(0,0,32.5)mm，X沿轮轴、Y向前、Z向上",
+    "assumptions": "左右轮纯滚动、原地转向、刚性部件；忽略极小的轮组惯性积耦合、轮胎变形及接触摩擦阻力",
+    "usage": "若动力学方程已显式计入左右轮自转动能，不再额外加轮组附加项；等效惯量不是单一刚体的几何惯量。"
+  }
+}

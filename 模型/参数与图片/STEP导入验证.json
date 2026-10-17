@@ -1,0 +1,20 @@
+{
+  "STEP_read_passed": true,
+  "solids": 1211,
+  "faces": 197909,
+  "bounds_mm": [
+    169.7364,
+    70.3554930190056,
+    115.47777190950279
+  ],
+  "minmax_mm": [
+    -84.8682,
+    -35.1777465095028,
+    -2.6777465095028035,
+    84.8682,
+    35.1777465095028,
+    112.8000254
+  ],
+  "bounds_kind": "OCCT conservative control-point bounding box; B-spline surface extrema are tighter",
+  "native_BRep_conservative_bounds_match": true
+}

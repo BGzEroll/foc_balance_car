@@ -1,0 +1,17 @@
+{
+  "component_world_bounds_match": true,
+  "merged_parts_checked": 23,
+  "top_level_movement_groups": 3,
+  "mass_g": 402.5,
+  "wheel_track_mm": 132.5364,
+  "pitch_axle_invariant": true,
+  "travel_wheel_rotation_passed": true,
+  "yaw_counter_rotation_passed": true,
+  "STL_bbox_mm": [
+    169.7364044189453,
+    64.96369934082031,
+    112.77419912070036
+  ],
+  "STL_bounds_tolerance_mm": 0.15,
+  "note": "网格近似造成外包尺寸微小误差；原生实体尺寸与原装配一致。"
+}
