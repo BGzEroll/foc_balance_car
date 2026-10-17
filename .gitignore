@@ -25,4 +25,5 @@ Thumbs.db
 *.asv
 slprj/
 *.slxc
-/matlab/*.slx.autosave
+/matlab/**/*.slx.autosave
+

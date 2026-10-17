@@ -1,82 +1,32 @@
-# 原始3D模型：六状态LQR仿真
+# MATLAB工程入口
 
-初学者打开`launch_balance_panel.m`，点击MATLAB编辑器的绿色“运行”，出现中文工况面板。控制器固定为六状态LQR，选动作后点“运行所选工况，更新3D窗口”。
+| 目录或文件 | 用途 | 从哪里开始 |
+|---|---|---|
+| `LQR参数计算/` | 修改机械参数、Q/R、采样周期，计算六状态离散LQR增益 | 打开 `LQR参数计算/calculate_lqr.m`，修改顶部参数后点“运行” |
+| `3D仿真/` | 原始3D模型、LQR/PID选择面板、模型构建和报告代码 | 打开 `3D仿真/launch_balance_panel.m`，点“运行” |
+| `FOC电机仿真/` | ZD2808电流环、平均逆变器、电机台架及四种工况 | 打开 `FOC电机仿真/launch_foc_demo.m`，点“运行” |
+| `results/` | 已生成的曲线、轨迹、仿真数据和验证报告 | 七个工况见 `results/suite/` |
+| `.cache/` | 可重新生成的Simulink缓存和代码生成文件 | 一般不用打开 |
+| `.matlab_prefs/` | 本机MATLAB配置 | 一般不用打开 |
+| `balance_setup.m` | 自动添加本工程路径、固定缓存位置 | 命令行使用前可运行一次 |
 
-Multibody Explorer一次显示当前一个工况，不会把所有已计算结果自动轮流播放。计算结束后，在本次弹出的`balance_car_3d_suite`窗口点击动画播放或拖动时间轴。换动作请回面板重新选择并运行。详细步骤见`演示面板使用说明.md`。
+计算入口与仿真共用同一套参数：`calculate_lqr.m`。它不依赖Simulink，只需要MATLAB及Control System Toolbox。命令窗口运行 `d=calculate_lqr` 可取得K、A/B、离散模型等；不带输出参数运行时会直接打印K。
 
-入口会复用当前MATLAB中的面板；Windows脚本`open_balance_panel.ps1`检测到已有MATLAB时不会再启动第二个桌面实例。
+更改计算入口中的质量、惯量，是更改控制器设计时使用的参数；3D仿真被控对象的实体参数仍来自原URDF。若要模拟硬件质量或惯量实际变化，还需要同步修改URDF并重建3D模型。仅调整Q、R时，无需重建模型，重新运行工况即可使用新K。
 
-Simulink缓存与代码生成文件统一写入`matlab/.cache/`，仿真报告写入`matlab/results/`。`.cache`内的文件可删除，下次运行会自动生成；`.m`脚本和`.slx`模型是工程文件，应保留。
+从本目录使用命令行：
 
 ```matlab
-balance_demo_panel                   % 中文选择面板
-run_balance_case('turn')              % 原地转向，打开3D窗口
-run_balance_case('drive')             % 前进与后退
-run_balance_case('route')             % 行驶中转弯
-run_balance_case('push')              % 推力和偏航转矩脉冲
-run_balance_case('terrain')           % 缓坡、平台、下坡、单侧凸起
-run_balance_case('bias')              % 恒定扰动，观察稳态误差
-run_balance_case('recover',false)      % 后台计算倾斜恢复
-run_balance_case('recover',true,Inf)   % 取消单轮转矩限幅
-summary = run_balance_suite;          % 后台验证全部七个LQR工况
+balance_setup
+calculate_lqr
+run_balance_case('turn')
+run_balance_case('turn',true,[],'pid') % 改用级联PID
 ```
 
-所有运动由Simscape Multibody求解原有三刚体模型，通过原生API打开Simulink和Multibody Explorer。需要MATLAB、Simulink、Simscape、Simscape Multibody及Control System Toolbox。
+前进方向约定：USB口一侧为后，远离USB口为前；仿真车体+X向前、+Y向左、+Z向上。
 
-## 模型与控制器
+PID增益集中在`3D仿真/pid_balance_parameters.m`，不需先输入Kt才能整定。面板可设置左右“实际/指令转矩增益”检查电机标定误差；实机输出改成电流指令时需要按实际执行尺度重新整定，不能照抄仿真N·m参数。详见`3D仿真/PID控制说明.md`。
 
-扩展工程为`balance_car_3d_suite.slx`，运行`build_balance_suite`可从URDF重新生成。重建前先保存并关闭该工程，生成过程会覆盖SLX。原四状态基础工程`balance_car_3d.slx`作为基线保留。
+坡道新增“明显坡道”和“坡中停车”工况，默认12°、高约12.8cm。选中后使用“坡道整定”；7～19秒在斜面中段停车，再继续驶出。参数在`3D仿真/balance_terrain_parameters.m`，结果与对比曲线在`results/suite/slope/`。运行`run_slope_comparison`可重做两种控制器的同坡对比；它会如实保留控制失败，不把未倒地当成定位成功。
 
-三刚体、两轮关节、完整质心与惯量来自`模型/仿真模型/通用URDF`；设计读取`模型/参数与图片/机械参数.json`。外形采用原仿真STL：车身9万面、单轮组4万面；显示简化不改变显式质量和惯量。车身六自由度基座允许横滚、横移和升降。
-
-控制状态按顺序为：
-
-```text
-[纵向路程s，纵向速度v，俯仰角偏差，俯仰角速度，偏航角，偏航角速度]
-```
-
-纵向路程由轮轴中心实际水平速度投影到车头方向后积分得到；这是路程测量，不是误差积分控制。报告同时记录世界X/Y轨迹。当前控制路程和航向指令，没有加入世界坐标航点导航或侧向位置闭环。
-
-`design_balance_suite.m`根据平衡点处的前进/俯仰线性模型和差速偏航模型，精确离散化后求LQR增益。被控对象仍是完整非线性空间多体系统。
-
-```text
-[U; V] = -K * (state-reference)
-tau_left  = (U-V)/2
-tau_right = (U+V)/2
-```
-
-U为双轮转矩和，V为右减左转矩差。配置向量为`[工况编号 单轮限幅 平衡角 K(:)']`；不包含控制模式或额外误差积分状态。嵌入SLX的代码来自`balance_suite_controller.m`，修改后须重建工程。
-
-电机保持理想转矩输入，传感器无噪声、无额外传输延迟；采样周期5ms。单轮限幅默认±0.10N·m，可通过入口第三个参数改为任意正数或Inf。它是仿真约束，不代表实物额定性能，改变限幅不改变LQR增益。
-
-## 七个工况
-
-| 名称 | 内容 | 时长 |
-|---|---|---:|
-| recover | 相对平衡点前倾8°，恢复并回原位 | 6s |
-| drive | 前进0.3m，再后退0.2m，最后路程0.1m | 11s |
-| turn | 原地转至60°，再回到20° | 9s |
-| route | 前进0.6m，途中将航向转至60° | 10s |
-| push | 2秒时施加0.4N水平力0.15s，4秒时施加0.002N·m偏航转矩0.15s | 9s |
-| terrain | 行进0.75m，通过3mm坡台和左轮0.8mm凸起 | 13s |
-| bias | 2秒后持续施加0.08N水平力及0.0004N·m偏航转矩 | 18s |
-
-初始速度均为零；除recover外，从重心偏置对应的平衡姿态出发。指令用五次平滑曲线，同时提供路程和速度、航向和角速度目标；没有强制车体按目标运动。外力施加在轮轴中点，按世界坐标给定。
-
-## 地形和数值设置
-
-平地用Infinite Plane，轮胎中面用半径32.5mm的Disk接触几何。起伏路段由固定在世界坐标的Brick Solid构成，通过独立Spatial Contact Force与两轮接触；平地工况将地形移至地面下1m。
-
-世界X方向0.18～0.30m上坡、0.30～0.40m平台、0.40～0.52m下坡，0.60～0.64m有仅左轮经过的凸起。平台高3mm、单侧凸起高0.8mm，验证范围仅限这些明确尺寸的路段。
-
-接触假设：刚度10000N/m、阻尼10N·s/m、静/动摩擦系数0.9/0.8、临界速度0.001m/s、过渡区0.1mm。求解器ode15s，最大步长1ms，相对/绝对容差1e-5/1e-7。轮胎宽度、变形、胎纹和车身倒地碰撞未建模；俯仰超过45°或横滚超过30°提前停止并判失败。
-
-## 输出与验证
-
-`results/suite/工况_lqr/`保存MAT原始数据、控制状态/指令CSV、世界姿态CSV、曲线PNG、平面轨迹PNG及验证JSON。`summary.csv/json`只汇总七个LQR工况。
-
-检查完整结束、未倾倒、姿态范围、末端跟踪误差与速度、实际行驶/转向幅度。地形要求真实接触支持力与抬升，推扰要求对应输入脉冲。末端误差取最后0.5秒平均值。持续扰动工况用于观察LQR的稳态偏差，不要求它消除恒定扰动造成的误差。
-
-验证结果只代表所列理想模型、参数与工况，不等于实物性能验证。
-
-当前仅含LQR的工程已在本机R2025b重建并复测，七个工况全部通过；汇总见`results/suite/summary.csv`。
+进一步说明：[LQR参数计算](LQR参数计算/README.md)、[3D仿真](3D仿真/README.md)、[面板操作](3D仿真/演示面板使用说明.md)。

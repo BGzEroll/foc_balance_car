@@ -23,7 +23,7 @@ GitHub网页上的“Download ZIP”是否包含LFS实体文件取决于仓库�
 
 ## 文件入口
 
-MATLAB三维动力学仿真：初次使用打开 [`matlab/launch_balance_panel.m`](matlab/launch_balance_panel.m)，点击MATLAB的“运行”，用中文面板选择动作，再更新原生3D动画。控制器采用六状态LQR；模型使用三刚体、六自由度基座和轮地接触，包含行驶、转向、外力与起伏地形；详细说明及命令入口见 [`matlab/README.md`](matlab/README.md)。
+MATLAB三维动力学仿真：初次使用打开 [`matlab/3D仿真/launch_balance_panel.m`](matlab/3D仿真/launch_balance_panel.m)，点击MATLAB的“运行”，用中文面板选择动作，再更新原生3D动画。控制器支持六状态LQR与级联PID；模型使用三刚体、六自由度基座和轮地接触，包含行驶、转向、外力与起伏地形；详细说明及命令入口见 [`matlab/README.md`](matlab/README.md)。
 
 | 入口 | 用途 |
 |---|---|
@@ -44,3 +44,9 @@ MATLAB三维动力学仿真：初次使用打开 [`matlab/launch_balance_panel.m
 - 本地保留：FreeCAD自动备份、缓存和过程记录，由 `.gitignore` 排除。
 
 上游模型来自 [立创开源广场原项目](https://oshwhub.com/yeharold/foc-balance-caresp32s3arduino)，装配、尺寸与质量根据实物补充。详细来源见模型说明。
+
+
+LQR参数计算：打开 [`matlab/LQR参数计算/calculate_lqr.m`](matlab/LQR参数计算/calculate_lqr.m)，修改顶部的质量、惯量、Q/R和采样周期，点击“运行”即可在命令窗口输出K矩阵。
+
+FOC电机仿真：打开 [`matlab/FOC电机仿真/launch_foc_demo.m`](matlab/FOC电机仿真/launch_foc_demo.m)，查看ZD2808的电流阶跃、转矩反向、带载和母线电压饱和。参数及估计范围见该目录的README。
+

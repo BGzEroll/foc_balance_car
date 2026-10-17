@@ -30,6 +30,8 @@ if (-not $MatlabExecutable) {
 if (-not $MatlabExecutable -or -not (Test-Path -LiteralPath $MatlabExecutable)) {
     throw '找不到MATLAB。请传入 -MatlabExecutable，或在已打开的MATLAB中运行 launch_balance_panel.m。'
 }
+$env:MATLAB_PREFDIR = Join-Path (Split-Path -Parent $PSScriptRoot) '.matlab_prefs'
 $entry = (Join-Path $PSScriptRoot 'launch_balance_panel.m').Replace("'", "''")
 $arguments = '-desktop -sd "{0}" -r "run(''{1}'');"' -f $PSScriptRoot, $entry
 Start-Process -FilePath $MatlabExecutable -ArgumentList $arguments -WindowStyle Normal
+

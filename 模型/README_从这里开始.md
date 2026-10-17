@@ -76,11 +76,11 @@ Excel中的质量合计、平行轴换算和等效偏航公式可以重算；基
 
 ## MATLAB
 
-新增三维闭环动力学仿真位于仓库根目录 `matlab/`，运行 `start_balance_3d`；使用本模型三刚体、STL外形及完整惯量，添加六自由度基座、空间轮地接触与六状态LQR。可通过 `run_balance_case` 选择行驶、转向、外力与起伏地形；详细假设与验证范围见 `matlab/README.md`。
+新增三维闭环动力学仿真位于仓库根目录 `matlab/`，运行 `matlab/3D仿真/launch_balance_panel.m`；使用本模型三刚体、STL外形及完整惯量，添加六自由度基座、空间轮地接触与六状态LQR。可通过 `run_balance_case` 选择行驶、转向、外力与起伏地形；详细假设与验证范围见 `matlab/README.md`。
 
 在MATLAB运行 `仿真模型/MATLAB/打开模型.m`。使用Robotics System Toolbox导入URDF并显示模型；本机R2025b已验证导入成功，左右轮组质量均为0.0627kg。rigidBodyTree预览固定基座，不能据此当作浮动基座的平衡车接触仿真。
 
-更新：已确认本机R2025b装有Simscape Multibody，并生成 `matlab/balance_car_3d.slx`，通过5秒三维平衡恢复求解。原URDF预览脚本仍只显示固定基座；请从仓库根目录的三维仿真入口运行动力学。
+更新：已确认本机R2025b装有Simscape Multibody，并生成 `matlab/3D仿真/balance_car_3d.slx`，通过5秒三维平衡恢复求解。原URDF预览脚本仍只显示固定基座；请从仓库根目录的三维仿真入口运行动力学。
 
 ## ROS2与Gazebo
 
@@ -125,3 +125,4 @@ python run_demo.py
 整理保留作者STL和PCB导出几何以及用户补充数据；没有在此额外推定或授予上游模型的使用许可。外部分发前按原项目声明确认许可。
 
 验证JSON集中在 `参数与图片`。FreeCAD验证覆盖23个合并部件的世界坐标包围范围、质量、轮轴不动点、滚动与反向转轮关系；STL包围尺寸允许0.15mm的三角离散误差。STEP还可能用B样条控制点产生较松的普通包围盒，实际外形应按曲面或标注测量。校验清单SHA-256可用于识别文件是否随后被修改。
+

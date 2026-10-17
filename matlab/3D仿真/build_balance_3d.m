@@ -1,8 +1,9 @@
 function modelFile=build_balance_3d
+addpath(fileparts(fileparts(mfilename('fullpath'))));paths=balance_setup;
 % BUILD_BALANCE_3D 导入原有URDF，添加自由基座、空间接触和采样转矩反馈。
 here=fileparts(mfilename('fullpath')); original=pwd; cleanup=onCleanup(@()cd(original)); cd(here); configure_balance_cache;
-meshDir=fullfile(here,'..','模型','仿真模型','通用URDF','meshes'); addpath(meshDir);
-data=jsondecode(fileread(fullfile(here,'..','模型','参数与图片','仿真刚体参数_SI.json')));
+meshDir=fullfile(paths.root,'模型','仿真模型','通用URDF','meshes'); addpath(meshDir);
+data=jsondecode(fileread(fullfile(paths.root,'模型','参数与图片','仿真刚体参数_SI.json')));
 M=data.links(1).mass; m=data.links(2).mass; r=.0325;
 com=data.links(1).com; l=hypot(com(1),com(3));
 I=data.links(1).inertia(2,2); J=data.links(2).inertia(2,2); g_mps2=9.80665;
@@ -20,7 +21,7 @@ K=(R+Bd'*P*Bd)\(Bd'*P*Ad);
 assert(max(abs(eig(Ad-Bd*K)))<1);
 model='balance_car_3d'; modelFile=fullfile(here,[model '.slx']);
 if bdIsLoaded(model), error('Close balance_car_3d before rebuilding; preserve any user edits first.'); end
-smimport(fullfile(here,'..','模型','仿真模型','通用URDF','urdf','balance_car.urdf'),'ModelName',model);
+smimport(fullfile(paths.root,'模型','仿真模型','通用URDF','urdf','balance_car.urdf'),'ModelName',model);
 load_system('sm_lib'); load_system('nesl_utility'); load_system('simulink');
 % Imported root is fixed to world: replace ONLY that branch with an actual 6-DOF joint.
 world=ports('World'); body=ports('base_link');
@@ -91,7 +92,7 @@ end
 set_param(model,'Solver','ode15s','MaxStep','0.001','RelTol','1e-5','AbsTol','1e-7', ...
  'StopTime','5','SimscapeLogType','all','ReturnWorkspaceOutputs','on', ...
  'SimMechanicsOpenEditorOnUpdate','off');
-callback="addpath(fileparts(get_param(bdroot,'FileName')));configure_balance_cache;addpath(fullfile(fileparts(get_param(bdroot,'FileName')),'..','模型','仿真模型','通用URDF','meshes'));";
+callback="addpath(fileparts(fileparts(get_param(bdroot,'FileName'))));p=balance_setup;addpath(fullfile(p.root,'模型','仿真模型','通用URDF','meshes'));";
 set_param(model,'PostLoadFcn',char(callback));
 Simulink.BlockDiagram.arrangeSystem(model);
 save_system(model,modelFile);
@@ -105,3 +106,4 @@ fprintf('Built %s\nK=[%s]\n',modelFile,num2str(K));
         add_line(model,source,[name '/1'],'autorouting','on');
     end
 end
+

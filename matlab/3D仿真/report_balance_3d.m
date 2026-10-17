@@ -1,6 +1,7 @@
 function report=report_balance_3d(simout,outputDir)
+addpath(fileparts(fileparts(mfilename('fullpath'))));paths=balance_setup;
 % REPORT_BALANCE_3D 验证空间多体求解结果；不使用平面模型轨迹。
-if nargin<2,outputDir=fullfile(fileparts(mfilename('fullpath')),'results','3d');end
+if nargin<2,outputDir=fullfile(paths.results,'3d');end
 if ~isfolder(outputDir),mkdir(outputDir);end
 v=simout.states3d; t=v.Time; s=squeeze(v.Data);
 if size(s,1)~=numel(t),s=s';end
@@ -43,3 +44,4 @@ sgtitle('Simscape Multibody：原有3D模型 + 自由基座 + 轮地接触 + 采
 exportgraphics(f,fullfile(outputDir,'dynamics_3d.png'),'Resolution',140);close(f);
 save(fullfile(outputDir,'simulation_3d.mat'),'simout','report','-v7.3');
 end
+

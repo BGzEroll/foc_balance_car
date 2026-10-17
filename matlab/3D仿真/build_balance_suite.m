@@ -1,12 +1,13 @@
 function file=build_balance_suite
+addpath(fileparts(fileparts(mfilename('fullpath'))));paths=balance_setup;
 % BUILD_BALANCE_SUITE 独立生成扩展版，保留原balance_car_3d工程。
 here=fileparts(mfilename('fullpath'));old=pwd;cleanup=onCleanup(@()cd(old));cd(here);configure_balance_cache;
 d=design_balance_suite;model='balance_car_3d_suite';file=fullfile(here,[model '.slx']);
 if bdIsLoaded(model),error('Close balance_car_3d_suite before rebuilding; save user changes first.');end
-mesh=fullfile(here,'..','模型','仿真模型','通用URDF','meshes');addpath(mesh);
-smimport(fullfile(here,'..','模型','仿真模型','通用URDF','urdf','balance_car.urdf'),'ModelName',model);
+mesh=fullfile(paths.root,'模型','仿真模型','通用URDF','meshes');addpath(mesh);
+smimport(fullfile(paths.root,'模型','仿真模型','通用URDF','urdf','balance_car.urdf'),'ModelName',model);
 load_system('sm_lib');load_system('nesl_utility');load_system('simulink');
-mw=get_param(model,'ModelWorkspace');assignin(mw,'suite_config',d.config);assignin(mw,'terrain_on',0);
+mw=get_param(model,'ModelWorkspace');assignin(mw,'suite_config',balance_control_config('lqr'));assignin(mw,'terrain_on',0);
 w=ports('World');bp=ports('base_link');delete_line(get_param(bp.LConn(1),'Line'));
 add('sm_lib/Joints/6-DOF Joint','FloatingBase');
 set_param(path('FloatingBase'),'PzPositionTargetSpecify','on','PzPositionTargetValue','.0326', ...
@@ -48,6 +49,7 @@ for j=1:4
   side={'left','right'};s=side{k};dp=ports([s '_disk']);contact([name '_' s],sp.LConn(1),dp.RConn(1),true);
  end
 end
+configure_balance_terrain(model,'mild');
 for s={'base_link','left_wheel','right_wheel'}
  p=path([s{1} '/Visual']);[~,n,e]=fileparts(get_param(p,'ExtGeomFileName'));set_param(p,'ExtGeomFileName',[n e]);
 end
@@ -62,12 +64,16 @@ end
 add('simulink/Discrete/Zero-Order Hold','Sample_200Hz');set_param(path('Sample_200Hz'),'SampleTime','.005');
 add_line(model,'Measurements/1','Sample_200Hz/1');
 add('simulink/Sources/Constant','Configuration');set_param(path('Configuration'),'Value','suite_config');
-add('simulink/User-Defined Functions/MATLAB Function','LQR_Controller');
-chart=find(sfroot,'-isa','Stateflow.EMChart','Path',path('LQR_Controller'));
+add('simulink/User-Defined Functions/MATLAB Function','Balance_Controller');
+chart=find(sfroot,'-isa','Stateflow.EMChart','Path',path('Balance_Controller'));
 chart.Script=fileread(fullfile(here,'balance_suite_controller.m'));
-add_line(model,'Sample_200Hz/1','LQR_Controller/1');add_line(model,'Configuration/1','LQR_Controller/2');
-add('simulink/Signal Routing/Demux','Controller_outputs');set_param(path('Controller_outputs'),'Outputs','[2 6 6 3 3 1]');
-add_line(model,'LQR_Controller/1','Controller_outputs/1');
+add_line(model,'Sample_200Hz/1','Balance_Controller/1');add_line(model,'Configuration/1','Balance_Controller/2');
+add('simulink/Signal Routing/Demux','Controller_outputs');set_param(path('Controller_outputs'),'Outputs','[2 6 6 3 3 1 2 2]');
+add_line(model,'Balance_Controller/1','Controller_outputs/1');
+for k=7:8
+ name=['Unused_monitor_' num2str(k)];add('simulink/Sinks/Terminator',name);
+ add_line(model,['Controller_outputs/' num2str(k)],[name '/1']);
+end
 add('simulink/Signal Routing/Demux','Wheel_torques');set_param(path('Wheel_torques'),'Outputs','2');
 add_line(model,'Controller_outputs/1','Wheel_torques/1');
 for k=1:2
@@ -84,12 +90,12 @@ for k=1:2
  add_line(model,['Controller_outputs/' num2str(k+3)],[name '/1']);pp=ports(name);wire(pp.RConn(1),ep.LConn(k));
 end
 add('simulink/Sinks/Stop Simulation','Fall_stop');add_line(model,'Controller_outputs/6','Fall_stop/1');
-logSignal('Measurements/1','raw3d');logSignal('LQR_Controller/1','control3d');
+logSignal('Measurements/1','raw3d');logSignal('Balance_Controller/1','control3d');
 set_param(model,'Solver','ode15s','MaxStep','.001','RelTol','1e-5','AbsTol','1e-7', ...
  'StopTime','8','SimscapeLogType','none','ReturnWorkspaceOutputs','on','SimMechanicsOpenEditorOnUpdate','off');
-set_param(model,'PostLoadFcn',"addpath(fileparts(get_param(bdroot,'FileName')));configure_balance_cache;addpath(fullfile(fileparts(get_param(bdroot,'FileName')),'..','模型','仿真模型','通用URDF','meshes'));");
+set_param(model,'PostLoadFcn',"addpath(fileparts(fileparts(get_param(bdroot,'FileName'))));p=balance_setup;addpath(fullfile(p.root,'模型','仿真模型','通用URDF','meshes'));");
 Simulink.BlockDiagram.arrangeSystem(model);save_system(model,file);
-fprintf('Built six-state LQR 3D suite: %s\n',file);
+fprintf('Built LQR/PID 3D suite: %s\n',file);
     function p=path(n),p=[model '/' n];end
     function add(lib,n),add_block(lib,path(n));end
     function p=ports(n),p=get_param(path(n),'PortHandles');end
@@ -109,3 +115,5 @@ fprintf('Built six-state LQR 3D suite: %s\n',file);
         if sense,sensor([n '_N'],p.RConn(2),'N');logSignal([n '_N/1'],[n '_N']);end
     end
 end
+
+
