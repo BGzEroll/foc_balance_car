@@ -382,7 +382,9 @@ namespace mpu6050
         uint32_t calibration_count = 0;
         uint64_t last_time_us = 0;
 
-        float angle[3] = {};
+        float pitch_rad = 0.0f; // 俯仰角，绕 X 轴，车头抬起为正，单位 rad
+        float roll_rad = 0.0f;  // 横滚角，绕 Y 轴，车身右侧下沉为正，单位 rad
+        float yaw_rad = 0.0f;   // 相对偏航角，绕 Z 轴，左转为正，单位 rad
 
         /**
          * @brief 读取大端有符号 16 位数据
@@ -548,9 +550,11 @@ namespace mpu6050
                 gyro_offset[i];
         }
 
-        const float acc_roll = atan2f(data.acc[1], data.acc[2]);
+        // 利用重力方向计算绕 X 轴的俯仰角
+        const float acc_pitch_rad = atan2f(data.acc[1], data.acc[2]);
 
-        const float acc_pitch =
+        // 利用重力方向计算绕 Y 轴的横滚角
+        const float acc_roll_rad =
             atan2f(
                 -data.acc[0],
                 sqrtf(
@@ -559,50 +563,53 @@ namespace mpu6050
 
         if(last_time_us == 0)
         {
-            angle[0] = acc_roll;
-            angle[1] = acc_pitch;
-            angle[2] = 0.0f;
+            pitch_rad = acc_pitch_rad;
+            roll_rad = acc_roll_rad;
+            yaw_rad = 0.0f;
         }
         else
         {
             const float dt = static_cast<float>(now_us - last_time_us) * 1.0e-6f;
 
-            angle[0] =
+            // 俯仰使用 X 轴角速度进行互补滤波
+            pitch_rad =
                 (1.0f - ACC_COEF) *
                 (
-                    angle[0] +
+                    pitch_rad +
                     data.gyro[0] * dt
                 ) +
                 ACC_COEF *
-                acc_roll;
+                acc_pitch_rad;
 
-            angle[1] =
+            // 横滚使用 Y 轴角速度进行互补滤波
+            roll_rad =
                 (1.0f - ACC_COEF) *
                 (
-                    angle[1] +
+                    roll_rad +
                     data.gyro[1] * dt
                 ) +
                 ACC_COEF *
-                acc_pitch;
+                acc_roll_rad;
 
-            angle[2] += data.gyro[2] * dt;
+            // 偏航仅积分 Z 轴角速度，保持原有正负 pi 范围
+            yaw_rad += data.gyro[2] * dt;
 
-            if(angle[2] > PI)
+            if(yaw_rad > PI)
             {
-                angle[2] -= 2.0f * PI;
+                yaw_rad -= 2.0f * PI;
             }
-            else if(angle[2] < -PI)
+            else if(yaw_rad < -PI)
             {
-                angle[2] += 2.0f * PI;
+                yaw_rad += 2.0f * PI;
             }
         }
 
         last_time_us = now_us;
 
-        for(uint8_t i = 0; i < 3; i++)
-        {
-            data.angle[i] = angle[i];
-        }
+        // 对外数组仍按 X、Y、Z 排列，单位为 rad
+        data.angle[0] = pitch_rad;
+        data.angle[1] = roll_rad;
+        data.angle[2] = yaw_rad;
 
         return true;
     }
