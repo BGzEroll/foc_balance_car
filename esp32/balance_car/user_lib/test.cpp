@@ -1,6 +1,7 @@
 #include "test.h"
 #include "hw/sensor.h"
 #include "hw/bat.h"
+#include "driver/gpio.h"
 #include <stdint.h>
 #include <inttypes.h>
 #include <stdio.h>
@@ -101,7 +102,12 @@ namespace test
 
         void task(void *)
         {
-            bat::state battery = bat::get_package();
+            // 临时保持母线通路开启：GPIO7 拉高后保持输出，不需要循环重复写入。
+            gpio_set_level(GPIO_NUM_7, 1);
+            gpio_set_direction(GPIO_NUM_7, GPIO_MODE_OUTPUT);
+
+            bat::state battery{};
+            bat::get_package(battery);
             uint32_t bat_count = 0;
             while(true)
             {
@@ -109,7 +115,7 @@ namespace test
                 const bool ready = sensor::get_package(p);
                 if(++bat_count >= 10)
                 {
-                    battery = bat::get_package();
+                    bat::get_package(battery);
                     bat_count = 0;
                 }
                 draw(p, ready, battery);

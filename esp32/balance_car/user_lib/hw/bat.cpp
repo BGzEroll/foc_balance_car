@@ -10,14 +10,13 @@ namespace bat
 {
     namespace
     {
-        constexpr adc_channel_t CHANNEL = ADC_CHANNEL_0; // GPIO1，PCB 网络 BAT_ADC
+        constexpr adc_channel_t CHANNEL = ADC_CHANNEL_0;
         constexpr adc_atten_t ATTEN = ADC_ATTEN_DB_12;
         constexpr adc_bitwidth_t BITWIDTH = ADC_BITWIDTH_12;
         constexpr uint32_t SAMPLE_COUNT = 16;
 
-        // PCB：PVCC 经 R9/R13 分压接 GPIO1，测量开关后的母线电压。
-        // R9 明确为 20kΩ，R13 暂按库默认的 10kΩ，实物阻值尚未确认。
-        // 原作者也注明母线 8.15V 对应 ADC 输入约 2.7V，与三倍换算一致。
+        // PVCC 经 R9/R13 分压接 GPIO1，测量开关后的母线电压。
+        // R9 20kΩ，R13 10kΩ。
         constexpr float DIVIDER_RATIO = 3.0f;
 
         adc_oneshot_unit_handle_t adc = nullptr;
@@ -26,6 +25,9 @@ namespace bat
 
     /**
      * @brief 初始化母线电压 ADC 及芯片曲线校准
+     *
+     * @return true 初始化成功或已经初始化
+     * @return false ADC 单元创建、通道配置或芯片曲线校准初始化失败
      */
     bool init()
     {
@@ -68,33 +70,37 @@ namespace bat
     }
 
     /**
-     * @brief 按需采样并返回母线电压，单位 V
+     * @brief 采样并获取母线电压数据
+     *
+     * @param[out] out 母线电压数据，电压单位为 V；失败时清空并标记无效
+     *
+     * @return true 采样与校准换算成功
+     * @return false 未初始化、ADC 采样失败、ADC 饱和或校准换算失败
      */
-    state get_package()
+    bool get_package(state &out)
     {
-        state result;
-        if(adc == nullptr){return result;}
+        out = state{};
+        if(adc == nullptr){return false;}
 
         int32_t voltage_sum_mv = 0;
         for(uint32_t i = 0; i < SAMPLE_COUNT; i++)
         {
-            // SDK 的两个输出参数均为 int*，这里按驱动签名声明。
             int raw = 0;
             int voltage_mv = 0;
             if(adc_oneshot_read(adc, CHANNEL, &raw) != ESP_OK || raw >= 4095)
             {
-                return result;
+                return false;
             }
             if(adc_cali_raw_to_voltage(calibration, raw, &voltage_mv) != ESP_OK)
             {
-                return result;
+                return false;
             }
             voltage_sum_mv += voltage_mv;
         }
 
-        result.voltage_V = static_cast<float>(voltage_sum_mv) /
+        out.voltage_V = static_cast<float>(voltage_sum_mv) /
                            static_cast<float>(SAMPLE_COUNT) * 0.001f * DIVIDER_RATIO;
-        result.valid = true;
-        return result;
+        out.valid = true;
+        return true;
     }
 }
