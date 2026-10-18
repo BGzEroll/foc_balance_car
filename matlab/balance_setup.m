@@ -5,6 +5,7 @@ paths.root=fileparts(paths.matlab);
 paths.calculation=fullfile(paths.matlab,'LQR参数计算');
 paths.simulation=fullfile(paths.matlab,'3D仿真');
 paths.results=fullfile(paths.matlab,'results');
+paths.suite_results=fullfile(paths.results,'suite','y_forward');
 paths.foc=fullfile(paths.matlab,'FOC电机仿真');
 addpath(paths.matlab,paths.calculation,paths.simulation,paths.foc);
 configure_balance_cache;

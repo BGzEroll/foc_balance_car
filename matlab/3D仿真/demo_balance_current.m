@@ -15,5 +15,5 @@ assert(evalin('base','exist(''report_selected'',''var'')')==1,'电流输出演�
 r=evalin('base','report_selected');
 assert(strcmp(r.controller,'PID_CURRENT')&&strcmp(r.scenario,'slope_hold')&&r.completed);
 fprintf('CURRENT_DESKTOP_READY: pass=%d, peak_iq=%.6g A, hold_error=%.6g m\n', ...
- r.pass,r.peak_each_iq_command_A,r.hold_mean_x_error_m);
+ r.pass,r.peak_each_iq_command_A,r.hold_mean_y_error_m);
 end

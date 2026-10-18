@@ -1,11 +1,13 @@
-function demo_balance_agile
+function demo_balance_agile(controller)
 % 在当前MATLAB桌面展示PID快速档；复用同一个面板和3D模型窗口。
 addpath(fileparts(fileparts(mfilename('fullpath'))));balance_setup;
+if nargin<1,controller='pid';end
+controller=validatestring(controller,{'pid','pid_current'});
 f=balance_demo_panel;
 set(findall(f,'Tag','case_selector'),'Value',2);
-set(findall(f,'Tag','controller_selector'),'Value',2);
+selector=findall(f,'Tag','controller_selector');index=2;if strcmp(controller,'pid_current'),index=3;end
+set(selector,'Value',index);cb=get(selector,'Callback');cb(selector,[]);
 set(findall(f,'Tag','gain_left'),'String','1');set(findall(f,'Tag','gain_right'),'String','1');
-p=pid_balance_parameters('agile');set(findall(f,'Tag','torque_limit'),'String',num2str(p.torque_limit_each));
 profile=findall(f,'Tag','motion_profile_selector');set(profile,'Value',2);
 cb=get(profile,'Callback');cb(profile,[]);
 button=findall(f,'Tag','run_selected');cb=get(button,'Callback');cb(button,[]);

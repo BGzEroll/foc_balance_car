@@ -1,0 +1,24 @@
+{
+  "sha256": "71d541a4eba69c337947af4c9de167a2d318dbf17f133040485342692e962502",
+  "frames": 53,
+  "steady_s": 49.347994,
+  "loop_hz": 8601.565445598457,
+  "pi_hz": [
+    8125.7001044459885,
+    8119.438451743347
+  ],
+  "free_heap_range": [
+    323780,
+    323780
+  ],
+  "minimum_heap_range": [
+    315372,
+    315372
+  ],
+  "gaps_total": 13,
+  "rejected_total": [
+    43,
+    50
+  ],
+  "verified": true
+}

@@ -1,19 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
 <sdf version="1.9">
+  <!-- X right, Y forward/USB, Z up. -->
   <model name="balance_car">
     <pose>0 0 0.0335 0 0 0</pose>
     <link name="base_link">
-      <pose>0 0 0 0 0 0</pose>
+      <pose>-0 0 0 0 0 0</pose>
       <inertial>
-        <pose>-5.71393596063e-05 -4.53146929236e-05 0.0365292274203 0 0 0</pose>
+        <pose>-4.53146929236e-05 5.71393596063e-05 0.0365292274203 0 0 0</pose>
         <mass>0.2771</mass>
         <inertia>
-          <ixx>0.0006191390109428378</ixx>
-          <iyy>0.00031184766836104503</iyy>
+          <ixx>0.000311847668361045</ixx>
+          <iyy>0.0006191390109428378</iyy>
           <izz>0.000388176637385571</izz>
-          <ixy>2.823397326959528e-07</ixy>
-          <ixz>-3.850274462317628e-08</ixz>
-          <iyz>-1.767576624229698e-07</iyz>
+          <ixy>-2.823397326959528e-07</ixy>
+          <ixz>-1.767576624229698e-07</ixz>
+          <iyz>3.850274462317628e-08</iyz>
         </inertia>
       </inertial>
       <visual name="body_visual">
@@ -22,9 +23,10 @@
             <uri>../通用URDF/meshes/body.stl</uri>
           </mesh>
         </geometry>
+        <pose>0 0 0 0 0 -1.570796326794897</pose>
       </visual>
       <collision name="body_collision_0">
-        <pose>0 0 0.005 0 0 0</pose>
+        <pose>-0 0 0.005 0 0 1.570796326794897</pose>
         <geometry>
           <box>
             <size>0.056 0.096 0.038</size>
@@ -32,7 +34,7 @@
         </geometry>
       </collision>
       <collision name="body_collision_1">
-        <pose>0 0 0.0713 0 0 0</pose>
+        <pose>-0 0 0.0713 0 0 1.570796326794897</pose>
         <geometry>
           <box>
             <size>0.038 0.093 0.02</size>
@@ -41,28 +43,29 @@
       </collision>
     </link>
     <link name="left_wheel">
-      <pose>0 0.0662682 0 0 0 0</pose>
+      <pose>-0.0662682 0 0 0 0 0</pose>
       <inertial>
-        <pose>3.60871449673e-09 -0.00137780420767 -5.37617755869e-09 0 0 0</pose>
+        <pose>0.00137780420767 3.60871449808e-09 -5.37617755869e-09 0 0 0</pose>
         <mass>0.0627</mass>
         <inertia>
-          <ixx>1.917831991019924e-05</ixx>
-          <iyy>2.9967889984095832e-05</iyy>
-          <izz>1.9178318300827144e-05</izz>
-          <ixy>3.83369315636605e-12</ixy>
-          <ixz>-7.2526409580732555e-12</ixz>
-          <iyz>1.2658484508120812e-12</iyz>
+          <ixx>2.996788998409583e-05</ixx>
+          <iyy>1.917831991019923e-05</iyy>
+          <izz>1.917831830082714e-05</izz>
+          <ixy>-3.833693155565584e-12</ixy>
+          <ixz>-1.265848447928984e-12</ixz>
+          <iyz>-7.252640957165455e-12</iyz>
         </inertia>
       </inertial>
       <visual name="left_wheel_visual">
         <geometry>
           <mesh>
-            <uri>../通用URDF/meshes/left_wheel.stl</uri>
+            <uri>../通用URDF/meshes/right_wheel.stl</uri>
           </mesh>
         </geometry>
+        <pose>0 0 0 0 0 -1.570796326794897</pose>
       </visual>
       <collision name="wheel_collision">
-        <pose>0 0 0 1.570796326795 0 0</pose>
+        <pose>-0 0 0 0 1.570796326794897 0</pose>
         <geometry>
           <cylinder>
             <radius>0.0325</radius>
@@ -72,28 +75,29 @@
       </collision>
     </link>
     <link name="right_wheel">
-      <pose>0 -0.0662682 0 0 0 0</pose>
+      <pose>0.0662682 0 0 0 0 0</pose>
       <inertial>
-        <pose>-3.60871449808e-09 0.00137780420767 -5.37617755869e-09 0 0 0</pose>
+        <pose>-0.00137780420767 -3.60871449673e-09 -5.37617755869e-09 0 0 0</pose>
         <mass>0.0627</mass>
         <inertia>
-          <ixx>1.9178319910199227e-05</ixx>
-          <iyy>2.9967889984095832e-05</iyy>
-          <izz>1.9178318300827144e-05</izz>
-          <ixy>3.833693155565584e-12</ixy>
-          <ixz>7.252640957165455e-12</ixz>
-          <iyz>-1.2658484479289835e-12</iyz>
+          <ixx>2.996788998409583e-05</ixx>
+          <iyy>1.917831991019924e-05</iyy>
+          <izz>1.917831830082714e-05</izz>
+          <ixy>-3.83369315636605e-12</ixy>
+          <ixz>1.265848450812081e-12</ixz>
+          <iyz>7.252640958073256e-12</iyz>
         </inertia>
       </inertial>
       <visual name="right_wheel_visual">
         <geometry>
           <mesh>
-            <uri>../通用URDF/meshes/right_wheel.stl</uri>
+            <uri>../通用URDF/meshes/left_wheel.stl</uri>
           </mesh>
         </geometry>
+        <pose>0 0 0 0 0 -1.570796326794897</pose>
       </visual>
       <collision name="wheel_collision">
-        <pose>0 0 0 1.570796326795 0 0</pose>
+        <pose>-0 0 0 0 1.570796326794897 0</pose>
         <geometry>
           <cylinder>
             <radius>0.0325</radius>
@@ -106,7 +110,7 @@
       <parent>base_link</parent>
       <child>left_wheel</child>
       <axis>
-        <xyz>0 1 0</xyz>
+        <xyz>-1 0 0</xyz>
         <limit>
           <lower>-1e16</lower>
           <upper>1e16</upper>
@@ -117,7 +121,7 @@
       <parent>base_link</parent>
       <child>right_wheel</child>
       <axis>
-        <xyz>0 1 0</xyz>
+        <xyz>-1 0 0</xyz>
         <limit>
           <lower>-1e16</lower>
           <upper>1e16</upper>

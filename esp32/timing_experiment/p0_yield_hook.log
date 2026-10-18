@@ -1,0 +1,157 @@
+–K‚ÂÉf54
+entry 0x403cøESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x18 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 18 2026 18:23:54
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0c860h ( 51296) map
+I (96) esp_image: segment 1: paddr=0001c888 vaddr=3fc93000 size=03790h ( 14224) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=19ca0h (105632) map
+I (120) esp_image: segment 3: paddr=00039cc8 vaddr=3fc96790 size=0060ch (  1548) load
+I (121) esp_image: segment 4: paddr=0003a2dc vaddr=40374000 size=0ef10h ( 61200) load
+I (138) esp_image: segment 5: paddr=000491f4 vaddr=50000000 size=00024h (    36) load
+I (145) boot: Loaded app from partition at offset 0x10000
+I (145) boot: Disabling RNG early entropy source...
+I (156) cpu_start: Multicore app
+I (165) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (166) cpu_start: Pro cpu start user code
+I (166) cpu_start: cpu freq: 160000000 Hz
+I (167) app_init: Application information:
+I (171) app_init: Project name:     balance_car
+I (176) app_init: App version:      v1.0.0-20-g97e5c3d-dirty
+I (181) app_init: Compile time:     Oct 18 2026 23:28:42
+I (186) app_init: ELF file SHA256:  e7277a066...
+I (190) app_init: ESP-IDF:          v6.0.2
+I (194) efuse_init: Min chip rev:     v0.0
+I (198) efuse_init: Max chip rev:     v0.99 
+I (202) efuse_init: Chip rev:         v0.2
+I (206) heap_init: Initializing. RAM available for dynamic allocation:
+I (212) heap_init: At 3FCA1920 len 00047DF0 (287 KiB): RAM
+I (217) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (222) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (228) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (234) spi_flash: detected chip: gd
+I (236) spi_flash: flash io: dio
+W (239) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (252) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (258) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (265) main_task: Started on CPU0
+I (284) main_task: Calling app_main()
+I (284) main_task: Returned from app_main()
+================IO DUMP Start================
+IO[10] -
+  Pullup: 0, Pulldown: 1, DriveCap: 2
+  InputEn: 1, OutputEn: 0, OpenDrain: 0
+  FuncSel: 1 (GPIO)
+  GPIO Matrix SigOut ID: 256 (simple GPIO output)
+  GPIO Matrix SigIn ID: (simple GPIO input)
+  SleepSelEn: 1
+
+IO[11] -
+  Pullup: 0, Pulldown: 1, DriveCap: 2
+  InputEn: 1, OutputEn: 0, OpenDrain: 0
+  FuncSel: 1 (GPIO)
+  GPIO Matrix SigOut ID: 256 (simple GPIO output)
+  GPIO Matrix SigIn ID: (simple GPIO input)
+  SleepSelEn: 1
+
+IO[12] -
+  Pullup: 0, Pulldown: 1, DriveCap: 2
+  InputEn: 1, OutputEn: 0, OpenDrain: 0
+  FuncSel: 1 (GPIO)
+  GPIO Matrix SigOut ID: 256 (simple GPIO output)
+  GPIO Matrix SigIn ID: (simple GPIO input)
+  SleepSelEn: 1
+
+IO[33] -
+  Pullup: 0, Pulldown: 1, DriveCap: 2
+  InputEn: 1, OutputEn: 0, OpenDrain: 0
+  FuncSel: 1 (GPIO)
+  GPIO Matrix SigOut ID: 256 (simple GPIO output)
+  GPIO Matrix SigIn ID: (simple GPIO input)
+  SleepSelEn: 1
+
+IO[34] -
+  Pullup: 0, Pulldown: 1, DriveCap: 2
+  InputEn: 1, OutputEn: 0, OpenDrain: 0
+  FuncSel: 1 (GPIO)
+  GPIO Matrix SigOut ID: 256 (simple GPIO output)
+  GPIO Matrix SigIn ID: (simple GPIO input)
+  SleepSelEn: 1
+
+IO[35] -
+  Pullup: 0, Pulldown: 1, DriveCap: 2
+  InputEn: 1, OutputEn: 0, OpenDrain: 0
+  FuncSel: 1 (GPIO)
+  GPIO Matrix SigOut ID: 256 (simple GPIO output)
+  GPIO Matrix SigIn ID: (simple GPIO input)
+  SleepSelEn: 1
+
+=================IO DUMP End=================
+W (952) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (971) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+
+YIELD_JSON {"time_us":1350399,"priority":0,"foc":2014,"events":12665,"idle":4949,"invalid":0,"cmp_errors":0,"gaps":7,"late_half":1209,"ready":0,"sensor_age_us":[99,599,-1],"samples":[6333,6333,6332,6332,633],"fresh":[2014,2014],"reused":[0,0],"skipped":[3313,3314],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1558,17.8125,18.5063],"phase_us":[4.4974,1.2000,43.9000],"skew_us":[8.6512,8.3500,8.9500],"bus_us":[9.1350,9.0375,9.1750],"calc_us":[43.2439,13.5813,139.1375],"write_us":[9.3684,3.7250,74.3438],"work_us":[222.2070,61.3438,436.9062],"dt_us":[264.3559,0.0875,488.3438],"age_m1_us":[59.2402,18.0875,167.8187],"age_m2_us":[62.8980,20.1125,182.6312],"raw_mean":[1892.012,1892.135,1879.816,1878.927,3245.352],"raw_range":[[1876,1915],[1869,1903],[1823,1893],[1855,1891],[3231,3251]]}
+
+YIELD_JSON {"time_us":2409402,"priority":0,"foc":5934,"events":33844,"idle":9732,"invalid":0,"cmp_errors":0,"gaps":10,"late_half":3196,"ready":0,"sensor_age_us":[102,351,-1],"samples":[16922,16922,16922,16922,1692],"fresh":[5934,5934],"reused":[0,0],"skipped":[9983,9983],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1674,17.8125,18.6000],"phase_us":[4.5444,0.7000,43.9000],"skew_us":[8.6572,8.3375,9.0000],"bus_us":[9.1417,9.0375,9.3500],"calc_us":[43.9419,13.5813,139.1375],"write_us":[9.6277,3.7250,89.4313],"work_us":[225.5130,61.3438,751.6938],"dt_us":[268.1854,0.0875,805.5000],"age_m1_us":[61.1595,18.0875,182.8063],"age_m2_us":[60.0741,19.7063,182.6312],"raw_mean":[1891.746,1891.843,1879.679,1878.795,3245.332],"raw_range":[[1839,1925],[1869,1907],[1823,1893],[1845,1894],[3231,3253]]}
+
+YIELD_JSON {"time_us":3469380,"priority":0,"foc":9794,"events":55042,"idle":14422,"invalid":0,"cmp_errors":0,"gaps":16,"late_half":5225,"ready":0,"sensor_age_us":[330,256,-1],"samples":[27521,27521,27521,27521,2752],"fresh":[9794,9794],"reused":[0,0],"skipped":[16720,16720],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1723,17.8125,18.6000],"phase_us":[4.5576,0.7000,43.9000],"skew_us":[8.6607,8.3375,9.0000],"bus_us":[9.1438,9.0375,9.3625],"calc_us":[44.3884,13.5813,139.1375],"write_us":[9.7915,3.7250,91.6312],"work_us":[227.9831,61.3438,751.6938],"dt_us":[270.6873,0.0875,808.5375],"age_m1_us":[60.2388,18.0813,182.8063],"age_m2_us":[60.7718,19.7063,183.5188],"raw_mean":[1891.652,1891.805,1879.699,1878.812,3245.366],"raw_range":[[1839,1925],[1861,1983],[1823,1893],[1844,1894],[3230,3253]]}
+
+YIELD_JSON {"time_us":4529400,"priority":0,"foc":13684,"events":76243,"idle":19136,"invalid":0,"cmp_errors":0,"gaps":20,"late_half":7239,"ready":0,"sensor_age_us":[150,450,-1],"samples":[38122,38122,38121,38121,3812],"fresh":[13684,13684],"reused":[0,0],"skipped":[23432,23432],"bus_v":8.0670,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1729,17.8125,19.3125],"phase_us":[4.5670,0.6000,45.8000],"skew_us":[8.6607,8.3375,9.0500],"bus_us":[9.1441,9.0375,9.3625],"calc_us":[44.3471,13.5813,139.1375],"write_us":[9.7948,3.7250,91.6312],"work_us":[228.5244,61.1187,790.0562],"dt_us":[271.2192,0.0875,847.4062],"age_m1_us":[60.1426,18.0813,182.8063],"age_m2_us":[61.1738,18.3438,183.5687],"raw_mean":[1891.567,1891.736,1879.690,1878.792,3245.371],"raw_range":[[1839,1925],[1861,1983],[1823,1893],[1819,1897],[3230,3253]]}
+
+YIELD_JSON {"time_us":5589380,"priority":0,"foc":17564,"events":97442,"idle":23880,"invalid":0,"cmp_errors":0,"gaps":24,"late_half":9345,"ready":0,"sensor_age_us":[356,630,-1],"samples":[48721,48721,48721,48721,4872],"fresh":[17564,17564],"reused":[0,0],"skipped":[30151,30151],"bus_v":8.0670,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1745,17.8125,19.3125],"phase_us":[4.5787,0.6000,45.8000],"skew_us":[8.6620,8.3375,9.0500],"bus_us":[9.1442,9.0375,9.3625],"calc_us":[44.4323,13.5813,139.3500],"write_us":[9.7800,3.7250,91.6312],"work_us":[228.8981,61.1063,790.2625],"dt_us":[271.6559,0.0875,888.5125],"age_m1_us":[59.9800,18.0813,182.8063],"age_m2_us":[61.3608,18.3438,184.4187],"raw_mean":[1891.626,1891.788,1879.779,1878.887,3245.492],"raw_range":[[1839,1925],[1856,1983],[1823,1895],[1819,1897],[3230,3253]]}
+
+YIELD_JSON {"time_us":6649380,"priority":0,"foc":21456,"events":118642,"idle":28591,"invalid":0,"cmp_errors":0,"gaps":25,"late_half":11394,"ready":1,"sensor_age_us":[277,525,1362],"samples":[59321,59321,59321,59321,5932],"fresh":[21456,21456],"reused":[0,0],"skipped":[36861,36861],"bus_v":8.0670,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1755,17.8125,19.3250],"phase_us":[4.5799,0.6000,45.8000],"skew_us":[8.6628,8.3375,9.0500],"bus_us":[9.1445,9.0375,9.3625],"calc_us":[44.5642,13.5813,139.3500],"write_us":[9.7330,3.7250,91.6312],"work_us":[229.0280,61.1063,858.1562],"dt_us":[271.7890,0.0875,906.5250],"age_m1_us":[59.6850,18.0813,182.8063],"age_m2_us":[61.5106,18.3438,184.4187],"raw_mean":[1891.616,1891.773,1879.792,1878.908,3245.485],"raw_range":[[1839,1929],[1856,1983],[1823,1895],[1819,1899],[3227,3253]]}
+
+YIELD_JSON {"time_us":7710380,"priority":0,"foc":25309,"events":139860,"idle":33272,"invalid":0,"cmp_errors":0,"gaps":33,"late_half":13453,"ready":1,"sensor_age_us":[130,630,2166],"samples":[69930,69930,69930,69930,6993],"fresh":[25309,25309],"reused":[0,0],"skipped":[43616,43616],"bus_v":8.0670,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1762,17.8125,19.3250],"phase_us":[4.5819,0.6000,45.8000],"skew_us":[8.6633,8.3375,9.0500],"bus_us":[9.1448,9.0375,9.3625],"calc_us":[44.7377,13.5813,139.3500],"write_us":[9.6673,3.7250,91.6312],"work_us":[229.4770,61.1063,1002.1688],"dt_us":[272.3286,0.0875,1051.9500],"age_m1_us":[59.4585,18.0813,182.8063],"age_m2_us":[61.6870,18.3438,184.4688],"raw_mean":[1891.583,1891.750,1879.797,1878.910,3245.477],"raw_range":[[1839,1929],[1856,1992],[1823,1895],[1819,1899],[3227,3253]]}
+
+YIELD_JSON {"time_us":8771380,"priority":0,"foc":29167,"events":161079,"idle":37995,"invalid":0,"cmp_errors":0,"gaps":38,"late_half":15526,"ready":1,"sensor_age_us":[328,597,3165],"samples":[80540,80540,80539,80539,8054],"fresh":[29167,29167],"reused":[0,0],"skipped":[50368,50368],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1769,17.8125,19.3250],"phase_us":[4.5833,0.6000,46.3000],"skew_us":[8.6639,8.3375,9.0625],"bus_us":[9.1450,9.0375,9.3625],"calc_us":[44.7780,13.5813,140.2625],"write_us":[9.7221,3.7250,91.6312],"work_us":[229.8838,61.1063,1002.1688],"dt_us":[272.6867,0.0875,1051.9500],"age_m1_us":[59.8526,18.0813,182.8063],"age_m2_us":[61.3314,18.3438,184.4688],"raw_mean":[1891.582,1891.746,1879.830,1878.942,3245.505],"raw_range":[[1839,1929],[1856,1992],[1823,1895],[1819,1899],[3227,3253]]}
+
+YIELD_JSON {"time_us":9832380,"priority":0,"foc":33027,"events":182298,"idle":42689,"invalid":0,"cmp_errors":0,"gaps":45,"late_half":17667,"ready":1,"sensor_age_us":[530,277,4026],"samples":[91149,91149,91149,91149,9115],"fresh":[33027,33027],"reused":[0,0],"skipped":[57118,57118],"bus_v":8.0670,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1774,17.8125,19.3250],"phase_us":[4.5869,0.6000,46.3000],"skew_us":[8.6643,8.3375,9.0625],"bus_us":[9.1454,9.0375,9.3625],"calc_us":[44.8042,13.5813,144.9375],"write_us":[9.6843,3.7250,91.6312],"work_us":[230.0849,61.1063,1002.1688],"dt_us":[272.9435,0.0875,1051.9500],"age_m1_us":[59.8313,18.0813,182.8063],"age_m2_us":[61.5264,18.3438,184.4688],"raw_mean":[1891.582,1891.749,1879.853,1878.968,3245.493],"raw_range":[[1839,1929],[1856,1992],[1823,1895],[1819,1899],[3227,3253]]}
+
+YIELD_JSON {"time_us":10893379,"priority":0,"foc":36974,"events":203517,"idle":47528,"invalid":0,"cmp_errors":0,"gaps":53,"late_half":19841,"ready":1,"sensor_age_us":[279,1074,264],"samples":[101759,101759,101758,101758,10176],"fresh":[36974,36974],"reused":[0,0],"skipped":[63777,63777],"bus_v":8.0670,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1778,17.8125,19.3250],"phase_us":[4.5874,0.6000,48.3000],"skew_us":[8.6647,8.3375,9.0625],"bus_us":[9.1454,9.0375,9.3625],"calc_us":[44.7342,13.5813,144.9375],"write_us":[9.7143,3.7250,91.6312],"work_us":[229.6566,61.1063,1002.1688],"dt_us":[272.4944,0.0875,1051.9500],"age_m1_us":[60.1422,18.0813,182.8063],"age_m2_us":[61.1823,18.3438,184.4688],"raw_mean":[1891.557,1891.721,1879.847,1878.963,3245.461],"raw_range":[[1839,1929],[1856,1992],[1823,1895],[1819,1899],[3224,3253]]}
+
+YIELD_JSON {"time_us":11954380,"priority":0,"foc":40914,"events":224736,"idle":52365,"invalid":0,"cmp_errors":0,"gaps":58,"late_half":21913,"ready":1,"sensor_age_us":[180,429,1372],"samples":[112368,112368,112368,112368,11237],"fresh":[40914,40914],"reused":[0,0],"skipped":[70448,70449],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1781,17.8125,19.3250],"phase_us":[4.5856,0.6000,48.3000],"skew_us":[8.6650,8.3375,9.0625],"bus_us":[9.1452,9.0375,9.3625],"calc_us":[44.7320,13.5813,144.9375],"write_us":[9.7061,3.7250,91.6312],"work_us":[229.3563,61.1063,1002.1688],"dt_us":[272.1893,0.0875,1051.9500],"age_m1_us":[59.9804,18.0813,182.8063],"age_m2_us":[61.3040,18.3438,184.4688],"raw_mean":[1891.556,1891.717,1879.850,1878.963,3245.479],"raw_range":[[1839,1929],[1856,1992],[1823,1895],[1819,1899],[3224,3253]]}
+
+YIELD_JSON {"time_us":13015380,"priority":0,"foc":44825,"events":245954,"idle":57163,"invalid":0,"cmp_errors":0,"gaps":65,"late_half":24017,"ready":1,"sensor_age_us":[180,674,2307],"samples":[122977,122977,122977,122977,12298],"fresh":[44825,44825],"reused":[0,0],"skipped":[77146,77147],"bus_v":8.0670,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1784,17.8125,19.3250],"phase_us":[4.5830,0.6000,48.3000],"skew_us":[8.6652,8.3375,9.0625],"bus_us":[9.1450,9.0375,9.3750],"calc_us":[44.7328,13.5813,144.9375],"write_us":[9.7503,3.7250,91.6312],"work_us":[229.3051,61.1063,1002.1688],"dt_us":[272.1096,0.0875,1051.9500],"age_m1_us":[59.8215,18.0813,182.8063],"age_m2_us":[61.3814,18.3438,184.4688],"raw_mean":[1891.560,1891.716,1879.859,1878.970,3245.495],"raw_range":[[1839,1929],[1856,1992],[1823,1895],[1819,1899],[3224,3253]]}
+
+YIELD_JSON {"time_us":14076383,"priority":0,"foc":48746,"events":267173,"idle":61957,"invalid":0,"cmp_errors":0,"gaps":70,"late_half":26060,"ready":1,"sensor_age_us":[333,583,3270],"samples":[133587,133587,133586,133586,13359],"fresh":[48746,48746],"reused":[0,0],"skipped":[83836,83836],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1786,17.8125,19.3250],"phase_us":[4.5812,0.6000,48.3000],"skew_us":[8.6654,8.3375,9.0625],"bus_us":[9.1451,9.0375,9.3750],"calc_us":[44.7334,13.5813,154.5687],"write_us":[9.7822,3.7250,91.6312],"work_us":[229.2074,61.1063,1002.1688],"dt_us":[271.9897,0.0875,1051.9500],"age_m1_us":[59.9820,18.0813,182.8063],"age_m2_us":[61.1980,18.3438,184.4688],"raw_mean":[1891.559,1891.715,1879.864,1878.976,3245.517],"raw_range":[[1839,1929],[1856,2006],[1823,1895],[1819,1899],[3224,3253]]}
+
+YIELD_JSON {"time_us":15137379,"priority":0,"foc":52664,"events":288392,"idle":66770,"invalid":0,"cmp_errors":0,"gaps":77,"late_half":28131,"ready":1,"sensor_age_us":[279,479,4306],"samples":[144196,144196,144196,144196,14420],"fresh":[52664,52664],"reused":[0,0],"skipped":[90525,90525],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1782,17.8125,21.5188],"phase_us":[4.5790,0.6000,48.3000],"skew_us":[8.6650,8.3375,9.0625],"bus_us":[9.1452,9.0375,9.3750],"calc_us":[44.7162,13.5813,154.5687],"write_us":[9.8050,3.7250,91.6312],"work_us":[229.1231,61.1063,1002.1688],"dt_us":[271.8984,0.0875,1051.9500],"age_m1_us":[59.8559,18.0813,182.8063],"age_m2_us":[61.2935,18.3438,184.4688],"raw_mean":[1891.568,1891.717,1879.869,1878.975,3245.527],"raw_range":[[1834,1929],[1835,2006],[1823,1895],[1819,1899],[3223,3253]]}
+
+YIELD_JSON {"time_us":16198380,"priority":0,"foc":56595,"events":309610,"idle":71600,"invalid":0,"cmp_errors":0,"gaps":85,"late_half":30223,"ready":1,"sensor_age_us":[330,1047,307],"samples":[154805,154805,154805,154805,15481],"fresh":[56595,56595],"reused":[0,0],"skipped":[97203,97203],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1778,17.8125,21.5188],"phase_us":[4.5784,0.6000,48.3000],"skew_us":[8.6645,8.3375,9.0625],"bus_us":[9.1454,9.0375,9.3750],"calc_us":[44.6897,13.5813,154.5687],"write_us":[9.8186,3.7250,126.3438],"work_us":[228.9912,61.1063,1002.1688],"dt_us":[271.7624,0.0875,1051.9500],"age_m1_us":[59.7398,18.0813,182.8063],"age_m2_us":[61.3392,18.3438,184.4688],"raw_mean":[1891.565,1891.708,1879.862,1878.968,3245.525],"raw_range":[[1834,1931],[1835,2006],[1823,1895],[1819,1899],[3223,3253]]}
+
+YIELD_JSON {"time_us":17259380,"priority":0,"foc":60537,"events":330830,"idle":76461,"invalid":0,"cmp_errors":0,"gaps":92,"late_half":32308,"ready":1,"sensor_age_us":[180,428,1357],"samples":[165415,165415,165415,165415,16542],"fresh":[60537,60537],"reused":[0,0],"skipped":[103872,103873],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1774,17.8125,21.5188],"phase_us":[4.5771,0.6000,48.3000],"skew_us":[8.6641,8.3375,9.1125],"bus_us":[9.1455,9.0375,9.3750],"calc_us":[44.6763,13.5813,154.5687],"write_us":[9.8292,3.7250,126.3438],"work_us":[228.8400,61.1063,1002.1688],"dt_us":[271.5918,0.0875,1091.3125],"age_m1_us":[59.6572,18.0813,182.8063],"age_m2_us":[61.4085,18.3438,184.4688],"raw_mean":[1891.555,1891.691,1879.854,1878.958,3245.514],"raw_range":[[1834,1931],[1835,2006],[1823,1895],[1819,1899],[3223,3255]]}
+
+YIELD_JSON {"time_us":18321400,"priority":0,"foc":64493,"events":352070,"idle":81291,"invalid":0,"cmp_errors":0,"gaps":99,"late_half":34331,"ready":1,"sensor_age_us":[150,450,3241],"samples":[176035,176035,176035,176035,17604],"fresh":[64493,64493],"reused":[0,0],"skipped":[110536,110537],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1768,17.8125,21.5188],"phase_us":[4.5749,0.6000,48.3000],"skew_us":[8.6635,8.3375,9.1125],"bus_us":[9.1455,9.0375,9.3750],"calc_us":[44.6740,13.5813,177.2500],"write_us":[9.8368,3.7250,126.3438],"work_us":[228.6632,61.1063,1002.1688],"dt_us":[271.3993,0.0875,1091.3125],"age_m1_us":[59.8277,18.0813,183.1687],"age_m2_us":[61.2292,18.3438,184.4688],"raw_mean":[1891.547,1891.674,1879.844,1878.948,3245.517],"raw_range":[[1834,1931],[1835,2006],[1823,1895],[1819,1899],[3223,3255]]}
+
+YIELD_JSON {"time_us":19383380,"priority":0,"foc":68432,"events":373307,"idle":86172,"invalid":0,"cmp_errors":0,"gaps":104,"late_half":36400,"ready":1,"sensor_age_us":[329,1030,305],"samples":[186654,186654,186653,186653,18666],"fresh":[68432,68432],"reused":[0,0],"skipped":[117213,117214],"bus_v":8.0670,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1768,17.8125,21.5188],"phase_us":[4.5734,0.2000,48.3000],"skew_us":[8.6634,8.3375,9.1125],"bus_us":[9.1457,9.0375,9.3750],"calc_us":[44.6737,13.5813,177.2500],"write_us":[9.8201,3.7250,126.3438],"work_us":[228.5391,61.1063,1002.1688],"dt_us":[271.2936,0.0875,1091.3125],"age_m1_us":[60.0013,18.0813,183.1687],"age_m2_us":[61.0439,18.3438,184.4688],"raw_mean":[1891.530,1891.652,1879.832,1878.936,3245.498],"raw_range":[[1834,1931],[1835,2006],[1823,1895],[1819,1899],[3223,3256]]}
+
+YIELD_JSON {"time_us":20445379,"priority":0,"foc":72425,"events":394545,"idle":91123,"invalid":0,"cmp_errors":0,"gaps":110,"late_half":38466,"ready":1,"sensor_age_us":[325,579,2360],"samples":[197273,197273,197272,197272,19728],"fresh":[72425,72425],"reused":[0,0],"skipped":[123842,123842],"bus_v":8.0670,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1769,17.8125,21.5188],"phase_us":[4.5697,0.2000,48.3000],"skew_us":[8.6635,8.3375,9.1125],"bus_us":[9.1457,9.0375,9.3750],"calc_us":[44.6963,13.5813,177.2500],"write_us":[9.7913,3.7250,126.3438],"work_us":[228.3630,61.1063,1005.8188],"dt_us":[271.0031,0.0875,1091.3125],"age_m1_us":[60.1188,18.0813,183.1687],"age_m2_us":[60.9351,18.3438,184.4688],"raw_mean":[1891.522,1891.645,1879.829,1878.935,3245.499],"raw_range":[[1834,1931],[1835,2006],[1823,1895],[1819,1899],[3223,3256]]}
+
+YIELD_JSON {"time_us":21507381,"priority":0,"foc":76404,"events":415785,"idle":96028,"invalid":0,"cmp_errors":0,"gaps":115,"late_half":40564,"ready":1,"sensor_age_us":[330,131,4070],"samples":[207893,207893,207892,207892,20790],"fresh":[76404,76404],"reused":[0,0],"skipped":[130483,130483],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1768,17.8125,21.5188],"phase_us":[4.5668,0.2000,48.3000],"skew_us":[8.6634,8.3375,9.1125],"bus_us":[9.1457,9.0375,9.3750],"calc_us":[44.7076,13.5813,177.2500],"write_us":[9.7686,3.7250,126.3438],"work_us":[228.2482,61.1063,1005.8188],"dt_us":[270.7894,0.0875,1091.3125],"age_m1_us":[60.3040,18.0813,184.1562],"age_m2_us":[60.8603,18.3438,184.4688],"raw_mean":[1891.519,1891.641,1879.831,1878.935,3245.486],"raw_range":[[1834,1931],[1835,2006],[1823,1895],[1819,1899],[3223,3256]]}
+
+YIELD_JSON {"time_us":22569379,"priority":0,"foc":80325,"events":437023,"idle":100921,"invalid":0,"cmp_errors":0,"gaps":120,"late_half":42590,"ready":1,"sensor_age_us":[126,326,1316],"samples":[218512,218512,218511,218511,21852],"fresh":[80325,80325],"reused":[0,0],"skipped":[137180,137181],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1767,17.8125,21.5188],"phase_us":[4.5636,0.2000,48.3000],"skew_us":[8.6632,8.3375,9.1125],"bus_us":[9.1456,9.0375,9.3750],"calc_us":[44.7060,13.5813,177.2500],"write_us":[9.7701,3.7250,126.3438],"work_us":[228.3122,61.1063,1005.8188],"dt_us":[270.7924,0.0875,1091.3125],"age_m1_us":[60.4548,18.0813,184.1562],"age_m2_us":[60.7500,18.3438,184.4688],"raw_mean":[1891.511,1891.627,1879.826,1878.929,3245.472],"raw_range":[[1834,1931],[1835,2006],[1823,1895],[1819,1899],[3223,3256]]}
+
+YIELD_JSON {"time_us":23631380,"priority":0,"foc":84240,"events":458262,"idle":105814,"invalid":0,"cmp_errors":0,"gaps":125,"late_half":44604,"ready":1,"sensor_age_us":[180,427,3472],"samples":[229131,229131,229131,229131,22914],"fresh":[84240,84240],"reused":[0,0],"skipped":[143885,143886],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1768,17.8125,21.5188],"phase_us":[4.5611,0.2000,48.3000],"skew_us":[8.6633,8.3375,9.1125],"bus_us":[9.1456,9.0375,9.3750],"calc_us":[44.7271,13.5813,177.2500],"write_us":[9.7598,3.7250,126.3438],"work_us":[228.3770,61.1063,1005.8188],"dt_us":[270.8138,0.0875,1091.3125],"age_m1_us":[60.3911,18.0813,184.1562],"age_m2_us":[60.8676,18.3438,184.4688],"raw_mean":[1891.515,1891.629,1879.830,1878.933,3245.479],"raw_range":[[1834,1931],[1779,2006],[1823,1895],[1819,1899],[3223,3256]]}
+
+YIELD_JSON {"time_us":24693382,"priority":0,"foc":88131,"events":479502,"idle":110697,"invalid":0,"cmp_errors":0,"gaps":131,"late_half":46615,"ready":1,"sensor_age_us":[332,1027,319],"samples":[239751,239751,239751,239751,23976],"fresh":[88131,88131],"reused":[0,0],"skipped":[150613,150613],"bus_v":8.0730,"event_interval_us":[21.7250,163.1750],"pair_us":[18.1769,17.8125,21.5188],"phase_us":[4.5583,0.1000,48.3000],"skew_us":[8.6634,8.3375,9.1125],"bus_us":[9.1457,9.0375,9.3750],"calc_us":[44.7558,13.5813,177.2500],"write_us":[9.7649,3.7250,126.3438],"work_us":[228.5420,61.1063,1005.8188],"dt_us":[270.9081,0.0875,1091.3125],"age_m1_us":[60.2824,18.0813,184.1562],"age_m2_us":[61.0241,18.3438,184.4688],"raw_mean":[1891.526,1891.639,1879.839,1878.942,3245.487],"raw_range":[[1834,1931],[1779,2006],[1823,1895],[1819,1899],[3223,3256]]}

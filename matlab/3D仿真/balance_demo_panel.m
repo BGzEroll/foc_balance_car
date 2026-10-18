@@ -3,7 +3,7 @@ addpath(fileparts(fileparts(mfilename('fullpath'))));paths=balance_setup;
 % BALANCE_DEMO_PANEL 中文工况选择入口；直接调用原有3D多体仿真API。
 tag='balance_car_demo_panel';existing=findall(groot,'Type','figure','Tag',tag);
 if ~isempty(existing)
- if isequal(existing(1).UserData,'lqr-pid-current-v5'),fig=existing(1);figure(fig);return;end
+ if isequal(existing(1).UserData,'y-forward-v7'),fig=existing(1);figure(fig);return;end
  delete(existing);
 end
 here=fileparts(mfilename('fullpath'));addpath(here);configure_balance_cache;
@@ -24,9 +24,9 @@ descriptions={ ...
  '26秒。默认12°坡、高约12.8厘米，完整通过上坡、平台、下坡与凸起。', ...
  '34秒。先到上坡中段，7～19秒停车，随后继续通过坡顶和下坡。检查是否溜车。'};
 fig=figure('Name','平衡车3D仿真：选择工况','NumberTitle','off','Tag',tag, ...
- 'MenuBar','none','ToolBar','none','Color',[.96 .97 .98],'Position',[90 80 880 650],'UserData','lqr-pid-current-v5');
+ 'MenuBar','none','ToolBar','none','Color',[.96 .97 .98],'Position',[90 80 880 650],'UserData','y-forward-v7');
 textBox([.04 .87 .92 .10],{'每次选择一个工况 → 点击运行 → 在 Multibody Explorer 点击播放', ...
- '切换下拉框不会自动改变3D动画；运行后，同一3D标签会更新为新工况。'},14);
+ 'X向右、Y向前、Z向上；USB侧为+Y，MA左轮、MB右轮。'},14);
 textBox([.04 .79 .16 .045],'仿真工况',12);
 pick=uicontrol(fig,'Style','popupmenu','String',labels,'Value',3,'Tag','case_selector','Units','normalized', ...
  'Position',[.20 .79 .53 .05],'FontSize',12,'Callback',@selectScenario);

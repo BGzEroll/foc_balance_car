@@ -1,12 +1,18 @@
-function r=report_balance_case(o,scenario,duration,limit,out,controller,actuatorGain,profile,terrain,drive)
+function r=report_balance_case(o,scenario,duration,limit,out,controller,actuatorGain,profile,terrain,drive,direction)
 if nargin<6,controller='LQR';end
 if nargin<7,actuatorGain=[1 1];end
 if nargin<8,profile='normal';end
 if nargin<9,terrain=balance_terrain_parameters('mild');end
 if nargin<10,drive=[];end
+if nargin<11,direction='legacy_usb_rear';end
 assert(~strcmpi(controller,'pid_current')||~isempty(drive),'电流模式报告必须提供电机参数，避免将A误标为Nm');
 if ~isfolder(out),mkdir(out);end
 [t,c]=values(o.control3d);[tr,raw]=values(o.raw3d);
+analysisRaw=raw;forwardColumn=2;
+if strcmp(direction,'x_right_y_forward_v2')
+ analysisRaw=balance_control_coordinates(raw);forwardColumn=4;
+end
+forwardPosition=raw(:,forwardColumn);
 iq=[];currentLimit=[];
 if ~isempty(drive)
  iq=c(:,22:23);currentLimit=limit;
@@ -16,11 +22,11 @@ end
 state=c(:,3:8);ref=c(:,9:14);e=state-ref;tail=t>=t(end)-.5;
 % 近似滚动滑差：轮组总自转与沿接触切线的速度之差。
 [tl,wl]=values(o.left_wheel_w);[tw,wr]=values(o.right_wheel_w);
-bodyY=[2*(raw(:,9).*raw(:,10)-raw(:,8).*raw(:,11)) ...
- 1-2*(raw(:,9).^2+raw(:,11).^2) 2*(raw(:,10).*raw(:,11)+raw(:,8).*raw(:,9))];
-bodyAxleRate=sum(bodyY.*raw(:,12:14),2);
+bodyY=[2*(analysisRaw(:,9).*analysisRaw(:,10)-analysisRaw(:,8).*analysisRaw(:,11)) ...
+ 1-2*(analysisRaw(:,9).^2+analysisRaw(:,11).^2) 2*(analysisRaw(:,10).*analysisRaw(:,11)+analysisRaw(:,8).*analysisRaw(:,9))];
+bodyAxleRate=sum(bodyY.*analysisRaw(:,12:14),2);
 rollingSpeed=.0325*(.5*(sample(tl,wl,t)+sample(tw,wr,t))+sample(tr,bodyAxleRate,t));
-q=raw(:,8:11);roll=atan2(2*(q(:,1).*q(:,2)+q(:,3).*q(:,4)),1-2*(q(:,2).^2+q(:,3).^2));
+q=analysisRaw(:,8:11);roll=atan2(2*(q(:,1).*q(:,2)+q(:,3).*q(:,4)),1-2*(q(:,2).^2+q(:,3).^2));
 contacts=zeros(numel(t),1);terrainForce=zeros(numel(t),1);uphillSupport=zeros(numel(t),1);downhillSupport=zeros(numel(t),1);
 for side={'left','right'}
  s=side{1};[tt,yy]=values(o.get([s '_ground_N']));contacts=contacts+sample(tt,yy,t);
@@ -51,10 +57,11 @@ r=struct('scenario',scenario,'controller',controller,'motion_profile',profile,'e
  'peak_external_force_N',max(vecnorm(c(:,15:17),2,2)), ...
  'peak_external_torque_Nm',max(vecnorm(c(:,18:20),2,2)), ...
  'terrain_angle_deg',terrain.angle_deg,'terrain_height_m',terrain.height, ...
- 'hold_mean_x_error_m',NaN,'hold_x_span_m',NaN,'hold_mean_abs_speed_mps',NaN, ...
+ 'hold_mean_y_error_m',NaN,'hold_y_span_m',NaN,'hold_mean_abs_speed_mps',NaN, ...
  'hold_peak_speed_mps',NaN,'hold_on_incline_fraction',NaN,'hold_rollback_m',NaN, ...
  'hold_stability_pass',NaN,'hold_tracking_pass',NaN, ...
  'climbed_ramp',NaN,'descended_ramp',NaN,'passed_bump',NaN);
+r.direction_convention=direction;
 if isinf(limit),r.configured_torque_limit_each_Nm='unlimited';end
 allowedTilt=30;if strcmp(profile,'agile'),allowedTilt=40;end
 r.allowed_tilt_check_deg=allowedTilt;
@@ -68,22 +75,22 @@ if strcmpi(scenario,'turn'),r.pass=r.pass&&max(abs(state(:,5)))>deg2rad(50);end
 if strcmpi(scenario,'drive'),r.pass=r.pass&&max(state(:,1))>.25;end
 if strcmpi(scenario,'route'),r.pass=r.pass&&max(state(:,1))>.55&&max(state(:,5))>deg2rad(50);end
 if ismember(lower(scenario),{'slope','slope_hold'})
- r.climbed_ramp=double(r.max_axle_height_m>terrain.height+.025&&max(raw(:,2))>terrain.ramp_end+.03);
- r.descended_ramp=double(any(raw(:,2)>terrain.downhill_end+.04&raw(:,6)<.05));
- r.passed_bump=double(max(raw(:,2))>terrain.bump_start+terrain.bump_length+.05);
+ r.climbed_ramp=double(r.max_axle_height_m>terrain.height+.025&&max(forwardPosition)>terrain.ramp_end+.03);
+ r.descended_ramp=double(any(forwardPosition>terrain.downhill_end+.04&raw(:,6)<.05));
+ r.passed_bump=double(max(forwardPosition)>terrain.bump_start+terrain.bump_length+.05);
  r.pass=r.pass&&r.max_terrain_normal_N>.5&&r.max_axle_height_m>terrain.height+.025;
 end
 if strcmpi(scenario,'slope_hold')
  holdMask=t>=terrain.hold_check_start&t<=terrain.hold_check_end;
- x=sample(tr,raw(:,2),t);allHold=t>=terrain.hold_reference_start&t<terrain.hold_reference_end;
+ x=sample(tr,forwardPosition,t);allHold=t>=terrain.hold_reference_start&t<terrain.hold_reference_end;
  if any(holdMask)&&any(allHold)
-  r.hold_mean_x_error_m=mean(x(holdMask)-terrain.hold_x);
-  r.hold_x_span_m=max(x(holdMask))-min(x(holdMask));
+  r.hold_mean_y_error_m=mean(x(holdMask)-terrain.hold_y);
+  r.hold_y_span_m=max(x(holdMask))-min(x(holdMask));
   r.hold_mean_abs_speed_mps=mean(abs(state(holdMask,2)));r.hold_peak_speed_mps=max(abs(state(holdMask,2)));
   r.hold_on_incline_fraction=mean(x(holdMask)>terrain.ramp_start+.03 & x(holdMask)<terrain.ramp_end-.03 & uphillSupport(holdMask)>.5);
   r.hold_rollback_m=max(0,x(find(allHold,1))-min(x(allHold)));
-  r.hold_stability_pass=double(r.hold_on_incline_fraction>.95&&r.hold_x_span_m<.03&&r.hold_mean_abs_speed_mps<.01&&r.hold_peak_speed_mps<.03);
-  r.hold_tracking_pass=double(abs(r.hold_mean_x_error_m)<.02);
+  r.hold_stability_pass=double(r.hold_on_incline_fraction>.95&&r.hold_y_span_m<.03&&r.hold_mean_abs_speed_mps<.01&&r.hold_peak_speed_mps<.03);
+  r.hold_tracking_pass=double(abs(r.hold_mean_y_error_m)<.02);
   r.pass=r.pass&&r.hold_stability_pass>.5&&r.hold_tracking_pass>.5;
  else,r.pass=false;end
 end
@@ -135,11 +142,11 @@ if ~isempty(iq)
 end
 if ismember(lower(scenario),{'slope','slope_hold'})
  f=figure('Visible','off','Color','w','Position',[40 40 1100 750]);tiledlayout(2,2);
- nexttile;plot(tr,raw(:,2),t,ref(:,1),'--');grid on;ylabel('水平位置 / m');legend('实际世界X','目标路程');
+ nexttile;plot(tr,forwardPosition,t,ref(:,1),'--');grid on;ylabel('前向位置 / m');legend('实际世界Y','目标路程');
  if strcmpi(scenario,'slope_hold'),xline(7,':','HandleVisibility','off');xline(19,':','HandleVisibility','off');end
- nexttile;plot(raw(:,2),raw(:,6));hold on;
+ nexttile;plot(forwardPosition,raw(:,6));hold on;
  gx=[0 terrain.ramp_start terrain.ramp_end terrain.platform_end terrain.downhill_end terrain.finish_distance];
- gz=[0 0 terrain.height terrain.height 0 0];plot(gx,gz,'k-','LineWidth',2);axis equal;grid on;xlabel('世界X / m');ylabel('高度 / m');legend('轮轴中心','坡面');
+ gz=[0 0 terrain.height terrain.height 0 0];plot(gx,gz,'k-','LineWidth',2);axis equal;grid on;xlabel('世界Y / m');ylabel('高度 / m');legend('轮轴中心','坡面');
  nexttile;plot(t,state(:,2));grid on;ylabel('速度 / m/s');xlabel('时间 / s');
  nexttile;plot(t,c(:,1:2),t,uphillSupport*.01,'--');grid on;ylabel('N·m，支持力×0.01');xlabel('时间 / s');legend('左轮转矩','右轮转矩','上坡面支持力×0.01');
  sgtitle(sprintf('%s / %s / %s：%.1f°坡，高%.1fcm；pass=%d',scenario,controller,profile,terrain.angle_deg,100*terrain.height,r.pass));

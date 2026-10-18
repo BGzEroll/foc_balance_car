@@ -1,7 +1,7 @@
 function p=configure_balance_terrain(model,kind)
 % 四个既有地形刚体复用，避免每次创建新模型/窗口。
 p=balance_terrain_parameters(kind);track=.1325364;
-set_param([model '/Ground'],'GraphicPlaneWidth','5','GraphicPlaneHeight','1.2');
+set_param([model '/Ground'],'GraphicPlaneWidth','1.2','GraphicPlaneHeight','5');
 a=deg2rad(p.angle_deg);
 top=[p.ramp_start+p.ramp_run/2 0 p.height/2; ...
  p.ramp_end+p.platform_length/2 0 p.height; ...
@@ -13,6 +13,9 @@ dimensions=[p.ramp_run/cos(a) p.width p.thickness; ...
  p.ramp_run/cos(a) p.width p.thickness; ...
  p.bump_length .06 p.thickness];
 translation=top-[p.thickness/2*sin(angles) zeros(4,1) p.thickness/2*cos(angles)];
+% 路线沿世界+Y，左轮凸起位于-X；斜坡转轴沿车体左侧-X。
+translation=[-translation(:,2) translation(:,1) translation(:,3)];
+dimensions=dimensions(:,[2 1 3]);
 mw=get_param(model,'ModelWorkspace');
 assignin(mw,'terrain_translation',translation);assignin(mw,'terrain_rotation_deg',rad2deg(angles));
 assignin(mw,'terrain_dimensions',dimensions);
@@ -20,7 +23,7 @@ for j=1:4
  name=['terrain_' num2str(j)];
  set_param([model '/' name '_pose'],'TranslationCartesianOffset', ...
   sprintf('terrain_translation(%d,:)+[0 0 -1+terrain_on]',j), ...
-  'RotationAngle',sprintf('terrain_rotation_deg(%d)',j));
+  'RotationStandardAxis','-X','RotationAngle',sprintf('terrain_rotation_deg(%d)',j));
  set_param([model '/' name],'BrickDimensions',sprintf('terrain_dimensions(%d,:)',j));
 end
 end

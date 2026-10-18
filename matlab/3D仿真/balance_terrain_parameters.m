@@ -16,7 +16,7 @@ end
 p.ramp_end=p.ramp_start+p.ramp_run;
 p.platform_end=p.ramp_end+p.platform_length;
 p.downhill_end=p.platform_end+p.ramp_run;
-p.hold_x=p.ramp_start+p.ramp_run/2; % 斜面中段，非平台
+p.hold_y=p.ramp_start+p.ramp_run/2; % 斜面中段，非平台
 p.hold_reference_start=7;p.hold_reference_end=19;
 p.hold_check_start=12;p.hold_check_end=18.5;
 p.finish_distance=1.95;

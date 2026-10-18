@@ -4,7 +4,7 @@ addpath(fileparts(fileparts(mfilename('fullpath'))));paths=balance_setup;
 if nargin<1,controller='lqr';end
 if nargin<2,actuatorGain=[1 1];end
 if nargin<3,profile='normal';end
-controller=validatestring(controller,{'lqr','pid'});
+controller=validatestring(controller,{'lqr','pid','pid_current'});
 names={'recover','drive','turn','route','push','terrain','bias'};rows=cell(numel(names),1);
 for i=1:numel(names)
  [~,rows{i}]=run_balance_case(names{i},false,[],controller,actuatorGain,profile);

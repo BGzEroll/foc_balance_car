@@ -5,9 +5,9 @@ here=fileparts(mfilename('fullpath')); original=pwd; cleanup=onCleanup(@()cd(ori
 meshDir=fullfile(paths.root,'模型','仿真模型','通用URDF','meshes'); addpath(meshDir);
 data=jsondecode(fileread(fullfile(paths.root,'模型','参数与图片','仿真刚体参数_SI.json')));
 M=data.links(1).mass; m=data.links(2).mass; r=.0325;
-com=data.links(1).com; l=hypot(com(1),com(3));
-I=data.links(1).inertia(2,2); J=data.links(2).inertia(2,2); g_mps2=9.80665;
-eq=atan2(-com(1),com(3)); Ts=.005;
+com=data.links(1).com; l=hypot(com(2),com(3));
+I=data.links(1).inertia(1,1); J=data.links(2).inertia(1,1); g_mps2=9.80665;
+eq=atan2(-com(2),com(3)); Ts=.005;
 D=[M+2*m+2*J/r^2 M*l;M*l I+M*l^2]; G=D\[0;M*g_mps2*l]; H=D\[1/r;-1];
 A=[0 1 0 0;0 0 G(1) 0;0 0 0 1;0 0 G(2) 0]; B=[0;H(1);0;H(2)];
 E=expm([A B;zeros(1,5)]*Ts); Ad=E(1:4,1:4); Bd=E(1:4,5);
@@ -29,9 +29,9 @@ delete_line(get_param(body.LConn(1),'Line'));
 floating=add('sm_lib/Joints/6-DOF Joint','FloatingBase',[170 340 290 510]);
 set_param(floating,'PzPositionTargetSpecify','on','PzPositionTargetValue','0.0326', ...
  'SphPositionTargetSpecify','on','SphPositionTargetRotationMethod','StandardAxis', ...
- 'SphPositionTargetRotationStandardAxis','+Y','SphPositionTargetRotationAngle','8.0896', ...
- 'PxSensePosition','on','PxSenseVelocity','on','PzSensePosition','on', ...
- 'SphSensePosition','on','SphSenseVelocityY','on');
+ 'SphPositionTargetRotationStandardAxis','-X','SphPositionTargetRotationAngle',num2str(rad2deg(eq)+8,16), ...
+ 'PySensePosition','on','PySenseVelocity','on','PzSensePosition','on', ...
+ 'SphSensePosition','on','SphSenseVelocityX','on');
 fp=ports('FloatingBase'); wire(world.RConn(1),fp.LConn(1)); wire(fp.RConn(1),body.LConn(1));
 set_param([model '/MechanismConfiguration'],'GravityVector','[0 0 -9.80665]');
 add('sm_lib/Curves and Surfaces/Infinite Plane','Ground',[460 600 540 660]);
@@ -58,19 +58,27 @@ for s={'base_link','left_wheel','right_wheel'}
  path=[model '/' s{1} '/Visual']; old=get_param(path,'ExtGeomFileName'); [~,n,e]=fileparts(old);
  set_param(path,'ExtGeomFileName',[n e]);
 end
-% Right-side floating joint ports: F, x, vx, z, quaternion, angular velocity Y.
+% Floating joint ports: F, y, vy, z, quaternion, angular velocity X.
 units={'m','m/s','m','1','rad/s'}; signals={'x','vx','z','quat','wy'};
 for i=1:5
  name=['read_' signals{i}]; add('nesl_utility/PS-Simulink Converter',name,[420 260+50*i 470 290+50*i]);
  set_param([model '/' name],'Unit',units{i}); pp=ports(name); wire(fp.RConn(i+1),pp.LConn(1));
 end
 add('simulink/Signal Routing/Mux','State',[630 300 635 490]);set_param([model '/State'],'Inputs','5');
-for i=1:5, add_line(model,['read_' signals{i} '/1'],['State/' num2str(i)],'autorouting','on');end
-% State raw vector=[x vx z qw qx qy qz wy]. Quaternion maps local to world.
+for i=1:5
+ source=['read_' signals{i} '/1'];
+ if i==5
+  add('simulink/Math Operations/Gain','Forward_pitch_rate',[510 510 560 540]);
+  set_param([model '/Forward_pitch_rate'],'Gain','-1');
+  add_line(model,source,'Forward_pitch_rate/1');source='Forward_pitch_rate/1';
+ end
+ add_line(model,source,['State/' num2str(i)],'autorouting','on');
+end
+% State=[y vy z qw qx qy qz forwardPitchRate]；最后一项=-世界wx。
 add('simulink/Discrete/Zero-Order Hold','Sample_200Hz',[700 350 780 390]);
 set_param([model '/Sample_200Hz'],'SampleTime','0.005');add_line(model,'State/1','Sample_200Hz/1');
 add('simulink/User-Defined Functions/Fcn','LQR_each_wheel',[840 350 1000 390]);
-expr=sprintf('-0.5*((%.16g)*u(1)+(%.16g)*u(2)+(%.16g)*(atan2(2*(u(4)*u(6)+u(5)*u(7)),1-2*(u(5)^2+u(6)^2))-%.16g)+(%.16g)*u(8))',K(1),K(2),K(3),eq,K(4));
+expr=sprintf('-0.5*((%.16g)*u(1)+(%.16g)*u(2)+(%.16g)*(atan2(2*(-u(4)*u(5)+u(6)*u(7)),1-2*(u(5)^2+u(6)^2))-%.16g)+(%.16g)*u(8))',K(1),K(2),K(3),eq,K(4));
 set_param([model '/LQR_each_wheel'],'Expr',expr); add_line(model,'Sample_200Hz/1','LQR_each_wheel/1');
 add('simulink/Discontinuities/Saturation','Torque_limit',[1005 350 1035 390]);
 set_param([model '/Torque_limit'],'UpperLimit','0.02','LowerLimit','-0.02');

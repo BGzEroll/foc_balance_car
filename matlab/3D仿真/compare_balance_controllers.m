@@ -1,7 +1,7 @@
 function metrics=compare_balance_controllers
 % 从两组真实3D报告生成对比，不使用线性模型代替Multibody结果。
 addpath(fileparts(fileparts(mfilename('fullpath'))));paths=balance_setup;
-folder=fullfile(paths.results,'suite');names={'recover','drive','turn','route','push','terrain','bias'};
+folder=paths.suite_results;names={'recover','drive','turn','route','push','terrain','bias'};
 rows=cell(14,1);index=0;
 for mode={'lqr','pid'}
  controller=mode{1};

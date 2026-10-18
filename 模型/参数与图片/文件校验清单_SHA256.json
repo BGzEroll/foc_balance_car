@@ -31,8 +31,8 @@
   },
   {
     "file": "README_从这里开始.md",
-    "bytes": 9725,
-    "sha256": "00f31ebc6bd52665b37ba8f489eb7ebb512e37c0ad109ab81143fe98d1335568"
+    "bytes": 10614,
+    "sha256": "de1c397a3c50995208b1fcbc35c22b65811612cb8bcf1d464832c08484276c5a"
   },
   {
     "file": "仿真模型/Gazebo_SDF/model.config",
@@ -41,18 +41,18 @@
   },
   {
     "file": "仿真模型/Gazebo_SDF/model.sdf",
-    "bytes": 3882,
-    "sha256": "934c3834b9a0f7fe89f2d9c4cd16622122343232c0da7e9e7b981b98cf5eebe6"
+    "bytes": 4115,
+    "sha256": "bb824f80efde2380a0e415f82c688afebf8e6a03d6ff03e6dd190b3948b115a9"
   },
   {
     "file": "仿真模型/MATLAB/lqr_mechanical_params.m",
-    "bytes": 1010,
-    "sha256": "4c8f37857115b09305975218e609f5105929bbfa2bbe9e6cf37c79de1361a971"
+    "bytes": 1070,
+    "sha256": "2659191616af7cbfa3fbb986fabf02e092d4425ad315ec874d445907e3596d60"
   },
   {
     "file": "仿真模型/MATLAB/lqr_mechanical_params.py",
-    "bytes": 1115,
-    "sha256": "21ef6b08a3a1dd9e98986e4198cee86eb64d76c202ef112cf713399f3c024abd"
+    "bytes": 1175,
+    "sha256": "5a0ac51caefbbd5e9fc646b7631989fd3714d53d0512f94215e44dd215300436"
   },
   {
     "file": "仿真模型/MATLAB/打开模型.m",
@@ -61,8 +61,8 @@
   },
   {
     "file": "仿真模型/MuJoCo/balance_car.xml",
-    "bytes": 2962,
-    "sha256": "6d4901cda790616405fd57f998db989e73b05235d7866e328f2e3f5f740d370a"
+    "bytes": 3348,
+    "sha256": "1437bac45ed553f5362779952b32b17a418d25792c1201c4f49d2e860e1bd6cf"
   },
   {
     "file": "仿真模型/MuJoCo/load_model.py",
@@ -131,8 +131,8 @@
   },
   {
     "file": "仿真模型/ROS2/balance_car_description/urdf/balance_car.urdf",
-    "bytes": 3108,
-    "sha256": "c9f97a631a4a2974f376d563ee54414f2e98f8be74bb992f40bc57df96fcdd6c"
+    "bytes": 3387,
+    "sha256": "5a1a79eb30a1574a2e63ba14fd6cbb72573a27e7d31d0cdb524656b159fe5c7a"
   },
   {
     "file": "仿真模型/通用URDF/meshes/body.mtl",
@@ -181,8 +181,8 @@
   },
   {
     "file": "仿真模型/通用URDF/urdf/balance_car.urdf",
-    "bytes": 3015,
-    "sha256": "ca658e60026bc397609259893684ec86d8f0db500bfdceccc8baeb84723991e9"
+    "bytes": 3294,
+    "sha256": "e3ec3d8b3b6c9517e8c19cb8f84e23faec9897e82383e0f00f1ab2b87c01c415"
   },
   {
     "file": "参数与图片/CAD整理结果.json",
@@ -221,8 +221,8 @@
   },
   {
     "file": "参数与图片/仿真刚体参数_SI.json",
-    "bytes": 2189,
-    "sha256": "8a9662f2962b9160400c5c7b3b9f9c88cde707abb803ebb4cb4135cb9c90d764"
+    "bytes": 2551,
+    "sha256": "70d97f1cc515f98ab0a091f0804740519df2e2acb87f8b03afd06c830eba96ec"
   },
   {
     "file": "参数与图片/仿真文件验证.json",
@@ -271,13 +271,13 @@
   },
   {
     "file": "参数与图片/机械参数.m",
-    "bytes": 1010,
-    "sha256": "4c8f37857115b09305975218e609f5105929bbfa2bbe9e6cf37c79de1361a971"
+    "bytes": 1070,
+    "sha256": "2659191616af7cbfa3fbb986fabf02e092d4425ad315ec874d445907e3596d60"
   },
   {
     "file": "参数与图片/机械参数.py",
-    "bytes": 1115,
-    "sha256": "21ef6b08a3a1dd9e98986e4198cee86eb64d76c202ef112cf713399f3c024abd"
+    "bytes": 1175,
+    "sha256": "5a0ac51caefbbd5e9fc646b7631989fd3714d53d0512f94215e44dd215300436"
   },
   {
     "file": "参数与图片/档案_侧视图.png",

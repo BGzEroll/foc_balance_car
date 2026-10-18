@@ -32,7 +32,9 @@ cfg=[scenario limit d.pitch_trim d.K(:)' mode ...
  p.pitch_kp p.pitch_ki p.pitch_kd p.velocity_kp p.velocity_ki p.position_kp ...
  p.speed_limit p.pitch_target_limit p.velocity_integral_limit p.pitch_integral_limit ...
  p.yaw_kp p.yaw_ki p.yaw_kd p.yaw_integral_limit d.Ts actuatorGain(:)' motion.id];
-terrain=balance_terrain_parameters('steep');cfg=[cfg terrain.hold_x terrain.finish_distance];
+terrain=balance_terrain_parameters('steep');cfg=[cfg terrain.hold_y terrain.finish_distance];
 motor=balance_current_parameters;cfg=[cfg motor.Kt_nominal];
 d.controller=upper(controller);d.config=cfg;d.motion_profile=motion;
+d.direction_convention='x_right_y_forward_v2';
+d.wheel_motor_mapping=struct('left','MA','right','MB');
 end

@@ -40,7 +40,7 @@ save_system(model,file);
 [~,checks.recover]=run_balance_case('recover',false,[],'pid_current');assert(checks.recover.pass);
 [~,checks.agile_drive]=run_balance_case('drive',false,[],'pid_current',1,'agile');assert(checks.agile_drive.pass);
 [~,checks.slope_hold]=run_balance_case('slope_hold',false,[],'pid_current',1,'slope');assert(checks.slope_hold.pass);
-out=fullfile(paths.results,'suite','current_interface_checks.json');
+out=fullfile(paths.suite_results,'current_interface_checks.json');
 fid=fopen(out,'w');assert(fid>=0);fprintf(fid,'%s',jsonencode(checks,PrettyPrint=true));fclose(fid);
 fprintf('CURRENT_INTERFACE_VERIFIED; replay error=%g\n',checks.replay_max_difference);
 end

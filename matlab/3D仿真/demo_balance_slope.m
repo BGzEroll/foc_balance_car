@@ -12,7 +12,7 @@ button=findall(f,'Tag','run_selected');cb=get(button,'Callback');cb(button,[]);
 if evalin('base','exist(''report_selected'',''var'')')
  r=evalin('base','report_selected');
  if strcmp(r.scenario,'slope_hold')
-  fprintf('SLOPE_DESKTOP_READY: pass=%d, hold_error=%.6g m, on_slope=%.3f\n',r.pass,r.hold_mean_x_error_m,r.hold_on_incline_fraction);
+  fprintf('SLOPE_DESKTOP_READY: pass=%d, hold_error=%.6g m, on_slope=%.3f\n',r.pass,r.hold_mean_y_error_m,r.hold_on_incline_fraction);
  end
 end
 end

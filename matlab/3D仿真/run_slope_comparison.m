@@ -8,6 +8,6 @@ for controller={'lqr','pid'}
  end
 end
 summary=struct2table(vertcat(rows{:}));
-writetable(summary,fullfile(paths.results,'suite','slope','all_tests.csv'));
-compare_slope_controllers;disp(summary(:,{'scenario','controller','pass','hold_mean_x_error_m','hold_stability_pass','hold_tracking_pass'}));
+writetable(summary,fullfile(paths.suite_results,'slope','all_tests.csv'));
+compare_slope_controllers;disp(summary(:,{'scenario','controller','pass','hold_mean_y_error_m','hold_stability_pass','hold_tracking_pass'}));
 end

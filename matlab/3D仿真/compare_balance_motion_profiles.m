@@ -13,7 +13,7 @@ for k=1:2
   'forward_overshoot_m',max(0,peakForward-.3),'final_distance_error_m',r.final_distance_error_m,'peak_each_torque_Nm',r.peak_each_torque_Nm, ...
   'peak_approx_slip_mps',r.peak_approx_rolling_slip_mps,'saturation_fraction',r.saturated_fraction,'pass',r.pass);
 end
-folder=fullfile(paths.results,'suite','agile');metrics=struct2table(vertcat(rows{:}));
+folder=fullfile(paths.suite_results,'agile');metrics=struct2table(vertcat(rows{:}));
 writetable(metrics,fullfile(folder,'normal_vs_agile.csv'));
 f=figure('Visible','off','Color','w','Position',[60 40 1120 820]);tiledlayout(3,2);
 for row=1:3

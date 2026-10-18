@@ -17,6 +17,8 @@ assert(~isempty(idx),'Unknown scenario');
 here=fileparts(mfilename('fullpath'));addpath(here);configure_balance_cache;addpath(fullfile(paths.root,'模型','仿真模型','通用URDF','meshes'));
 model='balance_car_3d_suite';file=fullfile(here,[model '.slx']);if ~isfile(file),build_balance_suite;end
 load_system(file);mw=get_param(model,'ModelWorkspace');
+assert(mw.hasVariable('direction_convention')&&strcmp(mw.getVariable('direction_convention'),'x_right_y_forward_v2'), ...
+ '当前加载的模型坐标已过期，请保存并关闭后重建或重载X右/Y前/Z上模型');
 assert(getSimulinkBlockHandle([model '/Balance_Controller'])>0,'请先保存并关闭旧模型，运行build_balance_suite更新LQR/PID模型');
 cfg(1)=idx;cfg(2)=torqueLimit;
 d.config=cfg;
@@ -33,7 +35,7 @@ simout=sim(model);
 out=fullfile(balance_result_folder(paths.results,controller,actuatorGain,profile),[lower(scenario) '_' controller]);
 try
  drive=[];if cfg(16)>1.5,drive=d.current_parameters;end
- report=report_balance_case(simout,scenario,durations(idx),torqueLimit,out,upper(controller),actuatorGain,profile,terrain,drive);
+ report=report_balance_case(simout,scenario,durations(idx),torqueLimit,out,upper(controller),actuatorGain,profile,terrain,drive,'x_right_y_forward_v2');
 catch err
  if ~isfolder(out),mkdir(out);end
  save(fullfile(out,'unreported_simulation.mat'),'simout','cfg','d','-v7.3');

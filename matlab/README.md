@@ -24,7 +24,9 @@ run_balance_case('turn',true,[],'pid') % 改用级联PID
 run_balance_case('slope_hold',true,6,'pid_current',1,'slope') % PID输出iq，单轮上限6A
 ```
 
-前进方向约定：USB口一侧为后，远离USB口为前；仿真车体+X向前、+Y向左、+Z向上。
+前进方向约定：USB口一侧为前；朝前看MA为左轮、MB为右轮。仿真车体+X向右、+Y向前、+Z向上，正偏航为左转，正轮速与正轮轴转矩对应向前滚动。旧结果采用USB侧为后的定义，应与新结果分开理解。
+
+方向修正后的报告位于`results/suite/y_forward/`，旧目录保留历史结果。坐标、网格映射与验证范围见[方向约定](3D仿真/方向约定.md)。
 
 PID增益集中在`3D仿真/pid_balance_parameters.m`，不需先输入Kt才能整定。面板可设置左右“实际/指令转矩增益”检查电机标定误差；实机输出改成电流指令时需要按实际执行尺度重新整定，不能照抄仿真N·m参数。详见`3D仿真/PID控制说明.md`。
 

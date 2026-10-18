@@ -4,7 +4,7 @@ function p=pid_balance_parameters(profile)
 if nargin<1,profile='normal';end
 profile=validatestring(profile,{'normal','agile','slope'});
 p.Ts=.005;
-p.pitch_trim=deg2rad(.0896225217620993); % 静态平衡偏置，可实测调整
+p.pitch_trim=deg2rad(-.0896225217620993); % USB侧为前后的静态平衡偏置，可实测调整
 p.torque_limit_each=.10;
 % 位置P -> 速度PI -> 俯仰PID，另有偏航PID。
 p.position_kp=1.3;
