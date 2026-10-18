@@ -7,9 +7,14 @@
 #include "esp_adc/adc_oneshot.h"
 #include "esp_adc/adc_cali.h"
 #include "esp_adc/adc_cali_scheme.h"
-#include "esp_private/adc_private.h"
+// IDF 的 C 风格 LL 头文件含部分初始化；仅在包含它时关闭此项 C++ 警告。
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#include "hal/adc_ll.h"
+#pragma GCC diagnostic pop
 #include "esp_cpu.h"
 #include "esp_timer.h"
+#include "xtensa/hal.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -41,16 +46,73 @@ namespace foc_current
         int64_t previous_event_us = 0;
         state latest;
         portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
+        TaskHandle_t worker = nullptr;
+        portMUX_TYPE trigger_mux = portMUX_INITIALIZER_UNLOCKED;
+
+        struct trigger
+        {
+            uint32_t sequence = 0;
+            uint32_t callback_cycle = 0;
+            uint32_t phase_cycles = 0;
+            uint32_t notify_cycles = 0;
+            int64_t event_us = 0;
+        };
+
+        trigger pending;
 
         /**
-         * @brief 用半秒普通任务吞吐量对照测量中断对业务代码的实际影响
+         * @brief 独占 ADC1 时直接触发一次转换，沿用初始化阶段的衰减和硬件校准
+         * @param[in] channel ADC1 通道
+         * @param[out] raw 原始转换结果
+         * @return true 转换完成
+         * @return false 二十微秒后 ADC 仍忙或转换仍未完成
+         */
+        bool IRAM_ATTR read_adc(adc_channel_t channel, uint16_t &raw)
+        {
+            const uint32_t idle_start = esp_cpu_get_cycle_count();
+            while(SENS.sar_slave_addr1.meas_status != 0)
+            {
+                if(esp_cpu_get_cycle_count() - idle_start >= CPU_MHZ * 20 &&
+                   SENS.sar_slave_addr1.meas_status != 0){return false;}
+            }
+            adc_oneshot_ll_set_channel(ADC_UNIT_1, channel);
+            adc_oneshot_ll_start(ADC_UNIT_1);
+            const uint32_t start = esp_cpu_get_cycle_count();
+            while(!adc_oneshot_ll_get_event(ADC_LL_EVENT_ADC1_ONESHOT_DONE))
+            {
+                // 任务可能被外设中断抢占；超时前复查完成位，避免将已完成的转换误报失败。
+                if(esp_cpu_get_cycle_count() - start >= CPU_MHZ * 20 &&
+                   !adc_oneshot_ll_get_event(ADC_LL_EVENT_ADC1_ONESHOT_DONE)){return false;}
+            }
+            raw = static_cast<uint16_t>(adc_oneshot_ll_get_raw_result(ADC_UNIT_1));
+            return true;
+        }
+
+        /**
+         * @brief 用半秒普通任务吞吐量对照测量电流环对业务代码的实际影响
          * @return 半秒内完成的循环次数，包含现有传感器任务的影响
          */
         uint32_t probe()
         {
             uint32_t count = 0;
+            uint32_t errors = 0;
+            constexpr uint32_t pattern = 0x3fa00000;
+            asm volatile("wfr f0, %0" :: "a"(pattern) : "f0");
             const int64_t deadline = esp_timer_get_time() + 500000;
-            while(esp_timer_get_time() < deadline){++count;}
+            while(esp_timer_get_time() < deadline)
+            {
+                uint32_t observed = 0;
+                asm volatile("rfr %0, f0" : "=a"(observed));
+                if(observed != pattern)
+                {
+                    ++errors;
+                    asm volatile("wfr f0, %0" :: "a"(pattern) : "f0");
+                }
+                ++count;
+            }
+            portENTER_CRITICAL(&mux);
+            latest.probe_fpu_errors += errors;
+            portEXIT_CRITICAL(&mux);
             return count;
         }
 
@@ -126,31 +188,29 @@ namespace foc_current
         }
 
         /**
-         * @brief 在一级 MCPWM 零点中断依次采样五路 ADC 并计算双电机电流环
-         * @param[in] event 定时器进入驱动中断时的相位
-         * @return false 不请求任务切换
+         * @brief 复用同一采样和双电机计算链路，供中断及高优先级任务对照
+         * @param[in] event 对应本轮的 MCPWM 触发信息
+         * @param[in] start 本轮执行入口的 CPU 周期
+         * @param[in] wake_cycles 中断通知至任务开始执行的周期数，中断模式为零
          */
-        bool IRAM_ATTR on_empty(mcpwm_timer_handle_t, const mcpwm_timer_event_data_t *event, void *)
+        void IRAM_ATTR __attribute__((noinline)) step(const trigger &event, uint32_t start, uint32_t wake_cycles)
         {
-            const uint32_t start = esp_cpu_get_cycle_count();
-            const uint32_t phase_ticks = event->direction == MCPWM_TIMER_DIRECTION_UP ?
-                event->count_value : PERIOD_TICKS - event->count_value;
-            const uint32_t entry_cycles = phase_ticks * CPU_MHZ / 10;
-            const int64_t event_us = esp_timer_get_time() - phase_ticks / 10;
+            const uint32_t entry_cycles = event.phase_cycles;
+            const int64_t event_us = event.event_us;
             uint32_t begin[5];
             uint32_t end[5];
             uint16_t raw[5];
             uint32_t invalid = 0;
 
-            // 该私有 API 固定依赖 ESP-IDF 6.0.2；此测试独占 ADC1，无其它 ADC 调用者。
+            // 此 LL 路径固定依赖 ESP-IDF 6.0.2；测试独占 ADC1，不重复配置和校准。
             for(uint32_t i = 0; i < 5; ++i)
             {
-                int value = 0; // IDF API 的输出参数要求 int*，不能以本平台的 int32_t* 代替。
+                uint16_t value = 0;
                 begin[i] = esp_cpu_get_cycle_count() - start;
-                adc_oneshot_read_isr(adc, CHANNEL[i], &value);
+                const bool converted = read_adc(CHANNEL[i], value);
                 end[i] = esp_cpu_get_cycle_count() - start;
-                if(value <= 0 || value >= 4095){++invalid;}
-                raw[i] = static_cast<uint16_t>(value & 4095);
+                if(!converted || value == 0 || value >= 4095){++invalid;}
+                raw[i] = value;
             }
             const uint32_t acquired = esp_cpu_get_cycle_count();
             float current[4];
@@ -177,7 +237,7 @@ namespace foc_current
             }
             const uint32_t written = esp_cpu_get_cycle_count();
 
-            portENTER_CRITICAL_ISR(&mux);
+            portENTER_CRITICAL_SAFE(&mux);
             ++latest.count;
             latest.adc_invalid += invalid;
             latest.compare_errors += errors;
@@ -193,6 +253,8 @@ namespace foc_current
             previous_cycle = start;
             previous_event_us = event_us;
             record(latest.entry_phase, entry_cycles);
+            record(latest.wake_latency, wake_cycles);
+            record(latest.notify_isr, event.notify_cycles);
             record(latest.acquisition, acquired - start);
             record(latest.calculation, calculated - acquired);
             record(latest.write, written - calculated);
@@ -200,19 +262,106 @@ namespace foc_current
             {
                 latest.raw[i] = raw[i];
                 latest.raw_sum[i] += raw[i];
+                latest.raw_square_sum[i] += static_cast<uint32_t>(raw[i]) * raw[i];
+                const int32_t deviation = static_cast<int32_t>(raw[i]) -
+                    static_cast<int32_t>(latest.baseline_raw[i] + 0.5f);
+                if(deviation < -32 || deviation > 32){++latest.raw_spikes[i];}
                 if(raw[i] < latest.raw_min[i]){latest.raw_min[i] = raw[i];}
                 if(raw[i] > latest.raw_max[i]){latest.raw_max[i] = raw[i];}
-                record(latest.read_begin[i], entry_cycles + begin[i]);
-                record(latest.read_end[i], entry_cycles + end[i]);
+                record(latest.read_begin[i], entry_cycles + wake_cycles + begin[i]);
+                record(latest.read_end[i], entry_cycles + wake_cycles + end[i]);
             }
             for(uint32_t i = 0; i < 4; ++i){latest.current_A[i] = current[i];}
             for(uint32_t i = 0; i < 2; ++i){latest.id_A[i] = id[i]; latest.iq_A[i] = iq[i];}
             for(uint32_t i = 0; i < 6; ++i){latest.duty[i] = duty[i];}
             latest.bus_V = bus;
+            portEXIT_CRITICAL_SAFE(&mux);
+        }
+
+        /**
+         * @brief 记录执行耗时及从定时零点到完成的完整时延
+         * @param[in] event 当前轮的触发信息
+         * @param[in] start 本轮执行入口的 CPU 周期
+         * @param[in] wake_cycles 通知至任务开始执行的周期数
+         */
+        void IRAM_ATTR finish(const trigger &event, uint32_t start, uint32_t wake_cycles)
+        {
+            portENTER_CRITICAL_SAFE(&mux);
             const uint32_t elapsed = esp_cpu_get_cycle_count() - start;
             record(latest.total, elapsed);
-            if(entry_cycles + elapsed >= PERIOD_CYCLES){++latest.deadline_misses;}
-            portEXIT_CRITICAL_ISR(&mux);
+            const uint32_t deadline_used = event.phase_cycles + wake_cycles + elapsed;
+            record(latest.completion, deadline_used);
+            if(deadline_used >= PERIOD_CYCLES){++latest.deadline_misses;}
+            record(latest.margin, deadline_used < PERIOD_CYCLES ? PERIOD_CYCLES - deadline_used : 0);
+            portEXIT_CRITICAL_SAFE(&mux);
+        }
+
+        /**
+         * @brief 高优先级电流环任务，每次由 MCPWM 通知唤醒
+         */
+        void control_task(void *)
+        {
+            uint32_t previous_sequence = 0;
+            while(true)
+            {
+                ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+                trigger event;
+                portENTER_CRITICAL(&trigger_mux);
+                event = pending;
+                portEXIT_CRITICAL(&trigger_mux);
+                if(event.sequence == previous_sequence){continue;}
+                const uint32_t start = esp_cpu_get_cycle_count();
+                const uint32_t wake_cycles = start - event.callback_cycle;
+                // 只处理最新一轮，单独记录被覆盖的通知，避免积压后补算过期数据。
+                portENTER_CRITICAL(&mux);
+                latest.notification_skips += event.sequence - previous_sequence - 1;
+                portEXIT_CRITICAL(&mux);
+                previous_sequence = event.sequence;
+                step(event, start, wake_cycles);
+                finish(event, start, wake_cycles);
+            }
+        }
+
+        /**
+         * @brief 任务模式仅通知；中断模式显式保存 FPU 后执行相同计算链路
+         * @param[in] event 定时器驱动读取的事件相位
+         * @return false 不请求任务切换
+         * @return true 唤醒核心 1 的高优先级电流环任务
+         */
+        bool IRAM_ATTR on_empty(mcpwm_timer_handle_t, const mcpwm_timer_event_data_t *event, void *)
+        {
+            const uint32_t start = esp_cpu_get_cycle_count();
+            const uint32_t phase_ticks = event->direction == MCPWM_TIMER_DIRECTION_UP ?
+                event->count_value : PERIOD_TICKS - event->count_value;
+            trigger current;
+            current.callback_cycle = start;
+            current.phase_cycles = phase_ticks * CPU_MHZ / 10;
+            current.event_us = esp_timer_get_time() - phase_ticks / 10;
+            if constexpr(RUN_IN_TASK)
+            {
+                BaseType_t woken = pdFALSE;
+                portENTER_CRITICAL_ISR(&trigger_mux);
+                current.sequence = pending.sequence + 1;
+                pending = current;
+                vTaskNotifyGiveFromISR(worker, &woken);
+                pending.notify_cycles = esp_cpu_get_cycle_count() - start;
+                portEXIT_CRITICAL_ISR(&trigger_mux);
+                return woken == pdTRUE;
+            }
+            portENTER_CRITICAL_ISR(&trigger_mux);
+            pending.sequence++;
+            portEXIT_CRITICAL_ISR(&trigger_mux);
+            alignas(16) uint8_t saved_fpu[XCHAL_CP0_SA_SIZE];
+            uint32_t cpenable = 0;
+            asm volatile("rsr.cpenable %0" : "=a"(cpenable));
+            const uint32_t enabled = cpenable | 1U;
+            // 主动启用后保存物理寄存器，不触发 SDK 的惰性 FPU 所有权切换。
+            asm volatile("wsr.cpenable %0; rsync" :: "a"(enabled) : "memory");
+            xthal_save_cp0(saved_fpu);
+            step(current, start, 0);
+            xthal_restore_cp0(saved_fpu);
+            asm volatile("wsr.cpenable %0; rsync" :: "a"(cpenable) : "memory");
+            finish(current, start, 0);
             return false;
         }
 
@@ -221,6 +370,7 @@ namespace foc_current
          */
         void init_adc()
         {
+            float baseline_raw[5] = {};
             adc_oneshot_unit_init_cfg_t unit{};
             unit.unit_id = ADC_UNIT_1;
             ESP_ERROR_CHECK(adc_oneshot_new_unit(&unit, &adc));
@@ -251,7 +401,7 @@ namespace foc_current
                 {
                     int raw = 0;
                     ESP_ERROR_CHECK(adc_oneshot_read(adc, CHANNEL[i], &raw));
-                    latest.baseline_raw[i] += static_cast<float>(raw) / static_cast<float>(BASELINE_COUNT);
+                    baseline_raw[i] += static_cast<float>(raw) / static_cast<float>(BASELINE_COUNT);
                     if(i < 4)
                     {
                         offset_V[i] += static_cast<float>(voltage_mv[i][raw]) *
@@ -259,11 +409,14 @@ namespace foc_current
                     }
                 }
             }
+            portENTER_CRITICAL(&mux);
+            for(uint32_t i = 0; i < 5; ++i){latest.baseline_raw[i] = baseline_raw[i];}
+            portEXIT_CRITICAL(&mux);
         }
     }
 
     /**
-     * @brief 在当前核心初始化无引脚输出的 MCPWM 中断电流环测试
+     * @brief 在核心 1 初始化无引脚输出的 MCPWM 电流环对照测试
      * @return true 初始化完成，任何配置失败由 ESP_ERROR_CHECK 报告
      */
     bool init()
@@ -277,8 +430,17 @@ namespace foc_current
         ESP_ERROR_CHECK(gpio_config(&pins));
         ESP_ERROR_CHECK(gpio_dump_io_configuration(stdout, pins.pin_bit_mask));
         init_adc();
-        vTaskDelay(pdMS_TO_TICKS(2500));
-        latest.probe_without_foc = probe();
+        // IMU 需要 1000 次、200Hz 的静态校准，吞吐对照放在校准结束后进行。
+        vTaskDelay(pdMS_TO_TICKS(6000));
+        const uint32_t without_foc = probe();
+        portENTER_CRITICAL(&mux);
+        latest.probe_without_foc = without_foc;
+        portEXIT_CRITICAL(&mux);
+        if constexpr(RUN_IN_TASK)
+        {
+            ESP_ERROR_CHECK(xTaskCreatePinnedToCore(control_task, "foc_current", 4096, nullptr,
+                TASK_PRIORITY, &worker, 1) == pdPASS ? ESP_OK : ESP_ERR_NO_MEM);
+        }
         mcpwm_timer_config_t config{};
         config.group_id = 0;
         config.clk_src = MCPWM_TIMER_CLK_SRC_DEFAULT;
@@ -311,12 +473,13 @@ namespace foc_current
         const uint32_t with_foc = probe();
         portENTER_CRITICAL(&mux);
         latest.probe_with_foc = with_foc;
+        latest.probe_completed = true;
         portEXIT_CRITICAL(&mux);
         return true;
     }
 
     /**
-     * @brief 复制累计测量结果，中断只在此短临界区可能等待
+     * @brief 复制累计测量结果及定时触发总数
      * @param[out] out ADC 数据与周期统计
      */
     void get_package(state &out)
@@ -324,5 +487,8 @@ namespace foc_current
         portENTER_CRITICAL(&mux);
         out = latest;
         portEXIT_CRITICAL(&mux);
+        portENTER_CRITICAL(&trigger_mux);
+        out.trigger_count = pending.sequence;
+        portEXIT_CRITICAL(&trigger_mux);
     }
 }
