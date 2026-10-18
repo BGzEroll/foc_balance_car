@@ -113,7 +113,7 @@ namespace test
             {
                 sensor::package p{};
                 const bool ready = sensor::get_package(p);
-                if(++bat_count >= 10)
+                if(++bat_count >= 1)
                 {
                     bat::get_package(battery);
                     bat_count = 0;
