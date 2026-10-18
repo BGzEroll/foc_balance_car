@@ -126,6 +126,6 @@ namespace test
 
     bool init()
     {
-        return xTaskCreate(task, "sensor_test", 4096, nullptr, 1, nullptr) == pdPASS;
+        return xTaskCreatePinnedToCore(task, "sensor_test", 4096, nullptr, 1, nullptr, 0) == pdPASS;
     }
 }
