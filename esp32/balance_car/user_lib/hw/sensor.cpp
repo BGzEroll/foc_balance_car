@@ -17,15 +17,14 @@ namespace i2c
         constexpr i2c_port_num_t LEFT_PORT = 0;
         constexpr i2c_port_num_t RIGHT_PORT = 1;
 
-        constexpr gpio_num_t LEFT_SDA = GPIO_NUM_19;
-        constexpr gpio_num_t LEFT_SCL = GPIO_NUM_18;
+        constexpr gpio_num_t LEFT_SDA = GPIO_NUM_37;
+        constexpr gpio_num_t LEFT_SCL = GPIO_NUM_36;
 
-        constexpr gpio_num_t RIGHT_SDA = GPIO_NUM_23;
-        constexpr gpio_num_t RIGHT_SCL = GPIO_NUM_5;
+        constexpr gpio_num_t RIGHT_SDA = GPIO_NUM_8;
+        constexpr gpio_num_t RIGHT_SCL = GPIO_NUM_9;
 
         constexpr uint32_t LEFT_FREQ_HZ = 400000;
         constexpr uint32_t RIGHT_FREQ_HZ = 400000;
-        constexpr uint64_t STALL_TIME_US = 3000;
 
         constexpr uint16_t DEFAULT_ADDRESS = 0x36;
 
@@ -35,8 +34,6 @@ namespace i2c
             i2c_master_dev_handle_t dev = nullptr;
 
             uint32_t notify_bit = 0;
-            volatile bool pending = false;
-            uint64_t submit_time_us = 0;
             volatile uint64_t completion_time_us = 0;
         };
 
@@ -61,7 +58,6 @@ namespace i2c
             auto *ctx = static_cast<context *>(arg);
 
             ctx->completion_time_us = sys_time::get_us_tick();
-            ctx->pending = false;
 
             BaseType_t task_woken = pdFALSE;
             xTaskNotifyFromISR(
@@ -183,9 +179,6 @@ namespace i2c
      */
     void read(context &ctx, const uint8_t *reg, uint8_t *data, size_t size)
     {
-        ctx.submit_time_us = sys_time::get_us_tick();
-        ctx.pending = true;
-
         ESP_ERROR_CHECK(
             i2c_master_transmit_receive(
                 ctx.dev,
@@ -210,9 +203,6 @@ namespace i2c
 
         while(true)
         {
-            right.submit_time_us = sys_time::get_us_tick();
-            right.pending = true;
-
             ESP_ERROR_CHECK(
                 i2c_master_transmit(
                     right.dev,
@@ -234,19 +224,7 @@ namespace i2c
         }
     }
 
-    /**
-     * @brief 检查传感器 I2C 是否超时
-     *
-     * @param[in] ctx 左侧或右侧总线上下文
-     * @param[in] now_us 当前时间
-     *
-     * @return true 事务超时
-     * @return false 事务正常
-     */
-    bool stalled(const context &ctx, uint64_t now_us)
-    {
-        return ctx.pending && now_us - ctx.submit_time_us >= STALL_TIME_US;
-    }
+
 }
 
 namespace as5600
@@ -773,24 +751,7 @@ namespace sensor
                     }
                 }
 
-                const uint64_t now_us = sys_time::get_us_tick();
 
-                if(i2c::stalled(i2c::left, now_us))
-                {
-                    as5600::start_left_read();
-                }
-
-                if(i2c::stalled(i2c::right, now_us))
-                {
-                    if(right_reading_imu)
-                    {
-                        mpu6050::start_read();
-                    }
-                    else
-                    {
-                        as5600::start_right_read();
-                    }
-                }
             }
         }
     }
