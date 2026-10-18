@@ -1,6 +1,7 @@
 #include "test.h"
 #include "hw/sensor.h"
 #include "hw/bat.h"
+#include "foc_current.h"
 #include "driver/gpio.h"
 #include <stdint.h>
 #include <inttypes.h>
@@ -13,8 +14,8 @@ namespace test
 {
     namespace
     {
-        constexpr uint32_t ROW_COUNT = 9;
-        constexpr uint32_t ROW_SIZE = 160;
+        constexpr uint32_t ROW_COUNT = 24;
+        constexpr uint32_t ROW_SIZE = 256;
 
         // 仅由测试任务使用，放在静态区以减少任务栈占用。
         char previous[ROW_COUNT][ROW_SIZE] = {};
@@ -22,7 +23,7 @@ namespace test
         char output[ROW_COUNT * (ROW_SIZE + 20) + 32] = {};
         bool first_draw = true;
 
-        void draw(const sensor::package &p, bool ready, const bat::state &battery)
+        void draw(const sensor::package &p, bool ready, const foc_current::state &foc)
         {
             snprintf(current[0], ROW_SIZE, "平衡车实时数据    角度：rad    角速度：rad/s");
             snprintf(current[1], ROW_SIZE, "传感器状态：%s", ready ? "已就绪" : "等待有效数据或静止校准中");
@@ -65,14 +66,40 @@ namespace test
                 snprintf(current[7], ROW_SIZE, "IMU 温度：等待有效数据");
             }
 
-            if(battery.valid)
+            snprintf(current[8], ROW_SIZE, "PVCC 母线电压：%7.3f V；FOC 无引脚输出，使用测试电角度", foc.bus_V);
+            snprintf(current[9], ROW_SIZE, "FOC n=%" PRIu32 " hz=%" PRIu32 " adc_invalid=%" PRIu32 " cmp_error=%" PRIu32 " late=%" PRIu32 " gaps=%" PRIu32,
+                     foc.count, foc_current::FREQUENCY_HZ, foc.adc_invalid, foc.compare_errors, foc.deadline_misses, foc.event_gaps);
+            snprintf(current[10], ROW_SIZE, "相电流 A：M1 %+8.4f %+8.4f；M2 %+8.4f %+8.4f",
+                     foc.current_A[0], foc.current_A[1], foc.current_A[2], foc.current_A[3]);
+            const foc_current::timing *timings[5] = {&foc.acquisition, &foc.calculation, &foc.write, &foc.total, &foc.entry_phase};
+            const char *names[5] = {"ADC 五路", "双电机 FOC", "比较器写入", "中断回调总计", "零点至驱动入口"};
+            for(uint32_t i = 0; i < 5; ++i)
             {
-                snprintf(current[8], ROW_SIZE, "PVCC 母线电压：%7.3f V", battery.voltage_V);
+                const auto &t = *timings[i];
+                snprintf(current[11 + i], ROW_SIZE, "%s us：mean=%.3f min=%.3f max=%.3f", names[i],
+                    static_cast<double>(t.sum) / static_cast<double>(foc.count) / foc_current::CPU_MHZ,
+                    static_cast<double>(t.minimum) / foc_current::CPU_MHZ,
+                    static_cast<double>(t.maximum) / foc_current::CPU_MHZ);
             }
-            else
+            snprintf(current[16], ROW_SIZE, "入口间隔 us：min=%.3f max=%.3f；周期=%.1f",
+                     static_cast<double>(foc.interval_min) / foc_current::CPU_MHZ,
+                     static_cast<double>(foc.interval_max) / foc_current::CPU_MHZ,
+                     1000000.0 / foc_current::FREQUENCY_HZ);
+            for(uint32_t i = 0; i < 5; ++i)
             {
-                snprintf(current[8], ROW_SIZE, "PVCC 母线电压：采样无效");
+                snprintf(current[17 + i], ROW_SIZE,
+                    "ADC%" PRIu32 " raw=%" PRIu32 " mean=%.2f range=%" PRIu32 "..%" PRIu32 " base=%.2f；读数区间 us=%.2f..%.2f 最大结束=%.2f",
+                    i, static_cast<uint32_t>(foc.raw[i]), static_cast<double>(foc.raw_sum[i]) / foc.count,
+                    static_cast<uint32_t>(foc.raw_min[i]), static_cast<uint32_t>(foc.raw_max[i]), foc.baseline_raw[i],
+                    static_cast<double>(foc.read_begin[i].sum) / foc.count / foc_current::CPU_MHZ,
+                    static_cast<double>(foc.read_end[i].sum) / foc.count / foc_current::CPU_MHZ,
+                    static_cast<double>(foc.read_end[i].maximum) / foc_current::CPU_MHZ);
             }
+            snprintf(current[22], ROW_SIZE, "内部占空比 M1=%.3f %.3f %.3f；M2=%.3f %.3f %.3f",
+                     foc.duty[0], foc.duty[1], foc.duty[2], foc.duty[3], foc.duty[4], foc.duty[5]);
+            snprintf(current[23], ROW_SIZE, "业务吞吐对照：无FOC=%" PRIu32 " 有FOC=%" PRIu32 " 剩余=%.2f%%；含完整中断开销及已有传感器任务",
+                     foc.probe_without_foc, foc.probe_with_foc,
+                     static_cast<double>(foc.probe_with_foc) * 100.0 / foc.probe_without_foc);
 
             uint32_t size = 0;
             if(first_draw)
@@ -94,7 +121,7 @@ namespace test
             if(size != 0)
             {
                 // 光标停在面板下方；换行让串口监视器及时输出缓存的片段。
-                size += snprintf(output + size, sizeof(output) - size, "\033[10;1H\n");
+                size += snprintf(output + size, sizeof(output) - size, "\033[25;1H\n");
                 fwrite(output, 1, size, stdout);
                 fflush(stdout);
             }
@@ -102,30 +129,33 @@ namespace test
 
         void task(void *)
         {
-            // 临时保持母线通路开启：GPIO7 拉高后保持输出，不需要循环重复写入。
-            gpio_set_level(GPIO_NUM_7, 1);
-            gpio_set_direction(GPIO_NUM_7, GPIO_MODE_OUTPUT);
-
-            bat::state battery{};
-            bat::get_package(battery);
-            uint32_t bat_count = 0;
             while(true)
             {
                 sensor::package p{};
                 const bool ready = sensor::get_package(p);
-                if(++bat_count >= 1)
-                {
-                    bat::get_package(battery);
-                    bat_count = 0;
-                }
-                draw(p, ready, battery);
-                vTaskDelay(pdMS_TO_TICKS(100));
+                foc_current::state foc{};
+                foc_current::get_package(foc);
+                draw(p, ready, foc);
+                vTaskDelay(pdMS_TO_TICKS(1000));
             }
+        }
+
+        /**
+         * @brief 在核心 1 注册电流环中断，完成后只保留核心 0 的显示任务
+         */
+        void start(void *)
+        {
+            gpio_set_level(GPIO_NUM_7, 1);
+            gpio_set_direction(GPIO_NUM_7, GPIO_MODE_OUTPUT);
+            vTaskDelay(pdMS_TO_TICKS(300));
+            foc_current::init();
+            xTaskCreatePinnedToCore(task, "sensor_test", 6144, nullptr, 1, nullptr, 0);
+            vTaskDelete(nullptr);
         }
     }
 
     bool init()
     {
-        return xTaskCreatePinnedToCore(task, "sensor_test", 4096, nullptr, 1, nullptr, 0) == pdPASS;
+        return xTaskCreatePinnedToCore(start, "foc_start", 4096, nullptr, 1, nullptr, 1) == pdPASS;
     }
 }
