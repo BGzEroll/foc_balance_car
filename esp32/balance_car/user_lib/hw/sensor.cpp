@@ -517,6 +517,12 @@ namespace mpu6050
         raw_gyro[1] = read_i16(&raw[10]);
         raw_gyro[2] = read_i16(&raw[12]);
 
+        // 坐标系调整为 X 向右，Y 向前，Z 向上
+        raw_acc[0] = -raw_acc[0];
+        raw_acc[1] = -raw_acc[1];
+        raw_gyro[0] = -raw_gyro[0];
+        raw_gyro[1] = -raw_gyro[1];
+
         if(!process_calibration(raw_gyro))
         {
             return false;
