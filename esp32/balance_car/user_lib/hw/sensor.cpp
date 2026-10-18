@@ -382,9 +382,9 @@ namespace mpu6050
         uint32_t calibration_count = 0;
         uint64_t last_time_us = 0;
 
-        float pitch_rad = 0.0f; // 俯仰角，绕 X 轴，车头抬起为正，单位 rad
-        float roll_rad = 0.0f;  // 横滚角，绕 Y 轴，车身右侧下沉为正，单位 rad
-        float yaw_rad = 0.0f;   // 相对偏航角，绕 Z 轴，左转为正，单位 rad
+        float pitch_rad = 0.0f;     // 俯仰角，绕 X 轴，车头抬起为正，单位 rad
+        float roll_rad = 0.0f;      // 横滚角，绕 Y 轴，车身右侧下沉为正，单位 rad
+        float yaw_rad = 0.0f;       // 相对偏航角，绕 Z 轴，左转为正，单位 rad
 
         /**
          * @brief 读取大端有符号 16 位数据
@@ -637,6 +637,8 @@ namespace sensor
         {
             portENTER_CRITICAL(&package_lock);
             latest_package.left_encoder = data;
+            latest_package.left_encoder.angle_rad = -latest_package.left_encoder.angle_rad;     // 根据实际安装修正方向
+            latest_package.left_encoder.speed_rad_s = -latest_package.left_encoder.speed_rad_s;     // 根据实际安装修正方向
             portEXIT_CRITICAL(&package_lock);
         }
 
