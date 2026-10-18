@@ -18,55 +18,48 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-namespace foc_current
-{
-    namespace
-    {
-        constexpr uint32_t RESOLUTION_HZ = 10000000;
-        constexpr uint32_t PERIOD_TICKS = RESOLUTION_HZ / FREQUENCY_HZ;
-        constexpr uint32_t PEAK_TICKS = PERIOD_TICKS / 2;
-        constexpr float DT = 1.0f / static_cast<float>(FREQUENCY_HZ);
-        constexpr float TWO_PI = 6.28318530718f;
-        constexpr float INV_SQRT3 = 0.57735026919f;
-        constexpr float SQRT3_HALF = 0.86602540378f;
-        constexpr float CURRENT_GAIN = 4.0f; // 5mΩ × 50 倍，对应每伏 4A；实际方向留待通电标定。
-        constexpr uint32_t BASELINE_COUNT = 512;
-        constexpr adc_channel_t CHANNEL[5] = {
-            ADC_CHANNEL_1, ADC_CHANNEL_2, ADC_CHANNEL_3, ADC_CHANNEL_4, ADC_CHANNEL_0};
+#include "hw/sensor.h"
+#include "soc/mcpwm_struct.h"
 
-        adc_oneshot_unit_handle_t adc = nullptr;
-        mcpwm_timer_handle_t timer = nullptr;
-        mcpwm_cmpr_handle_t comparator[6] = {};
-        uint16_t voltage_mv[5][4096] = {};
-        float offset_V[4] = {};
-        float integral_d[2] = {};
-        float integral_q[2] = {};
-        float electrical_test_angle = 0.0f;
-        uint32_t previous_cycle = 0;
-        int64_t previous_event_us = 0;
-        state latest;
-        portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
-        TaskHandle_t worker = nullptr;
-        portMUX_TYPE trigger_mux = portMUX_INITIALIZER_UNLOCKED;
+namespace foc_current {
+namespace {
+constexpr uint32_t RESOLUTION_HZ=10000000, PERIOD_TICKS=500, PEAK_TICKS=250;
+constexpr float TWO_PI=6.28318530718f, INV_SQRT3=0.57735026919f, SQRT3_HALF=0.86602540378f;
+constexpr float CURRENT_GAIN=4.0f;
+constexpr uint32_t BASELINE_COUNT=512;
+constexpr adc_channel_t CHANNEL[5]={ADC_CHANNEL_1,ADC_CHANNEL_2,ADC_CHANNEL_3,ADC_CHANNEL_4,ADC_CHANNEL_0};
+adc_oneshot_unit_handle_t adc=nullptr;
+mcpwm_timer_handle_t timer=nullptr,sample_timer=nullptr;
+mcpwm_cmpr_handle_t comparator[6]={};
+uint16_t voltage_mv[5][4096]={};
+float offset_V[4]={}, integral_d[2]={}, integral_q[2]={};
+constexpr bool ENABLE_FOC=true;
+state latest, published;
+struct adc_frame {uint32_t version=0,raw[5]={},stamp[5]={},sequence[2]={},bus_count=0;};
+adc_frame frame;
 
-        struct trigger
-        {
-            uint32_t sequence = 0;
-            uint32_t callback_cycle = 0;
-            uint32_t phase_cycles = 0;
-            uint32_t notify_cycles = 0;
-            int64_t event_us = 0;
-        };
 
-        trigger pending;
-
-        /**
-         * @brief 独占 ADC1 时直接触发一次转换，沿用初始化阶段的衰减和硬件校准
-         * @param[in] channel ADC1 通道
-         * @param[out] raw 原始转换结果
-         * @return true 转换完成
-         * @return false 二十微秒后 ADC 仍忙或转换仍未完成
-         */
+portMUX_TYPE adc_snapshot_mux=portMUX_INITIALIZER_UNLOCKED;
+portMUX_TYPE mux=portMUX_INITIALIZER_UNLOCKED;
+uint32_t sensor_ready=0;
+struct sampling {
+ uint32_t events=0, gaps=0, invalid=0, sequence[2]={}, stamp[5]={};
+ uint32_t count[5]={}; uint16_t raw[5]={};
+ uint64_t sum[5]={}, square[5]={};
+ uint16_t low[5]={4095,4095,4095,4095,4095},high[5]={};
+ float baseline_raw[5]={};
+ timing pair,bus,phase,skew,atomic_phase,completion;
+ uint32_t late_atomic=0,phase_hist[50]={},phase_disagree=0,rejected[2]={};
+ uint32_t late_half=0,previous=0,interval_min=UINT32_MAX,interval_max=0;
+} samples;
+void IRAM_ATTR commit_adc(){
+ __atomic_add_fetch(&frame.version,1,__ATOMIC_ACQ_REL);
+ for(unsigned i=0;i<5;++i){__atomic_store_n(&frame.raw[i],samples.raw[i],__ATOMIC_RELAXED);__atomic_store_n(&frame.stamp[i],samples.stamp[i],__ATOMIC_RELAXED);}
+ for(unsigned i=0;i<2;++i)__atomic_store_n(&frame.sequence[i],samples.sequence[i],__ATOMIC_RELAXED);
+ __atomic_store_n(&frame.bus_count,samples.count[4],__ATOMIC_RELAXED);
+ __atomic_add_fetch(&frame.version,1,__ATOMIC_RELEASE);
+}
+inline void record(timing &t,uint32_t n){t.sum+=n;if(n<t.minimum)t.minimum=n;if(n>t.maximum)t.maximum=n;}
         bool IRAM_ATTR read_adc(adc_channel_t channel, uint16_t &raw)
         {
             const uint32_t idle_start = esp_cpu_get_cycle_count();
@@ -88,60 +81,10 @@ namespace foc_current
             return true;
         }
 
-        /**
-         * @brief 用半秒普通任务吞吐量对照测量电流环对业务代码的实际影响
-         * @return 半秒内完成的循环次数，包含现有传感器任务的影响
-         */
-        uint32_t probe()
-        {
-            uint32_t count = 0;
-            uint32_t errors = 0;
-            constexpr uint32_t pattern = 0x3fa00000;
-            asm volatile("wfr f0, %0" :: "a"(pattern) : "f0");
-            const int64_t deadline = esp_timer_get_time() + 500000;
-            while(esp_timer_get_time() < deadline)
-            {
-                uint32_t observed = 0;
-                asm volatile("rfr %0, f0" : "=a"(observed));
-                if(observed != pattern)
-                {
-                    ++errors;
-                    asm volatile("wfr f0, %0" :: "a"(pattern) : "f0");
-                }
-                ++count;
-            }
-            portENTER_CRITICAL(&mux);
-            latest.probe_fpu_errors += errors;
-            portEXIT_CRITICAL(&mux);
-            return count;
-        }
-
-        /**
-         * @brief 累计周期计数形式的耗时统计
-         * @param[in,out] out 统计结果
-         * @param[in] cycles 本次 CPU 周期数
-         */
-        inline void record(timing &out, uint32_t cycles)
-        {
-            out.sum += cycles;
-            if(cycles > out.maximum){out.maximum = cycles;}
-            if(cycles < out.minimum){out.minimum = cycles;}
-        }
-
-        /**
-         * @brief 执行单电机完整电流环数学链路，输出仅写内部比较器
-         * @param[in] motor 电机序号
-         * @param[in] ia A 相电流，单位 A
-         * @param[in] ib B 相电流，单位 A
-         * @param[in] bus 母线电压，单位 V
-         * @param[in] angle 测试电角度，单位 rad
-         * @param[out] id d 轴电流，单位 A
-         * @param[out] iq q 轴电流，单位 A
-         * @param[out] duty 三相占空比
-         */
         void calculate(uint32_t motor, float ia, float ib, float bus, float angle,
-                       float &id, float &iq, float *duty)
+                       float &id, float &iq, float *duty, float dt)
         {
+            ++latest.pi_calls[motor];
             const float sine = sinf(angle);
             const float cosine = cosf(angle);
             const float alpha = ia;
@@ -154,8 +97,8 @@ namespace foc_current
             constexpr float KI = 20.0f;
             const float error_d = -id;
             const float error_q = 0.2f - iq;
-            const float candidate_d = integral_d[motor] + KI * DT * error_d;
-            const float candidate_q = integral_q[motor] + KI * DT * error_q;
+            const float candidate_d = integral_d[motor] + KI * dt * error_d;
+            const float candidate_q = integral_q[motor] + KI * dt * error_q;
             float vd = KP * error_d + candidate_d;
             float vq = KP * error_q + candidate_q;
             const float limit = bus * INV_SQRT3 * 0.90f;
@@ -187,187 +130,6 @@ namespace foc_current
             }
         }
 
-        /**
-         * @brief 复用同一采样和双电机计算链路，供中断及高优先级任务对照
-         * @param[in] event 对应本轮的 MCPWM 触发信息
-         * @param[in] start 本轮执行入口的 CPU 周期
-         * @param[in] wake_cycles 中断通知至任务开始执行的周期数，中断模式为零
-         */
-        void IRAM_ATTR __attribute__((noinline)) step(const trigger &event, uint32_t start, uint32_t wake_cycles)
-        {
-            const uint32_t entry_cycles = event.phase_cycles;
-            const int64_t event_us = event.event_us;
-            uint32_t begin[5];
-            uint32_t end[5];
-            uint16_t raw[5];
-            uint32_t invalid = 0;
-
-            // 此 LL 路径固定依赖 ESP-IDF 6.0.2；测试独占 ADC1，不重复配置和校准。
-            for(uint32_t i = 0; i < 5; ++i)
-            {
-                uint16_t value = 0;
-                begin[i] = esp_cpu_get_cycle_count() - start;
-                const bool converted = read_adc(CHANNEL[i], value);
-                end[i] = esp_cpu_get_cycle_count() - start;
-                if(!converted || value == 0 || value >= 4095){++invalid;}
-                raw[i] = value;
-            }
-            const uint32_t acquired = esp_cpu_get_cycle_count();
-            float current[4];
-            for(uint32_t i = 0; i < 4; ++i)
-            {
-                current[i] = (static_cast<float>(voltage_mv[i][raw[i]]) * 0.001f - offset_V[i]) * CURRENT_GAIN;
-            }
-            const float bus = static_cast<float>(voltage_mv[4][raw[4]]) * 0.003f;
-            // 极对数和电角度零位尚未标定，采用连续扫角覆盖完整三角函数与 SVPWM 路径。
-            electrical_test_angle += TWO_PI * 3.0f * DT;
-            if(electrical_test_angle >= TWO_PI){electrical_test_angle -= TWO_PI;}
-            float id[2];
-            float iq[2];
-            float duty[6];
-            const float calculation_bus = fmaxf(bus, 1.0f);
-            calculate(0, current[0], current[1], calculation_bus, electrical_test_angle, id[0], iq[0], duty);
-            calculate(1, current[2], current[3], calculation_bus, electrical_test_angle + 1.0f, id[1], iq[1], duty + 3);
-            const uint32_t calculated = esp_cpu_get_cycle_count();
-            uint32_t errors = 0;
-            for(uint32_t i = 0; i < 6; ++i)
-            {
-                errors += mcpwm_comparator_set_compare_value(comparator[i],
-                    static_cast<uint32_t>(duty[i] * static_cast<float>(PEAK_TICKS))) != ESP_OK;
-            }
-            const uint32_t written = esp_cpu_get_cycle_count();
-
-            portENTER_CRITICAL_SAFE(&mux);
-            ++latest.count;
-            latest.adc_invalid += invalid;
-            latest.compare_errors += errors;
-            if(previous_cycle != 0)
-            {
-                const uint32_t interval = start - previous_cycle;
-                if(interval < latest.interval_min){latest.interval_min = interval;}
-                if(interval > latest.interval_max){latest.interval_max = interval;}
-                const int64_t periods = (event_us - previous_event_us + 500000 / FREQUENCY_HZ) /
-                                         (1000000 / FREQUENCY_HZ);
-                if(periods > 1){latest.event_gaps += static_cast<uint32_t>(periods - 1);}
-            }
-            previous_cycle = start;
-            previous_event_us = event_us;
-            record(latest.entry_phase, entry_cycles);
-            record(latest.wake_latency, wake_cycles);
-            record(latest.notify_isr, event.notify_cycles);
-            record(latest.acquisition, acquired - start);
-            record(latest.calculation, calculated - acquired);
-            record(latest.write, written - calculated);
-            for(uint32_t i = 0; i < 5; ++i)
-            {
-                latest.raw[i] = raw[i];
-                latest.raw_sum[i] += raw[i];
-                latest.raw_square_sum[i] += static_cast<uint32_t>(raw[i]) * raw[i];
-                const int32_t deviation = static_cast<int32_t>(raw[i]) -
-                    static_cast<int32_t>(latest.baseline_raw[i] + 0.5f);
-                if(deviation < -32 || deviation > 32){++latest.raw_spikes[i];}
-                if(raw[i] < latest.raw_min[i]){latest.raw_min[i] = raw[i];}
-                if(raw[i] > latest.raw_max[i]){latest.raw_max[i] = raw[i];}
-                record(latest.read_begin[i], entry_cycles + wake_cycles + begin[i]);
-                record(latest.read_end[i], entry_cycles + wake_cycles + end[i]);
-            }
-            for(uint32_t i = 0; i < 4; ++i){latest.current_A[i] = current[i];}
-            for(uint32_t i = 0; i < 2; ++i){latest.id_A[i] = id[i]; latest.iq_A[i] = iq[i];}
-            for(uint32_t i = 0; i < 6; ++i){latest.duty[i] = duty[i];}
-            latest.bus_V = bus;
-            portEXIT_CRITICAL_SAFE(&mux);
-        }
-
-        /**
-         * @brief 记录执行耗时及从定时零点到完成的完整时延
-         * @param[in] event 当前轮的触发信息
-         * @param[in] start 本轮执行入口的 CPU 周期
-         * @param[in] wake_cycles 通知至任务开始执行的周期数
-         */
-        void IRAM_ATTR finish(const trigger &event, uint32_t start, uint32_t wake_cycles)
-        {
-            portENTER_CRITICAL_SAFE(&mux);
-            const uint32_t elapsed = esp_cpu_get_cycle_count() - start;
-            record(latest.total, elapsed);
-            const uint32_t deadline_used = event.phase_cycles + wake_cycles + elapsed;
-            record(latest.completion, deadline_used);
-            if(deadline_used >= PERIOD_CYCLES){++latest.deadline_misses;}
-            record(latest.margin, deadline_used < PERIOD_CYCLES ? PERIOD_CYCLES - deadline_used : 0);
-            portEXIT_CRITICAL_SAFE(&mux);
-        }
-
-        /**
-         * @brief 高优先级电流环任务，每次由 MCPWM 通知唤醒
-         */
-        void control_task(void *)
-        {
-            uint32_t previous_sequence = 0;
-            while(true)
-            {
-                ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-                trigger event;
-                portENTER_CRITICAL(&trigger_mux);
-                event = pending;
-                portEXIT_CRITICAL(&trigger_mux);
-                if(event.sequence == previous_sequence){continue;}
-                const uint32_t start = esp_cpu_get_cycle_count();
-                const uint32_t wake_cycles = start - event.callback_cycle;
-                // 只处理最新一轮，单独记录被覆盖的通知，避免积压后补算过期数据。
-                portENTER_CRITICAL(&mux);
-                latest.notification_skips += event.sequence - previous_sequence - 1;
-                portEXIT_CRITICAL(&mux);
-                previous_sequence = event.sequence;
-                step(event, start, wake_cycles);
-                finish(event, start, wake_cycles);
-            }
-        }
-
-        /**
-         * @brief 任务模式仅通知；中断模式显式保存 FPU 后执行相同计算链路
-         * @param[in] event 定时器驱动读取的事件相位
-         * @return false 不请求任务切换
-         * @return true 唤醒核心 1 的高优先级电流环任务
-         */
-        bool IRAM_ATTR on_empty(mcpwm_timer_handle_t, const mcpwm_timer_event_data_t *event, void *)
-        {
-            const uint32_t start = esp_cpu_get_cycle_count();
-            const uint32_t phase_ticks = event->direction == MCPWM_TIMER_DIRECTION_UP ?
-                event->count_value : PERIOD_TICKS - event->count_value;
-            trigger current;
-            current.callback_cycle = start;
-            current.phase_cycles = phase_ticks * CPU_MHZ / 10;
-            current.event_us = esp_timer_get_time() - phase_ticks / 10;
-            if constexpr(RUN_IN_TASK)
-            {
-                BaseType_t woken = pdFALSE;
-                portENTER_CRITICAL_ISR(&trigger_mux);
-                current.sequence = pending.sequence + 1;
-                pending = current;
-                vTaskNotifyGiveFromISR(worker, &woken);
-                pending.notify_cycles = esp_cpu_get_cycle_count() - start;
-                portEXIT_CRITICAL_ISR(&trigger_mux);
-                return woken == pdTRUE;
-            }
-            portENTER_CRITICAL_ISR(&trigger_mux);
-            pending.sequence++;
-            portEXIT_CRITICAL_ISR(&trigger_mux);
-            alignas(16) uint8_t saved_fpu[XCHAL_CP0_SA_SIZE];
-            uint32_t cpenable = 0;
-            asm volatile("rsr.cpenable %0" : "=a"(cpenable));
-            const uint32_t enabled = cpenable | 1U;
-            // 主动启用后保存物理寄存器，不触发 SDK 的惰性 FPU 所有权切换。
-            asm volatile("wsr.cpenable %0; rsync" :: "a"(enabled) : "memory");
-            xthal_save_cp0(saved_fpu);
-            step(current, start, 0);
-            xthal_restore_cp0(saved_fpu);
-            asm volatile("wsr.cpenable %0; rsync" :: "a"(cpenable) : "memory");
-            finish(current, start, 0);
-            return false;
-        }
-
-        /**
-         * @brief 初始化唯一 ADC1 实例、校准查找表及无电流输出时的零点
-         */
         void init_adc()
         {
             float baseline_raw[5] = {};
@@ -409,86 +171,194 @@ namespace foc_current
                     }
                 }
             }
-            portENTER_CRITICAL(&mux);
-            for(uint32_t i = 0; i < 5; ++i){latest.baseline_raw[i] = baseline_raw[i];}
-            portEXIT_CRITICAL(&mux);
-        }
-    }
 
-    /**
-     * @brief 在核心 1 初始化无引脚输出的 MCPWM 电流环对照测试
-     * @return true 初始化完成，任何配置失败由 ESP_ERROR_CHECK 报告
-     */
-    bool init()
-    {
-        // 六个控制脚保持输入下拉，不创建 PWM 发生器，不连接 GPIO 矩阵。
-        gpio_config_t pins{};
-        pins.pin_bit_mask = (1ULL << 35) | (1ULL << 34) | (1ULL << 33) |
-                            (1ULL << 12) | (1ULL << 11) | (1ULL << 10);
-        pins.mode = GPIO_MODE_INPUT;
-        pins.pull_down_en = GPIO_PULLDOWN_ENABLE;
-        ESP_ERROR_CHECK(gpio_config(&pins));
-        ESP_ERROR_CHECK(gpio_dump_io_configuration(stdout, pins.pin_bit_mask));
-        init_adc();
-        // IMU 需要 1000 次、200Hz 的静态校准，吞吐对照放在校准结束后进行。
-        vTaskDelay(pdMS_TO_TICKS(6000));
-        const uint32_t without_foc = probe();
-        portENTER_CRITICAL(&mux);
-        latest.probe_without_foc = without_foc;
-        portEXIT_CRITICAL(&mux);
-        if constexpr(RUN_IN_TASK)
-        {
-            ESP_ERROR_CHECK(xTaskCreatePinnedToCore(control_task, "foc_current", 4096, nullptr,
-                TASK_PRIORITY, &worker, 1) == pdPASS ? ESP_OK : ESP_ERR_NO_MEM);
-        }
-        mcpwm_timer_config_t config{};
-        config.group_id = 0;
-        config.clk_src = MCPWM_TIMER_CLK_SRC_DEFAULT;
-        config.resolution_hz = RESOLUTION_HZ;
-        config.period_ticks = PERIOD_TICKS;
-        config.count_mode = MCPWM_TIMER_COUNT_MODE_UP_DOWN;
-        config.intr_priority = 1;
-        ESP_ERROR_CHECK(mcpwm_new_timer(&config, &timer));
-        for(uint32_t i = 0; i < 3; ++i)
-        {
-            mcpwm_oper_handle_t oper = nullptr;
-            mcpwm_operator_config_t oper_config{};
-            oper_config.group_id = 0;
-            oper_config.intr_priority = 1;
-            ESP_ERROR_CHECK(mcpwm_new_operator(&oper_config, &oper));
-            ESP_ERROR_CHECK(mcpwm_operator_connect_timer(oper, timer));
-            for(uint32_t j = 0; j < 2; ++j)
-            {
-                mcpwm_comparator_config_t cmp_config{};
-                cmp_config.flags.update_cmp_on_tez = true;
-                ESP_ERROR_CHECK(mcpwm_new_comparator(oper, &cmp_config, &comparator[i * 2 + j]));
-                ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator[i * 2 + j], PEAK_TICKS / 2));
-            }
-        }
-        mcpwm_timer_event_callbacks_t callbacks{};
-        callbacks.on_empty = on_empty;
-        ESP_ERROR_CHECK(mcpwm_timer_register_event_callbacks(timer, &callbacks, nullptr));
-        ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
-        ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer, MCPWM_TIMER_START_NO_STOP));
-        const uint32_t with_foc = probe();
-        portENTER_CRITICAL(&mux);
-        latest.probe_with_foc = with_foc;
-        latest.probe_completed = true;
-        portEXIT_CRITICAL(&mux);
-        return true;
-    }
+            for(uint32_t i = 0; i < 5; ++i){samples.baseline_raw[i] = baseline_raw[i];}
 
-    /**
-     * @brief 复制累计测量结果及定时触发总数
-     * @param[out] out ADC 数据与周期统计
-     */
-    void get_package(state &out)
-    {
-        portENTER_CRITICAL(&mux);
-        out = latest;
-        portEXIT_CRITICAL(&mux);
-        portENTER_CRITICAL(&trigger_mux);
-        out.trigger_count = pending.sequence;
-        portEXIT_CRITICAL(&trigger_mux);
+        }
+void IRAM_ATTR acquire(unsigned ch){
+ uint16_t raw=0; bool ok=read_adc(CHANNEL[ch],raw);
+ samples.stamp[ch]=uint32_t(esp_timer_get_time())*CPU_MHZ;
+ samples.raw[ch]=raw; ++samples.count[ch];
+ samples.sum[ch]+=raw; samples.square[ch]+=uint32_t(raw)*raw;
+ if(raw<samples.low[ch])samples.low[ch]=raw;
+ if(raw>samples.high[ch])samples.high[ch]=raw;
+ if(!ok||raw==0||raw>=4095)++samples.invalid;
+}
+
+// Read count and direction in ONE APB transaction; do not combine two different instants.
+inline uint32_t IRAM_ATTR phase_from_tep(){
+ mcpwm_timer_status_reg_t st{};st.val=MCPWM0.timer[0].timer_status.val;
+ // Use the raw next-counter value as a phase estimate with <=1 tick uncertainty.
+ // Folding the SDK's +1 correction modulo251 at count250 would invent a 25us jump.
+ return (st.timer_direction ? PEAK_TICKS-st.timer_value : PEAK_TICKS+st.timer_value)%PERIOD_TICKS;
+}
+bool IRAM_ATTR on_full(mcpwm_timer_handle_t,const mcpwm_timer_event_data_t *ev,void*){
+ uint32_t start=esp_cpu_get_cycle_count();
+ uint32_t atomic_ticks=(phase_from_tep()+120)%PERIOD_TICKS;
+ // Callback count is a driver snapshot shortly before entry, not ADC aperture time.
+ uint32_t ticks=atomic_ticks; (void)ev;
+
+ unsigned motor=samples.events++ & 1U;
+ const uint16_t old_a=samples.raw[motor*2],old_b=samples.raw[motor*2+1];
+ const uint32_t old_ta=samples.stamp[motor*2],old_tb=samples.stamp[motor*2+1],old_invalid=samples.invalid;
+ if(samples.previous){uint32_t d=start-samples.previous; if(d<samples.interval_min)samples.interval_min=d;if(d>samples.interval_max)samples.interval_max=d;
+  if(d>CPU_MHZ*75)samples.gaps+=(d+CPU_MHZ*25)/(CPU_MHZ*50)-1;}
+ samples.previous=start;
+ acquire(motor*2); acquire(motor*2+1);
+ record(samples.skew,samples.stamp[motor*2+1]-samples.stamp[motor*2]);
+ uint32_t elapsed=esp_cpu_get_cycle_count()-start;
+ record(samples.pair,elapsed);record(samples.phase,ticks*CPU_MHZ/10);
+ record(samples.atomic_phase,atomic_ticks*CPU_MHZ/10);
+ record(samples.completion,atomic_ticks*CPU_MHZ/10+elapsed);
+ if(atomic_ticks*CPU_MHZ/10+elapsed>=CPU_MHZ*37)++samples.late_atomic;
+ ++samples.phase_hist[(atomic_ticks/10)%50];
+ if(ticks>atomic_ticks+10||atomic_ticks>ticks+10)++samples.phase_disagree;
+ if(ticks*CPU_MHZ/10+elapsed>=CPU_MHZ*37)++samples.late_half;
+
+ // Reject the entire pair on conversion failure or estimated completion at/after next TEZ.
+ // 0.1us guard covers one raw timer tick of phase ambiguity. This is a schedule guard,
+ // NOT validation of the electrical low-side window for arbitrary phase duty cycles.
+ if(samples.invalid!=old_invalid || atomic_ticks*CPU_MHZ/10+elapsed+CPU_MHZ/10>=CPU_MHZ*37){
+  samples.raw[motor*2]=old_a;samples.raw[motor*2+1]=old_b;
+  samples.stamp[motor*2]=old_ta;samples.stamp[motor*2+1]=old_tb;++samples.rejected[motor];
+ }else ++samples.sequence[motor];
+ commit_adc();
+
+ return false;
+}
+bool IRAM_ATTR on_empty(mcpwm_timer_handle_t,const mcpwm_timer_event_data_t*,void*){
+ static uint32_t n=0;if(++n%20)return false;
+ uint32_t start=esp_cpu_get_cycle_count();
+ acquire(4);record(samples.bus,esp_cpu_get_cycle_count()-start);commit_adc();
+ return false;
+}
+
+void publish_stats(){
+ static int64_t next=0;int64_t now=esp_timer_get_time();if(now<next)return;next=now+100000;
+ state out=latest;
+
+ portENTER_CRITICAL(&mux);published=out;portEXIT_CRITICAL(&mux);
+}
+void control_task(void*){
+ sensor::begin_inline();
+ __atomic_store_n(&sensor_ready,1,__ATOMIC_RELEASE);
+ uint32_t last_loop=esp_cpu_get_cycle_count();
+ uint32_t seen[2]={},previous_sample[2]={};
+ bool primed[2]={};
+ float angle[2]={0.0f,1.0f};
+ // Experimental guard, not a tuned motor-protection threshold.
+ constexpr uint32_t MAX_SAMPLE_GAP_CYCLES=CPU_MHZ*1000;
+ while(true){
+  const uint32_t begin=esp_cpu_get_cycle_count();
+  const uint32_t loop_dt=begin-last_loop;last_loop=begin;
+  sensor::poll_inline();
+  sampling s{};
+  static sampling cached{};
+  for(unsigned attempt=0;attempt<3;++attempt){
+   uint32_t v=__atomic_load_n(&frame.version,__ATOMIC_ACQUIRE);if(v&1U)continue;
+   for(unsigned i=0;i<5;++i){s.raw[i]=__atomic_load_n(&frame.raw[i],__ATOMIC_RELAXED);s.stamp[i]=__atomic_load_n(&frame.stamp[i],__ATOMIC_RELAXED);}
+   for(unsigned i=0;i<2;++i)s.sequence[i]=__atomic_load_n(&frame.sequence[i],__ATOMIC_RELAXED);
+   s.count[4]=__atomic_load_n(&frame.bus_count,__ATOMIC_RELAXED);
+   __atomic_thread_fence(__ATOMIC_ACQUIRE);
+   if(__atomic_load_n(&frame.version,__ATOMIC_ACQUIRE)==v){cached=s;break;}
+  }
+  s=cached;
+  bool updated=false;
+  if(ENABLE_FOC&&s.count[4]){
+   const float measured_bus=voltage_mv[4][s.raw[4]]*.003f;
+   for(unsigned m=0;m<2;++m){
+    const uint32_t sequence=s.sequence[m];
+    if(sequence==0)continue;
+    if(sequence==seen[m]){++latest.reused[m];continue;}
+    ++latest.fresh[m];
+    if(seen[m])latest.skipped[m]+=sequence-seen[m]-1;
+    seen[m]=sequence;
+    // Both timestamps are from esp_timer's shared clock, represented in CPU-cycle units.
+    // The midpoint of conversion-completion times is a representative pair time,
+    // not a claim that both analog sample apertures coincide.
+    const uint32_t sample_time=s.stamp[2*m]+(s.stamp[2*m+1]-s.stamp[2*m])/2;
+    const uint32_t sample_dt=sample_time-previous_sample[m];
+    previous_sample[m]=sample_time;
+    if(!primed[m]){primed[m]=true;++latest.prime_count[m];continue;}
+    if(sample_dt==0||sample_dt>MAX_SAMPLE_GAP_CYCLES){
+     ++latest.bad_sample_dt[m];integral_d[m]=0;integral_q[m]=0;continue;
     }
+    const float dt=float(sample_dt)/(CPU_MHZ*1000000.0f);
+    float id=0,iq=0,duty[3];
+    const float ia=(voltage_mv[2*m][s.raw[2*m]]*.001f-offset_V[2*m])*CURRENT_GAIN;
+    const float ib=(voltage_mv[2*m+1][s.raw[2*m+1]]*.001f-offset_V[2*m+1])*CURRENT_GAIN;
+    const uint32_t calc=esp_cpu_get_cycle_count();
+    const uint32_t common_calc=uint32_t(esp_timer_get_time())*CPU_MHZ;
+    angle[m]+=TWO_PI*3*dt;if(angle[m]>=TWO_PI)angle[m]=fmodf(angle[m],TWO_PI);
+    calculate(m,ia,ib,fmaxf(measured_bus,1.0f),angle[m],id,iq,duty,dt);
+    const uint32_t write_begin=esp_cpu_get_cycle_count();
+    uint32_t errors=0;
+    // Only this motor's complete triplet is written; the other motor is untouched.
+    for(unsigned i=0;i<3;++i)errors+=mcpwm_comparator_set_compare_value(comparator[3*m+i],uint32_t(duty[i]*PEAK_TICKS))!=ESP_OK;
+    const uint32_t end=esp_cpu_get_cycle_count();
+    ++latest.updates[m];updated=true;latest.compare_errors+=errors;latest.bus_V=measured_bus;
+    latest.current_A[2*m]=ia;latest.current_A[2*m+1]=ib;
+    latest.id_A[m]=id;latest.iq_A[m]=iq;
+    latest.integral_d[m]=integral_d[m];latest.integral_q[m]=integral_q[m];
+    for(unsigned i=0;i<3;++i)latest.duty[3*m+i]=duty[i];
+    record(latest.sample_dt[m],sample_dt);
+    record(latest.calculation,write_begin-calc);record(latest.write,end-write_begin);
+    record(latest.age[m],common_calc-sample_time);
+   }
+  }
+  ++latest.loop_count;
+  if(updated)++latest.count;else ++latest.no_update_loops;
+  record(latest.total,esp_cpu_get_cycle_count()-begin);record(latest.dt,loop_dt);
+  publish_stats();
+  taskYIELD();
+ }
+}
+}
+bool init(){
+ gpio_config_t pins{};pins.pin_bit_mask=(1ULL<<35)|(1ULL<<34)|(1ULL<<33)|(1ULL<<12)|(1ULL<<11)|(1ULL<<10);
+ pins.mode=GPIO_MODE_INPUT;pins.pull_down_en=GPIO_PULLDOWN_ENABLE;
+ ESP_ERROR_CHECK(gpio_config(&pins));ESP_ERROR_CHECK(gpio_dump_io_configuration(stdout,pins.pin_bit_mask));
+ init_adc();
+ mcpwm_timer_config_t cfg{};cfg.group_id=0;cfg.clk_src=MCPWM_TIMER_CLK_SRC_DEFAULT;
+ cfg.resolution_hz=RESOLUTION_HZ;cfg.period_ticks=PERIOD_TICKS;cfg.count_mode=MCPWM_TIMER_COUNT_MODE_UP_DOWN;cfg.intr_priority=3;
+ ESP_ERROR_CHECK(mcpwm_new_timer(&cfg,&timer));
+ for(unsigned i=0;i<3;++i){
+  mcpwm_oper_handle_t op=nullptr;mcpwm_operator_config_t oc{};oc.group_id=0;oc.intr_priority=3;
+  ESP_ERROR_CHECK(mcpwm_new_operator(&oc,&op));ESP_ERROR_CHECK(mcpwm_operator_connect_timer(op,timer));
+  for(unsigned j=0;j<2;++j){mcpwm_comparator_config_t cc{};cc.flags.update_cmp_on_tez=true;
+   ESP_ERROR_CHECK(mcpwm_new_comparator(op,&cc,&comparator[2*i+j]));
+   ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator[2*i+j],125));}
+ }
+
+ mcpwm_timer_config_t scfg=cfg;
+ ESP_ERROR_CHECK(mcpwm_new_timer(&scfg,&sample_timer));
+ mcpwm_sync_handle_t sync=nullptr;mcpwm_timer_sync_src_config_t sync_cfg{};
+ sync_cfg.timer_event=MCPWM_TIMER_EVENT_EMPTY;
+ ESP_ERROR_CHECK(mcpwm_new_timer_sync_src(timer,&sync_cfg,&sync));
+ mcpwm_timer_sync_phase_config_t phase{};phase.sync_src=sync;phase.count_value=120;phase.direction=MCPWM_TIMER_DIRECTION_UP;
+ ESP_ERROR_CHECK(mcpwm_timer_set_phase_on_sync(sample_timer,&phase));
+ mcpwm_timer_event_callbacks_t scb{};scb.on_full=on_full;
+ ESP_ERROR_CHECK(mcpwm_timer_register_event_callbacks(sample_timer,&scb,nullptr));
+ ESP_ERROR_CHECK(mcpwm_timer_enable(sample_timer));
+ mcpwm_timer_event_callbacks_t cb{};cb.on_empty=on_empty;
+ ESP_ERROR_CHECK(mcpwm_timer_register_event_callbacks(timer,&cb,nullptr));
+ ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
+ ESP_ERROR_CHECK(xTaskCreatePinnedToCore(control_task,"sensor_foc",6144,nullptr,TASK_PRIORITY,nullptr,1)==pdPASS?ESP_OK:ESP_ERR_NO_MEM);
+ while(!__atomic_load_n(&sensor_ready,__ATOMIC_ACQUIRE))vTaskDelay(1);
+ ESP_ERROR_CHECK(mcpwm_timer_start_stop(sample_timer,MCPWM_TIMER_START_NO_STOP));
+ ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer,MCPWM_TIMER_START_NO_STOP));
+ return true;
+}
+void get_package(state &out){portENTER_CRITICAL(&mux);out=published;portEXIT_CRITICAL(&mux);
+ portENTER_CRITICAL(&adc_snapshot_mux);
+ out.events=samples.events;out.adc_invalid=samples.invalid;out.gaps=samples.gaps;out.late_half=samples.late_half;
+ out.acquisition=samples.pair;out.phase=samples.phase;out.skew=samples.skew;out.bus=samples.bus;
+ out.interval_min=samples.interval_min;out.interval_max=samples.interval_max;
+ for(unsigned i=0;i<5;++i){out.samples[i]=samples.count[i];out.raw[i]=samples.raw[i];out.raw_sum[i]=samples.sum[i];out.raw_square_sum[i]=samples.square[i];out.raw_min[i]=samples.low[i];out.raw_max[i]=samples.high[i];}
+ out.atomic_phase=samples.atomic_phase;out.completion=samples.completion;out.late_atomic=samples.late_atomic;
+ out.phase_disagree=samples.phase_disagree;out.rejected[0]=samples.rejected[0];out.rejected[1]=samples.rejected[1];
+ for(unsigned i=0;i<50;++i)out.phase_hist[i]=samples.phase_hist[i];
+
+ portEXIT_CRITICAL(&adc_snapshot_mux);
+}
 }

@@ -32,6 +32,8 @@ namespace sensor
     };
 
     bool init();
+    void begin_inline();
+    void poll_inline();
     bool get_package(package &snapshot);
 }
 

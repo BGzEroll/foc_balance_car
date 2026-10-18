@@ -1,65 +1,21 @@
-#ifndef FOC_CURRENT_H
-#define FOC_CURRENT_H
-
+#pragma once
 #include <stdint.h>
-
-namespace foc_current
-{
-    constexpr uint32_t FREQUENCY_HZ = 5000;
-    constexpr bool RUN_IN_TASK = true;
-    constexpr uint32_t TASK_PRIORITY = 20;
-    constexpr uint32_t CPU_MHZ = 160;
-    constexpr uint32_t PERIOD_CYCLES = CPU_MHZ * 1000000 / FREQUENCY_HZ;
-
-    struct timing
-    {
-        uint64_t sum = 0;
-        uint32_t maximum = 0;
-        uint32_t minimum = UINT32_MAX;
-    };
-
-    struct state
-    {
-        uint32_t count = 0;
-        uint32_t probe_without_foc = 0;
-        uint32_t probe_with_foc = 0;
-        uint32_t probe_fpu_errors = 0;
-        bool probe_completed = false;
-        uint32_t trigger_count = 0;
-        uint32_t notification_skips = 0;
-        uint32_t adc_invalid = 0;
-        uint32_t compare_errors = 0;
-        uint32_t deadline_misses = 0;
-        uint32_t event_gaps = 0;
-        uint32_t interval_min = UINT32_MAX;
-        uint32_t interval_max = 0;
-        uint64_t raw_sum[5] = {};
-        uint64_t raw_square_sum[5] = {};
-        uint32_t raw_spikes[5] = {};
-        uint16_t raw_min[5] = {4095, 4095, 4095, 4095, 4095};
-        uint16_t raw_max[5] = {};
-        uint16_t raw[5] = {};
-        float baseline_raw[5] = {};
-        float current_A[4] = {};
-        float bus_V = 0.0f;
-        float id_A[2] = {};
-        float iq_A[2] = {};
-        float duty[6] = {};
-        timing acquisition;
-        timing calculation;
-        timing write;
-        timing total;
-        timing entry_phase;
-        timing wake_latency;
-        timing notify_isr;
-        timing completion;
-        timing margin;
-        timing read_begin[5];
-        timing read_end[5];
-    };
-
-    bool init();
-    void get_package(state &out);
+namespace foc_current {
+constexpr uint32_t CPU_MHZ=160, TASK_PRIORITY=5;
+struct timing{uint64_t sum=0;uint32_t maximum=0,minimum=UINT32_MAX;};
+struct state{
+ uint32_t count=0,events=0,adc_invalid=0,compare_errors=0,gaps=0,late_half=0;
+ uint32_t samples[5]={},fresh[2]={},reused[2]={},skipped[2]={};
+ uint32_t interval_min=UINT32_MAX,interval_max=0;
+ uint16_t raw[5]={},raw_min[5]={},raw_max[5]={};uint64_t raw_sum[5]={},raw_square_sum[5]={};
+ float bus_V=0,current_A[4]={},id_A[2]={},iq_A[2]={},duty[6]={};
+ uint32_t rejected[2]={};
+ uint32_t loop_count=0,no_update_loops=0,updates[2]={},pi_calls[2]={},prime_count[2]={},bad_sample_dt[2]={};
+ float integral_d[2]={},integral_q[2]={};
+ timing sample_dt[2];
+ uint32_t late_atomic=0,phase_disagree=0,phase_hist[50]={};
+ timing atomic_phase,completion;
+ timing acquisition,calculation,write,total,dt,phase,skew,bus,age[2];
+};
+bool init();void get_package(state&);
 }
-
-#endif

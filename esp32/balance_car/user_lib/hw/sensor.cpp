@@ -763,6 +763,20 @@ namespace sensor
         }
     }
 
+    // Inline mode is mutually exclusive with the standalone sensor task.
+    void begin_inline(){
+        i2c::init(xTaskGetCurrentTaskHandle());
+        mpu6050::init();
+        next_imu_time_us=sys_time::get_us_tick()+MPU_PERIOD_US;
+        as5600::start_left_read();as5600::start_right_read();
+        started=true;
+    }
+    void poll_inline(){
+        uint32_t notification=0;
+        xTaskNotifyWait(0,UINT32_MAX,&notification,0);
+        if(notification&i2c::LEFT_DONE)handle_left_encoder();
+        if(notification&i2c::RIGHT_DONE){if(right_reading_imu)handle_imu();else handle_right_encoder();}
+    }
     /**
      * @brief 初始化传感器模块
      *

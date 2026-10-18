@@ -1,0 +1,7 @@
+# Dedicated core1 runs sensor_foc continuously; monitor control progress separately.
+CONFIG_ESP_TASK_WDT_EN=y
+CONFIG_ESP_TASK_WDT_INIT=y
+CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU0=y
+# CONFIG_ESP_TASK_WDT_CHECK_IDLE_TASK_CPU1 is not set
+CONFIG_ESP_INT_WDT=y
+CONFIG_ESP_INT_WDT_CHECK_CPU1=y
