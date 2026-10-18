@@ -9,8 +9,8 @@ namespace sensor
     {
         uint64_t timestamp_us = 0;
 
-        int32_t full_count = 0;
-        int32_t speed_mrad_s = 0;
+        float angle_rad = 0.0f;
+        float speed_rad_s = 0.0f;
     };
 
     struct imu_data

@@ -238,14 +238,9 @@ namespace as5600
         constexpr int32_t RESOLUTION = 4096;
         constexpr int32_t HALF_RESOLUTION = RESOLUTION / 2;
 
-        /*
-         * count/us -> mrad/s
-         *
-         * 2π / 4096 * 1000 * 1000000
-         * ≈ 1533980.788
-         */
-        constexpr int32_t SPEED_SCALE = 1533981;
-        constexpr int32_t SPEED_FILTER_US = 3000;       // 速度低通时间常数：3 ms
+        constexpr float TWO_PI = 6.28318530717958647692f;
+        constexpr float COUNT_TO_RAD = TWO_PI / static_cast<float>(RESOLUTION);
+        constexpr float SPEED_FILTER_S = 0.003f;        // 速度低通时间常数：3 ms
 
         struct state
         {
@@ -257,8 +252,8 @@ namespace as5600
             uint16_t last_raw = 0;
             uint64_t last_time_us = 0;
 
-            int32_t full_count = 0;
-            int32_t speed_mrad_s = 0;
+            int32_t turns = 0;
+            float speed_rad_s = 0.0f;
         };
 
         state left;
@@ -286,8 +281,8 @@ namespace as5600
                 encoder.last_raw = raw;
                 encoder.last_time_us = now_us;
 
-                encoder.full_count = raw;
-                encoder.speed_mrad_s = 0;
+                encoder.turns = 0;
+                encoder.speed_rad_s = 0.0f;
             }
             else
             {
@@ -298,13 +293,13 @@ namespace as5600
                 if(delta > HALF_RESOLUTION)
                 {
                     delta -= RESOLUTION;
+                    --encoder.turns;
                 }
                 else if(delta < -HALF_RESOLUTION)
                 {
                     delta += RESOLUTION;
+                    ++encoder.turns;
                 }
-
-                encoder.full_count += delta;
 
                 const uint64_t dt_us =
                     now_us -
@@ -312,16 +307,12 @@ namespace as5600
 
                 if(dt_us != 0)
                 {
-                    const int64_t numerator =
-                        static_cast<int64_t>(encoder.speed_mrad_s) *
-                        SPEED_FILTER_US +
-                        static_cast<int64_t>(delta) *
-                        SPEED_SCALE;
+                    const float dt = static_cast<float>(dt_us) * 1.0e-6f;
+                    const float delta_rad = static_cast<float>(delta) * COUNT_TO_RAD;
 
-                    encoder.speed_mrad_s =
-                        static_cast<int32_t>(numerator /
-                            (SPEED_FILTER_US +
-                            static_cast<int64_t>(dt_us)));
+                    encoder.speed_rad_s =
+                        (encoder.speed_rad_s * SPEED_FILTER_S + delta_rad) /
+                        (SPEED_FILTER_S + dt);
                 }
 
                 encoder.last_raw = raw;
@@ -330,8 +321,9 @@ namespace as5600
 
             sensor::encoder_data data;
             data.timestamp_us = now_us;
-            data.full_count = encoder.full_count;
-            data.speed_mrad_s = encoder.speed_mrad_s;
+            data.angle_rad = static_cast<float>(encoder.turns) * TWO_PI +
+                             static_cast<float>(raw) * COUNT_TO_RAD;
+            data.speed_rad_s = encoder.speed_rad_s;
 
             return data;
         }
