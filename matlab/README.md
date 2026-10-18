@@ -21,11 +21,14 @@ balance_setup
 calculate_lqr
 run_balance_case('turn')
 run_balance_case('turn',true,[],'pid') % 改用级联PID
+run_balance_case('slope_hold',true,6,'pid_current',1,'slope') % PID输出iq，单轮上限6A
 ```
 
 前进方向约定：USB口一侧为后，远离USB口为前；仿真车体+X向前、+Y向左、+Z向上。
 
 PID增益集中在`3D仿真/pid_balance_parameters.m`，不需先输入Kt才能整定。面板可设置左右“实际/指令转矩增益”检查电机标定误差；实机输出改成电流指令时需要按实际执行尺度重新整定，不能照抄仿真N·m参数。详见`3D仿真/PID控制说明.md`。
+
+新增面板选项“PID：目标电流输出”，先将原增益换算为A制，再以理想电流跟踪和暂估Kt驱动同一3D机械模型。标称Kt约0.011814Nm/A来自700KV假设，并非根据作者PID反推出的实测值；核对细节见[电流接口与作者源码核对](3D仿真/电流接口与作者源码核对.md)。电流模式的入口第三个参数单位为A，默认6A；原LQR/PID转矩模式仍为Nm。
 
 坡道新增“明显坡道”和“坡中停车”工况，默认12°、高约12.8cm。选中后使用“坡道整定”；7～19秒在斜面中段停车，再继续驶出。参数在`3D仿真/balance_terrain_parameters.m`，结果与对比曲线在`results/suite/slope/`。运行`run_slope_comparison`可重做两种控制器的同坡对比；它会如实保留控制失败，不把未倒地当成定位成功。
 

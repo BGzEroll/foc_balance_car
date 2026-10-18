@@ -1,7 +1,8 @@
 function out=balance_suite_controller(raw,cfg)
 %#codegen
 % raw=[time x vx y vy z vz qw qx qy qz wx wy wz]，角速度在世界坐标。
-% out=[实际tau(2) state(6) ref(6) force(3) torque(3) fall 指令tau(2) PID目标(2)]。
+% out=[实际tau(2) state(6) ref(6) force(3) torque(3) fall 执行指令(2) PID目标(2)]。
+% cfg(16)=2时执行指令是iq/A；其余模式为转矩/Nm。
 persistent distance prevV velocityIntegral pitchIntegral yawIntegral
 if isempty(distance)
  distance=0;prevV=0;velocityIntegral=0;pitchIntegral=0;yawIntegral=0;
@@ -84,6 +85,9 @@ tau=[(effort(1)-effort(2))/2;(effort(1)+effort(2))/2];
 limit=cfg(2);
 command=max(-limit,min(limit,tau));
 tau=command.*[cfg(32);cfg(33)]; % 显式列向量，避免Simulink向量方向推断差异
+if cfg(16)>1.5
+ tau=tau*cfg(37); % 理想电流跟踪；实际Kt=标称Kt×左右执行增益。
+end
 out=[tau;state;ref;F;T;double(abs(pitch)>pi/4 || abs(roll)>pi/6);command;pidTarget];
 end
 

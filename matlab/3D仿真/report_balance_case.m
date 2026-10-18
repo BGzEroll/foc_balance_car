@@ -1,10 +1,18 @@
-function r=report_balance_case(o,scenario,duration,limit,out,controller,actuatorGain,profile,terrain)
+function r=report_balance_case(o,scenario,duration,limit,out,controller,actuatorGain,profile,terrain,drive)
 if nargin<6,controller='LQR';end
 if nargin<7,actuatorGain=[1 1];end
 if nargin<8,profile='normal';end
 if nargin<9,terrain=balance_terrain_parameters('mild');end
+if nargin<10,drive=[];end
+assert(~strcmpi(controller,'pid_current')||~isempty(drive),'电流模式报告必须提供电机参数，避免将A误标为Nm');
 if ~isfolder(out),mkdir(out);end
 [t,c]=values(o.control3d);[tr,raw]=values(o.raw3d);
+iq=[];currentLimit=[];
+if ~isempty(drive)
+ iq=c(:,22:23);currentLimit=limit;
+ % 通用报告的原有command列继续保持Nm；电流另外显式保存，避免混用单位。
+ c(:,22:23)=iq*drive.Kt_nominal;limit=limit*drive.Kt_nominal;
+end
 state=c(:,3:8);ref=c(:,9:14);e=state-ref;tail=t>=t(end)-.5;
 % 近似滚动滑差：轮组总自转与沿接触切线的速度之差。
 [tl,wl]=values(o.left_wheel_w);[tw,wr]=values(o.right_wheel_w);
@@ -83,6 +91,13 @@ if strcmpi(scenario,'drive')
  first=find(t>=1&state(:,1)>=.27,1);
  r.first_forward_90percent_time_s=NaN;if ~isempty(first),r.first_forward_90percent_time_s=t(first)-1;end
 end
+if ~isempty(drive)
+ r.controller_output_unit='A';r.nominal_Kt_Nm_per_A=drive.Kt_nominal;
+ r.actual_Kt_left_Nm_per_A=drive.Kt_nominal*actuatorGain(1);
+ r.actual_Kt_right_Nm_per_A=drive.Kt_nominal*actuatorGain(2);
+ r.configured_iq_limit_each_A=currentLimit;r.peak_each_iq_command_A=max(abs(iq),[],'all');
+ r.ideal_current_tracking=true;
+end
 fid=fopen(fullfile(out,'validation.json'),'w');assert(fid>=0);fprintf(fid,'%s',jsonencode(r,PrettyPrint=true));fclose(fid);
 tab=array2table([t c contacts terrainForce rollingSlip],'VariableNames',{'time_s','tau_left_Nm','tau_right_Nm', ...
  'distance_m','speed_mps','tilt_error_rad','pitch_rate_radps','yaw_rad','yaw_rate_radps', ...
@@ -90,6 +105,9 @@ tab=array2table([t c contacts terrainForce rollingSlip],'VariableNames',{'time_s
  'force_x_N','force_y_N','force_z_N', ...
  'torque_x_Nm','torque_y_Nm','torque_z_Nm','fall_signal', ...
  'command_left_Nm','command_right_Nm','pid_speed_target_mps','pid_pitch_target_rad','total_normal_N','terrain_normal_N','approx_rolling_slip_mps'});
+if ~isempty(iq)
+ tab.iq_left_command_A=iq(:,1);tab.iq_right_command_A=iq(:,2);
+end
 writetable(tab,fullfile(out,'trajectory.csv'));
 writetable(array2table([tr raw(:,2:14) rad2deg(roll)],'VariableNames', ...
  {'time_s','x_m','vx_mps','y_m','vy_mps','z_m','vz_mps','qw','qx','qy','qz','wx_radps','wy_radps','wz_radps','roll_deg'}), ...
@@ -107,6 +125,14 @@ exportgraphics(f,fullfile(out,'results.png'),'Resolution',140);close(f);
 f=figure('Visible','off','Color','w');plot(raw(:,2),raw(:,4),'LineWidth',1.5);axis equal;grid on;
 xlabel('世界X (m)');ylabel('世界Y (m)');title(sprintf('%s / %s：轮轴中心实际行驶轨迹',scenario,controller));
 exportgraphics(f,fullfile(out,'path.png'),'Resolution',140);close(f);
+if ~isempty(iq)
+ f=figure('Visible','off','Color','w','Position',[50 50 1000 700]);tiledlayout(2,1);
+ nexttile;plot(t,iq);grid on;ylabel('目标iq / A');legend('左','右');
+ if isfinite(currentLimit),yline(currentLimit,':');yline(-currentLimit,':');end
+ nexttile;plot(t,c(:,1:2));grid on;ylabel('实际轮轴转矩 / Nm');xlabel('时间 / s');
+ sgtitle(sprintf('%s：理想电流跟踪，标称Kt=%.5g Nm/A',scenario,drive.Kt_nominal));
+ exportgraphics(f,fullfile(out,'current_torque.png'),'Resolution',140);close(f);
+end
 if ismember(lower(scenario),{'slope','slope_hold'})
  f=figure('Visible','off','Color','w','Position',[40 40 1100 750]);tiledlayout(2,2);
  nexttile;plot(tr,raw(:,2),t,ref(:,1),'--');grid on;ylabel('水平位置 / m');legend('实际世界X','目标路程');

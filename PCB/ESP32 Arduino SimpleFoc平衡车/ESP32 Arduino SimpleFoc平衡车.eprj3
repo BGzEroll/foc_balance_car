@@ -1,0 +1,125 @@
+{
+  "name": "ESP32 Arduino SimpleFoc平衡车",
+  "owner_uuid": "ebe3716cf37144c4bead4afe30d17f43",
+  "creator_uuid": "ebe3716cf37144c4bead4afe30d17f43",
+  "created_at": "2026-10-18 09:19:46",
+  "updated_at": "2026-10-18 09:19:46",
+  "modifier_uuid": "ebe3716cf37144c4bead4afe30d17f43",
+  "content": "# **ESP32S3 Arduino SimpleFoc 无刷电机平衡车**\n---\n## **`开源不易，感谢点赞 + 收藏`** \n\n**B站视频：[演示视频链接](https://space.bilibili.com/387125514/lists/4980059?type=season)**\n**代码仓库：[Gitee仓库链接](https://gitee.com/harold-gitee-hub/balance-foc-car)**\n\n## **项目简介**\n  基于ESP32S3芯片和Arduino框架下Simplefoc库开发的无刷电机平衡车，支持手机APP控制。车身结构设计参考B站[手工饭](https://www.bilibili.com/video/BV1iF411S7Jr/?spm_id_from=333.337.search-card.all.click&amp;vd_source=a9a1f86750f9704588ee3bc66da9ada5)，电路和程序选用完全不同方案进行设计（采用ESP32-S3FN8单芯片控制方案和Arduino框架）。\n- **硬件** 采用ESP32-S3FN8单芯片控制方案，有感无刷电机Foc驱动设计（低端电流采样），USB-C 10W快充电路、PCB高度集成一体化设计（[硬件电路全开源](https://oshwhub.com/yeharold/foc-balance-caresp32s3arduino  )）。\n\n- **软件**：采用Arduino框架和Simplefoc库开发极大降低新手编程和理解门槛、采用HTML5开发了手机APP，支持手机程遥控（[软件代码全开源](https://gitee.com/harold-gitee-hub/balance-foc-car)）。\n\n\n## **项目展示**\n1. **顶部PCB**\n- 电路设计：电池盒、IP2326芯片2S(2串）均衡锂电池充电及接口、可编程WS2812 RGB车灯、电源一键开关控制电路、下板DC-DC（TPS63070RNMR芯片）降压电路，电池防反接电路\n\n- 功能介绍：18650 2S电池供电、USB-C 10W快充(PD充满LED指示），可调色RGB车灯，DC-DC降压（为下板供电），防反接保护，电源一键开关。\n![Snipaste_2025-03-10_23-00-39.png](https://image.lceda.cn/oshwhub/pullImage/80d7109672a7498899ad14054e0f2896.png)\n2. **底部PCB**\n- 电路设计：ESP32S3-FN8主控电路(板载贴片天线设计）、MPU6050陀螺仪、双路无刷电机驱动电路（DRV8300DRGER）、低端电流采用电路（INA181A2IDBVR）、USB-串口程序自动下载电路（CH343P)、LDO稳压电路、蜂鸣器电路、编码器和电机接口。\n\n- 功能介绍：ESP32S3主控、双路无刷电机驱动器，低端电流采样、MPU6050陀螺仪、蜂鸣器、程序下载等。\n![Snipaste_2025-03-10_23-00-50.png](https://image.lceda.cn/oshwhub/pullImage/854327037a4d4e48be5dc209850039e7.png)\n3.  **编码器**\n - 电路设计：AS5600编码器、LED指示、编码器接口等电路（备注 后续更新MT6701方案).\n - 功能介绍：AS5600 高精度12位I2C接口角度传感器，用于精确的电机位置反馈。\n \n    ![Snipaste_2025-03-10_23-01-06.png](https://image.lceda.cn/oshwhub/pullImage/da8a71c48a374ef58eb69fbf5aade21a.png)\n4. **手机APP**\n  - 功能介绍：支持模拟手柄遥控方向控制、MPU矫正，RGB灯效控制、关机控制等\n  - 手机[app安装包](https://gitee.com/harold-gitee-hub/balance-foc-car/raw/master/App-Phone/unpackage/release/apk/BalanceCar-Stable.apk)位于 App-Phone/unpackage/release/apk目录下\n![手机app用户指南.png](https://image.lceda.cn/oshwhub/pullImage/dbc46b8e79084957a917af8501de9537.png)\n\n5.  **组装与展示**\n   - PCB在嘉立创打样后，采购原件焊接完成（[BOM见附件](https://oshwhub.com/yeharold/foc-balance-caresp32s3arduino/edit#:~:text=%E9%85%8D%E4%BB%B6%E6%B8%85%E5%8D%95-,.,-xlsx)）\n   - 车架、轮毂等结构件采用Fusion360建模([视频教程](https://space.bilibili.com/564155225?spm_id_from=333.337.search-card.all.click)）和3D打印完成（[见附件](https://gitee.com/harold-gitee-hub/balance-foc-car/tree/master/PCB%20&amp;%203D))\n\n![whiteboard_exported_image_compressed.png](https://image.lceda.cn/oshwhub/pullImage/3254aa6874714fab80e33461ce0f24aa.png)\n\n![BalanceCar.jpg](https://image.lceda.cn/oshwhub/pullImage/8f115772fe984f92a026227a885b129c.jpg)\n\n## **配件清单**\n- [**下载链接（见附件）**](https://gitee.com/harold-gitee-hub/balance-foc-car/raw/master/BOM/%E9%85%8D%E4%BB%B6%E6%B8%85%E5%8D%95.xlsx)\n\n![image.png](https://image.lceda.cn/oshwhub/pullImage/ed1de4e5bcc34273b343e09e382757d9.png)\n\n\n    备注：\n    1. 下单前仔细核对是否缺件。\n    2. 配件购买店铺仅供参考，其他同尺寸和型号也可安装（店铺如电机缺货可找其他家）。\n    3. 安装方法参考安装示意图（连接线SH1.0实际35mm、50mm建议自制 ）。\n\n## **开发环境**\n- **硬件驱动**：[VSCode](https://code.visualstudio.com/)+Platformio([配置视频教程](https://www.bilibili.com/video/BV1Yf421Z7Nm/?spm_id_from=333.1387.homepage.video_card.click))环境下采用Arduino平台配合SimpleFOC库，实现电机控制和姿态平衡算法([编译问题解决参考](https://gitee.com/harold-gitee-hub/balance-foc-car/issues)）。\n- **App界面**：[Hbuilder](https://dcloud.io/hbuilderx.html)环境（[简单使用视频教程](https://www.bilibili.com/video/BV1ML411z7Gt/?spm_id_from=333.1387.homepage.video_card.click&amp;vd_source=a9a1f86750f9704588ee3bc66da9ada5)）下采用HTML5+NippleJS+Iro.js进行开发打包生成app。\n\n\n## **代码框架**\n- **硬件驱动**：硬件驱动采用RTOS多任务处理,core1主要负责电机FOC控制([FOC原理视频教程](https://www.bilibili.com/video/BV1cj411M7Xu?spm_id_from=333.788.videopod.sections&amp;vd_source=a9a1f86750f9704588ee3bc66da9ada5)），core0负责提供app server响应 ，具体划分如下。\n\n![硬件驱动.png](https://image.lceda.cn/oshwhub/pullImage/3c06caf3411e4c2eaf59c54a848325a5.png)\n- **手机APP**：app控制指令通过http发送给小车，控制行驶和转向，车灯RGB颜色、急停断电等。\n\n![APP开发.png](https://image.lceda.cn/oshwhub/pullImage/eb3a973f5bb2452cbe2a605bd1ef9591.png)\n\n## **软硬件调试**\n1.  **硬件焊接——注意事项**  \n    - [原件贴片焊接视频教程（钢网贴片视频教程）](https://www.bilibili.com/video/BV11yC3Y9Egp/?spm_id_from=333.337.search-card.all.click&amp;vd_source=a9a1f86750f9704588ee3bc66da9ada5) 、[QFN封装电烙铁焊接视频教程](https://www.bilibili.com/video/BV1Wi421Q7BL/?spm_id_from=333.337.search-card.all.click&amp;vd_source=a9a1f86750f9704588ee3bc66da9ada5)\n- **顶板PCB**\n    - **检查极性**：确认各芯片和RGB元件方向正确。  \n    - **焊接检查**：用[维修放大镜](https://detail.tmall.com/item.htm?id=702048717052&amp;ns=1&amp;pisk=gsFIENw-1uFN-nGJPvbZ5RKZVOhWPN52AUg8ozdeyXhK2Ra0VD7lKXysVlEsvB7hKYn7xXHuL0oEVbaucNSVgsz3-bcF0i5q54UwWjvpvBKrWC3nN2CC_O7L-bcRVFRR3sa3DpMyLL3-WNgrzQp82vLtWqntyph82cHtkq-KwuE-XC3mPQdKw0KTWc0m24h-2FKtzqmJpYE8WNgoX0h-euU9r9xsz9g8RwEI7cSVPXUKfQd89_DIcvpyNQZIJvN8Jcaa75gIdmkgcTlbGrULi4NlkLi7zJEESu1fffFQAWHsN_OiTrwTAAwCVCMgBrV-CRjXnr4LA-HY91_QVlU0nXFdqBo3ePF-bWQyNme4ofggaGAKVRe8TvckvMg_OrN7Fgu9gmGFqLTsnQgs0N_6ELDAxe3JAz8YMv3iJs715h9opV0sSN_6ELDKS2hh5Nt6E&amp;priceTId=undefined&amp;skuId=4946205160229&amp;spm=a21n57.1.hoverItem.1&amp;utparam=%7B%22aplus_abtest%22%3A%22a5edd6b560b99839220a01f97576fcc3%22%7D&amp;xxc=ad_ztc)逐一检查引脚，避免虚焊和连锡。  \n    - **电阻测试**：万用表对照PCB图纸测量电阻值。  \n    - **通电测试**：USB上电，观察充电指示灯是否正常亮起。\n- **底板PCB**\n    - **检查极性**：确认 **`各芯片`** 和元件方向正确(尤其是`CH343P、双三极管、电流放大器`）。\n    - **焊接检查**：用维修放大镜逐点检查元件焊接，避免虚焊、连锡，确保贴片正确。  \n    - **电阻测试**：万用表对照PCB点位测量各电阻值，确认符合设计要求。  \n    - **WIFI天线匹配**：仅匹配电感（**`3.3nH`**），PI型电容暂不焊接。  \n    - **上电测试**：确认无误后通电，观察系统运行状态。\n\n---\n2.  **软硬联调** \n\n- **程序下载测试**:  配置软件环境，连接USB，确认串口芯片被识别。  下载 `test_ENCODER.c` `test_MPU6050.c`，测试编码器AB、MPU6050，确保读数正常。  \n- **WiFi测试**:  下载 `test_WIFI.c`，测试信号强度及通信距离。 必要时调整WiFi阻抗匹配（如优化π型电路电容值）。  \n- **电机驱动测试**:  下载 `test_FOC.c`，测试单路电机驱动。  串口发送 `M10` 指令，调整速度（数值≤50），观察运行状态。  \n - [调参经验分享（移步gitee)](https://gitee.com/harold-gitee-hub/balance-foc-car)\n \n## **贡献指南**\n欢迎任何对本项目感兴趣的开发者参与贡献。具体贡献方式包括但不限于：\n- 提交代码改进（特别是FOC和姿态PID的调参，让车兼顾纹丝不动和越野性能）\n- 提供硬件改进方案并持续开源。\n- 编写使用文档、录制视频教程等。\n\n## **技术交流**\n- 技术交QQ流群：1032448484（加群注意遵守群公告须知，备注： foc平衡小车）          \n![image.png](https://image.lceda.cn/oshwhub/pullImage/9afb423fa3684a8baf6e7bce18230ccf.png)\n\n## **致 谢**\n- B站 手工饭 开源项目\n- B站 敬小西 交流学习",
+  "archive": false,
+  "cbb_project": 0,
+  "thumb": "",
+  "ticket": 1,
+  "g_ticket": 1,
+  "boards": [],
+  "block_symbol_attrs_groups": {},
+  "default_sheet": "",
+  "branch_uuid": "",
+  "pcb_count": 0,
+  "format": "folder",
+  "config": {
+    "defaultSheet": "",
+    "settings": {}
+  },
+  "profile": {
+    "boards": {
+      "7853e8eaadfb0455": {
+        "uuid": "7853e8eaadfb0455",
+        "title": "AS5600-V2",
+        "zIndex": 1
+      },
+      "8cb97104871e3985": {
+        "uuid": "8cb97104871e3985",
+        "title": "BAT_RGB_V3",
+        "zIndex": 2
+      },
+      "f949d6f78d2998d9": {
+        "uuid": "f949d6f78d2998d9",
+        "title": "MCU-Blance-V4",
+        "zIndex": 3
+      }
+    },
+    "schematics": {
+      "8fb013725a28465cb9204717c0d82e14": {
+        "uuid": "8fb013725a28465cb9204717c0d82e14",
+        "name": "AS5600-V2",
+        "board": "7853e8eaadfb0455",
+        "version": "1743132783000",
+        "updateTime": 1743132783000
+      },
+      "4a159db8331c4eeb841e17ce74674c55": {
+        "uuid": "4a159db8331c4eeb841e17ce74674c55",
+        "name": "BAT_SCH-V3",
+        "board": "8cb97104871e3985",
+        "version": "1743132215000",
+        "updateTime": 1743132215000
+      },
+      "4a2b960e588241a2a018b2b550cf7be7": {
+        "uuid": "4a2b960e588241a2a018b2b550cf7be7",
+        "name": "SCH_V4",
+        "board": "f949d6f78d2998d9",
+        "version": "1743132823000",
+        "updateTime": 1743132823000
+      }
+    },
+    "sheets": {
+      "a612ec6c7ee643089d1f96ae7fe7e0af": {
+        "uuid": "a612ec6c7ee643089d1f96ae7fe7e0af",
+        "title": "P1",
+        "schematic_uuid": "8fb013725a28465cb9204717c0d82e14",
+        "zIndex": 1,
+        "version": "1743132783000",
+        "updateTime": 1743132783000
+      },
+      "7d3bad5ae4f14042828d47424fcee9d7": {
+        "uuid": "7d3bad5ae4f14042828d47424fcee9d7",
+        "title": "P1",
+        "schematic_uuid": "4a159db8331c4eeb841e17ce74674c55",
+        "zIndex": 1,
+        "version": "1743132215000",
+        "updateTime": 1743132215000
+      },
+      "c45a40abe14c4ac28f270b9e503a370f": {
+        "uuid": "c45a40abe14c4ac28f270b9e503a370f",
+        "title": "MCU_SCH_V4",
+        "schematic_uuid": "4a2b960e588241a2a018b2b550cf7be7",
+        "zIndex": 1,
+        "version": "1743132823000",
+        "updateTime": 1743132823000
+      }
+    },
+    "pcbs": {
+      "287cc0f6e28241c9b2036eb6c29e675f": {
+        "uuid": "287cc0f6e28241c9b2036eb6c29e675f",
+        "title": "AS5600-PCB-V2",
+        "board": "7853e8eaadfb0455",
+        "parent_uuid": "",
+        "version": "1743132609000",
+        "updateTime": 1743132609000
+      },
+      "f0e0b52a881844bbb37ff1952d467936": {
+        "uuid": "f0e0b52a881844bbb37ff1952d467936",
+        "title": "BAT_PCB_V3",
+        "board": "8cb97104871e3985",
+        "parent_uuid": "",
+        "version": "1743132713000",
+        "updateTime": 1743132713000
+      },
+      "a274ca1487db403f95a4e93f3e73153d": {
+        "uuid": "a274ca1487db403f95a4e93f3e73153d",
+        "title": "MCU_Balance_V4",
+        "board": "f949d6f78d2998d9",
+        "parent_uuid": "",
+        "version": "1743133568000",
+        "updateTime": 1743133568000
+      }
+    },
+    "panels": {},
+    "blockSymbols": {},
+    "owner": {
+      "uuid": "ebe3716cf37144c4bead4afe30d17f43"
+    },
+    "simSchematics": {},
+    "simulations": {}
+  }
+}

@@ -1,5 +1,7 @@
 # PID控制与整定
 
+新增“PID：目标电流输出”：选择面板第三个控制器，或运行 `run_balance_case('slope_hold',true,6,'pid_current',1,'slope')`。此模式输出单位为A，第三个参数是单轮iq上限；原PID转矩模式仍保留。Kt暂按700 KV估计0.011814 Nm/A，不是由原作者PID辨识出的值。详见[电流接口与作者源码核对](电流接口与作者源码核对.md)。
+
 打开`launch_balance_panel.m`运行，在控制器下拉框选择PID。也可以在初始化后运行：
 
 ```matlab

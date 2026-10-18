@@ -3,7 +3,7 @@ addpath(fileparts(fileparts(mfilename('fullpath'))));paths=balance_setup;
 % BALANCE_DEMO_PANEL 中文工况选择入口；直接调用原有3D多体仿真API。
 tag='balance_car_demo_panel';existing=findall(groot,'Type','figure','Tag',tag);
 if ~isempty(existing)
- if isequal(existing(1).UserData,'lqr-pid-slope-v4'),fig=existing(1);figure(fig);return;end
+ if isequal(existing(1).UserData,'lqr-pid-current-v5'),fig=existing(1);figure(fig);return;end
  delete(existing);
 end
 here=fileparts(mfilename('fullpath'));addpath(here);configure_balance_cache;
@@ -24,7 +24,7 @@ descriptions={ ...
  '26秒。默认12°坡、高约12.8厘米，完整通过上坡、平台、下坡与凸起。', ...
  '34秒。先到上坡中段，7～19秒停车，随后继续通过坡顶和下坡。检查是否溜车。'};
 fig=figure('Name','平衡车3D仿真：选择工况','NumberTitle','off','Tag',tag, ...
- 'MenuBar','none','ToolBar','none','Color',[.96 .97 .98],'Position',[90 80 880 650],'UserData','lqr-pid-slope-v4');
+ 'MenuBar','none','ToolBar','none','Color',[.96 .97 .98],'Position',[90 80 880 650],'UserData','lqr-pid-current-v5');
 textBox([.04 .87 .92 .10],{'每次选择一个工况 → 点击运行 → 在 Multibody Explorer 点击播放', ...
  '切换下拉框不会自动改变3D动画；运行后，同一3D标签会更新为新工况。'},14);
 textBox([.04 .79 .16 .045],'仿真工况',12);
@@ -34,10 +34,10 @@ profileNames={'normal','agile','slope'};
 profilePick=uicontrol(fig,'Style','popupmenu','String',{'常规','快速（大倾角）','坡道整定'},'Value',1, ...
  'Tag','motion_profile_selector','Units','normalized','Position',[.76 .79 .19 .05],'FontSize',12,'Callback',@describe);
 textBox([.04 .71 .16 .045],'控制器',12);
-controllerNames={'lqr','pid'};
-controllerPick=uicontrol(fig,'Style','popupmenu','String',{'LQR：六状态反馈','PID：位置/速度/平衡级联'}, ...
- 'Value',1,'Tag','controller_selector','Units','normalized','Position',[.20 .71 .38 .05],'FontSize',12,'Callback',@describe);
-textBox([.60 .71 .20 .045],'单轮转矩上限',12);
+controllerNames={'lqr','pid','pid_current'};
+controllerPick=uicontrol(fig,'Style','popupmenu','String',{'LQR：六状态反馈','PID：转矩输出（原版）','PID：目标电流输出'}, ...
+ 'Value',1,'Tag','controller_selector','Units','normalized','Position',[.20 .71 .38 .05],'FontSize',12,'Callback',@selectController);
+limitLabel=textBox([.60 .71 .20 .045],'单轮转矩上限',12);
 design=design_balance_suite;
 limit=uicontrol(fig,'Style','edit','String',num2str(design.torque_limit_each),'Tag','torque_limit','Units','normalized', ...
  'Position',[.80 .71 .15 .05],'FontSize',12,'BackgroundColor','w');
@@ -48,7 +48,7 @@ gainRight=uicontrol(fig,'Style','edit','String','1','Tag','gain_right','Units','
  'Position',[.51 .65 .14 .045],'FontSize',12,'BackgroundColor','w');
 textBox([.69 .65 .26 .04],'1=标称；0.6=弱40%',11);
 detail=textBox([.04 .56 .91 .08],descriptions{3},12);
-textBox([.04 .51 .91 .04],'上限单位N·m（指令侧）；Inf不限幅。增益模拟Kt误差；传感器仍理想。',10);
+unitHint=textBox([.04 .51 .91 .04],'上限单位N·m（指令侧）；Inf不限幅。增益模拟Kt误差；传感器仍理想。',10);
 runButton=uicontrol(fig,'Style','pushbutton','String','运行所选工况，更新3D窗口','Tag','run_selected', ...
  'Units','normalized','Position',[.04 .43 .58 .075],'FontSize',14,'Callback',@runCase);
 curveButton=uicontrol(fig,'Style','pushbutton','String','查看所选工况的曲线','Tag','view_curves', ...
@@ -80,10 +80,21 @@ textBox([.04 .08 .91 .16],{'三个窗口各管一件事：', ...
         if pick.Value>=8,profilePick.Value=3;end
         describe([],[]);
     end
+    function selectController(~,~)
+        if controllerPick.Value==3
+            motor=balance_current_parameters;limit.String=num2str(motor.current_limit_each);
+            limitLabel.String='单轮iq上限 / A';
+            unitHint.String=sprintf('电流接口：Kt暂估%.5g Nm/A，理想电流跟踪；左右增益表示实际Kt/标称Kt。',motor.Kt_nominal);
+        else
+            limit.String=num2str(design.torque_limit_each);limitLabel.String='单轮转矩上限';
+            unitHint.String='上限单位N·m（指令侧）；Inf不限幅。增益模拟Kt误差；传感器仍理想。';
+        end
+        describe([],[]);
+    end
     function runCase(~,~)
         cap=str2double(limit.String);
         if ~isscalar(cap)||isnan(cap)||cap<=0
-            status.String='转矩上限请输入正数，例如0.10；也可以输入Inf。';return;
+            status.String='输出上限请输入正数：转矩模式单位Nm，电流模式单位A；或输入Inf。';return;
         end
         gains=[str2double(gainLeft.String) str2double(gainRight.String)];
         if any(~isfinite(gains))||any(gains<=0),status.String='左右执行增益请输入正数，例如1、0.6或1.4。';return;end
