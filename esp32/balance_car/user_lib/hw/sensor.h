@@ -33,7 +33,17 @@ namespace sensor
 
     bool init();
     void begin_inline();
-    void poll_inline();
+    // Recover a stalled asynchronous bus only while the caller has stopped PWM.
+    void poll_inline(bool allow_recovery = true);
+    struct health_data {
+        uint32_t left_updates, right_updates;
+        uint32_t left_recoveries, right_recoveries;
+        uint32_t left_submit_errors, right_submit_errors;
+        uint32_t left_rejected_events, right_rejected_events;
+    };
+    health_data get_health();
+    // Test-branch diagnostic: one address NACK, consumed only while stopped.
+    void request_test_nack();
     bool get_package(package &snapshot);
 }
 

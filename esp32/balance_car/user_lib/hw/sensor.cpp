@@ -35,6 +35,10 @@ namespace i2c
 
             uint32_t notify_bit = 0;
             volatile uint64_t completion_time_us = 0;
+            uint64_t submitted_us = 0;
+            bool pending = false;
+            uint32_t updates = 0, recoveries = 0;
+            uint32_t submit_errors = 0, rejected_events = 0;
         };
 
         context left;
@@ -52,10 +56,16 @@ namespace i2c
          */
         bool done_callback(
             i2c_master_dev_handle_t,
-            const i2c_master_event_data_t *,
+            const i2c_master_event_data_t *event,
             void *arg)
         {
             auto *ctx = static_cast<context *>(arg);
+
+            if(!event || event->event != I2C_EVENT_DONE)
+            {
+                __atomic_add_fetch(&ctx->rejected_events,1,__ATOMIC_RELAXED);
+                return false;
+            }
 
             ctx->completion_time_us = sys_time::get_us_tick();
 
@@ -66,11 +76,7 @@ namespace i2c
                 eSetBits,
                 &task_woken);
 
-            if(task_woken == pdTRUE)
-            {
-                portYIELD_FROM_ISR();
-            }
-
+            // The ESP-IDF driver performs the yield after this callback returns.
             return task_woken == pdTRUE;
         }
 
@@ -155,6 +161,24 @@ namespace i2c
             RIGHT_DONE);
     }
 
+    // All transaction queues belong to the old bus. Recreate them as well as
+    // resetting hardware, so an abandoned asynchronous transaction cannot
+    // leave a queued retry waiting forever. Called only from the owning task.
+    void rebuild(context &ctx)
+    {
+        ESP_ERROR_CHECK(i2c_master_bus_reset(ctx.bus));
+        ESP_ERROR_CHECK(i2c_master_bus_rm_device(ctx.dev));
+        ESP_ERROR_CHECK(i2c_del_master_bus(ctx.bus));
+        ctx.bus=nullptr;ctx.dev=nullptr;ctx.pending=false;
+        ctx.completion_time_us=0;
+        ulTaskNotifyValueClear(nullptr,ctx.notify_bit);
+        if(&ctx==&left)
+            init_bus(ctx,LEFT_PORT,LEFT_SDA,LEFT_SCL,LEFT_FREQ_HZ,LEFT_DONE);
+        else
+            init_bus(ctx,RIGHT_PORT,RIGHT_SDA,RIGHT_SCL,RIGHT_FREQ_HZ,RIGHT_DONE);
+        __atomic_add_fetch(&ctx.recoveries,1,__ATOMIC_RELAXED);
+    }
+
     /**
      * @brief 修改右侧 I2C 设备地址
      *
@@ -179,14 +203,19 @@ namespace i2c
      */
     void read(context &ctx, const uint8_t *reg, uint8_t *data, size_t size)
     {
-        ESP_ERROR_CHECK(
-            i2c_master_transmit_receive(
+        ctx.submitted_us=sys_time::get_us_tick();
+        ctx.pending=true;
+        const esp_err_t result=i2c_master_transmit_receive(
                 ctx.dev,
                 reg,
                 1,
                 data,
                 size,
-                -1));
+                0);
+        if(result!=ESP_OK)
+            __atomic_add_fetch(&ctx.submit_errors,1,__ATOMIC_RELAXED);
+        // A successful submission is not a successful measurement. Only the
+        // DONE callback can publish data; the stopped-state watchdog retries.
     }
 
     /**
@@ -201,14 +230,14 @@ namespace i2c
     {
         uint8_t data[2] = {reg, value};
 
-        while(true)
+        for(unsigned attempt=0;attempt<3;++attempt)
         {
             ESP_ERROR_CHECK(
                 i2c_master_transmit(
                     right.dev,
                     data,
                     sizeof(data),
-                    -1));
+                    20));
 
             uint32_t notification = 0;
 
@@ -221,7 +250,10 @@ namespace i2c
             {
                 return;
             }
+            rebuild(right);
+            set_right_address(0x68);
         }
+        ESP_ERROR_CHECK(ESP_ERR_TIMEOUT);
     }
 
 
@@ -532,7 +564,7 @@ namespace mpu6050
 
         data.timestamp_us = now_us;
 
-        data.temperature = 
+        data.temperature =
             static_cast<float>(raw_temperature) /
             340.0f +
             36.53f;
@@ -627,6 +659,7 @@ namespace sensor
         bool right_reading_imu = false;
         uint64_t next_imu_time_us = 0;
         bool started = false;
+        unsigned test_nack_pending = 0;
 
         /**
          * @brief 发布左编码器数据
@@ -669,9 +702,13 @@ namespace sensor
         /**
          * @brief 处理左编码器事务完成
          */
-        void handle_left_encoder()
+        void handle_left_encoder(bool allow_test = false)
         {
+            i2c::left.pending=false;
+            __atomic_add_fetch(&i2c::left.updates,1,__ATOMIC_RELAXED);
             publish_left(as5600::process(as5600::left, i2c::left.completion_time_us));
+            if(allow_test&&__atomic_exchange_n(&test_nack_pending,0,__ATOMIC_ACQ_REL))
+                ESP_ERROR_CHECK(i2c_master_device_change_address(i2c::left.dev,0x37,0));
             as5600::start_left_read();
         }
 
@@ -680,6 +717,8 @@ namespace sensor
          */
         void handle_right_encoder()
         {
+            i2c::right.pending=false;
+            __atomic_add_fetch(&i2c::right.updates,1,__ATOMIC_RELAXED);
             const uint64_t now_us = i2c::right.completion_time_us;
             publish_right(as5600::process(as5600::right, now_us));
 
@@ -706,6 +745,7 @@ namespace sensor
          */
         void handle_imu()
         {
+            i2c::right.pending=false;
             imu_data data;
             if(mpu6050::process(i2c::right.completion_time_us, data))
             {
@@ -771,12 +811,34 @@ namespace sensor
         as5600::start_left_read();as5600::start_right_read();
         started=true;
     }
-    void poll_inline(){
+    void poll_inline(bool allow_recovery){
         uint32_t notification=0;
         xTaskNotifyWait(0,UINT32_MAX,&notification,0);
-        if(notification&i2c::LEFT_DONE)handle_left_encoder();
+        if(notification&i2c::LEFT_DONE)handle_left_encoder(allow_recovery);
         if(notification&i2c::RIGHT_DONE){if(right_reading_imu)handle_imu();else handle_right_encoder();}
+        if(!allow_recovery)return;
+        const uint64_t now=sys_time::get_us_tick();
+        if(i2c::left.pending&&now-i2c::left.submitted_us>2000){
+            i2c::rebuild(i2c::left);as5600::start_left_read();
+        }
+        if(i2c::right.pending&&now-i2c::right.submitted_us>2000){
+            i2c::rebuild(i2c::right);right_reading_imu=false;
+            next_imu_time_us=now+MPU_PERIOD_US;as5600::start_right_read();
+        }
     }
+    health_data get_health(){
+        health_data h{};
+        h.left_updates=__atomic_load_n(&i2c::left.updates,__ATOMIC_RELAXED);
+        h.right_updates=__atomic_load_n(&i2c::right.updates,__ATOMIC_RELAXED);
+        h.left_recoveries=__atomic_load_n(&i2c::left.recoveries,__ATOMIC_RELAXED);
+        h.right_recoveries=__atomic_load_n(&i2c::right.recoveries,__ATOMIC_RELAXED);
+        h.left_submit_errors=__atomic_load_n(&i2c::left.submit_errors,__ATOMIC_RELAXED);
+        h.right_submit_errors=__atomic_load_n(&i2c::right.submit_errors,__ATOMIC_RELAXED);
+        h.left_rejected_events=__atomic_load_n(&i2c::left.rejected_events,__ATOMIC_RELAXED);
+        h.right_rejected_events=__atomic_load_n(&i2c::right.rejected_events,__ATOMIC_RELAXED);
+        return h;
+    }
+    void request_test_nack(){__atomic_store_n(&test_nack_pending,1,__ATOMIC_RELEASE);}
     /**
      * @brief 初始化传感器模块
      *

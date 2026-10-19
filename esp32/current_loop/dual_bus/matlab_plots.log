@@ -1,0 +1,154 @@
+{错误使用 connector.internal.doEnsureServiceOn
+Connector 中出现错误: Dynamic exception type: class std::runtime_error
+std::exception::what: Did not start the server. Desired port was: 31515. Last error was: Failed to start server: 127.0.0.1:32036
+
+
+出错 connector.ensureServiceOn
+
+出错 matlab.ui.internal.FigureMessageService.subscribeToChannel (第 7 行)
+        connector.ensureServiceOn;
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+出错 matlab.graphics.internal.initialize (第 15 行)
+            suppressedOutput = evalc('builtin(''groot'');');
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+出错 plot_results (第 8 行)
+ f=figure('Visible','off','Color','w','Position',[40 40 1450 1050]);tl=tiledlayout(3,2,'Padding','compact','TileSpacing','compact');
+                                                 ^^^^^^^^^^^^^^^^^
+} 
+[警告: 图形初始化期间出错: Connector 中出现错误: Dynamic exception type: class std::runtime_error
+std::exception::what: Did not start the server. Desired port was: 31515. Last error was: Failed to start server: 127.0.0.1:32036
+] 
+[> 位置：plot_results (第 8 行)] 
+[警告: 初始化 MATLAB 图形失败。
+这表明您的 MATLAB 设置中可能存在严重问题，应尽快解决。检测到的错误为:
+MATLAB:badsubscript
+索引超出数组范围。] 
+[> 位置：hgrc (第 225 行)
+位置: plot_results (第 8 行)] 
+
+--------------------------------------------------------------------------------
+             Access violation detected at 2026-10-19 14:21:02 +0800
+--------------------------------------------------------------------------------
+
+Configuration:
+  Crash Decoding           : Disabled - No sandbox or build area path
+  Crash Mode               : continue (default)
+  Default Encoding         : UTF-8
+  Deployed                 : false
+  Graphics Driver          : Uninitialized software 
+  Graphics card 1          : MuMu ( 0x0 ) MuMu Virtual Display Adapter Version 0.0.0.0 (1601-1-1)
+  Graphics card 2          : NVIDIA ( 0x10de ) NVIDIA GeForce RTX 5060 Ti Version 0.0.0.0 (1601-1-1)
+  Graphics card 3          : GameViewer ( 0x0 ) GameViewer Virtual Display Adapter Version 0.0.0.0 (1601-1-1)
+  Graphics card 4          : Microsoft ( 0x0 ) Microsoft Remote Display Adapter Version 0.0.0.0 (1601-1-1)
+  MATLAB Architecture      : win64
+  MATLAB Entitlement ID    : 12509936
+  MATLAB Root              : C:\software\matlab\R2025b
+  MATLAB Version           : 25.2.0.2998904 (R2025b)
+  OpenGL                   : software
+  Operating System         : unknown
+  Process ID               : 20628
+  Processor ID             : x86 Family 25 Model 97 Stepping 2, AuthenticAMD
+  Session Key              : 2asphyzsds9y822a254mdvmgs
+  Window System            : Version 10.0 (Build 26300)
+
+Fault Count: 1
+
+
+Abnormal termination:
+Access violation
+
+Current Thread: 'MCR 0 interpreter thread' id 22600
+
+Register State (from fault):
+  RAX = 0000000000000000  RBX = 000000b6d1cf7420
+  RCX = 0000000000000000  RDX = 000000b6d1cf7420
+  RSP = 000000b6d1cf73b0  RBP = 000000b6d1cf7579
+  RSI = 0000000000000000  RDI = 0000000000000000
+ 
+   R8 = 0000000000000000   R9 = 0000000000000065
+  R10 = 00007ffc8f520000  R11 = 000000b6d1cf6928
+  R12 = 0000000000000000  R13 = 00007ffbf02f8058
+  R14 = 000000b6d1cf7568  R15 = 0000000000000000
+ 
+  RIP = 00007ffbeeda97b3  EFL = 00010202
+ 
+   CS = 0033   FS = 0053   GS = 002b
+
+Stack Trace (from fault):
+[  0] 0x00007ffbeeda97b3    C:\software\matlab\R2025b\bin\win64\hgutils.dll+01087411 hgutils::getAmbiguousMatchingPropInfo+00000019
+[  1] 0x00007ffbf0259390 C:\software\matlab\R2025b\bin\win64\hgbuiltins.dll+00824208 hgfilterWrapper+00051712
+[  2] 0x00007ffbf0257c4d C:\software\matlab\R2025b\bin\win64\hgbuiltins.dll+00818253 hgfilterWrapper+00045757
+[  3] 0x00007ffbf02766e2 C:\software\matlab\R2025b\bin\win64\hgbuiltins.dll+00943842 createFigure+00000546
+[  4] 0x00007ffc28c9f57d    C:\software\matlab\R2025b\bin\win64\builtin.dll+00193917 MathWorks::builtin::BuiltinFcn::invoke+00001581
+[  5] 0x00007ffc275b638a C:\software\matlab\R2025b\bin\win64\m_dispatcher.dll+00353162 mdLoadModuleForPackageOrClass+00007610
+[  6] 0x00007ffc275b6455 C:\software\matlab\R2025b\bin\win64\m_dispatcher.dll+00353365 mdLoadModuleForPackageOrClass+00007813
+[  7] 0x00007ffc2756cbc4 C:\software\matlab\R2025b\bin\win64\m_dispatcher.dll+00052164
+[  8] 0x00007ffc2758ca1d C:\software\matlab\R2025b\bin\win64\m_dispatcher.dll+00182813 Mfh_MATLAB_fn_impl::dispatch+00000045
+[  9] 0x00007ffc269585bd C:\software\matlab\R2025b\bin\win64\libmwlxemainservices.dll+00427453 coretypes::array::Array<MathWorks::String::detail::StringArrayVariant,MathWorks::String::detail::StringArrayPolicy,coretypes::array::ArrayTypeList<MathWorks::String::detail::StringArrayVariant> >::resize+00350461
+[ 10] 0x00007ffc269673d4 C:\software\matlab\R2025b\bin\win64\libmwlxemainservices.dll+00488404 coretypes::array::Array<MathWorks::String::detail::StringArrayVariant,MathWorks::String::detail::StringArrayPolicy,coretypes::array::ArrayTypeList<MathWorks::String::detail::StringArrayVariant> >::resize+00411412
+[ 11] 0x00007ffc17282226      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+06496806 MathWorks::lxe::ObservableXvaluePtr::~ObservableXvaluePtr+00006662
+[ 12] 0x00007ffc172840ab      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+06504619 MathWorks::lxe::ObservableXvaluePtr::~ObservableXvaluePtr+00014475
+[ 13] 0x00007ffc171960a8      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+05529768 MathWorks::lxe::XvalueFactory::XvalueDeleter::XvalueDeleter+00267432
+[ 14] 0x00007ffc171b57c9      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+05658569 MathWorks::lxe::XvalueFactory::XvalueDeleter::XvalueDeleter+00396233
+[ 15] 0x00007ffc16f487c6      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+03114950 MathWorks::lxe::LXEConstants::IsIfElse+00548550
+[ 16] 0x00007ffc16f4c9d2      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+03131858 MathWorks::lxe::LXEConstants::IsY+00012018
+[ 17] 0x00007ffc16f4a1f3      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+03121651 MathWorks::lxe::LXEConstants::IsY+00001811
+[ 18] 0x00007ffc16f4dad5      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+03136213 MathWorks::lxe::LXEConstants::IsY+00016373
+[ 19] 0x00007ffc16f4dd83      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+03136899 MathWorks::lxe::LXEConstants::IsY+00017059
+[ 20] 0x00007ffc16f4d6ee      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+03135214 MathWorks::lxe::LXEConstants::IsY+00015374
+[ 21] 0x00007ffc16f49916      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+03119382 MathWorks::lxe::LxeTypes::GetTypeXvalueOf+00000262
+[ 22] 0x00007ffc170428e7      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+04139239 MathWorks::lxe::SetEngineImplUnlinkFlagForAllCallsOnStack+00048471
+[ 23] 0x00007ffc17046455      C:\software\matlab\R2025b\bin\win64\m_lxe.dll+04154453 MathWorks::lxe::SetEngineImplUnlinkFlagForAllCallsOnStack+00063685
+[ 24] 0x00007ffc26a65226 C:\software\matlab\R2025b\bin\win64\libmwlxemainservices.dll+01528358 FeatureTestObservableWorkspace+00215846
+[ 25] 0x00007ffc2699cee6 C:\software\matlab\R2025b\bin\win64\libmwlxemainservices.dll+00708326 mwboost::archive::detail::pointer_oserializer<mwboost::archive::xml_oarchive,MathWorks::lxe::PreLineExecutionEvent>::save_object_ptr+00078390
+[ 26] 0x00007ffc2699e9f4 C:\software\matlab\R2025b\bin\win64\libmwlxemainservices.dll+00715252 mwboost::archive::detail::pointer_oserializer<mwboost::archive::xml_oarchive,MathWorks::lxe::PreLineExecutionEvent>::save_object_ptr+00085316
+[ 27] 0x00007ffc26a27797 C:\software\matlab\R2025b\bin\win64\libmwlxemainservices.dll+01275799 mwboost::archive::detail::oserializer<mwboost::archive::text_oarchive,MathWorks::MatlabComponents::ComponentIdentifier>::save_object_data+00360391
+[ 28] 0x00007ffc26a29597 C:\software\matlab\R2025b\bin\win64\libmwlxemainservices.dll+01283479 mwboost::archive::detail::oserializer<mwboost::archive::text_oarchive,MathWorks::MatlabComponents::ComponentIdentifier>::save_object_data+00368071
+[ 29] 0x00007ffc26a28534 C:\software\matlab\R2025b\bin\win64\libmwlxemainservices.dll+01279284 mwboost::archive::detail::oserializer<mwboost::archive::text_oarchive,MathWorks::MatlabComponents::ComponentIdentifier>::save_object_data+00363876
+[ 30] 0x00007ffc272d910c C:\software\matlab\R2025b\bin\win64\m_interpreter.dll+00692492 inEvalCmdWithLocalReturnInDesiredWSAndPublishEvents+00000076
+[ 31] 0x00007ffc27a431f5        C:\software\matlab\R2025b\bin\win64\iqm.dll+00799221 iqm::InternalEvalPlugin::inEvalCmdWithLocalReturn+00000101
+[ 32] 0x00007ffc27a42c4c        C:\software\matlab\R2025b\bin\win64\iqm.dll+00797772 iqm::InternalEvalPlugin::execute+00000236
+[ 33] 0x00007ffc27a2267f        C:\software\matlab\R2025b\bin\win64\iqm.dll+00665215 iqm::Iqm::setupIqmFcnPtrs+00111535
+[ 34] 0x00007ffc279f5977        C:\software\matlab\R2025b\bin\win64\iqm.dll+00481655 iqm::Iqm::create+00038679
+[ 35] 0x00007ffc27990cd3        C:\software\matlab\R2025b\bin\win64\iqm.dll+00068819 iqm::BaseIqmPlugin::processMFileError+00001763
+[ 36] 0x00007ffc2ba67b4c     C:\software\matlab\R2025b\bin\win64\mlutil.dll+03242828 cmddistributor::IIPRunNowMessage::deliver+00000028
+[ 37] 0x00007ffc2d640497    C:\software\matlab\R2025b\bin\win64\libmwms.dll+01836183 foundation::msg_svc::exchange::MessageQueue::deliver+00000455
+[ 38] 0x00007ffc2d641f91    C:\software\matlab\R2025b\bin\win64\libmwms.dll+01843089 foundation::msg_svc::exchange::NoOpMessage::deliver+00003121
+[ 39] 0x00007ffc2d62b3c2    C:\software\matlab\R2025b\bin\win64\libmwms.dll+01749954 foundation::msg_svc::exchange::TerminatedException::operator=+00029202
+[ 40] 0x00007ffc2d63846d    C:\software\matlab\R2025b\bin\win64\libmwms.dll+01803373 foundation::msg_svc::exchange::TerminatedException::operator=+00082621
+[ 41] 0x00007ffc2d6369ac    C:\software\matlab\R2025b\bin\win64\libmwms.dll+01796524 foundation::msg_svc::exchange::TerminatedException::operator=+00075772
+[ 42] 0x00007ffc2b8ca991     C:\software\matlab\R2025b\bin\win64\mlutil.dll+01550737 cmddistributor::IIP::EventMgrBypass::operator=+00042113
+[ 43] 0x00007ffc2b89f8c4     C:\software\matlab\R2025b\bin\win64\mlutil.dll+01374404 cmddistributor::DebugLoopEvent::serializeExplicit+00020196
+[ 44] 0x00007ffc2dff36bc        C:\software\matlab\R2025b\bin\win64\mvm.dll+00538300 mvm::MVM::setClientCapabilities+00010316
+[ 45] 0x00007ffc27825fe1        C:\software\matlab\R2025b\bin\win64\mcr.dll+00221153 mwboost::archive::codecvt_null<wchar_t>::do_out+00003617
+[ 46] 0x00007ffc27825858        C:\software\matlab\R2025b\bin\win64\mcr.dll+00219224 mwboost::archive::codecvt_null<wchar_t>::do_out+00001688
+[ 47] 0x00007ffc27805e2e        C:\software\matlab\R2025b\bin\win64\mcr.dll+00089646 mcrFunctionSignature::set_signature+00066462
+[ 48] 0x00007ffc2781f572        C:\software\matlab\R2025b\bin\win64\mcr.dll+00193906 mwboost::archive::codecvt_null<wchar_t>::`default constructor closure'+00015762
+[ 49] 0x00007ffc27a502da        C:\software\matlab\R2025b\bin\win64\iqm.dll+00852698 iqm::PackagedTaskPlugin::execute+00000074
+[ 50] 0x00007ffc27a2267f        C:\software\matlab\R2025b\bin\win64\iqm.dll+00665215 iqm::Iqm::setupIqmFcnPtrs+00111535
+[ 51] 0x00007ffc279ee516        C:\software\matlab\R2025b\bin\win64\iqm.dll+00451862 iqm::Iqm::create+00008886
+[ 52] 0x00007ffc26f597e6 C:\software\matlab\R2025b\bin\win64\libmwbridge.dll+00104422 ioReadLine+00000406
+[ 53] 0x00007ffc26f59615 C:\software\matlab\R2025b\bin\win64\libmwbridge.dll+00103957 ioReadLine+00000165
+[ 54] 0x00007ffc26f8a360 C:\software\matlab\R2025b\bin\win64\libmwbridge.dll+00303968 mnGetCommandLineBuffer+00000288
+[ 55] 0x00007ffc26f8a807 C:\software\matlab\R2025b\bin\win64\libmwbridge.dll+00305159 mnParser+00000487
+[ 56] 0x00007ffc2785c54f        C:\software\matlab\R2025b\bin\win64\mcr.dll+00443727 mcr::runtime::initializeIqm+00002623
+[ 57] 0x00007ffc27805e2e        C:\software\matlab\R2025b\bin\win64\mcr.dll+00089646 mcrFunctionSignature::set_signature+00066462
+[ 58] 0x00007ffc2781f572        C:\software\matlab\R2025b\bin\win64\mcr.dll+00193906 mwboost::archive::codecvt_null<wchar_t>::`default constructor closure'+00015762
+[ 59] 0x00007ffc27a502da        C:\software\matlab\R2025b\bin\win64\iqm.dll+00852698 iqm::PackagedTaskPlugin::execute+00000074
+[ 60] 0x00007ffc27a2267f        C:\software\matlab\R2025b\bin\win64\iqm.dll+00665215 iqm::Iqm::setupIqmFcnPtrs+00111535
+[ 61] 0x00007ffc279ef49a        C:\software\matlab\R2025b\bin\win64\iqm.dll+00455834 iqm::Iqm::create+00012858
+[ 62] 0x00007ffc279ef981        C:\software\matlab\R2025b\bin\win64\iqm.dll+00457089 iqm::Iqm::create+00014113
+[ 63] 0x00007ffc279eee0d        C:\software\matlab\R2025b\bin\win64\iqm.dll+00454157 iqm::Iqm::create+00011181
+[ 64] 0x00007ffc2783921c        C:\software\matlab\R2025b\bin\win64\mcr.dll+00299548 mcrInstantiationError::operator=+00010668
+[ 65] 0x00007ffc27839cdf        C:\software\matlab\R2025b\bin\win64\mcr.dll+00302303 mcrInstantiationError::operator=+00013423
+[ 66] 0x00007ffc278372e1        C:\software\matlab\R2025b\bin\win64\mcr.dll+00291553 mcrInstantiationError::operator=+00002673
+[ 67] 0x00007ffc5be88fba C:\software\matlab\R2025b\bin\win64\mwboost_thread-vc143-mt-x64-1_81.dll+00036794 mwboost::detail::win32::handle_manager::swap+00000650
+[ 68] 0x00007ffcd469cd30                   C:\WINDOWS\System32\ucrtbase.dll+00183600 wcsrchr+00000336
+[ 69] 0x00007ffcd68ddda7                   C:\WINDOWS\System32\KERNEL32.DLL+00187815 BaseThreadInitThunk+00000023
+[ 70] 0x00007ffcd70bee4c                      C:\WINDOWS\SYSTEM32\ntdll.dll+00519756 RtlUserThreadStart+00000044
+
+** This crash report has been saved to disk as C:\Users\16004\AppData\Local\Packages\sandbox.{2fb26f24-1b93-4250-8085-68b2c5b8878c}\AC\Temp\matlab_crash_dump.20628-1 **
+
+
+
+MATLAB is exiting because of fatal error

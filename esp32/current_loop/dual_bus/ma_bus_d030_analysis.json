@@ -1,0 +1,71 @@
+{
+  "label": "ma_bus_d030",
+  "meta": {
+    "version": 12,
+    "mode": 3,
+    "pwm_hz": 10000,
+    "period_ticks": 8000,
+    "sample_hz": 10000,
+    "rows": 1749,
+    "duration_ms": 350,
+    "decimate": 2,
+    "reason": 1,
+    "guard_us": 2,
+    "trigger_us": 30,
+    "commit_us": 80,
+    "profile_start": 3380363,
+    "command_v": 0.06,
+    "current_amp": 0.3,
+    "kp": 0.060318578,
+    "ki": 226.194671631,
+    "filter_tf": 0.0,
+    "voltage_limit": 0.12,
+    "zero_offset": 5.33067274,
+    "zero_valid": 1,
+    "offset_V": [
+      1.6081673,
+      1.6081729
+    ],
+    "gain_A_per_V": -4,
+    "full_rate_active": 3499,
+    "full_rate_valid": 3499,
+    "bad_window": 0,
+    "cross": 0,
+    "pi_updates": 3497,
+    "pi_skipped": 1,
+    "bad_dt": 0,
+    "max_sample_age_us": 119,
+    "max_sample_gap_us": 203,
+    "cmp_errors": 0,
+    "missed_commit": 9,
+    "fault_seen": 0,
+    "fault_time_us": 0,
+    "fault_raw_a": 0,
+    "fault_raw_b": 0,
+    "fault_flags": 0
+  },
+  "motors": {
+    "1": {
+      "rows": 1749,
+      "active_saved": 1749,
+      "speed_fit_rad_s": null,
+      "speed_mean": 0.0,
+      "speed_std": 0.0,
+      "id_mean_A": 0.29900810240000003,
+      "id_std_A": 0.017015582836711948,
+      "iq_error_rms_A": 0.010440070952450467,
+      "id_error_rms_A": 0.01701046148359297,
+      "voltage_peak_V": 0.036748327793928254,
+      "bus_range_V": [
+        7.974,
+        8.022
+      ],
+      "limit_range_V": [
+        0.11961,
+        0.12
+      ],
+      "limit_violations": 0,
+      "max_calc_age_us": 138.0
+    }
+  }
+}

@@ -1,0 +1,555 @@
+[
+  {
+    "label": "dual_speed05",
+    "target_rad_s": 5,
+    "equivalent_ground_m_s": 0.1625,
+    "version": 17,
+    "reason": 1,
+    "valid": [
+      19998,
+      20000
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19976,
+      19984
+    ],
+    "max_gap_us": [
+      400,
+      400
+    ],
+    "max_encoder_age_us": [
+      381,
+      934
+    ],
+    "missed_commit": 495,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19789,
+        "first_activation_min_us": 58,
+        "first_activation_max_us": 370,
+        "first_activation_mean_us": 155.975
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19917,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 279,
+        "first_activation_mean_us": 152.321
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11744,
+        "id_mean_A": 2.71e-06,
+        "id_std_A": 0.01856956,
+        "iq_error_rms_A": 0.04901612,
+        "id_error_rms_A": 0.01856956,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 11743,
+        "id_mean_A": 7.3e-07,
+        "id_std_A": 0.01807348,
+        "iq_error_rms_A": 0.03163105,
+        "id_error_rms_A": 0.01807348,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": 4.958915146784036,
+        "AB_peak_A_nominal": 0.6991043600000006,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": 5.00455255108021,
+        "AB_peak_A_nominal": 0.48576752000000045,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  },
+  {
+    "label": "dual_speed10",
+    "target_rad_s": 10,
+    "equivalent_ground_m_s": 0.325,
+    "version": 17,
+    "reason": 1,
+    "valid": [
+      19988,
+      20000
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19978,
+      19999
+    ],
+    "max_gap_us": [
+      400,
+      400
+    ],
+    "max_encoder_age_us": [
+      401,
+      898
+    ],
+    "missed_commit": 628,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19821,
+        "first_activation_min_us": 61,
+        "first_activation_max_us": 370,
+        "first_activation_mean_us": 152.458
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19882,
+        "first_activation_min_us": 61,
+        "first_activation_max_us": 280,
+        "first_activation_mean_us": 152.103
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11734,
+        "id_mean_A": -1.806e-05,
+        "id_std_A": 0.01917688,
+        "iq_error_rms_A": 0.07049847,
+        "id_error_rms_A": 0.01917689,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 11749,
+        "id_mean_A": -3.72e-06,
+        "id_std_A": 0.01875659,
+        "iq_error_rms_A": 0.0358261,
+        "id_error_rms_A": 0.01875659,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": 9.82670839454572,
+        "AB_peak_A_nominal": 0.7453066799999997,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": 10.004876735665267,
+        "AB_peak_A_nominal": 0.5760437600000001,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  },
+  {
+    "label": "dual_speed_minus10",
+    "target_rad_s": -10,
+    "equivalent_ground_m_s": -0.325,
+    "version": 17,
+    "reason": 1,
+    "valid": [
+      19999,
+      20000
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19988,
+      19869
+    ],
+    "max_gap_us": [
+      400,
+      401
+    ],
+    "max_encoder_age_us": [
+      404,
+      929
+    ],
+    "missed_commit": 574,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19802,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 282,
+        "first_activation_mean_us": 155.243
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19799,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 279,
+        "first_activation_mean_us": 153.178
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11750,
+        "id_mean_A": 8.54e-06,
+        "id_std_A": 0.01785213,
+        "iq_error_rms_A": 0.07336053,
+        "id_error_rms_A": 0.01785213,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 11691,
+        "id_mean_A": -4.065e-05,
+        "id_std_A": 0.01819371,
+        "iq_error_rms_A": 0.03738186,
+        "id_error_rms_A": 0.01819376,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": -9.82327297154379,
+        "AB_peak_A_nominal": 0.6748969599999999,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": -10.008374733103247,
+        "AB_peak_A_nominal": 0.5379140399999995,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  },
+  {
+    "label": "dual_speed15",
+    "target_rad_s": 15,
+    "equivalent_ground_m_s": 0.48750000000000004,
+    "version": 17,
+    "reason": 1,
+    "valid": [
+      19998,
+      20000
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19982,
+      19862
+    ],
+    "max_gap_us": [
+      403,
+      400
+    ],
+    "max_encoder_age_us": [
+      449,
+      930
+    ],
+    "missed_commit": 535,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19777,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 281,
+        "first_activation_mean_us": 155.924
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19792,
+        "first_activation_min_us": 59,
+        "first_activation_max_us": 280,
+        "first_activation_mean_us": 152.202
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11743,
+        "id_mean_A": -1.443e-05,
+        "id_std_A": 0.01920596,
+        "iq_error_rms_A": 0.05896414,
+        "id_error_rms_A": 0.01920596,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 11651,
+        "id_mean_A": -5.757e-05,
+        "id_std_A": 0.01994833,
+        "iq_error_rms_A": 0.04123548,
+        "id_error_rms_A": 0.01994841,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": 14.977119144023359,
+        "AB_peak_A_nominal": 0.7053228800000007,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": 15.006280780202745,
+        "AB_peak_A_nominal": 0.5405563600000001,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  },
+  {
+    "label": "dual_speed20",
+    "target_rad_s": 20,
+    "equivalent_ground_m_s": 0.65,
+    "version": 17,
+    "reason": 1,
+    "valid": [
+      19998,
+      20000
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19980,
+      19767
+    ],
+    "max_gap_us": [
+      400,
+      402
+    ],
+    "max_encoder_age_us": [
+      397,
+      958
+    ],
+    "missed_commit": 510,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19778,
+        "first_activation_min_us": 61,
+        "first_activation_max_us": 280,
+        "first_activation_mean_us": 154.138
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19681,
+        "first_activation_min_us": 59,
+        "first_activation_max_us": 278,
+        "first_activation_mean_us": 152.839
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11743,
+        "id_mean_A": 5.5e-07,
+        "id_std_A": 0.02380701,
+        "iq_error_rms_A": 0.07201265,
+        "id_error_rms_A": 0.02380701,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 11607,
+        "id_mean_A": -0.0001701,
+        "id_std_A": 0.02155939,
+        "iq_error_rms_A": 0.04723793,
+        "id_error_rms_A": 0.02156006,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": 19.938668086272607,
+        "AB_peak_A_nominal": 0.68607584,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": 20.01227133291736,
+        "AB_peak_A_nominal": 0.3996956799999998,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  },
+  {
+    "label": "dual_speed27p5",
+    "target_rad_s": 27.5,
+    "equivalent_ground_m_s": 0.89375,
+    "version": 17,
+    "reason": 1,
+    "valid": [
+      19999,
+      20000
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19943,
+      19990
+    ],
+    "max_gap_us": [
+      400,
+      401
+    ],
+    "max_encoder_age_us": [
+      400,
+      920
+    ],
+    "missed_commit": 546,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19792,
+        "first_activation_min_us": 65,
+        "first_activation_max_us": 278,
+        "first_activation_mean_us": 155.291
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19900,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 278,
+        "first_activation_mean_us": 155.535
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11718,
+        "id_mean_A": 0.00026637,
+        "id_std_A": 0.03238751,
+        "iq_error_rms_A": 0.09390416,
+        "id_error_rms_A": 0.03238861,
+        "saturation_fraction": 0.01288616
+      },
+      {
+        "motor": 2,
+        "n": 11745,
+        "id_mean_A": -1.993e-05,
+        "id_std_A": 0.0277775,
+        "iq_error_rms_A": 0.05952672,
+        "id_error_rms_A": 0.02777751,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": 27.431306926579644,
+        "AB_peak_A_nominal": 0.7081651200000003,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": 27.49951248861534,
+        "AB_peak_A_nominal": 0.4192614799999994,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  },
+  {
+    "label": "dual_speed_minus27p5",
+    "target_rad_s": -27.5,
+    "equivalent_ground_m_s": -0.89375,
+    "version": 17,
+    "reason": 1,
+    "valid": [
+      19995,
+      20000
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19953,
+      19994
+    ],
+    "max_gap_us": [
+      400,
+      400
+    ],
+    "max_encoder_age_us": [
+      404,
+      919
+    ],
+    "missed_commit": 818,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19831,
+        "first_activation_min_us": 62,
+        "first_activation_max_us": 277,
+        "first_activation_mean_us": 152.741
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19909,
+        "first_activation_min_us": 61,
+        "first_activation_max_us": 277,
+        "first_activation_mean_us": 155.122
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11724,
+        "id_mean_A": 0.0006975,
+        "id_std_A": 0.03181082,
+        "iq_error_rms_A": 0.09633905,
+        "id_error_rms_A": 0.03181846,
+        "saturation_fraction": 0.02644149
+      },
+      {
+        "motor": 2,
+        "n": 11747,
+        "id_mean_A": -1.514e-05,
+        "id_std_A": 0.02767319,
+        "iq_error_rms_A": 0.06046929,
+        "id_error_rms_A": 0.02767319,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": -27.430167722567735,
+        "AB_peak_A_nominal": 0.7468192400000007,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": -27.506447385552615,
+        "AB_peak_A_nominal": 0.4181951599999998,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  }
+]

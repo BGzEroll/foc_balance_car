@@ -1,0 +1,1 @@
+PASS 10 TEZ callback fault cases: lost MA/MB feedback, inactive motor, startup, uint32 wrap, task stall, bus stall, deadline

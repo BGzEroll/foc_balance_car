@@ -1,0 +1,134 @@
+{
+  "label": "dual_speed27p5_v18",
+  "meta": {
+    "version": 18,
+    "mode": 6,
+    "mask": 3,
+    "pwm_hz": 10000,
+    "sample_hz_each": 5000,
+    "period_ticks": 8000,
+    "rows": 1600,
+    "duration_ms": 4000,
+    "decimate": 25,
+    "reason": 1,
+    "guard_us": 2,
+    "trigger_us": 30,
+    "commit_us": 80,
+    "profile_start": 7726353,
+    "kp": 0.060318578,
+    "ki": 226.194671631,
+    "filter_tf": 0.0,
+    "cmp_errors": 0,
+    "missed_commit": 673,
+    "max_latch_age_us": 570,
+    "fault_seen": 0,
+    "fault_time_us": 0,
+    "fault_motor": 0,
+    "fault_raw_a": 0,
+    "fault_raw_b": 0,
+    "full_rate_active": [
+      19999,
+      20000
+    ],
+    "full_rate_valid": [
+      19997,
+      20000
+    ],
+    "bad_window": [
+      2,
+      0
+    ],
+    "cross": [
+      0,
+      0
+    ],
+    "pi_updates": [
+      19960,
+      19999
+    ],
+    "max_sample_age_us": [
+      203,
+      218
+    ],
+    "max_sample_gap_us": [
+      400,
+      400
+    ],
+    "max_encoder_age_us": [
+      401,
+      945
+    ],
+    "raw_min": [
+      1686,
+      1695,
+      1747,
+      1763
+    ],
+    "raw_max": [
+      2103,
+      2095,
+      1995,
+      2005
+    ]
+  },
+  "motors": {
+    "1": {
+      "rows": 800,
+      "active_saved": 800,
+      "speed_fit_rad_s": 27.472539875306833,
+      "speed_mean": 27.411700807021276,
+      "speed_std": 1.3854580870953996,
+      "id_mean_A": 0.0007217182978723405,
+      "id_std_A": 0.03149795997741866,
+      "iq_error_rms_A": 0.1422933420094507,
+      "id_error_rms_A": 0.0314727098176939,
+      "voltage_peak_V": 0.32591999638764113,
+      "bus_range_V": [
+        8.109,
+        8.166
+      ],
+      "limit_range_V": [
+        0.32436,
+        0.32664
+      ],
+      "limit_violations": 0,
+      "max_calc_age_us": 111.0,
+      "minimum_saved_valid_window_margin_us": 6.85,
+      "fullrate_AB_peak_A_nominal": 0.7062140800000005,
+      "saved_sample_to_latch_range_us": [
+        170.0,
+        370.0
+      ],
+      "plateau_saved_samples": 470
+    },
+    "2": {
+      "rows": 800,
+      "active_saved": 800,
+      "speed_fit_rad_s": 27.510356342528294,
+      "speed_mean": 27.502724468723404,
+      "speed_std": 0.3750803652994353,
+      "id_mean_A": -0.004220201276595744,
+      "id_std_A": 0.02646747661323922,
+      "iq_error_rms_A": 0.05771033778182926,
+      "id_error_rms_A": 0.026773997337555835,
+      "voltage_peak_V": 0.2906299405395115,
+      "bus_range_V": [
+        8.103,
+        8.163
+      ],
+      "limit_range_V": [
+        0.32412,
+        0.32652
+      ],
+      "limit_violations": 0,
+      "max_calc_age_us": 85.0,
+      "minimum_saved_valid_window_margin_us": 6.9,
+      "fullrate_AB_peak_A_nominal": 0.45416503999999946,
+      "saved_sample_to_latch_range_us": [
+        170.0,
+        379.0
+      ],
+      "plateau_saved_samples": 470
+    }
+  }
+}

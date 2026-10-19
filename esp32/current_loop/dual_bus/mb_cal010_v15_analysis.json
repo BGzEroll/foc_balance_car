@@ -1,0 +1,100 @@
+{
+  "label": "mb_cal010_v15",
+  "meta": {
+    "version": 15,
+    "mode": 1,
+    "mask": 2,
+    "pwm_hz": 10000,
+    "sample_hz_each": 5000,
+    "period_ticks": 8000,
+    "rows": 1500,
+    "duration_ms": 900,
+    "decimate": 3,
+    "reason": 1,
+    "guard_us": 2,
+    "trigger_us": 30,
+    "commit_us": 80,
+    "profile_start": 2417333,
+    "kp": 0.060318578,
+    "ki": 226.194671631,
+    "filter_tf": 0.0,
+    "cmp_errors": 0,
+    "missed_commit": 80,
+    "max_latch_age_us": 370,
+    "fault_seen": 0,
+    "fault_time_us": 0,
+    "fault_motor": 0,
+    "fault_raw_a": 0,
+    "fault_raw_b": 0,
+    "full_rate_active": [
+      0,
+      4500
+    ],
+    "full_rate_valid": [
+      0,
+      4500
+    ],
+    "bad_window": [
+      0,
+      0
+    ],
+    "cross": [
+      0,
+      0
+    ],
+    "pi_updates": [
+      0,
+      0
+    ],
+    "max_sample_age_us": [
+      0,
+      145
+    ],
+    "max_sample_gap_us": [
+      0,
+      0
+    ],
+    "max_encoder_age_us": [
+      0,
+      783
+    ],
+    "raw_min": [
+      4095,
+      4095,
+      1563,
+      1595
+    ],
+    "raw_max": [
+      0,
+      0,
+      1934,
+      2055
+    ]
+  },
+  "motors": {
+    "2": {
+      "rows": 1500,
+      "active_saved": 1500,
+      "speed_fit_rad_s": null,
+      "speed_mean": -0.1559709,
+      "speed_std": 0.9977306096526091,
+      "id_mean_A": 1.007601697122302,
+      "id_std_A": 0.01877165736486362,
+      "iq_error_rms_A": 0.08677404498929807,
+      "id_error_rms_A": 1.00777612104063,
+      "voltage_peak_V": 0.1,
+      "bus_range_V": [
+        8.16,
+        8.205
+      ],
+      "limit_range_V": [
+        0.12,
+        0.12
+      ],
+      "limit_violations": 0,
+      "max_calc_age_us": 136.0,
+      "minimum_saved_valid_window_margin_us": 7.8375,
+      "fullrate_AB_peak_A_nominal": 1.07107436
+    }
+  }
+}

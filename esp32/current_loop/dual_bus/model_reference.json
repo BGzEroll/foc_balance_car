@@ -1,0 +1,47 @@
+{
+  "source": "模型/参数与图片/机械参数.json",
+  "radius_m": 0.0325,
+  "vehicle_mass_kg": 0.4025,
+  "loaded_MB_rotating_mass_kg": 0.0627,
+  "loaded_MB_axial_inertia_kg_m2": 2.996788998409844e-05,
+  "bare_MA_note": "Wheel and tyre absent; do not apply the complete wheel-group inertia to MA.",
+  "velocity_model_source": "matlab/3D仿真/pid_balance_parameters.m",
+  "normal_reference_m_s": 0.35,
+  "agile_reference_m_s": 0.9,
+  "normal_omega_rad_s": 10.769230769230768,
+  "agile_omega_rad_s": 27.692307692307693,
+  "candidate_steps": [
+    {
+      "omega_rad_s": 5,
+      "equivalent_ground_m_s": 0.1625,
+      "rpm": 47.7464829275686
+    },
+    {
+      "omega_rad_s": 10,
+      "equivalent_ground_m_s": 0.325,
+      "rpm": 95.4929658551372
+    },
+    {
+      "omega_rad_s": 15,
+      "equivalent_ground_m_s": 0.48750000000000004,
+      "rpm": 143.2394487827058
+    },
+    {
+      "omega_rad_s": 20,
+      "equivalent_ground_m_s": 0.65,
+      "rpm": 190.9859317102744
+    },
+    {
+      "omega_rad_s": 27.5,
+      "equivalent_ground_m_s": 0.89375,
+      "rpm": 262.6056561016273
+    }
+  ],
+  "nominal_Kt_Nm_A": 0.01181419061618126,
+  "acceleration_estimate_0_to_27p5_in_0p65s": {
+    "alpha_rad_s2": 42.30769230769231,
+    "inertia_torque_Nm": 0.001267872268558011,
+    "inertia_current_A_nominal": 0.10731774268323341
+  },
+  "limits": "CAD inertia and nominal KV are estimates, not identified inertia/Kt or certified vehicle speed. Suspended wheel tests exclude rolling load, chassis translation and balance."
+}

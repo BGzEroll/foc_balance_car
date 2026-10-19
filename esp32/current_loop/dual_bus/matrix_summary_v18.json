@@ -1,0 +1,239 @@
+[
+  {
+    "label": "dual_speed10_v18",
+    "target_rad_s": 10,
+    "equivalent_ground_m_s": 0.325,
+    "version": 18,
+    "reason": 1,
+    "valid": [
+      19983,
+      20000
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19965,
+      19942
+    ],
+    "max_gap_us": [
+      400,
+      400
+    ],
+    "max_encoder_age_us": [
+      406,
+      909
+    ],
+    "missed_commit": 597,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19765,
+        "first_activation_min_us": 63,
+        "first_activation_max_us": 281,
+        "first_activation_mean_us": 155.084
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19813,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 279,
+        "first_activation_mean_us": 153.728
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11732,
+        "id_mean_A": 1.45e-06,
+        "id_std_A": 0.01851608,
+        "iq_error_rms_A": 0.069222,
+        "id_error_rms_A": 0.01851608,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 11708,
+        "id_mean_A": -1.387e-05,
+        "id_std_A": 0.01764404,
+        "iq_error_rms_A": 0.03579389,
+        "id_error_rms_A": 0.01764405,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": 9.844738603204911,
+        "AB_peak_A_nominal": 0.7078634800000003,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": 10.009280412567023,
+        "AB_peak_A_nominal": 0.48155943999999984,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  },
+  {
+    "label": "dual_speed27p5_v18",
+    "target_rad_s": 27.5,
+    "equivalent_ground_m_s": 0.89375,
+    "version": 18,
+    "reason": 1,
+    "valid": [
+      19997,
+      20000
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19960,
+      19999
+    ],
+    "max_gap_us": [
+      400,
+      400
+    ],
+    "max_encoder_age_us": [
+      401,
+      945
+    ],
+    "missed_commit": 673,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19785,
+        "first_activation_min_us": 63,
+        "first_activation_max_us": 276,
+        "first_activation_mean_us": 155.261
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19893,
+        "first_activation_min_us": 61,
+        "first_activation_max_us": 278,
+        "first_activation_mean_us": 154.715
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11733,
+        "id_mean_A": 0.00032933,
+        "id_std_A": 0.03239775,
+        "iq_error_rms_A": 0.0949352,
+        "id_error_rms_A": 0.03239942,
+        "saturation_fraction": 0.01517089
+      },
+      {
+        "motor": 2,
+        "n": 11749,
+        "id_mean_A": -1.016e-05,
+        "id_std_A": 0.02743916,
+        "iq_error_rms_A": 0.06050355,
+        "id_error_rms_A": 0.02743916,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": 27.472539875306833,
+        "AB_peak_A_nominal": 0.7062140800000005,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": 27.510356342528294,
+        "AB_peak_A_nominal": 0.45416503999999946,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  },
+  {
+    "label": "dual_speed_minus27p5_v18",
+    "target_rad_s": -27.5,
+    "equivalent_ground_m_s": -0.89375,
+    "version": 18,
+    "reason": 1,
+    "valid": [
+      19999,
+      19999
+    ],
+    "active": [
+      19999,
+      20000
+    ],
+    "pi_updates": [
+      19938,
+      19610
+    ],
+    "max_gap_us": [
+      400,
+      600
+    ],
+    "max_encoder_age_us": [
+      457,
+      1087
+    ],
+    "missed_commit": 442,
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19756,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 369,
+        "first_activation_mean_us": 156.268
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19522,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 369,
+        "first_activation_mean_us": 150.569
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11708,
+        "id_mean_A": 0.00041092,
+        "id_std_A": 0.03204299,
+        "iq_error_rms_A": 0.09494029,
+        "id_error_rms_A": 0.03204562,
+        "saturation_fraction": 0.02297574
+      },
+      {
+        "motor": 2,
+        "n": 11513,
+        "id_mean_A": -0.0005902,
+        "id_std_A": 0.0282651,
+        "iq_error_rms_A": 0.05727115,
+        "id_error_rms_A": 0.02827126,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "fit_rad_s": -27.441721018910634,
+        "AB_peak_A_nominal": 0.7459685600000006,
+        "limit_violations": 0
+      },
+      {
+        "motor": 2,
+        "fit_rad_s": -27.507955240520225,
+        "AB_peak_A_nominal": 0.4120324000000002,
+        "limit_violations": 0
+      }
+    ],
+    "passed_progression_gate": true
+  }
+]
