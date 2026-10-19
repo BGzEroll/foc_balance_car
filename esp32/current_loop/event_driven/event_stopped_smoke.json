@@ -1,0 +1,635 @@
+{
+  "health": [
+    {
+      "left_updates": 22,
+      "right_updates": 19,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1558,
+      "right_age_us": 1515,
+      "imu_age_us": 729554
+    },
+    {
+      "left_updates": 599,
+      "right_updates": 480,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 980,
+      "right_age_us": 937,
+      "imu_age_us": 1302976
+    },
+    {
+      "left_updates": 921,
+      "right_updates": 738,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1352,
+      "right_age_us": 1310,
+      "imu_age_us": 1624348
+    },
+    {
+      "left_updates": 1243,
+      "right_updates": 995,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1334,
+      "right_age_us": 1277,
+      "imu_age_us": 1946353
+    },
+    {
+      "left_updates": 1566,
+      "right_updates": 1254,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1430,
+      "right_age_us": 1388,
+      "imu_age_us": 2268426
+    },
+    {
+      "left_updates": 1889,
+      "right_updates": 1512,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1391,
+      "right_age_us": 2349,
+      "imu_age_us": 2590387
+    },
+    {
+      "left_updates": 2212,
+      "right_updates": 1770,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1361,
+      "right_age_us": 1328,
+      "imu_age_us": 2912380
+    },
+    {
+      "left_updates": 2535,
+      "right_updates": 2029,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1378,
+      "right_age_us": 1336,
+      "imu_age_us": 3234374
+    },
+    {
+      "left_updates": 2857,
+      "right_updates": 2286,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1317,
+      "right_age_us": 1260,
+      "imu_age_us": 3556336
+    },
+    {
+      "left_updates": 3182,
+      "right_updates": 2546,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1371,
+      "right_age_us": 1329,
+      "imu_age_us": 3878367
+    },
+    {
+      "left_updates": 3505,
+      "right_updates": 2804,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1333,
+      "right_age_us": 2291,
+      "imu_age_us": 4200329
+    },
+    {
+      "left_updates": 3828,
+      "right_updates": 3062,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1355,
+      "right_age_us": 1322,
+      "imu_age_us": 4522374
+    },
+    {
+      "left_updates": 4150,
+      "right_updates": 3320,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1291,
+      "right_age_us": 1248,
+      "imu_age_us": 4844287
+    },
+    {
+      "left_updates": 4475,
+      "right_updates": 3578,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1361,
+      "right_age_us": 1309,
+      "imu_age_us": 5166380
+    },
+    {
+      "left_updates": 4799,
+      "right_updates": 3837,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 1435,
+      "right_age_us": 1393,
+      "imu_age_us": 5488431
+    },
+    {
+      "left_updates": 5141,
+      "right_updates": 4095,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 465,
+      "right_age_us": 2446,
+      "imu_age_us": 1127
+    },
+    {
+      "left_updates": 5531,
+      "right_updates": 4356,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 987,
+      "right_age_us": 945,
+      "imu_age_us": 4626
+    },
+    {
+      "left_updates": 5912,
+      "right_updates": 4609,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 531,
+      "right_age_us": 2511,
+      "imu_age_us": 1195
+    },
+    {
+      "left_updates": 6887,
+      "right_updates": 5259,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 208,
+      "right_age_us": 2188,
+      "imu_age_us": 872
+    }
+  ],
+  "task_state": [
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    },
+    {
+      "foc": 2,
+      "blocked_enum": 2,
+      "event_driven": 1
+    }
+  ],
+  "status": [
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 0.0,
+      "bus_age_us": 709869,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 870,
+      "right_age_us": 1147,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 59208
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.091,
+      "bus_age_us": 64,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1318,
+      "right_age_us": 1285,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.091,
+      "bus_age_us": 213,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1466,
+      "right_age_us": 2443,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.091,
+      "bus_age_us": 252,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1505,
+      "right_age_us": 1460,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.097,
+      "bus_age_us": 247,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1501,
+      "right_age_us": 1477,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.091,
+      "bus_age_us": 252,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1505,
+      "right_age_us": 1435,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.097,
+      "bus_age_us": 250,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1504,
+      "right_age_us": 1480,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.085,
+      "bus_age_us": 213,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1465,
+      "right_age_us": 2443,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.094,
+      "bus_age_us": 252,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1505,
+      "right_age_us": 1459,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.097,
+      "bus_age_us": 246,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1500,
+      "right_age_us": 1477,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.091,
+      "bus_age_us": 213,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1466,
+      "right_age_us": 1397,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.091,
+      "bus_age_us": 247,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1501,
+      "right_age_us": 1477,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.085,
+      "bus_age_us": 213,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1466,
+      "right_age_us": 2451,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.085,
+      "bus_age_us": 252,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1505,
+      "right_age_us": 1460,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.091,
+      "bus_age_us": 252,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1506,
+      "right_age_us": 1481,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.094,
+      "bus_age_us": 260,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1252,
+      "right_age_us": 1314,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.091,
+      "bus_age_us": 63,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 317,
+      "right_age_us": 2291,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.085,
+      "bus_age_us": 274,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1290,
+      "right_age_us": 1371,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    },
+    {
+      "version": 20,
+      "running": 0,
+      "requested": 0,
+      "reason": 0,
+      "mask": 1,
+      "bus_V": 8.085,
+      "bus_age_us": 63,
+      "left": -0.0997088,
+      "right": 5.8812823,
+      "left_age_us": 1289,
+      "right_age_us": 1365,
+      "zero_valid": [
+        0,
+        0
+      ],
+      "records": 0,
+      "heap": 63324
+    }
+  ]
+}

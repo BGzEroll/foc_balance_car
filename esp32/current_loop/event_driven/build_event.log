@@ -1,0 +1,45 @@
+Executing action: all (aliases: build)
+Running ninja in directory /home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build
+Executing "ninja all"...
+[1/9] Performing build step for 'bootloader'
+[1/1] cd /home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/bootloader && /home/bgzerol/.espressif/tools/python/v6.0.2/venv/bin/python3 /home/bgzerol/.espressif/v6.0.2/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 /home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/bootloader/bootloader.bin
+Bootloader binary size 0x5240 bytes. 0x2dc0 bytes (36%) free.
+[2/9] No install step for 'bootloader'
+[3/9] Completed 'bootloader'
+[4/9] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/__/user_lib/foc_current.cpp.obj
+[5/9] Linking C static library esp-idf/main/libmain.a
+[6/9] Generating esp-idf/esp_system/ld/sections.ld
+NOTE: 
+/home/bgzerol/.espressif/v6.0.2/esp-idf/components/bt/host/nimble/Kconfig.in:142
+1: BT_NIMBLE_MESH_PROVISIONER: 'default 0' is not a valid bool value (only 'y' 
+and 'n' are allowed). Value is treated as 'n'.
+NOTE: /home/bgzerol/.espressif/v6.0.2/esp-idf/components/fatfs/Kconfig:230: 
+FATFS_PRINT_LLI: 'default 0' is not a valid bool value (only 'y' and 'n' are 
+allowed). Value is treated as 'n'.
+NOTE: /home/bgzerol/.espressif/v6.0.2/esp-idf/components/fatfs/Kconfig:235: 
+FATFS_PRINT_FLOAT: 'default 0' is not a valid bool value (only 'y' and 'n' are 
+allowed). Value is treated as 'n'.
+Default value for ADC_ONESHOT_CTRL_FUNC_IN_IRAM in sdkconfig is y but it
+is n according to Kconfig.
+Using default value from sdkconfig (y).
+Default value for MCPWM_CTRL_FUNC_IN_IRAM in sdkconfig is y but it is 
+n according to Kconfig.
+Using default value from sdkconfig (y).
+[7/9] Linking CXX executable balance_car.elf
+[8/9] Generating binary image from built executable
+esptool v5.3.1
+Creating ESP32-S3 image...
+Merged 3 ELF sections.
+Successfully created ESP32-S3 image.
+Generated /home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/balance_car.bin
+[9/9] cd /home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build && /home/bgzerol/.espressif/tools/python/v6.0.2/venv/bin/python3 /home/bgzerol/.espressif/v6.0.2/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/partition_table/partition-table.bin /home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/balance_car.bin
+balance_car.bin binary size 0x3e520 bytes. Smallest app partition is 0x100000 bytes. 0xc1ae0 bytes (76%) free.
+
+Project build complete. To flash, run:
+ idf.py flash
+or
+ idf.py -p PORT flash
+or
+ python -m esptool --chip esp32s3 -b 460800 --before default-reset --after hard-reset write-flash --flash-mode dio --flash-size 2MB --flash-freq 80m 0x0 build/bootloader/bootloader.bin 0x8000 build/partition_table/partition-table.bin 0x10000 build/balance_car.bin
+or from the "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build" directory
+ python -m esptool --chip esp32s3 -b 460800 --before default-reset --after hard-reset write-flash "@flash_args"

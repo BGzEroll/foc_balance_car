@@ -1,0 +1,121 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x18 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0cb18h ( 51992) map
+I (96) esp_image: segment 1: paddr=0001cb40 vaddr=3fc95a00 size=034d8h ( 13528) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b64ch (112204) map
+I (122) esp_image: segment 3: paddr=0003b674 vaddr=3fc98ed8 size=014b4h (  5300) load
+I (123) esp_image: segment 4: paddr=0003cb30 vaddr=40374000 size=1199ch ( 72092) load
+I (142) esp_image: segment 5: paddr=0004e4d4 vaddr=50000000 size=00024h (    36) load
+I (150) boot: Loaded app from partition at offset 0x10000
+I (150) boot: Disabling RNG early entropy source...
+I (160) cpu_start: Multicore app
+I (169) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (170) cpu_start: Pro cpu start user code
+I (170) cpu_start: cpu freq: 160000000 Hz
+I (172) app_init: Application information:
+I (175) app_init: Project name:     balance_car
+I (180) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (185) app_init: Compile time:     Oct 19 2026 09:57:32
+I (190) app_init: ELF file SHA256:  938989c3c...
+I (194) app_init: ESP-IDF:          v6.0.2
+I (198) efuse_init: Min chip rev:     v0.0
+I (202) efuse_init: Max chip rev:     v0.99 
+I (206) efuse_init: Chip rev:         v0.2
+I (210) heap_init: Initializing. RAM available for dynamic allocation:
+I (216) heap_init: At 3FCA51C0 len 00044550 (273 KiB): RAM
+I (221) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (226) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (232) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (238) spi_flash: detected chip: gd
+I (240) spi_flash: flash io: dio
+W (243) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (256) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (262) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (269) main_task: Started on CPU0
+I (288) main_task: Calling app_main()
+I (288) main_task: Returned from app_main()
+W (844) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (862) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (912) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY DUAL_CURRENT_V20_EVENT default stopped; per-motor calibration required
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":0.0000,"bus_age_us":709869,"left":-0.0997088,"right":5.8812823,"left_age_us":870,"right_age_us":1147,"zero_valid":[0,0],"records":0,"heap":59208}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":22,"right_updates":19,"left_recoveries":0,"right_recoveries":1,"left_age_us":1558,"right_age_us":1515,"imu_age_us":729554}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0910,"bus_age_us":64,"left":-0.0997088,"right":5.8812823,"left_age_us":1318,"right_age_us":1285,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":599,"right_updates":480,"left_recoveries":0,"right_recoveries":1,"left_age_us":980,"right_age_us":937,"imu_age_us":1302976}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0910,"bus_age_us":213,"left":-0.0997088,"right":5.8812823,"left_age_us":1466,"right_age_us":2443,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":921,"right_updates":738,"left_recoveries":0,"right_recoveries":1,"left_age_us":1352,"right_age_us":1310,"imu_age_us":1624348}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0910,"bus_age_us":252,"left":-0.0997088,"right":5.8812823,"left_age_us":1505,"right_age_us":1460,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":1243,"right_updates":995,"left_recoveries":0,"right_recoveries":1,"left_age_us":1334,"right_age_us":1277,"imu_age_us":1946353}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0970,"bus_age_us":247,"left":-0.0997088,"right":5.8812823,"left_age_us":1501,"right_age_us":1477,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":1566,"right_updates":1254,"left_recoveries":0,"right_recoveries":1,"left_age_us":1430,"right_age_us":1388,"imu_age_us":2268426}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0910,"bus_age_us":252,"left":-0.0997088,"right":5.8812823,"left_age_us":1505,"right_age_us":1435,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":1889,"right_updates":1512,"left_recoveries":0,"right_recoveries":1,"left_age_us":1391,"right_age_us":2349,"imu_age_us":2590387}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0970,"bus_age_us":250,"left":-0.0997088,"right":5.8812823,"left_age_us":1504,"right_age_us":1480,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":2212,"right_updates":1770,"left_recoveries":0,"right_recoveries":1,"left_age_us":1361,"right_age_us":1328,"imu_age_us":2912380}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0850,"bus_age_us":213,"left":-0.0997088,"right":5.8812823,"left_age_us":1465,"right_age_us":2443,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":2535,"right_updates":2029,"left_recoveries":0,"right_recoveries":1,"left_age_us":1378,"right_age_us":1336,"imu_age_us":3234374}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0940,"bus_age_us":252,"left":-0.0997088,"right":5.8812823,"left_age_us":1505,"right_age_us":1459,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":2857,"right_updates":2286,"left_recoveries":0,"right_recoveries":1,"left_age_us":1317,"right_age_us":1260,"imu_age_us":3556336}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0970,"bus_age_us":246,"left":-0.0997088,"right":5.8812823,"left_age_us":1500,"right_age_us":1477,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":3182,"right_updates":2546,"left_recoveries":0,"right_recoveries":1,"left_age_us":1371,"right_age_us":1329,"imu_age_us":3878367}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0910,"bus_age_us":213,"left":-0.0997088,"right":5.8812823,"left_age_us":1466,"right_age_us":1397,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":3505,"right_updates":2804,"left_recoveries":0,"right_recoveries":1,"left_age_us":1333,"right_age_us":2291,"imu_age_us":4200329}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0910,"bus_age_us":247,"left":-0.0997088,"right":5.8812823,"left_age_us":1501,"right_age_us":1477,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":3828,"right_updates":3062,"left_recoveries":0,"right_recoveries":1,"left_age_us":1355,"right_age_us":1322,"imu_age_us":4522374}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0850,"bus_age_us":213,"left":-0.0997088,"right":5.8812823,"left_age_us":1466,"right_age_us":2451,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":4150,"right_updates":3320,"left_recoveries":0,"right_recoveries":1,"left_age_us":1291,"right_age_us":1248,"imu_age_us":4844287}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0850,"bus_age_us":252,"left":-0.0997088,"right":5.8812823,"left_age_us":1505,"right_age_us":1460,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":4475,"right_updates":3578,"left_recoveries":0,"right_recoveries":1,"left_age_us":1361,"right_age_us":1309,"imu_age_us":5166380}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0910,"bus_age_us":252,"left":-0.0997088,"right":5.8812823,"left_age_us":1506,"right_age_us":1481,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":4799,"right_updates":3837,"left_recoveries":0,"right_recoveries":1,"left_age_us":1435,"right_age_us":1393,"imu_age_us":5488431}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0940,"bus_age_us":260,"left":-0.0997088,"right":5.8812823,"left_age_us":1252,"right_age_us":1314,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":5141,"right_updates":4095,"left_recoveries":0,"right_recoveries":1,"left_age_us":465,"right_age_us":2446,"imu_age_us":1127}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0910,"bus_age_us":63,"left":-0.0997088,"right":5.8812823,"left_age_us":317,"right_age_us":2291,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":5531,"right_updates":4356,"left_recoveries":0,"right_recoveries":1,"left_age_us":987,"right_age_us":945,"imu_age_us":4626}
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0850,"bus_age_us":274,"left":-0.0997088,"right":5.8812823,"left_age_us":1290,"right_age_us":1371,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":5912,"right_updates":4609,"left_recoveries":0,"right_recoveries":1,"left_age_us":531,"right_age_us":2511,"imu_age_us":1195}
+MOTOR_OK
+LIMIT_OK
+STATUS {"version":20,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":8.0850,"bus_age_us":63,"left":-0.0997088,"right":5.8812823,"left_age_us":1289,"right_age_us":1365,"zero_valid":[0,0],"records":0,"heap":63324}
+TASK_STATE {"foc":2,"blocked_enum":2,"event_driven":1}
+HEALTH {"left_updates":6887,"right_updates":5259,"left_recoveries":0,"right_recoveries":1,"left_age_us":208,"right_age_us":2188,"imu_age_us":872}

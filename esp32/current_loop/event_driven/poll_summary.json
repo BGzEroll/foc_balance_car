@@ -1,0 +1,260 @@
+[
+  {
+    "name": "poll_speed10",
+    "target_rad_s": 10,
+    "meta": {
+      "version": 19,
+      "mode": 6,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1600,
+      "duration_ms": 4000,
+      "decimate": 25,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7733357,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 462,
+      "max_latch_age_us": 476,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        19999,
+        20000
+      ],
+      "full_rate_valid": [
+        19999,
+        20000
+      ],
+      "bad_window": [
+        0,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        19998,
+        19994
+      ],
+      "max_sample_age_us": [
+        197,
+        220
+      ],
+      "max_sample_gap_us": [
+        400,
+        400
+      ],
+      "max_encoder_age_us": [
+        344,
+        949
+      ],
+      "raw_min": [
+        1717,
+        1685,
+        1763,
+        1783
+      ],
+      "raw_max": [
+        2077,
+        2104,
+        1967,
+        1963
+      ]
+    },
+    "sched": [
+      {
+        "mode": "poll_merged",
+        "foc_priority": 5,
+        "sensor_priority": 5,
+        "active_loops": 58843,
+        "wait_calls": 0,
+        "wakes": 0,
+        "coalesced_notifications": 0,
+        "wait_elapsed_us": 0,
+        "max_work_elapsed_us": 290
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11750,
+        "id_mean_A": -3.53e-06,
+        "id_std_A": 0.01861547,
+        "iq_error_rms_A": 0.06912572,
+        "id_error_rms_A": 0.01861547,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 11750,
+        "id_mean_A": -1.5e-06,
+        "id_std_A": 0.01835125,
+        "iq_error_rms_A": 0.03643864,
+        "id_error_rms_A": 0.01835125,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19885,
+        "first_activation_min_us": 61,
+        "first_activation_max_us": 279,
+        "first_activation_mean_us": 158.352
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19942,
+        "first_activation_min_us": 62,
+        "first_activation_max_us": 278,
+        "first_activation_mean_us": 155.244
+      }
+    ],
+    "speeds": [
+      9.820582054954183,
+      10.003909313570908
+    ],
+    "progression_pass": true
+  },
+  {
+    "name": "poll_speed27p5",
+    "target_rad_s": 27.5,
+    "meta": {
+      "version": 19,
+      "mode": 6,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1600,
+      "duration_ms": 4000,
+      "decimate": 25,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7731351,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 704,
+      "max_latch_age_us": 570,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        19999,
+        20000
+      ],
+      "full_rate_valid": [
+        19999,
+        20000
+      ],
+      "bad_window": [
+        0,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        19998,
+        19989
+      ],
+      "max_sample_age_us": [
+        199,
+        220
+      ],
+      "max_sample_gap_us": [
+        400,
+        401
+      ],
+      "max_encoder_age_us": [
+        382,
+        926
+      ],
+      "raw_min": [
+        1687,
+        1704,
+        1757,
+        1767
+      ],
+      "raw_max": [
+        2105,
+        2101,
+        1991,
+        1995
+      ]
+    },
+    "sched": [
+      {
+        "mode": "poll_merged",
+        "foc_priority": 5,
+        "sensor_priority": 5,
+        "active_loops": 58747,
+        "wait_calls": 0,
+        "wakes": 0,
+        "coalesced_notifications": 0,
+        "wait_elapsed_us": 0,
+        "max_work_elapsed_us": 280
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11750,
+        "id_mean_A": 0.0003155,
+        "id_std_A": 0.03154505,
+        "iq_error_rms_A": 0.09198729,
+        "id_error_rms_A": 0.03154662,
+        "saturation_fraction": 0.01574468
+      },
+      {
+        "motor": 2,
+        "n": 11746,
+        "id_mean_A": -2.616e-05,
+        "id_std_A": 0.02793807,
+        "iq_error_rms_A": 0.06148816,
+        "id_error_rms_A": 0.02793808,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19807,
+        "first_activation_min_us": 59,
+        "first_activation_max_us": 279,
+        "first_activation_mean_us": 157.819
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19938,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 279,
+        "first_activation_mean_us": 156.665
+      }
+    ],
+    "speeds": [
+      27.45661185666377,
+      27.521843681328928
+    ],
+    "progression_pass": true
+  }
+]

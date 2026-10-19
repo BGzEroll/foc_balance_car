@@ -1,0 +1,389 @@
+[
+  {
+    "name": "merged_speed10",
+    "target_rad_s": 10,
+    "meta": {
+      "version": 23,
+      "mode": 6,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1600,
+      "duration_ms": 4000,
+      "decimate": 25,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7736360,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 1067,
+      "max_latch_age_us": 480,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        19999,
+        20000
+      ],
+      "full_rate_valid": [
+        19999,
+        20000
+      ],
+      "bad_window": [
+        0,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        19794,
+        19789
+      ],
+      "max_sample_age_us": [
+        219,
+        220
+      ],
+      "max_sample_gap_us": [
+        400,
+        404
+      ],
+      "max_encoder_age_us": [
+        405,
+        940
+      ],
+      "raw_min": [
+        1715,
+        1687,
+        1791,
+        1791
+      ],
+      "raw_max": [
+        2065,
+        2107,
+        2008,
+        1962
+      ]
+    },
+    "sched": [
+      {
+        "mode": "event_merged",
+        "foc_priority": 5,
+        "sensor_priority": 5,
+        "active_loops": 54443,
+        "wait_calls": 54443,
+        "wakes": 54443,
+        "coalesced_notifications": 0,
+        "wait_elapsed_us": 606970,
+        "max_work_elapsed_us": 277
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11631,
+        "id_mean_A": -1.482e-05,
+        "id_std_A": 0.01890404,
+        "iq_error_rms_A": 0.07116468,
+        "id_error_rms_A": 0.01890405,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 11621,
+        "id_mean_A": 2.4e-06,
+        "id_std_A": 0.01785003,
+        "iq_error_rms_A": 0.03629596,
+        "id_error_rms_A": 0.01785003,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19711,
+        "first_activation_min_us": 62,
+        "first_activation_max_us": 370,
+        "first_activation_mean_us": 163.342
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19737,
+        "first_activation_min_us": 66,
+        "first_activation_max_us": 278,
+        "first_activation_mean_us": 152.787
+      }
+    ],
+    "speeds": [
+      9.819647113644807,
+      9.999021741084462
+    ],
+    "progression_pass": true
+  },
+  {
+    "name": "merged_speed27p5",
+    "target_rad_s": 27.5,
+    "meta": {
+      "version": 23,
+      "mode": 6,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1600,
+      "duration_ms": 4000,
+      "decimate": 25,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7731364,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 1219,
+      "max_latch_age_us": 569,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        19999,
+        20000
+      ],
+      "full_rate_valid": [
+        19999,
+        20000
+      ],
+      "bad_window": [
+        0,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        19830,
+        19598
+      ],
+      "max_sample_age_us": [
+        219,
+        219
+      ],
+      "max_sample_gap_us": [
+        400,
+        401
+      ],
+      "max_encoder_age_us": [
+        507,
+        938
+      ],
+      "raw_min": [
+        1687,
+        1705,
+        1766,
+        1763
+      ],
+      "raw_max": [
+        2104,
+        2101,
+        2008,
+        2003
+      ]
+    },
+    "sched": [
+      {
+        "mode": "event_merged",
+        "foc_priority": 5,
+        "sensor_priority": 5,
+        "active_loops": 52604,
+        "wait_calls": 52603,
+        "wakes": 52603,
+        "coalesced_notifications": 0,
+        "wait_elapsed_us": 599699,
+        "max_work_elapsed_us": 280
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11660,
+        "id_mean_A": 0.00025852,
+        "id_std_A": 0.0316532,
+        "iq_error_rms_A": 0.09186997,
+        "id_error_rms_A": 0.03165426,
+        "saturation_fraction": 0.02006861
+      },
+      {
+        "motor": 2,
+        "n": 11502,
+        "id_mean_A": -0.00052846,
+        "id_std_A": 0.02829902,
+        "iq_error_rms_A": 0.06009262,
+        "id_error_rms_A": 0.02830395,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19696,
+        "first_activation_min_us": 62,
+        "first_activation_max_us": 370,
+        "first_activation_mean_us": 163.071
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19514,
+        "first_activation_min_us": 61,
+        "first_activation_max_us": 278,
+        "first_activation_mean_us": 151.974
+      }
+    ],
+    "speeds": [
+      27.459383951427768,
+      27.51137911327507
+    ],
+    "progression_pass": true
+  },
+  {
+    "name": "merged_speed_minus27p5",
+    "target_rad_s": -27.5,
+    "meta": {
+      "version": 23,
+      "mode": 6,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1600,
+      "duration_ms": 4000,
+      "decimate": 25,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7736361,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 1061,
+      "max_latch_age_us": 570,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        20000,
+        19999
+      ],
+      "full_rate_valid": [
+        20000,
+        19999
+      ],
+      "bad_window": [
+        0,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        19797,
+        19599
+      ],
+      "max_sample_age_us": [
+        218,
+        219
+      ],
+      "max_sample_gap_us": [
+        400,
+        400
+      ],
+      "max_encoder_age_us": [
+        401,
+        931
+      ],
+      "raw_min": [
+        1687,
+        1689,
+        1759,
+        1747
+      ],
+      "raw_max": [
+        2101,
+        2087,
+        2015,
+        1991
+      ]
+    },
+    "sched": [
+      {
+        "mode": "event_merged",
+        "foc_priority": 5,
+        "sensor_priority": 5,
+        "active_loops": 53965,
+        "wait_calls": 53965,
+        "wakes": 53965,
+        "coalesced_notifications": 0,
+        "wait_elapsed_us": 615779,
+        "max_work_elapsed_us": 328
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11630,
+        "id_mean_A": 0.00053326,
+        "id_std_A": 0.03133418,
+        "iq_error_rms_A": 0.09531134,
+        "id_error_rms_A": 0.03133872,
+        "saturation_fraction": 0.02914875
+      },
+      {
+        "motor": 2,
+        "n": 11527,
+        "id_mean_A": -0.00051409,
+        "id_std_A": 0.02894424,
+        "iq_error_rms_A": 0.0591916,
+        "id_error_rms_A": 0.0289488,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 19695,
+        "first_activation_min_us": 64,
+        "first_activation_max_us": 274,
+        "first_activation_mean_us": 160.312
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 19554,
+        "first_activation_min_us": 62,
+        "first_activation_max_us": 279,
+        "first_activation_mean_us": 154.268
+      }
+    ],
+    "speeds": [
+      -27.448923521369032,
+      -27.517308897933823
+    ],
+    "progression_pass": true
+  }
+]

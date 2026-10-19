@@ -1,0 +1,389 @@
+[
+  {
+    "name": "event_speed10",
+    "target_rad_s": 10,
+    "meta": {
+      "version": 22,
+      "mode": 6,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1600,
+      "duration_ms": 4000,
+      "decimate": 25,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7729335,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 1199,
+      "max_latch_age_us": 769,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        20000,
+        19999
+      ],
+      "full_rate_valid": [
+        19999,
+        19999
+      ],
+      "bad_window": [
+        1,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        19137,
+        18615
+      ],
+      "max_sample_age_us": [
+        239,
+        223
+      ],
+      "max_sample_gap_us": [
+        600,
+        603
+      ],
+      "max_encoder_age_us": [
+        413,
+        1115
+      ],
+      "raw_min": [
+        1710,
+        1676,
+        1785,
+        1773
+      ],
+      "raw_max": [
+        2091,
+        2134,
+        2029,
+        1961
+      ]
+    },
+    "sched": [
+      {
+        "mode": "event_split",
+        "foc_priority": 5,
+        "sensor_priority": 5,
+        "active_loops": 26338,
+        "wait_calls": 26337,
+        "wakes": 26337,
+        "coalesced_notifications": 13661,
+        "wait_elapsed_us": 2943536,
+        "max_work_elapsed_us": 132
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11244,
+        "id_mean_A": -8.314e-05,
+        "id_std_A": 0.02033418,
+        "iq_error_rms_A": 0.07664197,
+        "id_error_rms_A": 0.02033435,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 10957,
+        "id_mean_A": -8.767e-05,
+        "id_std_A": 0.01919078,
+        "iq_error_rms_A": 0.04000901,
+        "id_error_rms_A": 0.01919098,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 18315,
+        "first_activation_min_us": 69,
+        "first_activation_max_us": 370,
+        "first_activation_mean_us": 193.96
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 18248,
+        "first_activation_min_us": 67,
+        "first_activation_max_us": 370,
+        "first_activation_mean_us": 207.583
+      }
+    ],
+    "speeds": [
+      9.810225486343217,
+      10.004292163553089
+    ],
+    "progression_pass": true
+  },
+  {
+    "name": "event_speed27p5",
+    "target_rad_s": 27.5,
+    "meta": {
+      "version": 22,
+      "mode": 6,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1600,
+      "duration_ms": 4000,
+      "decimate": 25,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7730370,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 1255,
+      "max_latch_age_us": 770,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        20000,
+        19999
+      ],
+      "full_rate_valid": [
+        19990,
+        19999
+      ],
+      "bad_window": [
+        10,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        19304,
+        18292
+      ],
+      "max_sample_age_us": [
+        236,
+        242
+      ],
+      "max_sample_gap_us": [
+        605,
+        619
+      ],
+      "max_encoder_age_us": [
+        450,
+        1113
+      ],
+      "raw_min": [
+        1687,
+        1684,
+        1763,
+        1721
+      ],
+      "raw_max": [
+        2117,
+        2102,
+        2013,
+        2006
+      ]
+    },
+    "sched": [
+      {
+        "mode": "event_split",
+        "foc_priority": 5,
+        "sensor_priority": 5,
+        "active_loops": 26927,
+        "wait_calls": 26926,
+        "wakes": 26926,
+        "coalesced_notifications": 13063,
+        "wait_elapsed_us": 2912542,
+        "max_work_elapsed_us": 115
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11354,
+        "id_mean_A": 0.00055786,
+        "id_std_A": 0.04097312,
+        "iq_error_rms_A": 0.09826795,
+        "id_error_rms_A": 0.04097692,
+        "saturation_fraction": 0.02651048
+      },
+      {
+        "motor": 2,
+        "n": 10749,
+        "id_mean_A": -0.00173163,
+        "id_std_A": 0.03765631,
+        "iq_error_rms_A": 0.06924027,
+        "id_error_rms_A": 0.0376961,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 18646,
+        "first_activation_min_us": 61,
+        "first_activation_max_us": 371,
+        "first_activation_mean_us": 193.496
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 17851,
+        "first_activation_min_us": 60,
+        "first_activation_max_us": 470,
+        "first_activation_mean_us": 206.757
+      }
+    ],
+    "speeds": [
+      27.42782090406422,
+      27.51167986566465
+    ],
+    "progression_pass": true
+  },
+  {
+    "name": "event_speed_minus27p5",
+    "target_rad_s": -27.5,
+    "meta": {
+      "version": 22,
+      "mode": 6,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1120,
+      "duration_ms": 4000,
+      "decimate": 25,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7731347,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 1255,
+      "max_latch_age_us": 675,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        19999,
+        20000
+      ],
+      "full_rate_valid": [
+        19999,
+        20000
+      ],
+      "bad_window": [
+        0,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        19074,
+        18144
+      ],
+      "max_sample_age_us": [
+        236,
+        234
+      ],
+      "max_sample_gap_us": [
+        601,
+        602
+      ],
+      "max_encoder_age_us": [
+        416,
+        1096
+      ],
+      "raw_min": [
+        1675,
+        1693,
+        1763,
+        1771
+      ],
+      "raw_max": [
+        2110,
+        2098,
+        1993,
+        2007
+      ]
+    },
+    "sched": [
+      {
+        "mode": "event_split",
+        "foc_priority": 5,
+        "sensor_priority": 5,
+        "active_loops": 27997,
+        "wait_calls": 27997,
+        "wakes": 27997,
+        "coalesced_notifications": 12001,
+        "wait_elapsed_us": 2896042,
+        "max_work_elapsed_us": 109
+      }
+    ],
+    "metric": [
+      {
+        "motor": 1,
+        "n": 11206,
+        "id_mean_A": 0.00026345,
+        "id_std_A": 0.04119021,
+        "iq_error_rms_A": 0.10093155,
+        "id_error_rms_A": 0.04119105,
+        "saturation_fraction": 0.03141174
+      },
+      {
+        "motor": 2,
+        "n": 10670,
+        "id_mean_A": -0.00134109,
+        "id_std_A": 0.03531668,
+        "iq_error_rms_A": 0.06460556,
+        "id_error_rms_A": 0.03534213,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "latency": [
+      {
+        "motor": 1,
+        "first_activation_count": 18668,
+        "first_activation_min_us": 66,
+        "first_activation_max_us": 370,
+        "first_activation_mean_us": 196.456
+      },
+      {
+        "motor": 2,
+        "first_activation_count": 17447,
+        "first_activation_min_us": 58,
+        "first_activation_max_us": 370,
+        "first_activation_mean_us": 192.492
+      }
+    ],
+    "speeds": [
+      -27.42794847126181,
+      -27.512338037479996
+    ],
+    "progression_pass": true
+  }
+]
