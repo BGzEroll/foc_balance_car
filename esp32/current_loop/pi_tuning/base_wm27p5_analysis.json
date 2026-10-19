@@ -1,0 +1,123 @@
+{
+  "name": "base_wm27p5",
+  "kp": 0.060318578,
+  "ki": 226.194671631,
+  "meta": {
+    "version": 18,
+    "mode": 6,
+    "mask": 3,
+    "pwm_hz": 10000,
+    "sample_hz_each": 5000,
+    "period_ticks": 8000,
+    "rows": 1600,
+    "duration_ms": 4000,
+    "decimate": 25,
+    "reason": 1,
+    "guard_us": 2,
+    "trigger_us": 30,
+    "commit_us": 80,
+    "profile_start": 7970351,
+    "kp": 0.060318578,
+    "ki": 226.194671631,
+    "filter_tf": 0.0,
+    "cmp_errors": 0,
+    "missed_commit": 542,
+    "max_latch_age_us": 477,
+    "fault_seen": 0,
+    "fault_time_us": 0,
+    "fault_motor": 0,
+    "fault_raw_a": 0,
+    "fault_raw_b": 0,
+    "full_rate_active": [
+      19999,
+      20000
+    ],
+    "full_rate_valid": [
+      19997,
+      20000
+    ],
+    "bad_window": [
+      2,
+      0
+    ],
+    "cross": [
+      0,
+      0
+    ],
+    "pi_updates": [
+      19982,
+      19916
+    ],
+    "max_sample_age_us": [
+      184,
+      211
+    ],
+    "max_sample_gap_us": [
+      400,
+      400
+    ],
+    "max_encoder_age_us": [
+      399,
+      926
+    ],
+    "raw_min": [
+      1685,
+      1712,
+      1763,
+      1702
+    ],
+    "raw_max": [
+      2107,
+      2075,
+      2011,
+      1993
+    ]
+  },
+  "metric": [
+    {
+      "motor": 1,
+      "n": 11745,
+      "id_mean_A": 0.00070227,
+      "id_std_A": 0.03133094,
+      "iq_error_rms_A": 0.09666789,
+      "id_error_rms_A": 0.03133881,
+      "saturation_fraction": 0.02647935
+    },
+    {
+      "motor": 2,
+      "n": 11700,
+      "id_mean_A": -8.909e-05,
+      "id_std_A": 0.0283795,
+      "iq_error_rms_A": 0.06424696,
+      "id_error_rms_A": 0.02837964,
+      "saturation_fraction": 0.0
+    }
+  ],
+  "motors": [
+    {
+      "motor": 1,
+      "bus_range_V": [
+        8.016,
+        8.049
+      ],
+      "peak_saved_speed": 30.2062664,
+      "limit_violations": 0,
+      "saved_saturation_fraction": 0.02,
+      "raw_AB_peak_A": 0.7126615200000002,
+      "speed_fit_rad_s": -27.43424181285623
+    },
+    {
+      "motor": 2,
+      "bus_range_V": [
+        7.989,
+        8.058
+      ],
+      "peak_saved_speed": 28.5594921,
+      "limit_violations": 0,
+      "saved_saturation_fraction": 0.0,
+      "raw_AB_peak_A": 0.6013218,
+      "speed_fit_rad_s": -27.513144855147335
+    }
+  ],
+  "progression_pass": true
+}

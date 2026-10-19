@@ -1,0 +1,129 @@
+{
+  "name": "mid_d030_repeat_r1",
+  "kp": 0.045238934,
+  "ki": 169.646011353,
+  "meta": {
+    "version": 18,
+    "mode": 3,
+    "mask": 3,
+    "pwm_hz": 10000,
+    "sample_hz_each": 5000,
+    "period_ticks": 8000,
+    "rows": 1745,
+    "duration_ms": 350,
+    "decimate": 2,
+    "reason": 1,
+    "guard_us": 2,
+    "trigger_us": 30,
+    "commit_us": 80,
+    "profile_start": 7971334,
+    "kp": 0.045238934,
+    "ki": 169.646011353,
+    "filter_tf": 0.0,
+    "cmp_errors": 0,
+    "missed_commit": 68,
+    "max_latch_age_us": 570,
+    "fault_seen": 0,
+    "fault_time_us": 0,
+    "fault_motor": 0,
+    "fault_raw_a": 0,
+    "fault_raw_b": 0,
+    "full_rate_active": [
+      1749,
+      1750
+    ],
+    "full_rate_valid": [
+      1749,
+      1750
+    ],
+    "bad_window": [
+      0,
+      0
+    ],
+    "cross": [
+      0,
+      0
+    ],
+    "pi_updates": [
+      1743,
+      1742
+    ],
+    "max_sample_age_us": [
+      191,
+      215
+    ],
+    "max_sample_gap_us": [
+      400,
+      400
+    ],
+    "max_encoder_age_us": [
+      331,
+      962
+    ],
+    "raw_min": [
+      1789,
+      1878,
+      1832,
+      1781
+    ],
+    "raw_max": [
+      1928,
+      1917,
+      1897,
+      1893
+    ]
+  },
+  "metric": [
+    {
+      "motor": 1,
+      "n": 249,
+      "id_mean_A": 0.30010065,
+      "id_std_A": 0.01684645,
+      "iq_error_rms_A": 0.01623248,
+      "id_error_rms_A": 0.01684669,
+      "saturation_fraction": 0.0
+    },
+    {
+      "motor": 2,
+      "n": 249,
+      "id_mean_A": 0.29992974,
+      "id_std_A": 0.01452741,
+      "iq_error_rms_A": 0.01246982,
+      "id_error_rms_A": 0.01452867,
+      "saturation_fraction": 0.0
+    }
+  ],
+  "motors": [
+    {
+      "motor": 1,
+      "bus_range_V": [
+        8.019,
+        8.058
+      ],
+      "peak_saved_speed": 0.0,
+      "limit_violations": 0,
+      "saved_saturation_fraction": 0.0,
+      "raw_AB_peak_A": 0.3593895199999997,
+      "step_10_90_ms": 1.2,
+      "saved_40ms_peak_above_ref_A": 0.03018599999999999,
+      "saved_10ms_peak_above_ref_A": 0.019982600000000017,
+      "early_step_rmse_A": 0.03582984093061536
+    },
+    {
+      "motor": 2,
+      "bus_range_V": [
+        8.019,
+        8.058
+      ],
+      "peak_saved_speed": 0.4558623,
+      "limit_violations": 0,
+      "saved_saturation_fraction": 0.0,
+      "raw_AB_peak_A": 0.3334586399999999,
+      "step_10_90_ms": 0.4,
+      "saved_40ms_peak_above_ref_A": 0.057270600000000005,
+      "saved_10ms_peak_above_ref_A": 0.057270600000000005,
+      "early_step_rmse_A": 0.04107148137311338
+    }
+  ],
+  "progression_pass": true
+}

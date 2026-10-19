@@ -1,0 +1,129 @@
+{
+  "name": "base_q0p2",
+  "kp": 0.060318578,
+  "ki": 226.194671631,
+  "meta": {
+    "version": 18,
+    "mode": 5,
+    "mask": 3,
+    "pwm_hz": 10000,
+    "sample_hz_each": 5000,
+    "period_ticks": 8000,
+    "rows": 1242,
+    "duration_ms": 250,
+    "decimate": 2,
+    "reason": 1,
+    "guard_us": 2,
+    "trigger_us": 30,
+    "commit_us": 80,
+    "profile_start": 7972352,
+    "kp": 0.060318578,
+    "ki": 226.194671631,
+    "filter_tf": 0.0,
+    "cmp_errors": 0,
+    "missed_commit": 52,
+    "max_latch_age_us": 570,
+    "fault_seen": 0,
+    "fault_time_us": 0,
+    "fault_motor": 0,
+    "fault_raw_a": 0,
+    "fault_raw_b": 0,
+    "full_rate_active": [
+      1249,
+      1250
+    ],
+    "full_rate_valid": [
+      1247,
+      1250
+    ],
+    "bad_window": [
+      2,
+      0
+    ],
+    "cross": [
+      0,
+      0
+    ],
+    "pi_updates": [
+      1241,
+      1248
+    ],
+    "max_sample_age_us": [
+      193,
+      210
+    ],
+    "max_sample_gap_us": [
+      402,
+      400
+    ],
+    "max_encoder_age_us": [
+      371,
+      929
+    ],
+    "raw_min": [
+      1835,
+      1822,
+      1813,
+      1839
+    ],
+    "raw_max": [
+      1932,
+      1959,
+      1956,
+      1929
+    ]
+  },
+  "metric": [
+    {
+      "motor": 1,
+      "n": 0,
+      "id_mean_A": 0.0,
+      "id_std_A": 0.0,
+      "iq_error_rms_A": 0.0,
+      "id_error_rms_A": 0.0,
+      "saturation_fraction": 0.0
+    },
+    {
+      "motor": 2,
+      "n": 0,
+      "id_mean_A": 0.0,
+      "id_std_A": 0.0,
+      "iq_error_rms_A": 0.0,
+      "id_error_rms_A": 0.0,
+      "saturation_fraction": 0.0
+    }
+  ],
+  "motors": [
+    {
+      "motor": 1,
+      "bus_range_V": [
+        7.989,
+        8.037
+      ],
+      "peak_saved_speed": 6.8760862,
+      "limit_violations": 0,
+      "saved_saturation_fraction": 0.0,
+      "raw_AB_peak_A": 0.24255455999999942,
+      "saved_q_plateau_rmse_A": 0.020596193294349047,
+      "saved_q_positive_mean_A": 0.1944961623188406,
+      "saved_q_negative_mean_A": -0.18455697536231885,
+      "saved_q_plateau_samples": 138
+    },
+    {
+      "motor": 2,
+      "bus_range_V": [
+        7.989,
+        8.037
+      ],
+      "peak_saved_speed": 1.9844588,
+      "limit_violations": 0,
+      "saved_saturation_fraction": 0.0,
+      "raw_AB_peak_A": 0.24228348000000022,
+      "saved_q_plateau_rmse_A": 0.016734719554406727,
+      "saved_q_positive_mean_A": 0.19834769285714285,
+      "saved_q_negative_mean_A": -0.1972378142857143,
+      "saved_q_plateau_samples": 140
+    }
+  ],
+  "progression_pass": true
+}

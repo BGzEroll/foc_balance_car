@@ -1,5 +1,7 @@
 # ESP32开发入口
 
+本阶段已确定使用 v18 的 sensor＋FOC 合并轮询。最新[电流 PI 参数实测](current_loop/pi_tuning/README.md)记录同一调度下的候选参数、不同电流和转速对照；[迁移要点](current_loop/pi_tuning/迁移要点.md)用于后续提取到 main。该分支定位为电流环探索，未改成整车最终应用。
+
 已完成[事件等待与FOC/sensor拆分对照](current_loop/event_driven/README.md)：事件拆分、合并事件均实际测试，拆分在本次条件下未提升控制表现；已恢复v18作为默认基线。关于电压限幅、交替采样、ADC2与Wi-Fi、轮组惯量的解释见[问题说明](current_loop/event_driven/问题说明.md)。
 
 最新进展见[双电机、动态母线限幅及车型速度范围](current_loop/dual_bus/README.md)：MA裸转子与MB带轮同时完成小电流闭环及正反27.5rad/s有限时测试。当前采用10kHz PWM、每电机5kHz交替采样，电压矢量上限动态跟随母线；仍是架空台架实验，未接入整车平衡。`balance_car/` 源码已同步本轮开发机实验版本，下面的开环记录是历史阶段。

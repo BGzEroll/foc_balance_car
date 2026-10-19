@@ -1,0 +1,505 @@
+{
+  "trials": 21,
+  "quality_gate_failures": [
+    "soft_d030_r1"
+  ],
+  "protection_failures": [],
+  "bus_range_V": [
+    7.974,
+    8.067
+  ],
+  "max_raw_AB_A": 0.7136914800000005,
+  "max_encoder_age_us": 1010,
+  "max_pi_gap_us": 411,
+  "valid_groups": [
+    181702,
+    181750
+  ],
+  "active_groups": [
+    181729,
+    181750
+  ],
+  "saved_voltage_limit_violations": 0,
+  "screen": {
+    "base": {
+      "n": 2,
+      "quality_passes": 2,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "id_std_mA_range": [
+        [
+          16.334600000000002,
+          18.45034
+        ],
+        [
+          13.99776,
+          16.918989999999997
+        ]
+      ],
+      "id_mean_A_range": [
+        [
+          0.30009645,
+          0.30037203
+        ],
+        [
+          0.29979607,
+          0.30011746
+        ]
+      ],
+      "rise_10_90_ms_range": [
+        [
+          1.6,
+          2.0
+        ],
+        [
+          0.4,
+          0.8
+        ]
+      ]
+    },
+    "soft": {
+      "n": 3,
+      "quality_passes": 2,
+      "kp": 0.030159291,
+      "ki": 113.097335815,
+      "id_std_mA_range": [
+        [
+          15.637789999999999,
+          17.567249999999998
+        ],
+        [
+          13.39849,
+          27.12712
+        ]
+      ],
+      "id_mean_A_range": [
+        [
+          0.30011186,
+          0.30040309
+        ],
+        [
+          0.29987198,
+          0.30017444
+        ]
+      ],
+      "rise_10_90_ms_range": [
+        [
+          1.6,
+          2.8000000000000003
+        ],
+        [
+          1.2,
+          2.0
+        ]
+      ]
+    },
+    "mid": {
+      "n": 2,
+      "quality_passes": 2,
+      "kp": 0.045238934,
+      "ki": 169.646011353,
+      "id_std_mA_range": [
+        [
+          16.846449999999997,
+          17.51873
+        ],
+        [
+          13.48334,
+          14.52741
+        ]
+      ],
+      "id_mean_A_range": [
+        [
+          0.29985252,
+          0.30010065
+        ],
+        [
+          0.29992974,
+          0.2999742
+        ]
+      ],
+      "rise_10_90_ms_range": [
+        [
+          1.2,
+          2.4010000000000002
+        ],
+        [
+          0.4,
+          1.199
+        ]
+      ]
+    },
+    "lowki": {
+      "n": 2,
+      "quality_passes": 2,
+      "kp": 0.060318578,
+      "ki": 113.097335815,
+      "id_std_mA_range": [
+        [
+          16.388650000000002,
+          18.129530000000003
+        ],
+        [
+          12.983889999999999,
+          14.79573
+        ]
+      ],
+      "id_mean_A_range": [
+        [
+          0.30002648,
+          0.30041987
+        ],
+        [
+          0.29979122,
+          0.29993775
+        ]
+      ],
+      "rise_10_90_ms_range": [
+        [
+          1.6,
+          1.6
+        ],
+        [
+          2.0,
+          2.0
+        ]
+      ]
+    }
+  },
+  "speed": [
+    {
+      "name": "base_w10",
+      "speed_fit": [
+        9.809905619290147,
+        10.006522737724346
+      ],
+      "iq_rms_mA": [
+        70.26586999999999,
+        35.47347
+      ],
+      "saturation_fraction": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "base_w27p5",
+      "speed_fit": [
+        27.460324553323833,
+        27.508353966228352
+      ],
+      "iq_rms_mA": [
+        92.01708,
+        59.29479
+      ],
+      "saturation_fraction": [
+        0.01975309,
+        0.0
+      ]
+    },
+    {
+      "name": "base_w5",
+      "speed_fit": [
+        4.972978105972592,
+        4.9936765567786585
+      ],
+      "iq_rms_mA": [
+        50.64623,
+        31.56738
+      ],
+      "saturation_fraction": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "base_wm27p5",
+      "speed_fit": [
+        -27.43424181285623,
+        -27.513144855147335
+      ],
+      "iq_rms_mA": [
+        96.66789,
+        64.24696
+      ],
+      "saturation_fraction": [
+        0.02647935,
+        0.0
+      ]
+    },
+    {
+      "name": "mid_w10",
+      "speed_fit": [
+        9.8471001894875,
+        10.00502395037153
+      ],
+      "iq_rms_mA": [
+        76.43666,
+        36.503679999999996
+      ],
+      "saturation_fraction": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "mid_w27p5",
+      "speed_fit": [
+        27.471065736000078,
+        27.51030128183672
+      ],
+      "iq_rms_mA": [
+        99.43494,
+        62.17349
+      ],
+      "saturation_fraction": [
+        0.01149425,
+        0.0
+      ]
+    },
+    {
+      "name": "mid_w5",
+      "speed_fit": [
+        4.969904274202912,
+        4.995838113415293
+      ],
+      "iq_rms_mA": [
+        51.18801,
+        32.51656
+      ],
+      "saturation_fraction": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "name": "mid_wm27p5",
+      "speed_fit": [
+        -27.43189824148689,
+        -27.50738340763276
+      ],
+      "iq_rms_mA": [
+        100.48434,
+        61.797900000000006
+      ],
+      "saturation_fraction": [
+        0.02009879,
+        0.0
+      ]
+    }
+  ],
+  "current": [
+    {
+      "name": "base_d0p1",
+      "metric": [
+        {
+          "motor": 1,
+          "n": 249,
+          "id_mean_A": 0.09983153,
+          "id_std_A": 0.02151892,
+          "iq_error_rms_A": 0.02000343,
+          "id_error_rms_A": 0.02151952,
+          "saturation_fraction": 0.0
+        },
+        {
+          "motor": 2,
+          "n": 249,
+          "id_mean_A": 0.1001617,
+          "id_std_A": 0.01029006,
+          "iq_error_rms_A": 0.02428522,
+          "id_error_rms_A": 0.01029119,
+          "saturation_fraction": 0.0
+        }
+      ],
+      "motors": [
+        {
+          "motor": 1,
+          "bus_range_V": [
+            8.004,
+            8.043000000000001
+          ],
+          "peak_saved_speed": 0.4794098,
+          "limit_violations": 0,
+          "raw_AB_peak_A": 0.14628992000000007,
+          "step_10_90_ms": 1.2,
+          "saved_40ms_peak_above_ref_A": 0.04266409999999998,
+          "saved_10ms_peak_above_ref_A": 0.034981999999999985,
+          "early_step_rmse_A": 0.02256759416787709
+        },
+        {
+          "motor": 2,
+          "bus_range_V": [
+            8.004,
+            8.043000000000001
+          ],
+          "peak_saved_speed": 0.480259,
+          "limit_violations": 0,
+          "raw_AB_peak_A": 0.15871967999999992,
+          "step_10_90_ms": 0.0,
+          "saved_40ms_peak_above_ref_A": 0.02017089999999999,
+          "saved_10ms_peak_above_ref_A": 0.0117086,
+          "early_step_rmse_A": 0.015430950889455907
+        }
+      ]
+    },
+    {
+      "name": "base_d0p5",
+      "metric": [
+        {
+          "motor": 1,
+          "n": 249,
+          "id_mean_A": 0.50009662,
+          "id_std_A": 0.02295161,
+          "iq_error_rms_A": 0.01958271,
+          "id_error_rms_A": 0.02295062,
+          "saturation_fraction": 0.0
+        },
+        {
+          "motor": 2,
+          "n": 250,
+          "id_mean_A": 0.49999896,
+          "id_std_A": 0.01381176,
+          "iq_error_rms_A": 0.02391497,
+          "id_error_rms_A": 0.01380877,
+          "saturation_fraction": 0.0
+        }
+      ],
+      "motors": [
+        {
+          "motor": 1,
+          "bus_range_V": [
+            7.995,
+            8.049
+          ],
+          "peak_saved_speed": 0.4796115,
+          "limit_violations": 0,
+          "raw_AB_peak_A": 0.57205496,
+          "step_10_90_ms": 0.4,
+          "saved_40ms_peak_above_ref_A": 0.05145200000000005,
+          "saved_10ms_peak_above_ref_A": 0.03753649999999997,
+          "early_step_rmse_A": 0.039105364030470297
+        },
+        {
+          "motor": 2,
+          "bus_range_V": [
+            7.995,
+            8.049
+          ],
+          "peak_saved_speed": 0.4795189,
+          "limit_violations": 0,
+          "raw_AB_peak_A": 0.5769305999999998,
+          "step_10_90_ms": 0.4,
+          "saved_40ms_peak_above_ref_A": 0.04303509999999999,
+          "saved_10ms_peak_above_ref_A": 0.02821830000000003,
+          "early_step_rmse_A": 0.045677100588693245
+        }
+      ]
+    },
+    {
+      "name": "base_q0p1",
+      "metric": [
+        {
+          "motor": 1,
+          "n": 0,
+          "id_mean_A": 0.0,
+          "id_std_A": 0.0,
+          "iq_error_rms_A": 0.0,
+          "id_error_rms_A": 0.0,
+          "saturation_fraction": 0.0
+        },
+        {
+          "motor": 2,
+          "n": 0,
+          "id_mean_A": 0.0,
+          "id_std_A": 0.0,
+          "iq_error_rms_A": 0.0,
+          "id_error_rms_A": 0.0,
+          "saturation_fraction": 0.0
+        }
+      ],
+      "motors": [
+        {
+          "motor": 1,
+          "bus_range_V": [
+            8.004,
+            8.037
+          ],
+          "peak_saved_speed": 2.3220301,
+          "limit_violations": 0,
+          "raw_AB_peak_A": 0.13621612000000027,
+          "saved_q_plateau_rmse_A": 0.02217864309421985,
+          "saved_q_positive_mean_A": 0.09967709142857142,
+          "saved_q_negative_mean_A": -0.10450357857142857,
+          "saved_q_plateau_samples": 140
+        },
+        {
+          "motor": 2,
+          "bus_range_V": [
+            8.004,
+            8.037
+          ],
+          "peak_saved_speed": 1.9052958,
+          "limit_violations": 0,
+          "raw_AB_peak_A": 0.1486593599999999,
+          "saved_q_plateau_rmse_A": 0.02152691149216155,
+          "saved_q_positive_mean_A": 0.09844104571428572,
+          "saved_q_negative_mean_A": -0.10235922428571428,
+          "saved_q_plateau_samples": 140
+        }
+      ]
+    },
+    {
+      "name": "base_q0p2",
+      "metric": [
+        {
+          "motor": 1,
+          "n": 0,
+          "id_mean_A": 0.0,
+          "id_std_A": 0.0,
+          "iq_error_rms_A": 0.0,
+          "id_error_rms_A": 0.0,
+          "saturation_fraction": 0.0
+        },
+        {
+          "motor": 2,
+          "n": 0,
+          "id_mean_A": 0.0,
+          "id_std_A": 0.0,
+          "iq_error_rms_A": 0.0,
+          "id_error_rms_A": 0.0,
+          "saturation_fraction": 0.0
+        }
+      ],
+      "motors": [
+        {
+          "motor": 1,
+          "bus_range_V": [
+            7.989,
+            8.037
+          ],
+          "peak_saved_speed": 6.8760862,
+          "limit_violations": 0,
+          "raw_AB_peak_A": 0.24255455999999942,
+          "saved_q_plateau_rmse_A": 0.020596193294349047,
+          "saved_q_positive_mean_A": 0.1944961623188406,
+          "saved_q_negative_mean_A": -0.18455697536231885,
+          "saved_q_plateau_samples": 138
+        },
+        {
+          "motor": 2,
+          "bus_range_V": [
+            7.989,
+            8.037
+          ],
+          "peak_saved_speed": 1.9844588,
+          "limit_violations": 0,
+          "raw_AB_peak_A": 0.24228348000000022,
+          "saved_q_plateau_rmse_A": 0.016734719554406727,
+          "saved_q_positive_mean_A": 0.19834769285714285,
+          "saved_q_negative_mean_A": -0.1972378142857143,
+          "saved_q_plateau_samples": 140
+        }
+      ]
+    }
+  ]
+}

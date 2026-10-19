@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-19",
+  "status": "recommended_bench_baseline",
+  "schedule": "v18 sensor+FOC merged nonblocking poll; core1 priority5",
+  "firmware_changed": false,
+  "current_pi": {
+    "kp_V_per_A": 0.060318579,
+    "ki_V_per_A_s": 226.194672,
+    "kd": 0,
+    "feedback_filter_tf_s": 0,
+    "same_d_q": true,
+    "dt": "actual per-motor valid sample timestamps",
+    "antiwindup": "vector limit and integral back calculation"
+  },
+  "pwm_hz": 10000,
+  "sample_hz_each_nominal": 5000,
+  "tested": {
+    "motors": "MA no wheel; MB suspended wheel; both free rotating",
+    "d_current_A": [
+      0.1,
+      0.3,
+      0.5
+    ],
+    "q_pulse_A": [
+      -0.2,
+      -0.1,
+      0.1,
+      0.2
+    ],
+    "speed_rad_s": [
+      -27.5,
+      5,
+      10,
+      27.5
+    ],
+    "measured_bus_range_V": [
+      7.974,
+      8.067
+    ],
+    "wide_bus_sweep": false,
+    "duration_s": {
+      "d_step": 0.35,
+      "q_pulse_profile": 0.25,
+      "speed_profile": 4
+    }
+  },
+  "limits": {
+    "static_ratio": 0.015,
+    "static_voltage_cap_V": 0.12,
+    "speed_ratio": 0.04,
+    "speed_voltage_cap_V": 0.4,
+    "speed_iq_cap_A": 0.7,
+    "feedback_expiry_us": 1000,
+    "encoder_expiry_us": 1500
+  },
+  "final_state_evidence": "final_stopped.json",
+  "migration_notes": "迁移要点.md",
+  "source_sha256": "a3ca809fa2a8ea6f3fe81d160bbd2c6148a42a39b1d5779851518185498d8c32",
+  "firmware_sha256": "1e18d3630090170f852070ce64e3f7b59fa2f04d27361591e393cffa3cfbc1f6"
+}

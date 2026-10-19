@@ -1,0 +1,502 @@
+[
+  {
+    "name": "lowki_d030_confirm_r1",
+    "kp": 0.060318578,
+    "ki": 113.097335815,
+    "meta": {
+      "version": 18,
+      "mode": 3,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1729,
+      "duration_ms": 350,
+      "decimate": 2,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7972354,
+      "kp": 0.060318578,
+      "ki": 113.097335815,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 53,
+      "max_latch_age_us": 470,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        1749,
+        1750
+      ],
+      "full_rate_valid": [
+        1749,
+        1750
+      ],
+      "bad_window": [
+        0,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        1729,
+        1740
+      ],
+      "max_sample_age_us": [
+        201,
+        219
+      ],
+      "max_sample_gap_us": [
+        400,
+        400
+      ],
+      "max_encoder_age_us": [
+        411,
+        914
+      ],
+      "raw_min": [
+        1800,
+        1882,
+        1867,
+        1791
+      ],
+      "raw_max": [
+        1907,
+        1917,
+        1896,
+        1891
+      ]
+    },
+    "metric": [
+      {
+        "motor": 1,
+        "n": 244,
+        "id_mean_A": 0.30041987,
+        "id_std_A": 0.01812953,
+        "iq_error_rms_A": 0.01498452,
+        "id_error_rms_A": 0.01813293,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 250,
+        "id_mean_A": 0.29993775,
+        "id_std_A": 0.01298389,
+        "iq_error_rms_A": 0.01235531,
+        "id_error_rms_A": 0.01298226,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "bus_range_V": [
+          8.022,
+          8.058
+        ],
+        "peak_saved_speed": 0.0,
+        "limit_violations": 0,
+        "raw_AB_peak_A": 0.31896799999999903,
+        "step_10_90_ms": 1.6,
+        "step_peak_overshoot_A": 0.0428096,
+        "early_step_rmse_A": 0.04081341203533466
+      },
+      {
+        "motor": 2,
+        "bus_range_V": [
+          8.022,
+          8.058
+        ],
+        "peak_saved_speed": 0.4808703,
+        "limit_violations": 0,
+        "raw_AB_peak_A": 0.3043142399999992,
+        "step_10_90_ms": 2.0,
+        "step_peak_overshoot_A": 0.050786200000000004,
+        "early_step_rmse_A": 0.03989740969907195
+      }
+    ],
+    "progression_pass": true
+  },
+  {
+    "name": "mid_d030_confirm_r1",
+    "kp": 0.045238934,
+    "ki": 169.646011353,
+    "meta": {
+      "version": 18,
+      "mode": 3,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1740,
+      "duration_ms": 350,
+      "decimate": 2,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7967319,
+      "kp": 0.045238934,
+      "ki": 169.646011353,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 66,
+      "max_latch_age_us": 570,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        1749,
+        1750
+      ],
+      "full_rate_valid": [
+        1749,
+        1750
+      ],
+      "bad_window": [
+        0,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        1741,
+        1736
+      ],
+      "max_sample_age_us": [
+        198,
+        220
+      ],
+      "max_sample_gap_us": [
+        400,
+        400
+      ],
+      "max_encoder_age_us": [
+        409,
+        938
+      ],
+      "raw_min": [
+        1791,
+        1879,
+        1845,
+        1783
+      ],
+      "raw_max": [
+        1903,
+        1920,
+        1899,
+        1898
+      ]
+    },
+    "metric": [
+      {
+        "motor": 1,
+        "n": 250,
+        "id_mean_A": 0.29985252,
+        "id_std_A": 0.01751873,
+        "iq_error_rms_A": 0.01699608,
+        "id_error_rms_A": 0.01751962,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 249,
+        "id_mean_A": 0.2999742,
+        "id_std_A": 0.01348334,
+        "iq_error_rms_A": 0.01245845,
+        "id_error_rms_A": 0.01348744,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "bus_range_V": [
+          8.022,
+          8.055
+        ],
+        "peak_saved_speed": 0.0,
+        "limit_violations": 0,
+        "raw_AB_peak_A": 0.34897527999999944,
+        "step_10_90_ms": 2.4010000000000002,
+        "step_peak_overshoot_A": 0.03600720000000002,
+        "early_step_rmse_A": 0.025747037736166854
+      },
+      {
+        "motor": 2,
+        "bus_range_V": [
+          8.022,
+          8.055
+        ],
+        "peak_saved_speed": 0.0,
+        "limit_violations": 0,
+        "raw_AB_peak_A": 0.33096051999999965,
+        "step_10_90_ms": 1.199,
+        "step_peak_overshoot_A": 0.05105399999999999,
+        "early_step_rmse_A": 0.029204104793990857
+      }
+    ],
+    "progression_pass": true
+  },
+  {
+    "name": "soft_d030_confirm_r1",
+    "kp": 0.030159291,
+    "ki": 113.097335815,
+    "meta": {
+      "version": 18,
+      "mode": 3,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1739,
+      "duration_ms": 350,
+      "decimate": 2,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7970316,
+      "kp": 0.030159291,
+      "ki": 113.097335815,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 73,
+      "max_latch_age_us": 470,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        1749,
+        1750
+      ],
+      "full_rate_valid": [
+        1748,
+        1750
+      ],
+      "bad_window": [
+        1,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        1739,
+        1744
+      ],
+      "max_sample_age_us": [
+        211,
+        219
+      ],
+      "max_sample_gap_us": [
+        400,
+        400
+      ],
+      "max_encoder_age_us": [
+        355,
+        911
+      ],
+      "raw_min": [
+        1799,
+        1882,
+        1835,
+        1739
+      ],
+      "raw_max": [
+        1911,
+        1919,
+        1897,
+        1897
+      ]
+    },
+    "metric": [
+      {
+        "motor": 1,
+        "n": 250,
+        "id_mean_A": 0.30040309,
+        "id_std_A": 0.01756725,
+        "iq_error_rms_A": 0.01460683,
+        "id_error_rms_A": 0.01757265,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 250,
+        "id_mean_A": 0.30017444,
+        "id_std_A": 0.02712712,
+        "iq_error_rms_A": 0.0129181,
+        "id_error_rms_A": 0.02712968,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "bus_range_V": [
+          7.995,
+          8.052
+        ],
+        "peak_saved_speed": 0.0,
+        "limit_violations": 0,
+        "raw_AB_peak_A": 0.31907527999999985,
+        "step_10_90_ms": 2.8000000000000003,
+        "step_peak_overshoot_A": 0.042709300000000006,
+        "early_step_rmse_A": 0.042569246194603914
+      },
+      {
+        "motor": 2,
+        "bus_range_V": [
+          7.995,
+          8.052
+        ],
+        "peak_saved_speed": 0.0,
+        "limit_violations": 0,
+        "raw_AB_peak_A": 0.47721880000000017,
+        "step_10_90_ms": 1.6,
+        "step_peak_overshoot_A": 0.025555099999999997,
+        "early_step_rmse_A": 0.03700473518590289
+      }
+    ],
+    "progression_pass": true
+  },
+  {
+    "name": "base_d030_confirm_r1",
+    "kp": 0.060318578,
+    "ki": 226.194671631,
+    "meta": {
+      "version": 18,
+      "mode": 3,
+      "mask": 3,
+      "pwm_hz": 10000,
+      "sample_hz_each": 5000,
+      "period_ticks": 8000,
+      "rows": 1731,
+      "duration_ms": 350,
+      "decimate": 2,
+      "reason": 1,
+      "guard_us": 2,
+      "trigger_us": 30,
+      "commit_us": 80,
+      "profile_start": 7966317,
+      "kp": 0.060318578,
+      "ki": 226.194671631,
+      "filter_tf": 0.0,
+      "cmp_errors": 0,
+      "missed_commit": 68,
+      "max_latch_age_us": 472,
+      "fault_seen": 0,
+      "fault_time_us": 0,
+      "fault_motor": 0,
+      "fault_raw_a": 0,
+      "fault_raw_b": 0,
+      "full_rate_active": [
+        1749,
+        1750
+      ],
+      "full_rate_valid": [
+        1748,
+        1750
+      ],
+      "bad_window": [
+        1,
+        0
+      ],
+      "cross": [
+        0,
+        0
+      ],
+      "pi_updates": [
+        1727,
+        1746
+      ],
+      "max_sample_age_us": [
+        197,
+        211
+      ],
+      "max_sample_gap_us": [
+        400,
+        400
+      ],
+      "max_encoder_age_us": [
+        404,
+        916
+      ],
+      "raw_min": [
+        1798,
+        1879,
+        1854,
+        1792
+      ],
+      "raw_max": [
+        1907,
+        1919,
+        1900,
+        1897
+      ]
+    },
+    "metric": [
+      {
+        "motor": 1,
+        "n": 248,
+        "id_mean_A": 0.30037203,
+        "id_std_A": 0.01845034,
+        "iq_error_rms_A": 0.01590054,
+        "id_error_rms_A": 0.0184532,
+        "saturation_fraction": 0.0
+      },
+      {
+        "motor": 2,
+        "n": 250,
+        "id_mean_A": 0.30011746,
+        "id_std_A": 0.01399776,
+        "iq_error_rms_A": 0.01219624,
+        "id_error_rms_A": 0.01399634,
+        "saturation_fraction": 0.0
+      }
+    ],
+    "motors": [
+      {
+        "motor": 1,
+        "bus_range_V": [
+          8.022,
+          8.052
+        ],
+        "peak_saved_speed": 0.0,
+        "limit_violations": 0,
+        "raw_AB_peak_A": 0.3218493200000001,
+        "step_10_90_ms": 1.6,
+        "step_peak_overshoot_A": 0.04276859999999999,
+        "early_step_rmse_A": 0.03311115257427322
+      },
+      {
+        "motor": 2,
+        "bus_range_V": [
+          8.022,
+          8.052
+        ],
+        "peak_saved_speed": 0.4499709,
+        "limit_violations": 0,
+        "raw_AB_peak_A": 0.29690647999999964,
+        "step_10_90_ms": 0.8,
+        "step_peak_overshoot_A": 0.04960999999999999,
+        "early_step_rmse_A": 0.03634480336049157
+      }
+    ],
+    "progression_pass": true
+  }
+]
