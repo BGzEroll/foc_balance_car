@@ -1,0 +1,170 @@
+[
+  {
+    "boot": 0,
+    "fresh": true,
+    "status": [
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.145,
+        "left": -4.3503695,
+        "left_age_us": 85,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 68408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.151,
+        "left": -4.3503695,
+        "left_age_us": 115,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 68408
+      }
+    ],
+    "health": [
+      {
+        "left_updates": 9791,
+        "right_updates": 8756,
+        "left_recoveries": 1,
+        "right_recoveries": 1,
+        "left_submit_errors": 0,
+        "right_submit_errors": 0,
+        "left_rejected_events": 0,
+        "right_rejected_events": 0,
+        "left_age_us": 188,
+        "right_age_us": 114,
+        "imu_age_us": 2682450
+      },
+      {
+        "left_updates": 10552,
+        "right_updates": 9438,
+        "left_recoveries": 1,
+        "right_recoveries": 1,
+        "left_submit_errors": 0,
+        "right_submit_errors": 0,
+        "left_rejected_events": 0,
+        "right_rejected_events": 0,
+        "left_age_us": 189,
+        "right_age_us": 688,
+        "imu_age_us": 2835146
+      }
+    ],
+    "injection": {
+      "before": {
+        "left_updates": 8384,
+        "right_updates": 7493,
+        "left_recoveries": 0,
+        "right_recoveries": 1,
+        "left_submit_errors": 0,
+        "right_submit_errors": 0,
+        "left_rejected_events": 0,
+        "right_rejected_events": 0,
+        "left_age_us": 113,
+        "right_age_us": 211,
+        "imu_age_us": 2379149
+      },
+      "after": {
+        "left_updates": 10552,
+        "right_updates": 9438,
+        "left_recoveries": 1,
+        "right_recoveries": 1,
+        "left_submit_errors": 0,
+        "right_submit_errors": 0,
+        "left_rejected_events": 0,
+        "right_rejected_events": 0,
+        "left_age_us": 189,
+        "right_age_us": 688,
+        "imu_age_us": 2835146
+      }
+    }
+  },
+  {
+    "boot": 1,
+    "fresh": true,
+    "status": [
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.148,
+        "left": -4.3503695,
+        "left_age_us": 30,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 68408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.148,
+        "left": -4.3503695,
+        "left_age_us": 99,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 68408
+      }
+    ],
+    "health": [
+      {
+        "left_updates": 9960,
+        "right_updates": 8939,
+        "left_recoveries": 1,
+        "right_recoveries": 0,
+        "left_submit_errors": 0,
+        "right_submit_errors": 0,
+        "left_rejected_events": 0,
+        "right_rejected_events": 0,
+        "left_age_us": 176,
+        "right_age_us": 89,
+        "imu_age_us": 2682433
+      },
+      {
+        "left_updates": 10720,
+        "right_updates": 9620,
+        "left_recoveries": 1,
+        "right_recoveries": 0,
+        "left_submit_errors": 0,
+        "right_submit_errors": 0,
+        "left_rejected_events": 0,
+        "right_rejected_events": 0,
+        "left_age_us": 112,
+        "right_age_us": 211,
+        "imu_age_us": 2835047
+      }
+    ],
+    "injection": {
+      "before": {
+        "left_updates": 8556,
+        "right_updates": 7675,
+        "left_recoveries": 0,
+        "right_recoveries": 0,
+        "left_submit_errors": 0,
+        "right_submit_errors": 0,
+        "left_rejected_events": 0,
+        "right_rejected_events": 0,
+        "left_age_us": 57,
+        "right_age_us": 205,
+        "imu_age_us": 2379099
+      },
+      "after": {
+        "left_updates": 10720,
+        "right_updates": 9620,
+        "left_recoveries": 1,
+        "right_recoveries": 0,
+        "left_submit_errors": 0,
+        "right_submit_errors": 0,
+        "left_rejected_events": 0,
+        "right_rejected_events": 0,
+        "left_age_us": 112,
+        "right_age_us": 211,
+        "imu_age_us": 2835047
+      }
+    }
+  }
+]

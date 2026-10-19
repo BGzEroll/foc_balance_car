@@ -1,0 +1,22 @@
+[
+  {
+    "name": "speed5_final4s",
+    "target_rad_s": 5,
+    "angle_fit_rad_s": 4.9615895114076043,
+    "speed20_std_rad_s": 0.71799840408192761,
+    "iq_error_rmse_A": 0.058937955157924722,
+    "valid": 39999,
+    "active": 39999,
+    "max_update_gap_us": 300
+  },
+  {
+    "name": "speed_minus3_final4s",
+    "target_rad_s": -3,
+    "angle_fit_rad_s": -2.9654795300660188,
+    "speed20_std_rad_s": 0.67241110990301745,
+    "iq_error_rmse_A": 0.047738540813025775,
+    "valid": 39999,
+    "active": 39999,
+    "max_update_gap_us": 300
+  }
+]

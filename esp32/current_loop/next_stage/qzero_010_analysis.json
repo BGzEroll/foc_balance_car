@@ -1,0 +1,89 @@
+{
+  "name": "qzero_010",
+  "mode": 5,
+  "reason": 1,
+  "rows": 1200,
+  "valid_fraction": 1,
+  "pi_updates": 2399,
+  "max_update_gap_us": 114,
+  "missed_commit": 26,
+  "min_window_margin_us": 8.075,
+  "max_abs_phase_current_A": 0.22767599999999977,
+  "max_abs_speed_rad_s": 2.0611529,
+  "iq_error_rmse_A": 0.025286472790835225,
+  "id_error_rmse_A": 0.010216471790307959,
+  "voltage_magnitude_max_V": 0.031338330587317512,
+  "feedback_filter_tf_s": 0,
+  "sample_to_latch_us": [
+    70,
+    170,
+    170,
+    274
+  ],
+  "calc_age_us": [
+    36,
+    53,
+    90,
+    123
+  ],
+  "pulses": [
+    {
+      "iq_ref_A": 0.10000000000000005,
+      "iq_mean_A": 0.10780201999999998,
+      "iq_std_A": 0.016818803564374773,
+      "id_mean_A": 0.0012641549999999999,
+      "start_s": 0.052143999999999996,
+      "end_s": 0.059944
+    },
+    {
+      "iq_ref_A": -0.10000000000000003,
+      "iq_mean_A": -0.10423498780487805,
+      "iq_std_A": 0.020462799127748815,
+      "id_mean_A": 0.00010630731707317087,
+      "start_s": 0.111944,
+      "end_s": 0.119944
+    },
+    {
+      "iq_ref_A": 0.10000000000000005,
+      "iq_mean_A": 0.1052516925,
+      "iq_std_A": 0.019684619693393419,
+      "id_mean_A": 0.0011825275,
+      "start_s": 0.172144,
+      "end_s": 0.179944
+    },
+    {
+      "iq_ref_A": -0.10000000000000003,
+      "iq_mean_A": -0.11838882195121947,
+      "iq_std_A": 0.0223537300224427,
+      "id_mean_A": 0.0025691999999999989,
+      "start_s": 0.191944,
+      "end_s": 0.19994399999999998
+    }
+  ],
+  "health_first": {
+    "left_updates": 33,
+    "right_updates": 29,
+    "left_recoveries": 0,
+    "right_recoveries": 0,
+    "left_submit_errors": 0,
+    "right_submit_errors": 0,
+    "left_rejected_events": 0,
+    "right_rejected_events": 0,
+    "left_age_us": 91,
+    "right_age_us": 151,
+    "imu_age_us": 672854
+  },
+  "health_last": {
+    "left_updates": 154997,
+    "right_updates": 138012,
+    "left_recoveries": 0,
+    "right_recoveries": 0,
+    "left_submit_errors": 0,
+    "right_submit_errors": 0,
+    "left_rejected_events": 0,
+    "right_rejected_events": 0,
+    "left_age_us": 209,
+    "right_age_us": 309,
+    "imu_age_us": 4907
+  }
+}

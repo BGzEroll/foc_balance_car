@@ -1,0 +1,601 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0caf8h ( 51960) map
+I (96) esp_image: segment 1: paddr=0001cb20 vaddr=3fc94d00 size=034f8h ( 13560) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b4d0h (111824) map
+I (122) esp_image: segment 3: paddr=0003b4f8 vaddr=3fc981f8 size=01094h (  4244) load
+I (123) esp_image: segment 4: paddr=0003c594 vaddr=40374000 size=10c10h ( 68624) load
+I (141) esp_image: segment 5: paddr=0004d1ac vaddr=50000000 size=00024h (    36) load
+I (149) boot: Loaded app from partition at offset 0x10000
+I (149) boot: Disabling RNG early entropy source...
+I (159) cpu_start: Multicore app
+I (168) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (169) cpu_start: Pro cpu start user code
+I (169) cpu_start: cpu freq: 160000000 Hz
+I (170) app_init: Application information:
+I (174) app_init: Project name:     balance_car
+I (178) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (184) app_init: Compile time:     Oct 19 2026 09:57:32
+I (189) app_init: ELF file SHA256:  05ebc5502...
+I (193) app_init: ESP-IDF:          v6.0.2
+I (197) efuse_init: Min chip rev:     v0.0
+I (201) efuse_init: Max chip rev:     v0.99 
+I (205) efuse_init: Chip rev:         v0.2
+I (209) heap_init: Initializing. RAM available for dynamic allocation:
+I (215) heap_init: At 3FCA3F60 len 000457B0 (277 KiB): RAM
+I (220) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (225) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (230) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (237) spi_flash: detected chip: gd
+I (239) spi_flash: flash io: dio
+W (242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (255) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (261) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (268) main_task: Started on CPU0
+I (287) main_task: Calling app_main()
+I (287) main_task: Returned from app_main()
+W (841) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (859) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY MA_CURRENT_V9 default stopped; calibration required
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":0.0000,"left":-4.3503695,"left_age_us":40,"zero_valid":0,"records":0,"heap":64308}
+HEALTH {"left_updates":33,"right_updates":29,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":76,"right_age_us":181,"imu_age_us":672764}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1450,"left":-4.3503695,"left_age_us":52,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":5552,"right_updates":4983,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":307,"right_age_us":106,"imu_age_us":1776942}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":196,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":6291,"right_updates":5647,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":113,"right_age_us":212,"imu_age_us":1925103}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1330,"left":-4.3503695,"left_age_us":163,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7055,"right_updates":6328,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":105,"right_age_us":208,"imu_age_us":2078143}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1570,"left":-4.3503695,"left_age_us":169,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7792,"right_updates":6990,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":215,"right_age_us":153,"imu_age_us":2226050}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1510,"left":-4.3503695,"left_age_us":139,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":8553,"right_updates":7674,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":93,"right_age_us":200,"imu_age_us":2379150}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":31,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":9326,"right_updates":8369,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":34,"right_age_us":113,"imu_age_us":2533869}
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0caf8h ( 51960) map
+I (96) esp_image: segment 1: paddr=0001cb20 vaddr=3fc94d00 size=034f8h ( 13560) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b4d0h (111824) map
+I (122) esp_image: segment 3: paddr=0003b4f8 vaddr=3fc981f8 size=01094h (  4244) load
+I (123) esp_image: segment 4: paddr=0003c594 vaddr=40374000 size=10c10h ( 68624) load
+I (141) esp_image: segment 5: paddr=0004d1ac vaddr=50000000 size=00024h (    36) load
+I (149) boot: Loaded app from partition at offset 0x10000
+I (149) boot: Disabling RNG early entropy source...
+I (159) cpu_start: Multicore app
+I (168) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (169) cpu_start: Pro cpu start user code
+I (169) cpu_start: cpu freq: 160000000 Hz
+I (170) app_init: Application information:
+I (174) app_init: Project name:     balance_car
+I (178) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (184) app_init: Compile time:     Oct 19 2026 09:57:32
+I (189) app_init: ELF file SHA256:  05ebc5502...
+I (193) app_init: ESP-IDF:          v6.0.2
+I (197) efuse_init: Min chip rev:     v0.0
+I (201) efuse_init: Max chip rev:     v0.99 
+I (205) efuse_init: Chip rev:         v0.2
+I (209) heap_init: Initializing. RAM available for dynamic allocation:
+I (215) heap_init: At 3FCA3F60 len 000457B0 (277 KiB): RAM
+I (220) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (225) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (230) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (237) spi_flash: detected chip: gd
+I (239) spi_flash: flash io: dio
+W (242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (255) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (261) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (268) main_task: Started on CPU0
+I (287) main_task: Calling app_main()
+I (287) main_task: Returned from app_main()
+W (841) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (859) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY MA_CURRENT_V9 default stopped; calibration required
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":0.0000,"left":-4.3503695,"left_age_us":105,"zero_valid":0,"records":0,"heap":64308}
+HEALTH {"left_updates":35,"right_updates":30,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":187,"right_age_us":115,"imu_age_us":673861}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1630,"left":-4.3503695,"left_age_us":51,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":5527,"right_updates":4958,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":200,"right_age_us":93,"imu_age_us":1772944}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1630,"left":-4.3503695,"left_age_us":53,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":6290,"right_updates":5644,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":134,"right_age_us":34,"imu_age_us":1925969}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":167,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7028,"right_updates":6304,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":161,"right_age_us":96,"imu_age_us":2074100}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1390,"left":-4.3503695,"left_age_us":196,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7791,"right_updates":6990,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":160,"right_age_us":64,"imu_age_us":2227099}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1510,"left":-4.3503695,"left_age_us":165,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":8554,"right_updates":7673,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":56,"right_age_us":156,"imu_age_us":2380091}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1540,"left":-4.3503695,"left_age_us":89,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":9298,"right_updates":8342,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":58,"right_age_us":118,"imu_age_us":2529853}
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0caf8h ( 51960) map
+I (96) esp_image: segment 1: paddr=0001cb20 vaddr=3fc94d00 size=034f8h ( 13560) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b4d0h (111824) map
+I (122) esp_image: segment 3: paddr=0003b4f8 vaddr=3fc981f8 size=01094h (  4244) load
+I (123) esp_image: segment 4: paddr=0003c594 vaddr=40374000 size=10c10h ( 68624) load
+I (141) esp_image: segment 5: paddr=0004d1ac vaddr=50000000 size=00024h (    36) load
+I (149) boot: Loaded app from partition at offset 0x10000
+I (149) boot: Disabling RNG early entropy source...
+I (159) cpu_start: Multicore app
+I (168) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (169) cpu_start: Pro cpu start user code
+I (169) cpu_start: cpu freq: 160000000 Hz
+I (170) app_init: Application information:
+I (174) app_init: Project name:     balance_car
+I (178) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (184) app_init: Compile time:     Oct 19 2026 09:57:32
+I (189) app_init: ELF file SHA256:  05ebc5502...
+I (193) app_init: ESP-IDF:          v6.0.2
+I (197) efuse_init: Min chip rev:     v0.0
+I (201) efuse_init: Max chip rev:     v0.99 
+I (205) efuse_init: Chip rev:         v0.2
+I (209) heap_init: Initializing. RAM available for dynamic allocation:
+I (215) heap_init: At 3FCA3F60 len 000457B0 (277 KiB): RAM
+I (220) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (225) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (230) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (237) spi_flash: detected chip: gd
+I (239) spi_flash: flash io: dio
+W (242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (255) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (261) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (268) main_task: Started on CPU0
+I (287) main_task: Calling app_main()
+I (287) main_task: Returned from app_main()
+W (841) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (859) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (909) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY MA_CURRENT_V9 default stopped; calibration required
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":0.0000,"left":-4.3503695,"left_age_us":217,"zero_valid":0,"records":0,"heap":64308}
+HEALTH {"left_updates":33,"right_updates":30,"left_recoveries":0,"right_recoveries":1,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":136,"right_age_us":36,"imu_age_us":712869}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":132,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":5356,"right_updates":4795,"left_recoveries":0,"right_recoveries":1,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":49,"right_age_us":158,"imu_age_us":1777048}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":167,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":6095,"right_updates":5458,"left_recoveries":0,"right_recoveries":1,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":36,"right_age_us":182,"imu_age_us":1925142}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1510,"left":-4.3503695,"left_age_us":154,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":6857,"right_updates":6139,"left_recoveries":0,"right_recoveries":1,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":164,"right_age_us":99,"imu_age_us":2078097}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1540,"left":-4.3503695,"left_age_us":164,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7620,"right_updates":6825,"left_recoveries":0,"right_recoveries":1,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":96,"right_age_us":190,"imu_age_us":2231134}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":212,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":8357,"right_updates":7486,"left_recoveries":0,"right_recoveries":1,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":208,"right_age_us":107,"imu_age_us":2379241}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1570,"left":-4.3503695,"left_age_us":193,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":9127,"right_updates":8175,"left_recoveries":0,"right_recoveries":1,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":184,"right_age_us":111,"imu_age_us":2533950}
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0caf8h ( 51960) map
+I (96) esp_image: segment 1: paddr=0001cb20 vaddr=3fc94d00 size=034f8h ( 13560) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b4d0h (111824) map
+I (122) esp_image: segment 3: paddr=0003b4f8 vaddr=3fc981f8 size=01094h (  4244) load
+I (123) esp_image: segment 4: paddr=0003c594 vaddr=40374000 size=10c10h ( 68624) load
+I (141) esp_image: segment 5: paddr=0004d1ac vaddr=50000000 size=00024h (    36) load
+I (149) boot: Loaded app from partition at offset 0x10000
+I (149) boot: Disabling RNG early entropy source...
+I (159) cpu_start: Multicore app
+I (168) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (169) cpu_start: Pro cpu start user code
+I (169) cpu_start: cpu freq: 160000000 Hz
+I (170) app_init: Application information:
+I (174) app_init: Project name:     balance_car
+I (178) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (184) app_init: Compile time:     Oct 19 2026 09:57:32
+I (189) app_init: ELF file SHA256:  05ebc5502...
+I (193) app_init: ESP-IDF:          v6.0.2
+I (197) efuse_init: Min chip rev:     v0.0
+I (201) efuse_init: Max chip rev:     v0.99 
+I (205) efuse_init: Chip rev:         v0.2
+I (209) heap_init: Initializing. RAM available for dynamic allocation:
+I (215) heap_init: At 3FCA3F60 len 000457B0 (277 KiB): RAM
+I (220) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (225) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (230) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (237) spi_flash: detected chip: gd
+I (239) spi_flash: flash io: dio
+W (242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (255) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (261) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (268) main_task: Started on CPU0
+I (287) main_task: Calling app_main()
+I (287) main_task: Returned from app_main()
+W (841) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (859) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY MA_CURRENT_V9 default stopped; calibration required
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":0.0000,"left":-4.3503695,"left_age_us":199,"zero_valid":0,"records":0,"heap":64308}
+HEALTH {"left_updates":33,"right_updates":30,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":136,"right_age_us":36,"imu_age_us":672871}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1540,"left":-4.3503695,"left_age_us":46,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":5552,"right_updates":4987,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":208,"right_age_us":91,"imu_age_us":1776951}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1450,"left":-4.3503695,"left_age_us":164,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":6290,"right_updates":5652,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":190,"right_age_us":56,"imu_age_us":1925064}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1390,"left":-4.3503695,"left_age_us":97,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7053,"right_updates":6335,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":211,"right_age_us":110,"imu_age_us":2078000}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1360,"left":-4.3503695,"left_age_us":185,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7817,"right_updates":7019,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":29,"right_age_us":161,"imu_age_us":2231064}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1510,"left":-4.3503695,"left_age_us":148,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":8555,"right_updates":7680,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":35,"right_age_us":135,"imu_age_us":2379070}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1390,"left":-4.3503695,"left_age_us":227,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":9327,"right_updates":8374,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":132,"right_age_us":32,"imu_age_us":2533967}
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0caf8h ( 51960) map
+I (96) esp_image: segment 1: paddr=0001cb20 vaddr=3fc94d00 size=034f8h ( 13560) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b4d0h (111824) map
+I (122) esp_image: segment 3: paddr=0003b4f8 vaddr=3fc981f8 size=01094h (  4244) load
+I (123) esp_image: segment 4: paddr=0003c594 vaddr=40374000 size=10c10h ( 68624) load
+I (141) esp_image: segment 5: paddr=0004d1ac vaddr=50000000 size=00024h (    36) load
+I (149) boot: Loaded app from partition at offset 0x10000
+I (149) boot: Disabling RNG early entropy source...
+I (159) cpu_start: Multicore app
+I (168) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (169) cpu_start: Pro cpu start user code
+I (169) cpu_start: cpu freq: 160000000 Hz
+I (170) app_init: Application information:
+I (174) app_init: Project name:     balance_car
+I (178) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (184) app_init: Compile time:     Oct 19 2026 09:57:32
+I (189) app_init: ELF file SHA256:  05ebc5502...
+I (193) app_init: ESP-IDF:          v6.0.2
+I (197) efuse_init: Min chip rev:     v0.0
+I (201) efuse_init: Max chip rev:     v0.99 
+I (205) efuse_init: Chip rev:         v0.2
+I (209) heap_init: Initializing. RAM available for dynamic allocation:
+I (215) heap_init: At 3FCA3F60 len 000457B0 (277 KiB): RAM
+I (220) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (225) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (230) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (237) spi_flash: detected chip: gd
+I (239) spi_flash: flash io: dio
+W (242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (255) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (261) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (268) main_task: Started on CPU0
+I (287) main_task: Calling app_main()
+I (287) main_task: Returned from app_main()
+W (841) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (859) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY MA_CURRENT_V9 default stopped; calibration required
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":0.0000,"left":-4.3503695,"left_age_us":39,"zero_valid":0,"records":0,"heap":64308}
+HEALTH {"left_updates":33,"right_updates":29,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":76,"right_age_us":181,"imu_age_us":672764}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1390,"left":-4.3503695,"left_age_us":54,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":5549,"right_updates":4984,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":180,"right_age_us":37,"imu_age_us":1776983}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":238,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":6289,"right_updates":5648,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":31,"right_age_us":153,"imu_age_us":1925101}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":167,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7052,"right_updates":6330,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":113,"right_age_us":216,"imu_age_us":2078151}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":208,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7816,"right_updates":7018,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":33,"right_age_us":155,"imu_age_us":2231101}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1450,"left":-4.3503695,"left_age_us":136,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":8555,"right_updates":7679,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":30,"right_age_us":166,"imu_age_us":2379165}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1630,"left":-4.3503695,"left_age_us":203,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":9325,"right_updates":8370,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":108,"right_age_us":30,"imu_age_us":2533965}
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0caf8h ( 51960) map
+I (96) esp_image: segment 1: paddr=0001cb20 vaddr=3fc94d00 size=034f8h ( 13560) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b4d0h (111824) map
+I (122) esp_image: segment 3: paddr=0003b4f8 vaddr=3fc981f8 size=01094h (  4244) load
+I (123) esp_image: segment 4: paddr=0003c594 vaddr=40374000 size=10c10h ( 68624) load
+I (141) esp_image: segment 5: paddr=0004d1ac vaddr=50000000 size=00024h (    36) load
+I (149) boot: Loaded app from partition at offset 0x10000
+I (149) boot: Disabling RNG early entropy source...
+I (159) cpu_start: Multicore app
+I (168) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (169) cpu_start: Pro cpu start user code
+I (169) cpu_start: cpu freq: 160000000 Hz
+I (170) app_init: Application information:
+I (174) app_init: Project name:     balance_car
+I (178) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (184) app_init: Compile time:     Oct 19 2026 09:57:32
+I (189) app_init: ELF file SHA256:  05ebc5502...
+I (193) app_init: ESP-IDF:          v6.0.2
+I (197) efuse_init: Min chip rev:     v0.0
+I (201) efuse_init: Max chip rev:     v0.99 
+I (205) efuse_init: Chip rev:         v0.2
+I (209) heap_init: Initializing. RAM available for dynamic allocation:
+I (215) heap_init: At 3FCA3F60 len 000457B0 (277 KiB): RAM
+I (220) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (225) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (230) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (237) spi_flash: detected chip: gd
+I (239) spi_flash: flash io: dio
+W (242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (255) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (261) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (268) main_task: Started on CPU0
+I (287) main_task: Calling app_main()
+I (287) main_task: Returned from app_main()
+W (841) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (859) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY MA_CURRENT_V9 default stopped; calibration required
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":0.0000,"left":-4.3503695,"left_age_us":199,"zero_valid":0,"records":0,"heap":64308}
+HEALTH {"left_updates":34,"right_updates":30,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":205,"right_age_us":99,"imu_age_us":672855}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1570,"left":-4.3503695,"left_age_us":53,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":5526,"right_updates":4955,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":181,"right_age_us":48,"imu_age_us":1771983}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":136,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":6290,"right_updates":5642,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":159,"right_age_us":225,"imu_age_us":1925134}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1450,"left":-4.3503695,"left_age_us":193,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7028,"right_updates":6301,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":148,"right_age_us":57,"imu_age_us":2073139}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1450,"left":-4.3503695,"left_age_us":199,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7791,"right_updates":6985,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":35,"right_age_us":136,"imu_age_us":2226071}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1450,"left":-4.3503695,"left_age_us":165,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":8555,"right_updates":7668,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":56,"right_age_us":163,"imu_age_us":2379098}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1630,"left":-4.3503695,"left_age_us":30,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":9327,"right_updates":8358,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":172,"right_age_us":102,"imu_age_us":2533864}
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0caf8h ( 51960) map
+I (96) esp_image: segment 1: paddr=0001cb20 vaddr=3fc94d00 size=034f8h ( 13560) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b4d0h (111824) map
+I (122) esp_image: segment 3: paddr=0003b4f8 vaddr=3fc981f8 size=01094h (  4244) load
+I (123) esp_image: segment 4: paddr=0003c594 vaddr=40374000 size=10c10h ( 68624) load
+I (141) esp_image: segment 5: paddr=0004d1ac vaddr=50000000 size=00024h (    36) load
+I (149) boot: Loaded app from partition at offset 0x10000
+I (149) boot: Disabling RNG early entropy source...
+I (159) cpu_start: Multicore app
+I (168) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (169) cpu_start: Pro cpu start user code
+I (169) cpu_start: cpu freq: 160000000 Hz
+I (170) app_init: Application information:
+I (174) app_init: Project name:     balance_car
+I (178) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (184) app_init: Compile time:     Oct 19 2026 09:57:32
+I (189) app_init: ELF file SHA256:  05ebc5502...
+I (193) app_init: ESP-IDF:          v6.0.2
+I (197) efuse_init: Min chip rev:     v0.0
+I (201) efuse_init: Max chip rev:     v0.99 
+I (205) efuse_init: Chip rev:         v0.2
+I (209) heap_init: Initializing. RAM available for dynamic allocation:
+I (215) heap_init: At 3FCA3F60 len 000457B0 (277 KiB): RAM
+I (220) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (225) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (230) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (237) spi_flash: detected chip: gd
+I (239) spi_flash: flash io: dio
+W (242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (255) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (261) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (268) main_task: Started on CPU0
+I (287) main_task: Calling app_main()
+I (287) main_task: Returned from app_main()
+W (841) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (859) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY MA_CURRENT_V9 default stopped; calibration required
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":0.0000,"left":-4.3503695,"left_age_us":204,"zero_valid":0,"records":0,"heap":64308}
+HEALTH {"left_updates":33,"right_updates":30,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":130,"right_age_us":30,"imu_age_us":672864}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1540,"left":-4.3503695,"left_age_us":52,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":5551,"right_updates":4989,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":14,"right_age_us":114,"imu_age_us":1776951}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1540,"left":-4.3503695,"left_age_us":230,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":6290,"right_updates":5654,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":180,"right_age_us":114,"imu_age_us":1925087}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":200,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7054,"right_updates":6337,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":53,"right_age_us":145,"imu_age_us":2078087}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":99,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7792,"right_updates":6999,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":163,"right_age_us":63,"imu_age_us":2226051}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":167,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":8556,"right_updates":7685,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":170,"right_age_us":99,"imu_age_us":2379051}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":31,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":9328,"right_updates":8377,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":166,"right_age_us":108,"imu_age_us":2533852}
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0caf8h ( 51960) map
+I (96) esp_image: segment 1: paddr=0001cb20 vaddr=3fc94d00 size=034f8h ( 13560) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b4d0h (111824) map
+I (122) esp_image: segment 3: paddr=0003b4f8 vaddr=3fc981f8 size=01094h (  4244) load
+I (123) esp_image: segment 4: paddr=0003c594 vaddr=40374000 size=10c10h ( 68624) load
+I (141) esp_image: segment 5: paddr=0004d1ac vaddr=50000000 size=00024h (    36) load
+I (149) boot: Loaded app from partition at offset 0x10000
+I (149) boot: Disabling RNG early entropy source...
+I (159) cpu_start: Multicore app
+I (168) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (169) cpu_start: Pro cpu start user code
+I (169) cpu_start: cpu freq: 160000000 Hz
+I (170) app_init: Application information:
+I (174) app_init: Project name:     balance_car
+I (178) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (184) app_init: Compile time:     Oct 19 2026 09:57:32
+I (189) app_init: ELF file SHA256:  05ebc5502...
+I (193) app_init: ESP-IDF:          v6.0.2
+I (197) efuse_init: Min chip rev:     v0.0
+I (201) efuse_init: Max chip rev:     v0.99 
+I (205) efuse_init: Chip rev:         v0.2
+I (209) heap_init: Initializing. RAM available for dynamic allocation:
+I (215) heap_init: At 3FCA3F60 len 000457B0 (277 KiB): RAM
+I (220) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (225) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (230) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (237) spi_flash: detected chip: gd
+I (239) spi_flash: flash io: dio
+W (242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (255) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (261) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (268) main_task: Started on CPU0
+I (287) main_task: Calling app_main()
+I (287) main_task: Returned from app_main()
+W (841) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (859) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY MA_CURRENT_V9 default stopped; calibration required
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":0.0000,"left":-4.3503695,"left_age_us":40,"zero_valid":0,"records":0,"heap":64308}
+HEALTH {"left_updates":33,"right_updates":30,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":96,"right_age_us":25,"imu_age_us":672764}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1630,"left":-4.3503695,"left_age_us":32,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":5551,"right_updates":4980,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":133,"right_age_us":33,"imu_age_us":1776971}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1450,"left":-4.3503695,"left_age_us":197,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":6291,"right_updates":5643,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":47,"right_age_us":164,"imu_age_us":1925099}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1540,"left":-4.3503695,"left_age_us":237,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7055,"right_updates":6327,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":116,"right_age_us":216,"imu_age_us":2078151}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1480,"left":-4.3503695,"left_age_us":207,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":7817,"right_updates":7014,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":205,"right_age_us":137,"imu_age_us":2231092}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1390,"left":-4.3503695,"left_age_us":136,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":8556,"right_updates":7669,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":185,"right_age_us":46,"imu_age_us":2379145}
+STATUS {"running":0,"requested":0,"reason":0,"bus_V":8.1540,"left":-4.3503695,"left_age_us":202,"zero_valid":0,"records":0,"heap":68424}
+HEALTH {"left_updates":9327,"right_updates":8360,"left_recoveries":0,"right_recoveries":0,"left_submit_errors":0,"right_submit_errors":0,"left_rejected_events":0,"right_rejected_events":0,"left_age_us":215,"right_age_us":158,"imu_age_us":2533953}

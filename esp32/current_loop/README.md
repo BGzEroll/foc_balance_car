@@ -1,5 +1,7 @@
 # MA 小电流闭环实测与 MATLAB 初调
 
+本页保留 v6–v8 首轮实测记录。后续编码器恢复、Id=0 双向转动及当前 v11 参数见 [下一阶段实测](next_stage/README.md)。
+
 日期：2026-10-19。开发机分支 `test/foc_current`；未合入 main。
 实物：小车架空，左侧 MA 卸去轮毂；MB 三个 PWM 引脚保持输入下拉。
 最终状态：测试结束，`running=0`、`requested=0`；上电默认停止。

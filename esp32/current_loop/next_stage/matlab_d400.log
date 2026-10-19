@@ -1,0 +1,66 @@
+{
+  "name": "d_400hz",
+  "mode": 3,
+  "reason": 1,
+  "rows": 1696,
+  "valid_fraction": 1,
+  "pi_updates": 3445,
+  "max_update_gap_us": 200,
+  "missed_commit": 14,
+  "min_window_margin_us": 7.9875,
+  "max_abs_phase_current_A": 0.34417399999999976,
+  "max_abs_speed_rad_s": 0.4823224,
+  "iq_error_rmse_A": 0.013090260598158271,
+  "id_error_rmse_A": 0.018869403449097627,
+  "voltage_magnitude_max_V": 0.043540198667897691,
+  "feedback_filter_tf_s": 0,
+  "sample_to_latch_us": [
+    67,
+    170,
+    170,
+    270
+  ],
+  "calc_age_us": [
+    36,
+    51,
+    60,
+    131
+  ],
+  "pulses": [],
+  "d_hold": {
+    "mean_A": 0.29906507777777774,
+    "std_A": 0.014224777295303843
+  },
+  "fit": {
+    "tau_s": 0.00045653477453363116,
+    "delay_s": 9.5541996522798591E-5,
+    "equivalent_fc_Hz": 348.61515917265797,
+    "rmse_A": 0.015520415583732633
+  },
+  "health_first": {
+    "left_updates": 33,
+    "right_updates": 30,
+    "left_recoveries": 0,
+    "right_recoveries": 0,
+    "left_submit_errors": 0,
+    "right_submit_errors": 0,
+    "left_rejected_events": 0,
+    "right_rejected_events": 0,
+    "left_age_us": 174,
+    "right_age_us": 102,
+    "imu_age_us": 672948
+  },
+  "health_last": {
+    "left_updates": 202047,
+    "right_updates": 179806,
+    "left_recoveries": 0,
+    "right_recoveries": 0,
+    "left_submit_errors": 0,
+    "right_submit_errors": 0,
+    "left_rejected_events": 0,
+    "right_rejected_events": 0,
+    "left_age_us": 177,
+    "right_age_us": 93,
+    "imu_age_us": 3946
+  }
+}

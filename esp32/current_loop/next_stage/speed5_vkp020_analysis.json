@@ -1,0 +1,73 @@
+{
+  "name": "speed5_vkp020",
+  "mode": 6,
+  "reason": 1,
+  "rows": 1500,
+  "valid_fraction": 1,
+  "pi_updates": 14928,
+  "max_update_gap_us": 200,
+  "missed_commit": 177,
+  "min_window_margin_us": 7.5625,
+  "max_abs_phase_current_A": 0.68343800000000066,
+  "max_abs_speed_rad_s": 7.2100296,
+  "iq_error_rmse_A": 0.0229719110943481,
+  "id_error_rmse_A": 0.015400958366952797,
+  "voltage_magnitude_max_V": 0.11656956178046651,
+  "feedback_filter_tf_s": 0,
+  "sample_to_latch_us": [
+    69,
+    170,
+    170,
+    370
+  ],
+  "calc_age_us": [
+    36,
+    57,
+    111,
+    135
+  ],
+  "hold": {
+    "start_s": 0.65096,
+    "end_s": 1.1499599999999999,
+    "target_rad_s": 5,
+    "angle_fit_rad_s": 4.8963870665786615,
+    "speed_mean_rad_s": 4.910510031,
+    "speed_std_rad_s": 1.1602920262560683,
+    "speed20_mean_rad_s": 4.8917675364911606,
+    "speed20_std_rad_s": 0.73676540945499913,
+    "speed20_min_rad_s": 3.0249124561401923,
+    "speed20_max_rad_s": 6.6203317543859193,
+    "id_mean_A": 0.0013079098000000002,
+    "id_std_A": 0.015841272006180296,
+    "iq_mean_A": 0.13459441939999997,
+    "iq_std_A": 0.21562148479054247,
+    "iq_error_rmse_A": 0.026328950830738773,
+    "current_limit_fraction": 0.012
+  },
+  "health_first": {
+    "left_updates": 34,
+    "right_updates": 31,
+    "left_recoveries": 0,
+    "right_recoveries": 1,
+    "left_submit_errors": 0,
+    "right_submit_errors": 0,
+    "left_rejected_events": 0,
+    "right_rejected_events": 0,
+    "left_age_us": 110,
+    "right_age_us": 32,
+    "imu_age_us": 712968
+  },
+  "health_last": {
+    "left_updates": 192649,
+    "right_updates": 171349,
+    "left_recoveries": 0,
+    "right_recoveries": 1,
+    "left_submit_errors": 0,
+    "right_submit_errors": 0,
+    "left_rejected_events": 0,
+    "right_rejected_events": 0,
+    "left_age_us": 182,
+    "right_age_us": 89,
+    "imu_age_us": 1872
+  }
+}

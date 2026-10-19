@@ -1,0 +1,206 @@
+[
+  {
+    "boot": 0,
+    "fresh": true,
+    "status": [
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.151,
+        "left": -4.3503695,
+        "left_age_us": 148,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.145,
+        "left": -4.3503695,
+        "left_age_us": 147,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.154,
+        "left": -4.3503695,
+        "left_age_us": 97,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.148,
+        "left": -4.3503695,
+        "left_age_us": 218,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      }
+    ],
+    "health": []
+  },
+  {
+    "boot": 1,
+    "fresh": true,
+    "status": [
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.145,
+        "left": -4.3503695,
+        "left_age_us": 62,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.139,
+        "left": -4.3503695,
+        "left_age_us": 116,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.151,
+        "left": -4.3503695,
+        "left_age_us": 95,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.148,
+        "left": -4.3503695,
+        "left_age_us": 101,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      }
+    ],
+    "health": []
+  },
+  {
+    "boot": 2,
+    "fresh": true,
+    "status": [
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.121,
+        "left": -4.3503695,
+        "left_age_us": 195,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.13,
+        "left": -4.3503695,
+        "left_age_us": 72,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.154,
+        "left": -4.3503695,
+        "left_age_us": 147,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.154,
+        "left": -4.3503695,
+        "left_age_us": 101,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      }
+    ],
+    "health": []
+  },
+  {
+    "boot": 3,
+    "fresh": true,
+    "status": [
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.16,
+        "left": -4.3503695,
+        "left_age_us": 143,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.139,
+        "left": -4.3503695,
+        "left_age_us": 134,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.148,
+        "left": -4.3503695,
+        "left_age_us": 203,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      },
+      {
+        "running": 0,
+        "requested": 0,
+        "reason": 0,
+        "bus_V": 8.154,
+        "left": -4.3503695,
+        "left_age_us": 60,
+        "zero_valid": 0,
+        "records": 0,
+        "heap": 78408
+      }
+    ],
+    "health": []
+  }
+]
