@@ -1,0 +1,29 @@
+{
+  "label": "ma_tuned_012v_2rad",
+  "rows": 3750,
+  "active": 3749,
+  "valid": 3404,
+  "valid_pct": 90.79754601226993,
+  "margins_min_us": [
+    -1.5,
+    -10.1
+  ],
+  "margins_median_us": [
+    3.8,
+    4.5
+  ],
+  "pair_median_us": 16.7,
+  "left_delta_rad": -2.7166800999999996,
+  "right_delta_rad": 3.3306690738754696e-16,
+  "speed_fit_rad_s": -1.9997008920356103,
+  "current_abs_max_A": [
+    1.1815639999999998,
+    1.1228639999999999
+  ],
+  "current_std_A": [
+    0.6805293361567636,
+    0.6567661171454292
+  ],
+  "reason": 1,
+  "late_commit": 0
+}

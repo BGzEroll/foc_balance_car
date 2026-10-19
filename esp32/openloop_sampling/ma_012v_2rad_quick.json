@@ -1,0 +1,29 @@
+{
+  "label": "ma_012v_2rad",
+  "rows": 3750,
+  "active": 3749,
+  "valid": 3083,
+  "valid_pct": 82.2352627367298,
+  "margins_min_us": [
+    -3.9,
+    -12.4
+  ],
+  "margins_median_us": [
+    5.6,
+    2.6
+  ],
+  "pair_median_us": 16.8,
+  "left_delta_rad": -2.7182141000000115,
+  "right_delta_rad": 3.3306690738754696e-16,
+  "speed_fit_rad_s": -2.0016697945180066,
+  "current_abs_max_A": [
+    1.183148,
+    1.1000440000000005
+  ],
+  "current_std_A": [
+    0.6747445026233765,
+    0.6451777839373826
+  ],
+  "reason": 1,
+  "late_commit": 2
+}

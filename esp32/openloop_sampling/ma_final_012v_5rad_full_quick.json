@@ -1,0 +1,29 @@
+{
+  "label": "ma_final_012v_5rad_full",
+  "rows": 4096,
+  "active": 4096,
+  "valid": 3695,
+  "valid_pct": 90.2099609375,
+  "margins_min_us": [
+    -3.1,
+    -11.1
+  ],
+  "margins_median_us": [
+    3.7,
+    4.5
+  ],
+  "pair_median_us": 16.7,
+  "left_delta_rad": -2.0386600999999995,
+  "right_delta_rad": -5.551115123125783e-16,
+  "speed_fit_rad_s": -4.994040289064313,
+  "current_abs_max_A": [
+    0.9689880000000004,
+    0.9143319999999999
+  ],
+  "current_std_A": [
+    0.5767295537154444,
+    0.5853240304478008
+  ],
+  "reason": 1,
+  "late_commit": 0
+}
