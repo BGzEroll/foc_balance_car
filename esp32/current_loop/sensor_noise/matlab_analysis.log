@@ -1,0 +1,32 @@
+                                parameters: [1×1 struct]
+                             static_bursts: 8
+                static_duration_recorded_s: 24.0144
+                           imu_interval_us: [1×1 struct]
+               snapshot_encoder_age_max_us: [205 218]
+    snapshot_not_full_encoder_interarrival: 1
+                       burst_means_columns: {'time_s'  'ax_g'  'ay_g'  'az_g'  'gx_rad_s'  'gy_rad_s'  'gz_rad_s'  'temperature_C'}
+                               burst_means: [8×8 double]
+                       temperature_range_C: [35.7446 35.9609]
+                                    moving: [1×2 struct]
+           long_term_allan_bias_identified: 0
+                 external_motion_reference: 0
+
+SENSOR_NOISE_ANALYSIS_COMPLETE sigma_acc_g=[0.001477 0.001344 0.002161] sigma_gyro_deg_s=[0.03306 0.03697 0.03119] encoder_count_std=[0 0.354]
+
+ans = 
+
+  包含以下字段的 struct:
+
+                                parameters: [1×1 struct]
+                             static_bursts: 8
+                static_duration_recorded_s: 24.0144
+                           imu_interval_us: [1×1 struct]
+               snapshot_encoder_age_max_us: [205 218]
+    snapshot_not_full_encoder_interarrival: 1
+                       burst_means_columns: {'time_s'  'ax_g'  'ay_g'  'az_g'  'gx_rad_s'  'gy_rad_s'  'gz_rad_s'  'temperature_C'}
+                               burst_means: [8×8 double]
+                       temperature_range_C: [35.7446 35.9609]
+                                    moving: [1×2 struct]
+           long_term_allan_bias_identified: 0
+                 external_motion_reference: 0
+

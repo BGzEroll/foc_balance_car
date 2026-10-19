@@ -1,5 +1,7 @@
 # ESP32开发入口
 
+用户观看实物后已确认base电流PI。新[传感器与IMU记录](current_loop/sensor_noise/README.md)保存静止噪声、编码器量化和10/20rad/s架空振动；诊断结束已恢复v18并停机。实测参数用于独立工作区中的FOC＋3D小车仿真候选，未改main。
+
 本阶段已确定使用 v18 的 sensor＋FOC 合并轮询。最新[电流 PI 参数实测](current_loop/pi_tuning/README.md)记录同一调度下的候选参数、不同电流和转速对照；[迁移要点](current_loop/pi_tuning/迁移要点.md)用于后续提取到 main。该分支定位为电流环探索，未改成整车最终应用。
 
 已完成[事件等待与FOC/sensor拆分对照](current_loop/event_driven/README.md)：事件拆分、合并事件均实际测试，拆分在本次条件下未提升控制表现；已恢复v18作为默认基线。关于电压限幅、交替采样、ADC2与Wi-Fi、轮组惯量的解释见[问题说明](current_loop/event_driven/问题说明.md)。

@@ -1,0 +1,2 @@
+{"label": "still_01", "samples": 600, "speed": null, "status": {"version": 24, "running": 0, "requested": 0, "reason": 0, "mask": 1, "bus_V": 8.109, "bus_age_us": 311, "left": -0.158, "right": 2.4697092, "left_age_us": 165, "right_age_us": 86, "zero_valid": [0, 0], "records": 0, "heap": 62268}}
+CAPTURE_COMPLETE_STOPPED

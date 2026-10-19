@@ -1,6 +1,6 @@
 {
   "date": "2026-10-19",
-  "status": "recommended_bench_baseline",
+  "status": "user_confirmed_base",
   "schedule": "v18 sensor+FOC merged nonblocking poll; core1 priority5",
   "firmware_changed": false,
   "current_pi": {

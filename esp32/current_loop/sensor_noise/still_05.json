@@ -1,0 +1,80 @@
+{
+  "label": "still_05",
+  "speed_rad_s": null,
+  "meta": {
+    "version": 24,
+    "count": 600,
+    "capacity": 600,
+    "start_us": 59169444,
+    "done_us": 62169324,
+    "row_bytes": 64,
+    "gyro_bias_rad_s": [
+      0.078396186,
+      -0.013343908,
+      0.006225896
+    ],
+    "acc_counts_per_g": 16384,
+    "gyro_counts_per_deg_s": 65.5,
+    "imu_rate_hz": 200,
+    "dlpf_cfg": 3,
+    "acc_complementary_weight": 0.02,
+    "encoder_speed_tf_s": 0.003
+  },
+  "status": {
+    "version": 24,
+    "running": 0,
+    "requested": 0,
+    "reason": 0,
+    "mask": 1,
+    "bus_V": 8.175,
+    "bus_age_us": 308,
+    "left": -0.158,
+    "right": 2.4712431,
+    "left_age_us": 150,
+    "right_age_us": 661,
+    "zero_valid": [
+      0,
+      0
+    ],
+    "records": 0,
+    "heap": 62268
+  },
+  "health": [
+    {
+      "left_updates": 283573,
+      "right_updates": 250655,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 45,
+      "right_age_us": 182,
+      "imu_age_us": 1674
+    },
+    {
+      "left_updates": 284290,
+      "right_updates": 251286,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 211,
+      "right_age_us": 148,
+      "imu_age_us": 2916
+    },
+    {
+      "left_updates": 302285,
+      "right_updates": 267084,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 112,
+      "right_age_us": 47,
+      "imu_age_us": 1741
+    },
+    {
+      "left_updates": 303007,
+      "right_updates": 267719,
+      "left_recoveries": 0,
+      "right_recoveries": 1,
+      "left_age_us": 63,
+      "right_age_us": 164,
+      "imu_age_us": 3988
+    }
+  ]
+}

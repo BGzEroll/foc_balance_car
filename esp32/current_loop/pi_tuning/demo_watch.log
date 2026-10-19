@@ -1,0 +1,149 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 19 2026 00:41:24
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0caf8h ( 51960) map
+I (96) esp_image: segment 1: paddr=0001cb20 vaddr=3fc95800 size=034f8h ( 13560) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1b4bch (111804) map
+I (122) esp_image: segment 3: paddr=0003b4e4 vaddr=3fc98cf8 size=01324h (  4900) load
+I (123) esp_image: segment 4: paddr=0003c810 vaddr=40374000 size=11724h ( 71460) load
+I (142) esp_image: segment 5: paddr=0004df3c vaddr=50000000 size=00024h (    36) load
+I (150) boot: Loaded app from partition at offset 0x10000
+I (150) boot: Disabling RNG early entropy source...
+I (160) cpu_start: Multicore app
+I (169) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (170) cpu_start: Pro cpu start user code
+I (170) cpu_start: cpu freq: 160000000 Hz
+I (171) app_init: Application information:
+I (175) app_init: Project name:     balance_car
+I (179) app_init: App version:      v1.0.0-21-gc4556f1-dirty
+I (185) app_init: Compile time:     Oct 19 2026 09:57:32
+I (190) app_init: ELF file SHA256:  d80b0f2fb...
+I (194) app_init: ESP-IDF:          v6.0.2
+I (198) efuse_init: Min chip rev:     v0.0
+I (202) efuse_init: Max chip rev:     v0.99 
+I (206) efuse_init: Chip rev:         v0.2
+I (210) heap_init: Initializing. RAM available for dynamic allocation:
+I (216) heap_init: At 3FCA4E30 len 000448E0 (274 KiB): RAM
+I (221) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (226) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (231) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (238) spi_flash: detected chip: gd
+I (240) spi_flash: flash io: dio
+W (243) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (256) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (262) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (269) main_task: Started on CPU0
+I (288) main_task: Calling app_main()
+I (288) main_task: Returned from app_main()
+W (844) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (862) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (912) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+READY DUAL_CURRENT_V18_INTERLEAVED default stopped; per-motor calibration required
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":0.0000,"bus_age_us":709019,"left":-1.7042527,"right":3.6677482,"left_age_us":65,"right_age_us":204,"zero_valid":[0,0],"records":0,"heap":64324}
+HEALTH {"left_updates":78,"right_updates":70,"left_recoveries":0,"right_recoveries":1,"left_age_us":125,"right_age_us":64,"imu_age_us":724138}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9200,"bus_age_us":64,"left":-1.7042527,"right":3.6677482,"left_age_us":117,"right_age_us":442,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":2857,"right_updates":2573,"left_recoveries":0,"right_recoveries":1,"left_age_us":53,"right_age_us":181,"imu_age_us":1282154}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":213,"left":-1.7042527,"right":3.6692822,"left_age_us":205,"right_age_us":142,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":3586,"right_updates":3225,"left_recoveries":0,"right_recoveries":1,"left_age_us":168,"right_age_us":297,"imu_age_us":1428270}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9290,"bus_age_us":246,"left":-1.7042527,"right":3.6677482,"left_age_us":233,"right_age_us":99,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":4340,"right_updates":3904,"left_recoveries":0,"right_recoveries":1,"left_age_us":68,"right_age_us":137,"imu_age_us":1580238}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9350,"bus_age_us":260,"left":-1.7042527,"right":3.6677482,"left_age_us":213,"right_age_us":113,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":5340,"right_updates":4804,"left_recoveries":0,"right_recoveries":1,"left_age_us":48,"right_age_us":149,"imu_age_us":1781450}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":235,"left":-1.7042527,"right":3.6692822,"left_age_us":180,"right_age_us":59,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":6342,"right_updates":5710,"left_recoveries":0,"right_recoveries":1,"left_age_us":135,"right_age_us":266,"imu_age_us":1983236}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9200,"bus_age_us":208,"left":-1.7042527,"right":3.6692822,"left_age_us":158,"right_age_us":101,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":7346,"right_updates":6612,"left_recoveries":0,"right_recoveries":1,"left_age_us":148,"right_age_us":86,"imu_age_us":2185350}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9350,"bus_age_us":265,"left":-1.7042527,"right":3.6677482,"left_age_us":218,"right_age_us":556,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":8353,"right_updates":7518,"left_recoveries":0,"right_recoveries":1,"left_age_us":96,"right_age_us":33,"imu_age_us":2387406}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9290,"bus_age_us":251,"left":-1.7042527,"right":3.6677482,"left_age_us":44,"right_age_us":104,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":9355,"right_updates":8418,"left_recoveries":0,"right_recoveries":1,"left_age_us":175,"right_age_us":100,"imu_age_us":2589235}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":245,"left":-1.7042527,"right":3.6692822,"left_age_us":234,"right_age_us":97,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":10361,"right_updates":9324,"left_recoveries":0,"right_recoveries":1,"left_age_us":188,"right_age_us":58,"imu_age_us":2791260}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":208,"left":-1.7042527,"right":3.6677482,"left_age_us":200,"right_age_us":55,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":11368,"right_updates":10227,"left_recoveries":0,"right_recoveries":1,"left_age_us":133,"right_age_us":234,"imu_age_us":2993235}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9290,"bus_age_us":210,"left":-1.7042527,"right":3.6692822,"left_age_us":202,"right_age_us":60,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":12370,"right_updates":11128,"left_recoveries":0,"right_recoveries":1,"left_age_us":209,"right_age_us":140,"imu_age_us":3195311}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9350,"bus_age_us":254,"left":-1.7042527,"right":3.6677482,"left_age_us":208,"right_age_us":536,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":13377,"right_updates":12034,"left_recoveries":0,"right_recoveries":1,"left_age_us":39,"right_age_us":138,"imu_age_us":3397240}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":275,"left":-1.7042527,"right":3.6677482,"left_age_us":28,"right_age_us":128,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":14380,"right_updates":12933,"left_recoveries":0,"right_recoveries":1,"left_age_us":38,"right_age_us":166,"imu_age_us":3599340}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":212,"left":-1.7042527,"right":3.6692822,"left_age_us":55,"right_age_us":204,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":15358,"right_updates":13810,"left_recoveries":0,"right_recoveries":1,"left_age_us":99,"right_age_us":228,"imu_age_us":3796201}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9290,"bus_age_us":206,"left":-1.7042527,"right":3.6677482,"left_age_us":90,"right_age_us":151,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":16364,"right_updates":14713,"left_recoveries":0,"right_recoveries":1,"left_age_us":203,"right_age_us":341,"imu_age_us":3998212}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9350,"bus_age_us":261,"left":-1.7042527,"right":3.6677482,"left_age_us":214,"right_age_us":115,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":17370,"right_updates":15614,"left_recoveries":0,"right_recoveries":1,"left_age_us":63,"right_age_us":199,"imu_age_us":4200370}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9350,"bus_age_us":252,"left":-1.7042527,"right":3.6692822,"left_age_us":103,"right_age_us":605,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":18376,"right_updates":16518,"left_recoveries":0,"right_recoveries":1,"left_age_us":165,"right_age_us":103,"imu_age_us":4402367}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9350,"bus_age_us":211,"left":-1.7042527,"right":3.6677482,"left_age_us":203,"right_age_us":60,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":19379,"right_updates":17415,"left_recoveries":0,"right_recoveries":1,"left_age_us":60,"right_age_us":191,"imu_age_us":4604262}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":265,"left":-1.7042527,"right":3.6677482,"left_age_us":18,"right_age_us":118,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":20385,"right_updates":18319,"left_recoveries":0,"right_recoveries":1,"left_age_us":159,"right_age_us":96,"imu_age_us":4806361}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":244,"left":-1.7042527,"right":3.6677482,"left_age_us":104,"right_age_us":50,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":21384,"right_updates":19217,"left_recoveries":0,"right_recoveries":1,"left_age_us":108,"right_age_us":409,"imu_age_us":5008310}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9290,"bus_age_us":260,"left":-1.7042527,"right":3.6677482,"left_age_us":213,"right_age_us":113,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":22389,"right_updates":20119,"left_recoveries":0,"right_recoveries":1,"left_age_us":150,"right_age_us":89,"imu_age_us":5210352}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9350,"bus_age_us":207,"left":-1.7042527,"right":3.6692822,"left_age_us":195,"right_age_us":450,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":23398,"right_updates":21021,"left_recoveries":0,"right_recoveries":1,"left_age_us":61,"right_age_us":162,"imu_age_us":5412363}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":276,"left":-1.7042527,"right":3.6677482,"left_age_us":129,"right_age_us":30,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":24402,"right_updates":21921,"left_recoveries":0,"right_recoveries":1,"left_age_us":102,"right_age_us":163,"imu_age_us":5614365}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":304,"left":-1.7042527,"right":3.6677482,"left_age_us":56,"right_age_us":156,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":25406,"right_updates":22815,"left_recoveries":0,"right_recoveries":1,"left_age_us":72,"right_age_us":133,"imu_age_us":3136}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":62,"left":-1.7042527,"right":3.6677482,"left_age_us":162,"right_age_us":215,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":26407,"right_updates":23705,"left_recoveries":0,"right_recoveries":1,"left_age_us":57,"right_age_us":111,"imu_age_us":1608}
+STATUS {"version":18,"running":0,"requested":0,"reason":0,"mask":1,"bus_V":7.9230,"bus_age_us":300,"left":-1.7042527,"right":3.6677482,"left_age_us":54,"right_age_us":151,"zero_valid":[0,0],"records":0,"heap":68440}
+HEALTH {"left_updates":27132,"right_updates":24348,"left_recoveries":0,"right_recoveries":1,"left_age_us":61,"right_age_us":161,"imu_age_us":3084}
+MOTOR_OK
+ZERO_OK
+ZERO_OK
+GAINS_OK
+LIMIT_OK
+VEL_OK
+ACCEPTED
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9200,"bus_age_us":62,"left":-17.4244881,"right":19.5459824,"left_age_us":139,"right_age_us":78,"zero_valid":[1,1],"records":1599,"heap":68440}
+HEALTH {"left_updates":53518,"right_updates":47672,"left_recoveries":0,"right_recoveries":1,"left_age_us":43,"right_age_us":188,"imu_age_us":2248}
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9290,"bus_age_us":276,"left":-17.4244881,"right":19.5459824,"left_age_us":51,"right_age_us":529,"zero_valid":[1,1],"records":1599,"heap":68440}
+HEALTH {"left_updates":54246,"right_updates":48318,"left_recoveries":0,"right_recoveries":1,"left_age_us":53,"right_age_us":154,"imu_age_us":4334}
+ACCEPTED
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9230,"bus_age_us":62,"left":-49.0873871,"right":51.6920853,"left_age_us":50,"right_age_us":110,"zero_valid":[1,1],"records":1599,"heap":68440}
+HEALTH {"left_updates":83742,"right_updates":74313,"left_recoveries":0,"right_recoveries":1,"left_age_us":218,"right_age_us":718,"imu_age_us":257}
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9230,"bus_age_us":294,"left":-49.0873871,"right":51.6920853,"left_age_us":34,"right_age_us":145,"zero_valid":[1,1],"records":1599,"heap":68440}
+HEALTH {"left_updates":84496,"right_updates":74981,"left_recoveries":0,"right_recoveries":1,"left_age_us":166,"right_age_us":67,"imu_age_us":2397}
+ACCEPTED
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9230,"bus_age_us":78,"left":-17.3907413,"right":19.3864498,"left_age_us":131,"right_age_us":31,"zero_valid":[1,1],"records":1598,"heap":68440}
+HEALTH {"left_updates":114157,"right_updates":101212,"left_recoveries":0,"right_recoveries":1,"left_age_us":66,"right_age_us":167,"imu_age_us":3253}
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9230,"bus_age_us":301,"left":-17.3907413,"right":19.3864498,"left_age_us":54,"right_age_us":154,"zero_valid":[1,1],"records":1598,"heap":68440}
+HEALTH {"left_updates":114886,"right_updates":101856,"left_recoveries":0,"right_recoveries":1,"left_age_us":199,"right_age_us":146,"imu_age_us":431}
+ACCEPTED
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9290,"bus_age_us":78,"left":-81.8409424,"right":84.1511230,"left_age_us":31,"right_age_us":132,"zero_valid":[1,1],"records":1589,"heap":68440}
+HEALTH {"left_updates":144225,"right_updates":127894,"left_recoveries":0,"right_recoveries":1,"left_age_us":224,"right_age_us":86,"imu_age_us":1145}
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9350,"bus_age_us":255,"left":-81.8409424,"right":84.1511230,"left_age_us":149,"right_age_us":206,"zero_valid":[1,1],"records":1589,"heap":68440}
+HEALTH {"left_updates":144957,"right_updates":128541,"left_recoveries":0,"right_recoveries":1,"left_age_us":49,"right_age_us":150,"imu_age_us":3476}
+LIMIT_OK
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9230,"bus_age_us":78,"left":-81.8409424,"right":84.1511230,"left_age_us":31,"right_age_us":131,"zero_valid":[1,1],"records":1589,"heap":68440}
+HEALTH {"left_updates":153947,"right_updates":136498,"left_recoveries":0,"right_recoveries":1,"left_age_us":51,"right_age_us":150,"imu_age_us":3248}
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9290,"bus_age_us":162,"left":-81.8409424,"right":84.1511230,"left_age_us":95,"right_age_us":154,"zero_valid":[1,1],"records":1589,"heap":68440}
+HEALTH {"left_updates":154698,"right_updates":137162,"left_recoveries":0,"right_recoveries":1,"left_age_us":144,"right_age_us":591,"imu_age_us":98}
+STATUS {"version":18,"running":0,"requested":0,"reason":1,"mask":3,"bus_V":7.9200,"bus_age_us":77,"left":-81.8409424,"right":84.1511230,"left_age_us":31,"right_age_us":332,"zero_valid":[1,1],"records":1589,"heap":68440}
+HEALTH {"left_updates":155430,"right_updates":137808,"left_recoveries":0,"right_recoveries":1,"left_age_us":107,"right_age_us":208,"imu_age_us":4159}

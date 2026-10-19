@@ -1,0 +1,90 @@
+[
+  {
+    "speed_rad_s": 5,
+    "status": {
+      "version": 18,
+      "running": 0,
+      "requested": 0,
+      "reason": 1,
+      "mask": 3,
+      "bus_V": 7.929,
+      "bus_age_us": 276,
+      "left": -17.4244881,
+      "right": 19.5459824,
+      "left_age_us": 51,
+      "right_age_us": 529,
+      "zero_valid": [
+        1,
+        1
+      ],
+      "records": 1599,
+      "heap": 68440
+    }
+  },
+  {
+    "speed_rad_s": 10,
+    "status": {
+      "version": 18,
+      "running": 0,
+      "requested": 0,
+      "reason": 1,
+      "mask": 3,
+      "bus_V": 7.923,
+      "bus_age_us": 294,
+      "left": -49.0873871,
+      "right": 51.6920853,
+      "left_age_us": 34,
+      "right_age_us": 145,
+      "zero_valid": [
+        1,
+        1
+      ],
+      "records": 1599,
+      "heap": 68440
+    }
+  },
+  {
+    "speed_rad_s": -10,
+    "status": {
+      "version": 18,
+      "running": 0,
+      "requested": 0,
+      "reason": 1,
+      "mask": 3,
+      "bus_V": 7.923,
+      "bus_age_us": 301,
+      "left": -17.3907413,
+      "right": 19.3864498,
+      "left_age_us": 54,
+      "right_age_us": 154,
+      "zero_valid": [
+        1,
+        1
+      ],
+      "records": 1598,
+      "heap": 68440
+    }
+  },
+  {
+    "speed_rad_s": 20,
+    "status": {
+      "version": 18,
+      "running": 0,
+      "requested": 0,
+      "reason": 1,
+      "mask": 3,
+      "bus_V": 7.935,
+      "bus_age_us": 255,
+      "left": -81.8409424,
+      "right": 84.151123,
+      "left_age_us": 149,
+      "right_age_us": 206,
+      "zero_valid": [
+        1,
+        1
+      ],
+      "records": 1589,
+      "heap": 68440
+    }
+  }
+]
