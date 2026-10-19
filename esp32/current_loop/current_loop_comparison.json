@@ -1,0 +1,44 @@
+[
+  {
+    "name": "d_100hz_raw",
+    "id_mean_A": 0.299897118875502,
+    "id_std_A": 0.0402115703678791,
+    "iq_mean_A": -0.00083076867469879506,
+    "iq_std_A": 0.028034501682576523,
+    "kp": 0.015079645,
+    "ki": 56.548667908,
+    "filter_tf_s": 0,
+    "full_rate_valid_fraction": 1,
+    "pi_updates": 3490,
+    "active_samples": 3499,
+    "missed_commit": 90
+  },
+  {
+    "name": "d_100hz_hires",
+    "id_mean_A": 0.29973669,
+    "id_std_A": 0.01219053262865496,
+    "iq_mean_A": -0.00013543800000000007,
+    "iq_std_A": 0.015427019226247956,
+    "kp": 0.015079645,
+    "ki": 56.548667908,
+    "filter_tf_s": 0,
+    "full_rate_valid_fraction": 1,
+    "pi_updates": 3496,
+    "active_samples": 3499,
+    "missed_commit": 37
+  },
+  {
+    "name": "d_200hz_hires",
+    "id_mean_A": 0.2998112276,
+    "id_std_A": 0.0099541305957833379,
+    "iq_mean_A": 0.0012274015999999997,
+    "iq_std_A": 0.015538884083252843,
+    "kp": 0.030159289,
+    "ki": 113.097335815,
+    "filter_tf_s": 0,
+    "full_rate_valid_fraction": 1,
+    "pi_updates": 3494,
+    "active_samples": 3499,
+    "missed_commit": 71
+  }
+]

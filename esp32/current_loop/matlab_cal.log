@@ -1,0 +1,25 @@
+{
+  "name": "cal_010",
+  "reason": 1,
+  "valid_fraction": 1,
+  "rows": 1781,
+  "logged_dt_s": 0.00050000000000000044,
+  "kp": 0.015079645,
+  "ki": 56.548667908,
+  "filter_tf_s": 0,
+  "nominal_phase_R_ohm": 0.09,
+  "nominal_phase_L_H": 2.4E-5,
+  "calc_age_us": [
+    32,
+    63,
+    106.89999999999964,
+    142
+  ],
+  "sample_to_latch_us": [
+    70,
+    161,
+    170,
+    270
+  ],
+  "park_recompute_max_error_A": 8.39521908324592E-7
+}

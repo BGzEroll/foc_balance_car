@@ -1,0 +1,23 @@
+{
+  "motor": "left physical motor, MA connector, bare rotor",
+  "instrument": "正点原子 LT1 电桥镊子",
+  "measurement_connection": "between two motor leads; third lead floating",
+  "user_line_resistance_ohm": 0.180,
+  "user_line_inductance_H": 0.000048,
+  "instrument_settings": "user does not recall changing settings; exact mode and frequency unrecorded",
+  "equivalent_star_model_phase_R_ohm": 0.090,
+  "equivalent_star_model_phase_L_H": 0.000024,
+  "model_limit": "initial equivalent model, not identified Ld/Lq or verified winding connection",
+  "current_feedback_gain_A_per_V": -4,
+  "gain_limit": "sign verified using powered voltage vectors; absolute gain remains nominal",
+  "electrical_angle_formula": "wrap(-7 * encoder_mechanical_angle - zero_offset)",
+  "provisional_zero_offset_rad": 5.330672807,
+  "zero_source": "cal_010.csv final alpha hold; cogging/friction error remains",
+  "calibration_source": "cal_010_analysis.json",
+  "initial_current_loop_kp_V_per_A": 0.030159289,
+  "initial_current_loop_ki_V_per_As": 113.097336,
+  "feedback_filter_tf_s": 0,
+  "current_loop_voltage_limit_V": 0.12,
+  "nominal_phase_current_trip_A": 2,
+  "trip_limit": "sampled software stop; not an instantaneous hardware peak-current clamp"
+}

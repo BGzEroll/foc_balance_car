@@ -1,0 +1,135 @@
+{
+  "name": "d_200hz_hires",
+  "reason": 1,
+  "valid_fraction": 1,
+  "rows": 1749,
+  "logged_dt_s": 0.00020000000000000573,
+  "kp": 0.030159289,
+  "ki": 113.097335815,
+  "filter_tf_s": 0,
+  "nominal_phase_R_ohm": 0.09,
+  "nominal_phase_L_H": 2.4E-5,
+  "calc_age_us": [
+    35,
+    52,
+    91,
+    138
+  ],
+  "sample_to_latch_us": [
+    69,
+    169,
+    170,
+    270
+  ],
+  "park_recompute_max_error_A": 4.6749344326073305E-7,
+  "steady": [
+    {
+      "stage": 0,
+      "start_s": 0.000145,
+      "id_ref": 0,
+      "id_mean": -0.00022143921568627421,
+      "id_std": 0.01359282269824893,
+      "iq_ref": 0,
+      "iq_mean": -0.00093878235294117692,
+      "iq_std": 0.014064960723623879,
+      "speed_mean": 0.042065364705882347
+    },
+    {
+      "stage": 1,
+      "start_s": 0.050144999999999995,
+      "id_ref": 0.14999999999999997,
+      "id_mean": 0.14730088400000002,
+      "id_std": 0.015492191563854592,
+      "iq_ref": 0,
+      "iq_mean": -0.0015534100000000003,
+      "iq_std": 0.016749681241502442,
+      "speed_mean": 8.7600000000000006E-7
+    },
+    {
+      "stage": 2,
+      "start_s": 0.100145,
+      "id_ref": 0.29999999999999993,
+      "id_mean": 0.29999857058823531,
+      "id_std": 0.013133450235353911,
+      "iq_ref": 0,
+      "iq_mean": 0.0017852117647058825,
+      "iq_std": 0.016651149723086955,
+      "speed_mean": 0
+    },
+    {
+      "stage": 3,
+      "start_s": 0.200145,
+      "id_ref": 0.14999999999999997,
+      "id_mean": 0.15129955686274507,
+      "id_std": 0.010806094697887019,
+      "iq_ref": 0,
+      "iq_mean": 2.8750980392157073E-5,
+      "iq_std": 0.013103328113015754,
+      "speed_mean": 0
+    },
+    {
+      "stage": 4,
+      "start_s": 0.300145,
+      "id_ref": 0,
+      "id_mean": -0.00035494399999999989,
+      "id_std": 0.0094548517664625274,
+      "iq_ref": 0,
+      "iq_mean": 0.0011469880000000005,
+      "iq_std": 0.013388354792294043,
+      "speed_mean": -0.11962688399999999
+    }
+  ],
+  "closed_loop_fit": {
+    "offset_A": 0.14694244687869792,
+    "step_A": 0.1526245435075006,
+    "delay_s": 0.00016228989257111753,
+    "tau_s": 0.00093286332621327029,
+    "equivalent_bandwidth_Hz": 170.60906846659498,
+    "rmse_A": 0.011810054130020902,
+    "meaning": "empirical closed-loop approximation; not R/L identification"
+  }
+}
+[
+  {
+    "name": "d_100hz_raw",
+    "id_mean_A": 0.299897118875502,
+    "id_std_A": 0.0402115703678791,
+    "iq_mean_A": -0.00083076867469879506,
+    "iq_std_A": 0.028034501682576523,
+    "kp": 0.015079645,
+    "ki": 56.548667908,
+    "filter_tf_s": 0,
+    "full_rate_valid_fraction": 1,
+    "pi_updates": 3490,
+    "active_samples": 3499,
+    "missed_commit": 90
+  },
+  {
+    "name": "d_100hz_hires",
+    "id_mean_A": 0.29973669,
+    "id_std_A": 0.01219053262865496,
+    "iq_mean_A": -0.00013543800000000007,
+    "iq_std_A": 0.015427019226247956,
+    "kp": 0.015079645,
+    "ki": 56.548667908,
+    "filter_tf_s": 0,
+    "full_rate_valid_fraction": 1,
+    "pi_updates": 3496,
+    "active_samples": 3499,
+    "missed_commit": 37
+  },
+  {
+    "name": "d_200hz_hires",
+    "id_mean_A": 0.2998112276,
+    "id_std_A": 0.0099541305957833379,
+    "iq_mean_A": 0.0012274015999999997,
+    "iq_std_A": 0.015538884083252843,
+    "kp": 0.030159289,
+    "ki": 113.097335815,
+    "filter_tf_s": 0,
+    "full_rate_valid_fraction": 1,
+    "pi_updates": 3494,
+    "active_samples": 3499,
+    "missed_commit": 71
+  }
+]
