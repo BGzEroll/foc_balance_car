@@ -1,0 +1,68 @@
+[
+  {
+    "case_name": "base_d030_r1",
+    "motor": 1,
+    "measured_mean_A": 0.29959534918032787,
+    "simulated_mean_A": 0.30000829195602635,
+    "measured_std_A": 0.016373877478301248,
+    "simulated_std_A": 0.019073492178207606,
+    "waveform_rmse_A": 0.026540789742753142,
+    "validation_type": "electrical replay with recorded shaft speed; independent sensor noise realization",
+    "pass": true
+  },
+  {
+    "case_name": "base_d030_r1",
+    "motor": 2,
+    "measured_mean_A": 0.2977408392,
+    "simulated_mean_A": 0.30054293301463425,
+    "measured_std_A": 0.017205969039757105,
+    "simulated_std_A": 0.017498094831310651,
+    "waveform_rmse_A": 0.025717513856001996,
+    "validation_type": "electrical replay with recorded shaft speed; independent sensor noise realization",
+    "pass": true
+  },
+  {
+    "case_name": "mid_d030_repeat_r1",
+    "motor": 1,
+    "measured_mean_A": 0.29971042822580646,
+    "simulated_mean_A": 0.29973319790774411,
+    "measured_std_A": 0.017251441685212934,
+    "simulated_std_A": 0.017810719614414043,
+    "waveform_rmse_A": 0.024019758988988556,
+    "validation_type": "electrical replay with recorded shaft speed; independent sensor noise realization",
+    "pass": true
+  },
+  {
+    "case_name": "mid_d030_repeat_r1",
+    "motor": 2,
+    "measured_mean_A": 0.30043184239999993,
+    "simulated_mean_A": 0.30066826410417391,
+    "measured_std_A": 0.013578349957247904,
+    "simulated_std_A": 0.016676714826715698,
+    "waveform_rmse_A": 0.021838954098796524,
+    "validation_type": "electrical replay with recorded shaft speed; independent sensor noise realization",
+    "pass": true
+  },
+  {
+    "case_name": "base_q0p2",
+    "motor": 1,
+    "measured_mean_A": 0.0074393760204081614,
+    "simulated_mean_A": 0.0071645067988672763,
+    "measured_std_A": 0.18591136149327442,
+    "simulated_std_A": 0.18720500975753399,
+    "waveform_rmse_A": 0.03130853598989,
+    "validation_type": "electrical replay with recorded shaft speed; independent sensor noise realization",
+    "pass": true
+  },
+  {
+    "case_name": "base_q0p2",
+    "motor": 2,
+    "measured_mean_A": 0.0020329790000000038,
+    "simulated_mean_A": 0.0021030497937888581,
+    "measured_std_A": 0.19600587217951257,
+    "simulated_std_A": 0.19569200337685733,
+    "waveform_rmse_A": 0.02643598876653367,
+    "validation_type": "electrical replay with recorded shaft speed; independent sensor noise realization",
+    "pass": true
+  }
+]

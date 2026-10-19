@@ -1,0 +1,383 @@
+{
+  "base_commit": "035b72fb933f455ae04ef99c67e3bbe6c7379242",
+  "date": "2026-10-19",
+  "scope": "PID-only model sources, frozen parameters, offline sensor data, compact native/surrogate evidence; full generated vehicle results and progress logs excluded",
+  "files": [
+    {
+      "name": "analyze_course_odometry.m",
+      "sha256": "6109f742ad3d1e5da9e5ba00b3bae83b6da03a0599df4ff7addeed746a3488a2"
+    },
+    {
+      "name": "balance_car_measured_foc.slx",
+      "sha256": "ee26511e79efa0e74e604f57914a524acda24dfcbc1bf1061ea88db5f53cf363"
+    },
+    {
+      "name": "balance_car_pid_foc.slx",
+      "sha256": "85674e6271e73557300fd42920b3fef355a9b54b10b4808e76611ad4ccffbc28"
+    },
+    {
+      "name": "build_measured_car.m",
+      "sha256": "2822f9fe8a655e37bc3f910e745bfda2add496d125ef48fcf9e5675d68859807"
+    },
+    {
+      "name": "calibrate_current_covariance.m",
+      "sha256": "af87da8cb28a0fbc06469ccb415c69a06ca5380791e8a3cba5367dc44588c4c9"
+    },
+    {
+      "name": "car_validation/drive_tilt3_sensor1_macro500us.png",
+      "sha256": "566d9c1ee0b31babce42dc001c0e72a5fb9d656d7bb03ad2459ef7c7643573e3"
+    },
+    {
+      "name": "car_validation/macro_step_convergence.fig",
+      "sha256": "ba959e6fa89bddc39fbc5ee2f944daa9252d7a33672cae44cffc8aeaaa40babd"
+    },
+    {
+      "name": "car_validation/macro_step_convergence.png",
+      "sha256": "85e4959e55a86c988d578335d3104b88c1daf38eee90a3546913d1f95fc64d6f"
+    },
+    {
+      "name": "car_validation/README.md",
+      "sha256": "00c4c0133f813d6feee2ec6e8835da9d58ad377672f6853381015fd1d0375246"
+    },
+    {
+      "name": "car_validation/recover_tilt3_sensor1_macro250us.png",
+      "sha256": "2b98d7de24a5a2654c8baa0b720ec5db81f6373038f8142acc07265fde8a3749"
+    },
+    {
+      "name": "car_validation/recover_tilt3_sensor1_macro500us.png",
+      "sha256": "1f7010a01152389308f081badadf44ca8864232951fa036c3ecdfd50d0e67bdb"
+    },
+    {
+      "name": "car_validation/summary.json",
+      "sha256": "1c3a8e9817c30e793bfad2fe80d83c3e30e351113affb49c013b8760e06d9d64"
+    },
+    {
+      "name": "car_validation/turn_tilt3_sensor1_macro500us.png",
+      "sha256": "aacfa4573415d9904dfc02db8751f961bb5650c1b32fb42246e7fbd5cabce53f"
+    },
+    {
+      "name": "configure_measured_course.m",
+      "sha256": "cc59418fafae0d8763a83143f7eb4c947a912a88152c9897bf925ac45d9186a9"
+    },
+    {
+      "name": "data/sensor_noise/analysis.json",
+      "sha256": "13659ee48eaa8058653589cc95f5e0a0816cf67632b9a2a2ed79955f7e5ba89e"
+    },
+    {
+      "name": "data/sensor_noise/analyze_sensor_noise.m",
+      "sha256": "1f5a509ddad063e77452302a0e2ccde5ff1e739feeef7b9eb5fb5dc9e6b63d5f"
+    },
+    {
+      "name": "data/sensor_noise/capture_summary.json",
+      "sha256": "e05419260f821fe35cf029d832dde48e1231b9c1866e46045417f9276cb92bb8"
+    },
+    {
+      "name": "data/sensor_noise/moving_10.csv",
+      "sha256": "89a8d151033258f150caae2eae24a534bfaa35b18d0232abe3f6dd3c5073a0f7"
+    },
+    {
+      "name": "data/sensor_noise/moving_10.json",
+      "sha256": "7ff7adde0fa0bff4f88c8f01deabf9df1557251190974c598849f9a29e045b99"
+    },
+    {
+      "name": "data/sensor_noise/moving_20.csv",
+      "sha256": "bd680febee56573633e5dd26bd4736f4edcb0b5f08246cc04947c611879b053b"
+    },
+    {
+      "name": "data/sensor_noise/moving_20.json",
+      "sha256": "c5017a079438710381c4aacce107bd5b0aeaf4397c38216d56a74311e1ba90c8"
+    },
+    {
+      "name": "data/sensor_noise/README.md",
+      "sha256": "896bea52af71c1e88c894572b7ff47ab6d46905651832c24af538a43184a79d6"
+    },
+    {
+      "name": "data/sensor_noise/sensor_noise.fig",
+      "sha256": "fa4d9f53e276e11a8d1d02f3c5d859bb96666fe1684f9221902716766750cf65"
+    },
+    {
+      "name": "data/sensor_noise/sensor_noise.png",
+      "sha256": "0853cfd26ed1e31f3550a99445aa9cd1448587d26a706e1874b9a7c5723116a9"
+    },
+    {
+      "name": "data/sensor_noise/still_01.csv",
+      "sha256": "1d4f0cfec7a3485f18a11746e63e557efb45e2f17e073ab488df0f2c03558c7c"
+    },
+    {
+      "name": "data/sensor_noise/still_01.json",
+      "sha256": "f8722c7fbe48cf7e15613d7d5425aba010e3d694efd19538c1785441cb089add"
+    },
+    {
+      "name": "data/sensor_noise/still_02.csv",
+      "sha256": "e8d6b01f9984c07685d624d446d9b866953edd61efa67565ce83d61732014663"
+    },
+    {
+      "name": "data/sensor_noise/still_02.json",
+      "sha256": "69a9e6bba9508d1703be72d97ead824535d98683d9254372130685583df3a2f8"
+    },
+    {
+      "name": "data/sensor_noise/still_03.csv",
+      "sha256": "610d410a56af2b6f068f0ea8e4c59bf401059b2a41c3157f3310f49a5a5e5ec9"
+    },
+    {
+      "name": "data/sensor_noise/still_03.json",
+      "sha256": "3ca9dc6fffca8cd58356be41384a86e80aac8b01628a0bdaabf6a7587e726a98"
+    },
+    {
+      "name": "data/sensor_noise/still_04.csv",
+      "sha256": "32b8898a9325270caa9836cc6469901a7c8fc33daf6b89ad9a97a8f429bee020"
+    },
+    {
+      "name": "data/sensor_noise/still_04.json",
+      "sha256": "8b562d820f6d255afbe149c5524ac9f96d9a8ce0c90cea2014c6c58351679819"
+    },
+    {
+      "name": "data/sensor_noise/still_05.csv",
+      "sha256": "b1531a399dfad352cbb438b2be2348c5d0cd6d50c482a90c180a93cba848a113"
+    },
+    {
+      "name": "data/sensor_noise/still_05.json",
+      "sha256": "501d988060f972d797917ca30ec283db5d152eb6848ebeb265118fa15b2b6229"
+    },
+    {
+      "name": "data/sensor_noise/still_06.csv",
+      "sha256": "153406005d3703bb3ec1929a055d13195bed0ee2f3be55f92fe16f517e6ae555"
+    },
+    {
+      "name": "data/sensor_noise/still_06.json",
+      "sha256": "a4490c24f3029fe93734b9507f49db7d3cee2c5e87c02ecf9461a082943c53e3"
+    },
+    {
+      "name": "data/sensor_noise/still_07.csv",
+      "sha256": "085fe9c83cf395c77e5d1be54d48f24b5e722d23afbe1b8d0b2f9020041ab218"
+    },
+    {
+      "name": "data/sensor_noise/still_07.json",
+      "sha256": "ed10b9785b3f36883383151619175f1c21e28d4b8b6efd017f99552114bb7650"
+    },
+    {
+      "name": "data/sensor_noise/still_08.csv",
+      "sha256": "947178f2b9671321d38c86cddf849f1ee2db36b7294f6f50232ac968628a9ffc"
+    },
+    {
+      "name": "data/sensor_noise/still_08.json",
+      "sha256": "def5f2d83a24e37ff55669952d1bc9ae3e745a28c02a574a4cc40458c43e02c8"
+    },
+    {
+      "name": "electrical_fit_points.csv",
+      "sha256": "244d9596b30dff4db2aa9e05216d922b5e7f4de9191745d7265648d61e77b380"
+    },
+    {
+      "name": "identified_parameters.json",
+      "sha256": "8e29b0c1ce2955254c8ddcea6340404e1d6f4716f23183873072699a059ad408"
+    },
+    {
+      "name": "identify_measured_foc.m",
+      "sha256": "7aaa2498af470f697ce87d08c7b46b940f0175858d448ce0bfa3e5f0e2ec3bbb"
+    },
+    {
+      "name": "launch_measured_car.m",
+      "sha256": "7de4d5436b6de728cb8ab970dca7ec5c6b2a2067c71a8a71dc9f32d56551a601"
+    },
+    {
+      "name": "measured_car_pid.m",
+      "sha256": "2cc3f11799b5ca9993335382987f2d3640cd23a9e880945d31693e6053b67cd1"
+    },
+    {
+      "name": "measured_car_reference.m",
+      "sha256": "4aa2e01fac0667d62679d5e3a7320d6c6cf298e9174d459ac06f8c8692add7ff"
+    },
+    {
+      "name": "measured_course_definition.m",
+      "sha256": "bf3bbb90a1d27d41d861e85a051f58d49f8ab4fe480a9140534ce3977015a169"
+    },
+    {
+      "name": "measured_foc_initial.m",
+      "sha256": "d17d35f517e5de5711947ef2f8245acb0d49c0fd4e1c80cb826fd372575c297d"
+    },
+    {
+      "name": "measured_foc_parameters.m",
+      "sha256": "f2aa1a92cf100a2735eab240af4f94375098d6cf9e269baf11798e6e63dc8e73"
+    },
+    {
+      "name": "measured_foc_step.m",
+      "sha256": "a5365d61d2393cb5483460d563f1ea9678b2d8f4af143f1db88337b8b26299b6"
+    },
+    {
+      "name": "measured_pid_config.m",
+      "sha256": "b667a0783744552f6b56c15f0c2cfec69ec97283472b5e8cefa04e64b3ed77a7"
+    },
+    {
+      "name": "measured_pid_panel.m",
+      "sha256": "5c931f8712faad5751711f8aaed61fd8f7463a76ba4f78d60d06f884e9a6c887"
+    },
+    {
+      "name": "measured_sensor_parameters.m",
+      "sha256": "8adf4ac915ca410c726976e9c4395c225482752efe6c4bc1b57c0c3ffa124606"
+    },
+    {
+      "name": "measured_vehicle_actuator.m",
+      "sha256": "2de367d38bbc08a89f086c81c86fdfb5fe2ef18aa069487c3754b33e9a6e2464"
+    },
+    {
+      "name": "measured_vehicle_sensors.m",
+      "sha256": "2a914d5240e570e5446a62be42bdf649f6c493447bea3b1bd9965b5fbbfe038f"
+    },
+    {
+      "name": "migration_validation.json",
+      "sha256": "a66da711e28df238a08d45d6662eac97b56e6c27931bd434b33d66b40bd99143"
+    },
+    {
+      "name": "noise_profile_validation.fig",
+      "sha256": "88b66a6c8119885df35c15d35a68e9a1b9b638ab40831f230dc7f2aa56f0a756"
+    },
+    {
+      "name": "noise_profile_validation.json",
+      "sha256": "7918cd30a42449f5e3fb39af5c60f8c6487e77825b97903477c27c8867cc6c26"
+    },
+    {
+      "name": "noise_profile_validation.png",
+      "sha256": "cd0356d8cec5489b184893c1f2f94cd105d30f0f042f9f961a4917755a235a8a"
+    },
+    {
+      "name": "physics_validation.json",
+      "sha256": "bc2cbe934a44f794ada270d0bf84574293ed230d324562b4c42ab62513b69e2a"
+    },
+    {
+      "name": "pid_selected_parameters.json",
+      "sha256": "a876b8cb57e70792c8a18f55bafa72857acd404a3c02c5c21965bff8a6507136"
+    },
+    {
+      "name": "pid_validation/boundary_screening.json",
+      "sha256": "447cee2ad817bcbd9bad0cef8836cb07eaa4e1e8bbadd9c6908c9b63317a06e4"
+    },
+    {
+      "name": "pid_validation/exploration_foc.json",
+      "sha256": "92d581846c9c5afc444e6f006be4d0ebcf109f09cefbaaae98bf7956789ac351"
+    },
+    {
+      "name": "pid_validation/mixed_course.png",
+      "sha256": "765cb2fb7d53430ff254c6bd0acf9c17e30cbf0b0a449acf2437c4b460a87d60"
+    },
+    {
+      "name": "pid_validation/odometry_audit.json",
+      "sha256": "9a978b413f7918b5993e87324894b521a41c647c796d28bda64cdb7966d91f1d"
+    },
+    {
+      "name": "pid_validation/pid_comparison.fig",
+      "sha256": "0f68e3f10969353e21eaa0916f81926c59baef31e532a0586c81d1a3dcfb90ca"
+    },
+    {
+      "name": "pid_validation/pid_comparison.png",
+      "sha256": "b6ab2464ef20bdcdc2db7df3e1ee899f5a7ac28b7307f4a8113052f19c73c4dc"
+    },
+    {
+      "name": "pid_validation/screening.fig",
+      "sha256": "549a7f3f9b85ce8d14f47ebb93e1a691d285b6a73567bd5037d695a8a85ca0eb"
+    },
+    {
+      "name": "pid_validation/screening.json",
+      "sha256": "5a6e33cbf7adbb659d02ae3d88bb2664e7ff0adb193f0577b4476a0381080a56"
+    },
+    {
+      "name": "pid_validation/screening.png",
+      "sha256": "5dba35acc2bff455b6634d472f78d2c3bd80c7f630bad1524d54a6c40a2c8bbf"
+    },
+    {
+      "name": "pid_validation/summary.json",
+      "sha256": "4381d8aaa6986b7e49fc1c5b9b69ad2dc0f70c731921629e0971b150212c0df7"
+    },
+    {
+      "name": "pid_validation/truth_vs_sensed.png",
+      "sha256": "e290115c1987cb24e7e9527487f4106473f149b2a82fd13bbf7c32157218be97"
+    },
+    {
+      "name": "README.md",
+      "sha256": "a9ea6b70278543ba9585aaaba81b2d28053456dd64319b3d5a317db0e1dbe136"
+    },
+    {
+      "name": "replay_measured_course.m",
+      "sha256": "eca72c30ed2a2424588a38d6f0cc597662fd7b288920ba5edd0aa46771006fa8"
+    },
+    {
+      "name": "report_measured_car.m",
+      "sha256": "9fe6623af7190a4135aa94b7a4006473d0b73b11f9d7efd7b30da2a7401112d7"
+    },
+    {
+      "name": "report_measured_course.m",
+      "sha256": "ba3cf3a050dbb241abd16a64709c828d8b01e98156764159696523ee854dfe40"
+    },
+    {
+      "name": "run_measured_car.m",
+      "sha256": "da1bce60d6f2009ae79ce8cbf091043d02f8136b2268a285e885b6be9d3613ad"
+    },
+    {
+      "name": "screen_measured_pid.m",
+      "sha256": "15f5682e56dcda397a3a30892fc405434930833db3810811570147d2e76d5baf"
+    },
+    {
+      "name": "sensor_noise_parameters.json",
+      "sha256": "25cab816d4e83d2c857bda785b7790c214c5ddfa1f21ce2466af21e80af35a32"
+    },
+    {
+      "name": "summarize_measured_car.m",
+      "sha256": "0f01efddd2285557b5626a9dd69f6fa13630e57158d6a97e82daabcb16a4f64f"
+    },
+    {
+      "name": "summarize_pid_validation.m",
+      "sha256": "dda98517c82e6268c8db1fa5f1f4519d7a248d366d6ad3d45851c983c3cb5e57"
+    },
+    {
+      "name": "validate_exploration_foc.m",
+      "sha256": "2a7e3cd8b48a594de025e004ee6ef127aa063a0583709b9fd67cec51e6d2fa2d"
+    },
+    {
+      "name": "validate_measured_car.m",
+      "sha256": "3e07469a7b3340cc7618d85c65e5e1daca91d6a555d006f9fba41f9e508fb5ad"
+    },
+    {
+      "name": "validate_measured_foc.m",
+      "sha256": "03cbc150a3305f0b561b0217599682c52dff9682931e7cf56d6433692dea0b44"
+    },
+    {
+      "name": "validation/base_d030_r1_model.csv",
+      "sha256": "5fddd5136405aaabbb477bf0c947226834f05dbf7ad6fd5e180e5b808ddb9740"
+    },
+    {
+      "name": "validation/base_q0p2_model.csv",
+      "sha256": "80356a8f97bc5161965d29151846ad9d94746381871a30d286277c1b839724b9"
+    },
+    {
+      "name": "validation/electrical_replay.fig",
+      "sha256": "8cd262ce7daee713186d7583ef88e3a67f3f719f2649f83d534806c6dedf2166"
+    },
+    {
+      "name": "validation/electrical_replay.png",
+      "sha256": "e2f9b41ad4102df2795a7b55d390f49c73a5748138d4ec4de267d54e731aa508"
+    },
+    {
+      "name": "validation/mid_d030_repeat_r1_model.csv",
+      "sha256": "6205da6673ffe5906439c4e559aab047d421012e8c1ada3097bbbbf508f19f22"
+    },
+    {
+      "name": "validation/validation.json",
+      "sha256": "ea818e91e814fc756cb18aec3d0cb1d72b7d1f900c0949294117dfbbabd92e8c"
+    },
+    {
+      "name": "verify_measured_physics.m",
+      "sha256": "c15ace5367c46a62c3ea2e48ac26b446086c621712b64bde6b58aa16398cd508"
+    },
+    {
+      "name": "verify_noise_profiles.m",
+      "sha256": "04bedd8ea6827c1b826617c436977fad8a8f7dfd30eb7977c97d8b885e285d55"
+    }
+  ],
+  "relocation": {
+    "date": "2026-10-20",
+    "destination": "D:\\code\\Embedded-related\\balance_car",
+    "destination_head": "ec347ffdeaea0116eb63c2e7b556399a5dcc996a",
+    "active_branch": "test/foc_current",
+    "main_modified": false,
+    "validation": "migration_validation.json"
+  }
+}

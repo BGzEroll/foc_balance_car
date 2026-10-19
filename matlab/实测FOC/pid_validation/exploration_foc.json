@@ -1,0 +1,434 @@
+[
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 1,
+    "Iq_target_A": 0.7,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.5508188921208816,
+    "peak_after_current_command_A": 0.73872350325600278,
+    "steady_actual_mean_A": [
+      0.7007940347137448,
+      0.70024484757126626
+    ],
+    "steady_actual_std_A": [
+      0.012076821321099872,
+      0.010397802868081837
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 1,
+    "Iq_target_A": 3,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.5508188921208816,
+    "peak_after_current_command_A": 3.0472757204653789,
+    "steady_actual_mean_A": [
+      3.0010548422774068,
+      3.0004725130454526
+    ],
+    "steady_actual_std_A": [
+      0.012210094450722407,
+      0.010557384501209736
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 1,
+    "Iq_target_A": 6,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.5508188921208816,
+    "peak_after_current_command_A": 6.0476829254809052,
+    "steady_actual_mean_A": [
+      6.0014305853505236,
+      6.0008377910807873
+    ],
+    "steady_actual_std_A": [
+      0.012704367803059662,
+      0.011098588171076526
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 1,
+    "Iq_target_A": 10,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.5508188921208816,
+    "peak_after_current_command_A": 10.048500104027013,
+    "steady_actual_mean_A": [
+      10.001913313968988,
+      10.001384726404199
+    ],
+    "steady_actual_std_A": [
+      0.012493704870793952,
+      0.012023968700138332
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 0.5,
+    "Iq_target_A": 0.7,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 3.0581886267717295,
+    "peak_after_current_command_A": 0.7538024078689719,
+    "steady_actual_mean_A": [
+      0.7009415303558082,
+      0.700328231439051
+    ],
+    "steady_actual_std_A": [
+      0.014305592962183887,
+      0.013134598987965377
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 0.5,
+    "Iq_target_A": 3,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 3.0581886267717295,
+    "peak_after_current_command_A": 3.0521949983374133,
+    "steady_actual_mean_A": [
+      3.0012930656447732,
+      3.0007466598882155
+    ],
+    "steady_actual_std_A": [
+      0.014218486485029956,
+      0.013324873122917469
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 0.5,
+    "Iq_target_A": 6,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 3.0581886267717295,
+    "peak_after_current_command_A": 6.053059777607519,
+    "steady_actual_mean_A": [
+      6.0018155045666068,
+      6.0011897778215406
+    ],
+    "steady_actual_std_A": [
+      0.014750976374276008,
+      0.014468221736607197
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 0.5,
+    "Iq_target_A": 10,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 3.0581886267717295,
+    "peak_after_current_command_A": 10.062940433162398,
+    "steady_actual_mean_A": [
+      10.002504982977166,
+      10.001962728812712
+    ],
+    "steady_actual_std_A": [
+      0.016034703082455762,
+      0.015913886084692481
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 1.5,
+    "Iq_target_A": 0.7,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.0989369837384153,
+    "peak_after_current_command_A": 0.736608030516488,
+    "steady_actual_mean_A": [
+      0.70071571376487019,
+      0.7001144223026865
+    ],
+    "steady_actual_std_A": [
+      0.010207310983150149,
+      0.0096703443767153924
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 1.5,
+    "Iq_target_A": 3,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.0989369837384153,
+    "peak_after_current_command_A": 3.0914838185590625,
+    "steady_actual_mean_A": [
+      3.0009896066729982,
+      3.0003739935397453
+    ],
+    "steady_actual_std_A": [
+      0.010590549505090094,
+      0.0096351883958866926
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 1.5,
+    "Iq_target_A": 6,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.0989369837384153,
+    "peak_after_current_command_A": 6.1692010575582685,
+    "steady_actual_mean_A": [
+      6.0012875952072617,
+      6.0007483877940073
+    ],
+    "steady_actual_std_A": [
+      0.011091608216588989,
+      0.010019525124293317
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 6.4,
+    "L_prior_multiplier": 1.5,
+    "Iq_target_A": 10,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.0989369837384153,
+    "peak_after_current_command_A": 10.279058593702651,
+    "steady_actual_mean_A": [
+      10.001675388323187,
+      10.001120012479365
+    ],
+    "steady_actual_std_A": [
+      0.011509237259595144,
+      0.011108140035173944
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 1,
+    "Iq_target_A": 0.7,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.5458608972771564,
+    "peak_after_current_command_A": 0.74130111509876861,
+    "steady_actual_mean_A": [
+      0.700863845468989,
+      0.7002139714806549
+    ],
+    "steady_actual_std_A": [
+      0.012680645359270912,
+      0.010514510272110901
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 1,
+    "Iq_target_A": 3,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.5458608972771564,
+    "peak_after_current_command_A": 3.0405610296488885,
+    "steady_actual_mean_A": [
+      3.0010349832241388,
+      3.0004862423039147
+    ],
+    "steady_actual_std_A": [
+      0.012097782846111148,
+      0.010806754369143046
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 1,
+    "Iq_target_A": 6,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.5458608972771564,
+    "peak_after_current_command_A": 6.0477168138835733,
+    "steady_actual_mean_A": [
+      6.001402154418102,
+      6.0008867991647961
+    ],
+    "steady_actual_std_A": [
+      0.012520802126799424,
+      0.011207979176424855
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 1,
+    "Iq_target_A": 10,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.5458608972771564,
+    "peak_after_current_command_A": 10.055888493450183,
+    "steady_actual_mean_A": [
+      10.001912907473038,
+      10.001352623236102
+    ],
+    "steady_actual_std_A": [
+      0.013256654388414821,
+      0.012005977331254159
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 0.5,
+    "Iq_target_A": 0.7,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 3.0512546307782364,
+    "peak_after_current_command_A": 0.74814570759061216,
+    "steady_actual_mean_A": [
+      0.7008959592731645,
+      0.70033201608755458
+    ],
+    "steady_actual_std_A": [
+      0.014589852977478068,
+      0.013103170014486317
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 0.5,
+    "Iq_target_A": 3,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 3.0512546307782364,
+    "peak_after_current_command_A": 3.0493189355060792,
+    "steady_actual_mean_A": [
+      3.0012983899943073,
+      3.0006724711770381
+    ],
+    "steady_actual_std_A": [
+      0.014940886372918216,
+      0.013863130265822541
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 0.5,
+    "Iq_target_A": 6,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 3.0512546307782364,
+    "peak_after_current_command_A": 6.05253202432793,
+    "steady_actual_mean_A": [
+      6.0018418615824629,
+      6.0012349616377048
+    ],
+    "steady_actual_std_A": [
+      0.016065684837257885,
+      0.014537260339230302
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 0.5,
+    "Iq_target_A": 10,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 3.0512546307782364,
+    "peak_after_current_command_A": 10.062382789564175,
+    "steady_actual_mean_A": [
+      10.002552553673143,
+      10.001846560561081
+    ],
+    "steady_actual_std_A": [
+      0.016157587653871045,
+      0.016233311926563427
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 1.5,
+    "Iq_target_A": 0.7,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.0951579771515334,
+    "peak_after_current_command_A": 0.738235824980439,
+    "steady_actual_mean_A": [
+      0.70074532368338893,
+      0.70010636644699165
+    ],
+    "steady_actual_std_A": [
+      0.011059062175266091,
+      0.0099813588225275921
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 1.5,
+    "Iq_target_A": 3,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.0951579771515334,
+    "peak_after_current_command_A": 3.0848533389143848,
+    "steady_actual_mean_A": [
+      3.0009521481663763,
+      3.0004214453577522
+    ],
+    "steady_actual_std_A": [
+      0.011044868351979762,
+      0.00966123692753653
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 1.5,
+    "Iq_target_A": 6,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.0951579771515334,
+    "peak_after_current_command_A": 6.1737059593394585,
+    "steady_actual_mean_A": [
+      6.0012974935125056,
+      6.0006329865794372
+    ],
+    "steady_actual_std_A": [
+      0.010800270135653524,
+      0.0094203778613460489
+    ],
+    "pass": true
+  },
+  {
+    "bus_V": 8.03,
+    "L_prior_multiplier": 1.5,
+    "Iq_target_A": 10,
+    "speed_rad_s": 40,
+    "warmup_s": 0.05,
+    "uninitialized_spinning_state_peak_A": 2.0951579771515334,
+    "peak_after_current_command_A": 10.277490376331999,
+    "steady_actual_mean_A": [
+      10.001664647972017,
+      10.00116197791216
+    ],
+    "steady_actual_std_A": [
+      0.0111484988133895,
+      0.010906084036272546
+    ],
+    "pass": true
+  }
+]

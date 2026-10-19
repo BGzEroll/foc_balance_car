@@ -1,0 +1,6 @@
+{
+  "electrical_energy_relative_residual": 3.6488105491228676E-7,
+  "stationary_3deg_attitude_bias_rad": 6.6174530207643856E-5,
+  "positive_wheel_odometry_forward_mps": 0.32314674534841609,
+  "pass": true
+}

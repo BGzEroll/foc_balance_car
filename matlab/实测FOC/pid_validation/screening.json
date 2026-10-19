@@ -1,0 +1,911 @@
+[
+  {
+    "score": 2.5422326169695508,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10298826664409665,
+    "hill_hold_position_error": -0.14321553230275816,
+    "max_pitch_deg": 24.034663910391171,
+    "saturation_fraction": 0,
+    "name": "baseline"
+  },
+  {
+    "score": 2.346574611062588,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.14586973631813349,
+    "hill_hold_position_error": -0.11155363487447936,
+    "max_pitch_deg": 23.858882659790627,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.15_d0.020"
+  },
+  {
+    "score": 2.3732667419662046,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.15193905995605522,
+    "hill_hold_position_error": -0.11091909581388494,
+    "max_pitch_deg": 24.373711117032542,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.15_d0.025"
+  },
+  {
+    "score": 2.4408665765745328,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.16557852005989632,
+    "hill_hold_position_error": -0.11022943989970807,
+    "max_pitch_deg": 25.363463865722323,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.15_d0.035"
+  },
+  {
+    "score": 2.5420758918494921,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.18142526509608348,
+    "hill_hold_position_error": -0.11098572483734079,
+    "max_pitch_deg": 26.545108656354657,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.15_d0.045"
+  },
+  {
+    "score": 1.6409811224764692,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.14448616471266951,
+    "hill_hold_position_error": -0.05359771311282182,
+    "max_pitch_deg": 25.692008086832523,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.30_d0.020"
+  },
+  {
+    "score": 1.6721644615451914,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.15090361782708725,
+    "hill_hold_position_error": -0.053102223605035574,
+    "max_pitch_deg": 26.371986945445688,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.30_d0.025"
+  },
+  {
+    "score": 1.7532351309382921,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.1653829050086684,
+    "hill_hold_position_error": -0.052994386582694272,
+    "max_pitch_deg": 27.622415101019946,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.30_d0.035"
+  },
+  {
+    "score": 1.8614580039809612,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.18239174163815608,
+    "hill_hold_position_error": -0.054167654138077871,
+    "max_pitch_deg": 28.016453320937675,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.30_d0.045"
+  },
+  {
+    "score": 1.2425497368468261,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.13990378085042496,
+    "hill_hold_position_error": -0.023041130747312618,
+    "max_pitch_deg": 27.455346365911375,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.50_d0.020"
+  },
+  {
+    "score": 1.2809468036005491,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.14660206853681479,
+    "hill_hold_position_error": -0.023006404188588334,
+    "max_pitch_deg": 28.479713940406672,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.50_d0.025"
+  },
+  {
+    "score": 1.3563948431698207,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.16211665855310844,
+    "hill_hold_position_error": -0.0224276906230403,
+    "max_pitch_deg": 29.9637138682203,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.50_d0.035"
+  },
+  {
+    "score": 1.4426723714958265,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.18111250600929346,
+    "hill_hold_position_error": -0.022144276364828037,
+    "max_pitch_deg": 29.814556445157464,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.50_d0.045"
+  },
+  {
+    "score": 1.0048860451800332,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.12994442054337449,
+    "hill_hold_position_error": -0.0075462943781851918,
+    "max_pitch_deg": 28.624513843336636,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.80_d0.020"
+  },
+  {
+    "score": 1.0495542958478885,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.13775370006431203,
+    "hill_hold_position_error": -0.0067653440428768388,
+    "max_pitch_deg": 30.122736938481374,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.80_d0.025"
+  },
+  {
+    "score": 1.140187766799599,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.158299637776999,
+    "hill_hold_position_error": -0.0048640238785915618,
+    "max_pitch_deg": 31.993516100049987,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.80_d0.035"
+  },
+  {
+    "score": 1.3933926227922926,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.18688185649084715,
+    "hill_hold_position_error": -0.013680747468090365,
+    "max_pitch_deg": 31.177133690117557,
+    "saturation_fraction": 0,
+    "name": "v0.65_i0.80_d0.045"
+  },
+  {
+    "score": 0.9331527266166274,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.11933205339019007,
+    "hill_hold_position_error": -0.003955722542622781,
+    "max_pitch_deg": 28.925393376365669,
+    "saturation_fraction": 0,
+    "name": "v0.65_i1.20_d0.020"
+  },
+  {
+    "score": 1.0087641001811307,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.13210453455492421,
+    "hill_hold_position_error": -0.0031608746052432788,
+    "max_pitch_deg": 30.340974130826297,
+    "saturation_fraction": 0,
+    "name": "v0.65_i1.20_d0.025"
+  },
+  {
+    "score": 1.2674922422875787,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.17526502746129891,
+    "hill_hold_position_error": 0.0025277002079387768,
+    "max_pitch_deg": 33.278897180649146,
+    "saturation_fraction": 0,
+    "name": "v0.65_i1.20_d0.035"
+  },
+  {
+    "score": 2.441654011740567,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.24537476424683727,
+    "hill_hold_position_error": -0.040220279034240893,
+    "max_pitch_deg": 32.965400183051862,
+    "saturation_fraction": 0,
+    "name": "v0.65_i1.20_d0.045"
+  },
+  {
+    "score": 2.0192633510688291,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10666837547863639,
+    "hill_hold_position_error": -0.10250469531539677,
+    "max_pitch_deg": 22.708530125090025,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.15_d0.020"
+  },
+  {
+    "score": 2.0403458183110388,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.11079526840809013,
+    "hill_hold_position_error": -0.10221189952923609,
+    "max_pitch_deg": 23.406000308732743,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.15_d0.025"
+  },
+  {
+    "score": 2.09010100163981,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.12017604468095135,
+    "hill_hold_position_error": -0.10158914491157792,
+    "max_pitch_deg": 25.192162904279211,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.15_d0.035"
+  },
+  {
+    "score": 2.1501379168755963,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.13131402613669582,
+    "hill_hold_position_error": -0.10123795416694391,
+    "max_pitch_deg": 26.970991160991357,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.15_d0.045"
+  },
+  {
+    "score": 1.4694383146710011,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10593480107735212,
+    "hill_hold_position_error": -0.058163019429409379,
+    "max_pitch_deg": 22.975110508155296,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.30_d0.020"
+  },
+  {
+    "score": 1.4903506872795815,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.11026155371181806,
+    "hill_hold_position_error": -0.057811876104456546,
+    "max_pitch_deg": 23.741557447430157,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.30_d0.025"
+  },
+  {
+    "score": 1.5390098800070608,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.12019727482670141,
+    "hill_hold_position_error": -0.057023349673435378,
+    "max_pitch_deg": 25.610917359974447,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.30_d0.035"
+  },
+  {
+    "score": 1.6067082124897381,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.1322980984771607,
+    "hill_hold_position_error": -0.056506474361980724,
+    "max_pitch_deg": 27.793218718448085,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.30_d0.045"
+  },
+  {
+    "score": 1.093427437674052,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10378297765581414,
+    "hill_hold_position_error": -0.028976521940852352,
+    "max_pitch_deg": 23.430671879278012,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.50_d0.020"
+  },
+  {
+    "score": 1.118935103457237,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10829365478309147,
+    "hill_hold_position_error": -0.028612992465052247,
+    "max_pitch_deg": 24.269239204362595,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.50_d0.025"
+  },
+  {
+    "score": 1.1848625986314738,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.11891500819252962,
+    "hill_hold_position_error": -0.028120249824415546,
+    "max_pitch_deg": 26.359572314309439,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.50_d0.035"
+  },
+  {
+    "score": 1.2672900846459489,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.13262712949197578,
+    "hill_hold_position_error": -0.027663606527688383,
+    "max_pitch_deg": 28.6166816122057,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.50_d0.045"
+  },
+  {
+    "score": 0.87101209189587192,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.098684352855897772,
+    "hill_hold_position_error": -0.012451663647230495,
+    "max_pitch_deg": 23.786604145210941,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.80_d0.020"
+  },
+  {
+    "score": 0.90380580759466889,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10339426397347805,
+    "hill_hold_position_error": -0.01247731824662336,
+    "max_pitch_deg": 24.710824598915664,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.80_d0.025"
+  },
+  {
+    "score": 0.98796172265856652,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.11526354764572247,
+    "hill_hold_position_error": -0.01274156267904329,
+    "max_pitch_deg": 26.924709230526464,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.80_d0.035"
+  },
+  {
+    "score": 1.0949493110065829,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.13299594916189891,
+    "hill_hold_position_error": -0.012318750509568186,
+    "max_pitch_deg": 29.130137508781839,
+    "saturation_fraction": 0,
+    "name": "v0.85_i0.80_d0.045"
+  },
+  {
+    "score": 0.75046461653097962,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.090378263268341946,
+    "hill_hold_position_error": -0.0065999076135451976,
+    "max_pitch_deg": 23.939981531873073,
+    "saturation_fraction": 0,
+    "name": "v0.85_i1.20_d0.020"
+  },
+  {
+    "score": 0.78559929864969436,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.095440188507942614,
+    "hill_hold_position_error": -0.0069667931262918318,
+    "max_pitch_deg": 25.017789385330889,
+    "saturation_fraction": 0,
+    "name": "v0.85_i1.20_d0.025"
+  },
+  {
+    "score": 0.88599623783155568,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10984302073771307,
+    "hill_hold_position_error": -0.0081418332363088278,
+    "max_pitch_deg": 27.226871028930578,
+    "saturation_fraction": 0,
+    "name": "v0.85_i1.20_d0.035"
+  },
+  {
+    "score": 1.0711256776194749,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.13743626316715785,
+    "hill_hold_position_error": -0.011982715716203077,
+    "max_pitch_deg": 28.345853166181115,
+    "saturation_fraction": 0,
+    "name": "v0.85_i1.20_d0.045"
+  },
+  {
+    "score": 1.8349248052441567,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.088709736582639753,
+    "hill_hold_position_error": -0.095441664855383454,
+    "max_pitch_deg": 21.018338066834851,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.15_d0.020"
+  },
+  {
+    "score": 1.8525470185734936,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.092014534871501713,
+    "hill_hold_position_error": -0.095248746983090854,
+    "max_pitch_deg": 21.565971586229288,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.15_d0.025"
+  },
+  {
+    "score": 1.8971325469867015,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.09947725957957472,
+    "hill_hold_position_error": -0.094902652014326822,
+    "max_pitch_deg": 23.102549340190219,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.15_d0.035"
+  },
+  {
+    "score": 1.9552716643908079,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10830024558333154,
+    "hill_hold_position_error": -0.0948605845079306,
+    "max_pitch_deg": 24.935049570520629,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.15_d0.045"
+  },
+  {
+    "score": 1.3716677183649997,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.088252946982259148,
+    "hill_hold_position_error": -0.0588646205716449,
+    "max_pitch_deg": 21.116682577413389,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.30_d0.020"
+  },
+  {
+    "score": 1.3892221640327733,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.091683926789486767,
+    "hill_hold_position_error": -0.05861453306781797,
+    "max_pitch_deg": 21.7545429743389,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.30_d0.025"
+  },
+  {
+    "score": 1.4342997245788707,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.099456995557447525,
+    "hill_hold_position_error": -0.0581155884128103,
+    "max_pitch_deg": 23.257985231417702,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.30_d0.035"
+  },
+  {
+    "score": 1.4950686657460208,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.1087801816687705,
+    "hill_hold_position_error": -0.057978784931850068,
+    "max_pitch_deg": 25.111102209266079,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.30_d0.045"
+  },
+  {
+    "score": 1.0338277362236545,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.086890486722101687,
+    "hill_hold_position_error": -0.032131258591572,
+    "max_pitch_deg": 21.41828651088251,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.50_d0.020"
+  },
+  {
+    "score": 1.0537730525785018,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.090432952346866713,
+    "hill_hold_position_error": -0.031910067410885326,
+    "max_pitch_deg": 22.013237158224438,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.50_d0.025"
+  },
+  {
+    "score": 1.1042145181810452,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.098529139553680617,
+    "hill_hold_position_error": -0.031546449683350755,
+    "max_pitch_deg": 23.649422749207744,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.50_d0.035"
+  },
+  {
+    "score": 1.1762058408432892,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10850540369125392,
+    "hill_hold_position_error": -0.031922977032062254,
+    "max_pitch_deg": 25.622327853740885,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.50_d0.045"
+  },
+  {
+    "score": 0.80272256063066583,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.083599667347083823,
+    "hill_hold_position_error": -0.014817684621527463,
+    "max_pitch_deg": 21.648157883787814,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.80_d0.020"
+  },
+  {
+    "score": 0.82450849276488469,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.0872118180057652,
+    "hill_hold_position_error": -0.01468912773048491,
+    "max_pitch_deg": 22.32339775160084,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.80_d0.025"
+  },
+  {
+    "score": 0.88414106038034668,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.095668592502809263,
+    "hill_hold_position_error": -0.015037912923147134,
+    "max_pitch_deg": 24.027191891123415,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.80_d0.035"
+  },
+  {
+    "score": 0.9660960963749643,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10670488846848795,
+    "hill_hold_position_error": -0.015958135047268559,
+    "max_pitch_deg": 26.290111083265593,
+    "saturation_fraction": 0,
+    "name": "v1.00_i0.80_d0.045"
+  },
+  {
+    "score": 0.673817158595004,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.077816410833105032,
+    "hill_hold_position_error": -0.0070285100975393273,
+    "max_pitch_deg": 21.761915261664242,
+    "saturation_fraction": 0,
+    "name": "v1.00_i1.20_d0.020"
+  },
+  {
+    "score": 0.69959829757741121,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.081471471899295225,
+    "hill_hold_position_error": -0.0071516902061740514,
+    "max_pitch_deg": 22.468405930767709,
+    "saturation_fraction": 0,
+    "name": "v1.00_i1.20_d0.025"
+  },
+  {
+    "score": 0.76542701142751068,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.090469447362968261,
+    "hill_hold_position_error": -0.0074619317597523147,
+    "max_pitch_deg": 24.386473667667836,
+    "saturation_fraction": 0,
+    "name": "v1.00_i1.20_d0.035"
+  },
+  {
+    "score": 0.87119587784519537,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10338409589833465,
+    "hill_hold_position_error": -0.00819801700922654,
+    "max_pitch_deg": 27.413773110212073,
+    "saturation_fraction": 0,
+    "name": "v1.00_i1.20_d0.045"
+  },
+  {
+    "score": 1.6385798882679163,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.072370026514062574,
+    "hill_hold_position_error": -0.0868016115933081,
+    "max_pitch_deg": 19.634795340641251,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.15_d0.020"
+  },
+  {
+    "score": 1.6500821099338445,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.0749832245138395,
+    "hill_hold_position_error": -0.086612447550241389,
+    "max_pitch_deg": 19.903946559896102,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.15_d0.025"
+  },
+  {
+    "score": 1.6846000183211949,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.08082106761800284,
+    "hill_hold_position_error": -0.086428351854905078,
+    "max_pitch_deg": 21.049305239068371,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.15_d0.035"
+  },
+  {
+    "score": 1.7292063920962468,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.087608977870099775,
+    "hill_hold_position_error": -0.086406742629709488,
+    "max_pitch_deg": 22.483721868757108,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.15_d0.045"
+  },
+  {
+    "score": 1.2682405993496564,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.072127057376672243,
+    "hill_hold_position_error": -0.057889488228114835,
+    "max_pitch_deg": 19.632097653541525,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.30_d0.020"
+  },
+  {
+    "score": 1.2804765907453552,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.074827036660043866,
+    "hill_hold_position_error": -0.05769131430151591,
+    "max_pitch_deg": 19.980847635705153,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.30_d0.025"
+  },
+  {
+    "score": 1.311847423536052,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.0808398373378391,
+    "hill_hold_position_error": -0.057286962703745475,
+    "max_pitch_deg": 21.1314916030554,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.30_d0.035"
+  },
+  {
+    "score": 1.3565223550641612,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.087867376804350139,
+    "hill_hold_position_error": -0.057050533219816728,
+    "max_pitch_deg": 22.720197084835625,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.30_d0.045"
+  },
+  {
+    "score": 0.97526630691101435,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.071341210359825144,
+    "hill_hold_position_error": -0.034611386132939216,
+    "max_pitch_deg": 19.739238495910428,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.50_d0.020"
+  },
+  {
+    "score": 0.98800792760125611,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.074119161360382421,
+    "hill_hold_position_error": -0.034409327395382869,
+    "max_pitch_deg": 20.097097858372916,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.50_d0.025"
+  },
+  {
+    "score": 1.0217558773973516,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.080308662412860027,
+    "hill_hold_position_error": -0.033976538356444826,
+    "max_pitch_deg": 21.423420024805178,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.50_d0.035"
+  },
+  {
+    "score": 1.0661059811613451,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.08761958979135373,
+    "hill_hold_position_error": -0.033731938229872749,
+    "max_pitch_deg": 23.113704503007703,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.50_d0.045"
+  },
+  {
+    "score": 0.74924728079612646,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.069391743162687231,
+    "hill_hold_position_error": -0.017373670094643905,
+    "max_pitch_deg": 19.842821601913137,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.80_d0.020"
+  },
+  {
+    "score": 0.76375012340872606,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.072212616325139187,
+    "hill_hold_position_error": -0.017171905320543232,
+    "max_pitch_deg": 20.298541196701734,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.80_d0.025"
+  },
+  {
+    "score": 0.80324245290849494,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.078563095791692183,
+    "hill_hold_position_error": -0.016836778844068492,
+    "max_pitch_deg": 21.820703161948352,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.80_d0.035"
+  },
+  {
+    "score": 0.85524820068958618,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.086269555973378736,
+    "hill_hold_position_error": -0.0168026154418079,
+    "max_pitch_deg": 23.666311950359187,
+    "saturation_fraction": 0,
+    "name": "v1.20_i0.80_d0.045"
+  },
+  {
+    "score": 0.61675328589598344,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.065767603024627516,
+    "hill_hold_position_error": -0.0082816560726687444,
+    "max_pitch_deg": 19.91939681692573,
+    "saturation_fraction": 0,
+    "name": "v1.20_i1.20_d0.020"
+  },
+  {
+    "score": 0.6342719752168855,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.06857015245119373,
+    "hill_hold_position_error": -0.0081699844819978409,
+    "max_pitch_deg": 20.477522342261455,
+    "saturation_fraction": 0,
+    "name": "v1.20_i1.20_d0.025"
+  },
+  {
+    "score": 0.68100270875558111,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.075077374352740561,
+    "hill_hold_position_error": -0.0078973298017064909,
+    "max_pitch_deg": 22.296478420675328,
+    "saturation_fraction": 0,
+    "name": "v1.20_i1.20_d0.035"
+  },
+  {
+    "score": 0.73843322833959013,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.083516409097609837,
+    "hill_hold_position_error": -0.0075801284211362112,
+    "max_pitch_deg": 24.358220575869083,
+    "saturation_fraction": 0,
+    "name": "v1.20_i1.20_d0.045"
+  },
+  {
+    "score": 1.4941667571826871,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.061140660406194043,
+    "hill_hold_position_error": -0.079172257364203441,
+    "max_pitch_deg": 19.911074955474025,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.15_d0.020"
+  },
+  {
+    "score": 1.4977978327585437,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.0632240991216324,
+    "hill_hold_position_error": -0.079031141315985279,
+    "max_pitch_deg": 19.579575885444033,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.15_d0.025"
+  },
+  {
+    "score": 1.5177545291535948,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.068008670302404761,
+    "hill_hold_position_error": -0.078850831700330415,
+    "max_pitch_deg": 19.826891921850212,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.15_d0.035"
+  },
+  {
+    "score": 1.5521991893491747,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.073546452416930433,
+    "hill_hold_position_error": -0.078708834164670144,
+    "max_pitch_deg": 21.175356866036733,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.15_d0.045"
+  },
+  {
+    "score": 1.1968286132870112,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.0609819805274788,
+    "hill_hold_position_error": -0.055904418372188874,
+    "max_pitch_deg": 20.367703791187104,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.30_d0.020"
+  },
+  {
+    "score": 1.1957973828382753,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.063166391791296961,
+    "hill_hold_position_error": -0.055704444121742643,
+    "max_pitch_deg": 19.578336769257973,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.30_d0.025"
+  },
+  {
+    "score": 1.2154131749436421,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.068067345990694278,
+    "hill_hold_position_error": -0.055355082725156546,
+    "max_pitch_deg": 19.866705395436384,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.30_d0.035"
+  },
+  {
+    "score": 1.2523220362628456,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.073751229984879679,
+    "hill_hold_position_error": -0.055090622131113709,
+    "max_pitch_deg": 21.400009280644994,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.30_d0.045"
+  },
+  {
+    "score": 0.94621553014596715,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.060475436767577911,
+    "hill_hold_position_error": -0.0357547679554916,
+    "max_pitch_deg": 20.536338501462463,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.50_d0.020"
+  },
+  {
+    "score": 0.94366580365332875,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.0627569429414099,
+    "hill_hold_position_error": -0.035538955373161714,
+    "max_pitch_deg": 19.565564286012908,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.50_d0.025"
+  },
+  {
+    "score": 0.96588623724656875,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.0677759754050669,
+    "hill_hold_position_error": -0.035193215856991894,
+    "max_pitch_deg": 20.024701493152609,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.50_d0.035"
+  },
+  {
+    "score": 1.0038278106467087,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.073628967825091873,
+    "hill_hold_position_error": -0.034791912535674409,
+    "max_pitch_deg": 21.680213741774672,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.50_d0.045"
+  },
+  {
+    "score": 0.73717200614635625,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.059234253805019156,
+    "hill_hold_position_error": -0.01934071534007388,
+    "max_pitch_deg": 20.900984226156162,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.80_d0.020"
+  },
+  {
+    "score": 0.73150574346983688,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.061576885478680975,
+    "hill_hold_position_error": -0.019158046211433168,
+    "max_pitch_deg": 19.543585127429903,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.80_d0.025"
+  },
+  {
+    "score": 0.75675380939904813,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.066693267827153374,
+    "hill_hold_position_error": -0.018799169685126287,
+    "max_pitch_deg": 20.237218235017171,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.80_d0.035"
+  },
+  {
+    "score": 0.79882755648954884,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.0727572087822743,
+    "hill_hold_position_error": -0.018412945439998624,
+    "max_pitch_deg": 22.068181666838917,
+    "saturation_fraction": 0,
+    "name": "v1.40_i0.80_d0.045"
+  },
+  {
+    "score": 0.60577527677673582,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.056885692412114573,
+    "hill_hold_position_error": -0.0096724806110574674,
+    "max_pitch_deg": 21.271613458120328,
+    "saturation_fraction": 0,
+    "name": "v1.40_i1.20_d0.020"
+  },
+  {
+    "score": 0.59656040984318548,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.059201867469896939,
+    "hill_hold_position_error": -0.0095407169559581263,
+    "max_pitch_deg": 19.515492014746169,
+    "saturation_fraction": 0,
+    "name": "v1.40_i1.20_d0.025"
+  },
+  {
+    "score": 0.62593443222760614,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.064356373423500687,
+    "hill_hold_position_error": -0.0092624996226779634,
+    "max_pitch_deg": 20.510451825919759,
+    "saturation_fraction": 0,
+    "name": "v1.40_i1.20_d0.035"
+  },
+  {
+    "score": 0.67219460842053058,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.070705642918689679,
+    "hill_hold_position_error": -0.0089109900185895922,
+    "max_pitch_deg": 22.560339452617466,
+    "saturation_fraction": 0,
+    "name": "v1.40_i1.20_d0.045"
+  }
+]

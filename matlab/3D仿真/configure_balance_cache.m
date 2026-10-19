@@ -1,9 +1,7 @@
 function configure_balance_cache
-% 将Simulink生成文件固定在工程内，不随MATLAB当前工作目录改变。
-here=fileparts(fileparts(mfilename('fullpath')));
-Simulink.fileGenControl('set', ...
- 'CacheFolder',fullfile(here,'.cache','simulink'), ...
- 'CodeGenFolder',fullfile(here,'.cache','codegen'), ...
- 'createDir',true);
+% Isolated optional cache tag permits independent offline validation processes.
+here=fileparts(fileparts(mfilename('fullpath')));tag=getenv('BALANCE_SIM_CACHE_TAG');
+assert(isempty(tag)||~isempty(regexp(tag,'^[A-Za-z0-9_-]+$','once')),'Invalid cache tag');
+Simulink.fileGenControl('set','CacheFolder',fullfile(here,'.cache','simulink',tag), ...
+ 'CodeGenFolder',fullfile(here,'.cache','codegen',tag),'createDir',true);
 end
-

@@ -1,0 +1,468 @@
+{
+  "date": "2026-10-19",
+  "current_PI_unchanged": true,
+  "hardware_high_current_validated": false,
+  "baseline_partial_duration_s": 14.5,
+  "selected_full_course": {
+    "scenario": "mixed",
+    "controller": "PID_FOC_BASE",
+    "motion_profile": "normal",
+    "expected_duration_s": 39,
+    "duration_s": 39,
+    "completed": true,
+    "fell": false,
+    "max_tilt_error_deg": 18.380009204816933,
+    "max_roll_deg": 1.510211733116172,
+    "final_distance_m": 5.5991619732934632,
+    "final_distance_error_m": -0.0014348488752147621,
+    "final_yaw_error_deg": 0.30558174348103995,
+    "final_speed_mps": 0.0023662020101316052,
+    "max_speed_mps": 1.5579163351277892,
+    "peak_each_torque_Nm": 0.081456695574550264,
+    "configured_torque_limit_each_Nm": 0.0798717570109411,
+    "saturated_fraction": 0.0014100756313293167,
+    "actuator_gain_left": 1,
+    "actuator_gain_right": 1,
+    "peak_approx_rolling_slip_mps": 0.29859368506860068,
+    "first_forward_90percent_time_s": [],
+    "max_terrain_normal_N": 7.8262969530040305,
+    "max_axle_height_m": 0.13872044851371737,
+    "min_axle_height_m": 0.031915528260295443,
+    "final_world_x_m": -0.091958597296501673,
+    "final_world_y_m": 5.5326362439604342,
+    "final_total_normal_N": 3.9471783743190785,
+    "peak_external_force_N": 0.4,
+    "peak_external_torque_Nm": 0.002,
+    "terrain_angle_deg": 12,
+    "terrain_height_m": 0.10627828083501106,
+    "hold_mean_y_error_m": [],
+    "hold_y_span_m": [],
+    "hold_mean_abs_speed_mps": [],
+    "hold_peak_speed_mps": [],
+    "hold_on_incline_fraction": [],
+    "hold_rollback_m": [],
+    "hold_stability_pass": [],
+    "hold_tracking_pass": [],
+    "climbed_ramp": [],
+    "descended_ramp": [],
+    "passed_bump": [],
+    "direction_convention": "x_right_y_forward_v2",
+    "allowed_tilt_check_deg": 30,
+    "pass": false,
+    "current_loop": "base Kp=0.060318579 Ki=226.194672; no decoupling feedforward",
+    "ideal_current_tracking": false,
+    "sensor_noise_enabled": true,
+    "current_limit_A": 6,
+    "Vbus_V": 8.03,
+    "voltage_cap_V": 3.6134999999999997,
+    "Kt_conditional_Nm_per_A": 0.013311959501823515,
+    "requested_recovery_initial_tilt_deg": 0,
+    "initial_tilt_error_deg": 0,
+    "electrical_mean_output_delay_us": 150,
+    "actual_iq_tracking_rms_A": [
+      0.016013513118495616,
+      0.022702227546767737
+    ],
+    "measured_iq_tracking_rms_A": [
+      0.030276436372486785,
+      0.056044028511791334
+    ],
+    "voltage_saturation_fraction": [
+      0,
+      0
+    ],
+    "peak_actual_each_iq_A": 6.0688090962454471,
+    "motor_inertia_owned_by": "existing Multibody wheel solids, not duplicated in actuator",
+    "hardware_ground_vehicle_validated": false,
+    "mechanical_macro_step_s": 0.0005,
+    "electrical_integration_step_s": 5E-5,
+    "iq_statistics_sample_rate_hz": 2000,
+    "max_true_tilt_error_deg": 19.52278432784545,
+    "true_final_distance_error_m": -0.042430126092413367,
+    "true_final_yaw_error_deg": 0.0720447477232088,
+    "true_final_forward_speed_mps": 0.0021143936223674727,
+    "controller_metrics_pass_before_truth": true,
+    "pid_tuning": "selected",
+    "operating_envelope": "explore6",
+    "pid_parameters": {
+      "Ts": 0.005,
+      "pitch_trim": -0.0015642080886889029,
+      "torque_limit_each": 0.1,
+      "position_kp": 1.3,
+      "velocity_kp": 1.4,
+      "velocity_ki": 1.2,
+      "pitch_kp": 0.4,
+      "pitch_ki": 0.005,
+      "pitch_kd": 0.025,
+      "yaw_kp": 0.105,
+      "yaw_ki": 0.01,
+      "yaw_kd": 0.02,
+      "speed_limit": 1.8,
+      "pitch_target_limit": 0.43633231299858238,
+      "velocity_integral_limit": 1.2,
+      "pitch_integral_limit": 0.25,
+      "yaw_integral_limit": 0.5,
+      "profile": "normal",
+      "controller": "PID_FOC",
+      "envelope": "explore6",
+      "tuning": "selected",
+      "config": [
+        10,
+        6,
+        -0.0015642080886889029,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        30.048168336540293,
+        0.37560210420675366,
+        1.8780105210337683,
+        1.4,
+        1.2,
+        1.3,
+        1.8,
+        0.43633231299858238,
+        1.2,
+        0.25,
+        7.8876441883418256,
+        0.75120420841350732,
+        1.5024084168270146,
+        0.5,
+        0.005,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0.013311959501823515
+      ],
+      "current_parameters": {
+        "pole_pairs": 7,
+        "Rs": 0.11038723116515871,
+        "Ld": 2.4E-5,
+        "Lq": 2.4E-5,
+        "ke": 0.0088746396678823433,
+        "Kp": 0.060318579,
+        "Ki": 226.194672,
+        "Ts": 5E-5,
+        "control_period": 0.0002,
+        "output_delay": 0.00015,
+        "mechanical_macro_step": 0.00025,
+        "Vbus": 8.03,
+        "ratio": 0.45,
+        "voltage_cap": 8.03,
+        "Imax": 6,
+        "noise_sigma_AB": 0.014272882551600563,
+        "encoder_counts": 4096,
+        "encoder_latency": 0.0002,
+        "J_bare": 5.1659582247243879E-6,
+        "J_wheel": 2.9967889984098441E-5,
+        "B": [
+          9.0941339909785176E-6,
+          1.601049327062047E-5
+        ],
+        "coulomb": [
+          0.0018132714630956603,
+          0.001517470196515794
+        ],
+        "fit_loaded": true,
+        "flux": 0.0012678056668403348,
+        "Kt": 0.013311959501823515,
+        "root": "C:\\Users\\16004\\.codex\\worktrees\\measured-foc-model\\balance_car",
+        "data": "C:\\Users\\16004\\.codex\\worktrees\\measured-foc-model\\balance_car\\esp32\\current_loop\\pi_tuning",
+        "cfg": [
+          0.11038723116515871,
+          2.4E-5,
+          0.0088746396678823433,
+          0.060318579,
+          226.194672,
+          5E-5,
+          4,
+          3,
+          8.03,
+          0.45,
+          8.03,
+          6,
+          0.014272882551600563,
+          4096,
+          4,
+          7,
+          9.0941339909785176E-6,
+          1.601049327062047E-5,
+          0.0018132714630956603,
+          0.001517470196515794,
+          0.012861363741130144,
+          -0.0018451109603328487,
+          0,
+          0.017795102740798516,
+          0.015135175689997331,
+          6.6018549877279442E-5,
+          0,
+          0.010014889438129048,
+          0.35401476932572123,
+          0.35401476932572123,
+          5
+        ]
+      },
+      "motion_profile": {
+        "name": "mixed",
+        "durations": [
+          6,
+          11,
+          9,
+          10,
+          9,
+          13,
+          18,
+          26,
+          34,
+          39
+        ]
+      }
+    },
+    "expected_full_course_duration_s": 39,
+    "complete_course": true,
+    "partial_diagnostic": false,
+    "fast_peak_true_speed_mps": 1.5460399624115153,
+    "fast_velocity_tracking_rms_mps": 0.056791800699024869,
+    "slow_mean_absolute_speed_mps": 0.0653013873997048,
+    "slow_velocity_tracking_rms_mps": 0.020294360402617829,
+    "slope_hold_mean_world_y_error_m": -0.026639647989306455,
+    "slope_hold_position_span_m": 0.012680815666212819,
+    "slope_hold_rms_speed_mps": 0.007181740998569084,
+    "contact_peak_each_terrain_N": [
+      5.8942154329019978,
+      5.4407556369444681,
+      8.2993059747765212,
+      6.302697616896312,
+      4.7006579581677608,
+      12.518370876462667
+    ],
+    "all_six_terrain_contacts_observed": true,
+    "reached_platform": true,
+    "descended_to_flat": true,
+    "positive_and_negative_yaw": true,
+    "maximum_true_speed_mps": 1.5460399624115153,
+    "terrain_slope_deg": 12,
+    "course": {
+      "name": "综合性能场景",
+      "duration": 39,
+      "moves": [
+        [
+          1,
+          3.8,
+          3,
+          0
+        ],
+        [
+          5,
+          2,
+          0.1,
+          0
+        ],
+        [
+          7.5,
+          3,
+          0.45,
+          0
+        ],
+        [
+          14.5,
+          6,
+          1.6,
+          0
+        ],
+        [
+          21.5,
+          2,
+          -0.05,
+          0
+        ],
+        [
+          24,
+          2,
+          0,
+          0.78539816339744828
+        ],
+        [
+          27,
+          3,
+          0.4,
+          -1.0471975511965976
+        ],
+        [
+          31,
+          2,
+          0,
+          0.26179938779914941
+        ],
+        [
+          34,
+          2,
+          0.1,
+          0
+        ]
+      ],
+      "labels": [
+        "快速起步/制动",
+        "低速爬行",
+        "缓入坡道",
+        "坡中停车",
+        "坡顶/下坡/交错凸起",
+        "倒车",
+        "原地转向",
+        "弧线运动",
+        "回正",
+        "慢速停车",
+        "推扰恢复"
+      ],
+      "phases": [
+        [
+          1,
+          4.8
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          7.5,
+          10.5
+        ],
+        [
+          10.5,
+          14.5
+        ],
+        [
+          14.5,
+          20.5
+        ],
+        [
+          21.5,
+          23.5
+        ],
+        [
+          24,
+          26
+        ],
+        [
+          27,
+          30
+        ],
+        [
+          31,
+          33
+        ],
+        [
+          34,
+          36
+        ],
+        [
+          36.2,
+          39
+        ]
+      ],
+      "fast_reference_peak_mps": 1.4802631578947369,
+      "slow_reference_peak_mps": 0.09375,
+      "slope_deg": 12,
+      "ramp_start": 3.3,
+      "ramp_run": 0.5,
+      "height": 0.10627828083501106,
+      "platform_length": 0.25,
+      "bump_start": 4.75,
+      "bump_length": 0.035,
+      "bump_height": 0.003,
+      "right_bump_start": 4.9,
+      "right_bump_height": 0.002,
+      "full_bump_start": 5.01,
+      "full_bump_height": 0.001,
+      "hold_y": 3.55,
+      "finish_distance": 5.6,
+      "hold_check": [
+        12,
+        14.3
+      ],
+      "notes": "Simulation performance exploration. Fixed-voltage battery, rigid tires, empirical hanging noise; no thermal or hardware rating claim."
+    },
+    "fast_true_slip_rms_mps": 0.0029638756181615254,
+    "peak_true_slip_mps": 1.0908378946675472,
+    "estimated_copper_energy_J": [
+      2.832346516840202,
+      2.4472548727275711
+    ],
+    "thermal_model_present": false,
+    "hardware_high_current_validated": false,
+    "trajectory_pass": true,
+    "terrain_pass": true,
+    "hill_hold_pass": true
+  },
+  "baseline_fast_velocity_rms_mps": 0.10116030595190663,
+  "selected_fast_velocity_rms_mps": 0.056791800699024869,
+  "baseline_hill_hold_error_m": -0.15568767363907648,
+  "selected_hill_hold_error_m": -0.026639647989306455,
+  "baseline_and_selected_same_current_limit_A": 6,
+  "baseline_is_full_course_pass": false,
+  "odometry_definition_audit": {
+    "horizontal_true_path_final_m": 5.5575698739075845,
+    "spatial_axle_path_final_m": 5.58066754395061,
+    "wheel_observed_path_final_m": 5.5985597538933121,
+    "wheel_path_reference_final_m": 5.6000000000000094,
+    "geometric_up_down_grade_extra_path_m": 0.022340594865029262,
+    "horizontal_path_minus_wheel_reference_m": -0.04243012609241583,
+    "horizontal_path_minus_geometrically_projected_reference_m": -0.020089531227386569,
+    "spatial_axle_path_minus_reference_m": -0.019332456049390285,
+    "note": "Wheel reference is ground path length; raw horizontal integral omits vertical travel. Axle spatial path also includes bump/vertical oscillations. Neither establishes an external absolute-position sensor."
+  },
+  "native_speed_probes": [
+    {
+      "requested_peak_mps": 2.5,
+      "true_peak_mps": 2.6105936891152828,
+      "max_true_pitch_deg": 32.324481592874243,
+      "max_observed_pitch_deg": 22.273884086955732,
+      "peak_Iq_A": 1.7862710049035893,
+      "voltage_saturation_fraction": [
+        0,
+        0
+      ],
+      "true_final_distance_error_m": -0.026977443147971236,
+      "pass": true
+    },
+    {
+      "requested_peak_mps": 4,
+      "true_peak_mps": 4.1775444775819537,
+      "max_true_pitch_deg": 51.068029919660248,
+      "max_observed_pitch_deg": 35.177379326883653,
+      "peak_Iq_A": 2.5022874379285343,
+      "voltage_saturation_fraction": [
+        0,
+        0
+      ],
+      "true_final_distance_error_m": -0.042570331858534871,
+      "pass": false
+    }
+  ],
+  "step_refinement": {
+    "available": true,
+    "duration_s": 4.7998016940107755,
+    "max_pitch_difference_deg": 0.75694353054056762,
+    "max_world_position_difference_m": 0.0010980672300422395,
+    "max_forward_speed_difference_mps": 0.015197796885502116,
+    "pitch_tolerance_deg": 0.15,
+    "position_tolerance_m": 0.002,
+    "pass": false,
+    "full_course_repeated_at_250us": false
+  },
+  "pass": false,
+  "functional_course_completed": true,
+  "strict_validation_pass": false,
+  "scope": "Native 39s Multibody at 500us with electrical 50us; refinement checks first fast segment only. High current, speed, tire friction, L/Kt and high speed noise remain model extrapolations."
+}

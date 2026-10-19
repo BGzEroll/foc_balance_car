@@ -1,0 +1,16 @@
+function r=analyze_course_odometry
+% Distinguish horizontal distance from the wheel's distance along the terrain.
+here=fileparts(mfilename('fullpath'));folder=fullfile(here,'results','mixed_selected_explore6_tilt0_sensor1_macro500us');s=load(fullfile(folder,'simulation_measured.mat'),'o');
+[t,raw]=values(s.o.raw3d);a=balance_control_coordinates(raw);q=a(:,8:11);yaw=atan2(2*(q(:,1).*q(:,4)+q(:,2).*q(:,3)),1-2*(q(:,3).^2+q(:,4).^2));
+v=cos(yaw).*a(:,3)+sin(yaw).*a(:,5);horizontal=cumtrapz(t,v);spatial=cumtrapz(t,sign(v).*hypot(v,raw(:,7)));
+[tc,c]=values(s.o.control3d);observed=interp1(tc,c(:,3),t);reference=interp1(tc,c(:,9),t);tail=t>t(end)-.5;d=measured_course_definition;
+gradeExtra=2*d.ramp_run*(1/cosd(d.slope_deg)-1);
+r=struct('horizontal_true_path_final_m',mean(horizontal(tail)),'spatial_axle_path_final_m',mean(spatial(tail)), ...
+ 'wheel_observed_path_final_m',mean(observed(tail)),'wheel_path_reference_final_m',mean(reference(tail)), ...
+ 'geometric_up_down_grade_extra_path_m',gradeExtra,'horizontal_path_minus_wheel_reference_m',mean(horizontal(tail)-reference(tail)), ...
+ 'horizontal_path_minus_geometrically_projected_reference_m',mean(horizontal(tail)-reference(tail))+gradeExtra, ...
+ 'spatial_axle_path_minus_reference_m',mean(spatial(tail)-reference(tail)), ...
+ 'note','Wheel reference is ground path length; raw horizontal integral omits vertical travel. Axle spatial path also includes bump/vertical oscillations. Neither establishes an external absolute-position sensor.');
+fid=fopen(fullfile(here,'pid_validation','odometry_audit.json'),'w');fprintf(fid,'%s',jsonencode(r,PrettyPrint=true));fclose(fid);disp(r);
+end
+function [t,v]=values(ts),t=ts.Time;v=squeeze(ts.Data);if size(v,1)~=numel(t),v=v';end;[t,i]=unique(t,'stable');v=v(i,:);end

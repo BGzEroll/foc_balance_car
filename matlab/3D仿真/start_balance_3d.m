@@ -1,18 +1,12 @@
-function [simout,report]=start_balance_3d(showWindows,exportVideo,scenario,torqueLimit,controller,profile)
-addpath(fileparts(fileparts(mfilename('fullpath'))));paths=balance_setup;
-% START_BALANCE_3D 扩展版3D入口，原始balance_car_3d.slx作为基线保留。
+function [simout,report]=start_balance_3d(showWindows,exportVideo,scenario,varargin)
+% Active entry is PID+FOC. Historical positional controller args are retired.
 if nargin<1,showWindows=true;end
 if nargin<2,exportVideo=false;end
-if nargin<3,scenario='recover';end
-if nargin<4,torqueLimit=[];end
-if nargin<5,controller='lqr';end
-if nargin<6,profile='normal';end
-[simout,report]=run_balance_case(scenario,showWindows,torqueLimit,controller,1,profile);
+if nargin<3,scenario='mixed';end
+assert(isempty(varargin),'请用run_measured_car选择PID参数和仿真电流档位，旧LQR/理想转矩接口已停用');
+addpath(fileparts(fileparts(mfilename('fullpath'))));paths=balance_setup;addpath(fullfile(paths.matlab,'实测FOC'),'-begin');
+[simout,report]=run_measured_car(scenario,showWindows);
 if exportVideo
- here=fileparts(mfilename('fullpath'));
- smwritevideo('balance_car_3d_suite',fullfile(balance_result_folder(paths.results,controller,1,profile),[lower(scenario) '_' lower(controller)],'balance_3d.mp4'), ...
-  'VideoFormat','mpeg-4','FrameRate',20,'FrameSize',[960 720]);
+ folder=fullfile(paths.matlab,'实测FOC','results');smwritevideo('balance_car_pid_foc',fullfile(folder,'pid_foc_demo.mp4'),'VideoFormat','mpeg-4','FrameRate',20,'FrameSize',[960 720]);
 end
-fprintf('完成。原生3D查看器可以播放及旋转观察；数据在matlab/results/suite。\n');
 end
-

@@ -1,6 +1,3 @@
-% 初学者入口：打开本文件，点击MATLAB编辑器上方绿色“运行”。
-% 出现中文面板后选择工况与LQR/PID，再点击运行按钮。
-here=fileparts(mfilename('fullpath'));
-addpath(fileparts(here));balance_setup;
-balance_demo_panel;
-
+% 小车当前仿真入口：PID + 实测FOC综合性能面板。
+here=fileparts(mfilename('fullpath'));addpath(fileparts(here));paths=balance_setup;
+addpath(fullfile(paths.matlab,'实测FOC'),'-begin');measured_pid_panel;

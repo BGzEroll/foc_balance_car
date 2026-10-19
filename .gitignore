@@ -27,3 +27,5 @@ slprj/
 *.slxc
 /matlab/**/*.slx.autosave
 
+/matlab/实测FOC/results/
+/matlab/实测FOC/*.log

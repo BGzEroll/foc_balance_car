@@ -1,0 +1,11 @@
+{
+  "horizontal_true_path_final_m": 5.5575698739075845,
+  "spatial_axle_path_final_m": 5.58066754395061,
+  "wheel_observed_path_final_m": 5.5985597538933121,
+  "wheel_path_reference_final_m": 5.6000000000000094,
+  "geometric_up_down_grade_extra_path_m": 0.022340594865029262,
+  "horizontal_path_minus_wheel_reference_m": -0.04243012609241583,
+  "horizontal_path_minus_geometrically_projected_reference_m": -0.020089531227386569,
+  "spatial_axle_path_minus_reference_m": -0.019332456049390285,
+  "note": "Wheel reference is ground path length; raw horizontal integral omits vertical travel. Axle spatial path also includes bump/vertical oscillations. Neither establishes an external absolute-position sensor."
+}

@@ -1,0 +1,11 @@
+{
+  "destination": "D:\\code\\Embedded-related\\balance_car",
+  "active_branch": "test/foc_current",
+  "full_module_hash_check": true,
+  "model_load": true,
+  "mesh_path": "D:\\code\\Embedded-related\\balance_car\\模型\\仿真模型\\通用URDF\\meshes\\body.stl",
+  "pid_panel": true,
+  "saved_course_replay": true,
+  "base_current_pi_unchanged": true,
+  "physics_rerun": false
+}
