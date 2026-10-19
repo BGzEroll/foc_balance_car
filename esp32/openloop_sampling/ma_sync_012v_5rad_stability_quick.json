@@ -1,0 +1,29 @@
+{
+  "label": "ma_sync_012v_5rad_stability",
+  "rows": 4096,
+  "active": 4096,
+  "valid": 4096,
+  "valid_pct": 100.0,
+  "margins_min_us": [
+    14.4,
+    7.0
+  ],
+  "margins_median_us": [
+    15.3,
+    17.9
+  ],
+  "pair_median_us": 16.8,
+  "left_delta_rad": -6.1328553999999995,
+  "right_delta_rad": -5.551115123125783e-16,
+  "speed_fit_rad_s": -5.001107909953613,
+  "current_abs_max_A": [
+    1.0892399999999993,
+    1.002236
+  ],
+  "current_std_A": [
+    0.7090895955906693,
+    0.6933915473922926
+  ],
+  "reason": 1,
+  "late_commit": 0
+}

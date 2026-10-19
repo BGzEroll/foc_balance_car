@@ -1,0 +1,167 @@
+                      label: 'ma_pwm10k_012v_20rad_full'
+                    samples: 4096
+             active_samples: 4096
+              valid_percent: 100
+       active_valid_percent: 100
+           window_a_percent: 100
+           window_b_percent: 100
+            margin_a_min_us: 14.4000
+            margin_b_min_us: 8.1000
+            adc_a_median_us: 8.3000
+            adc_b_median_us: 8.3000
+             pair_median_us: 16.7000
+                pair_max_us: 17.2000
+         interval_median_us: 100
+            interval_max_us: 110
+                 bus_mean_V: 8.1360
+                  ia_mean_A: -0.0110
+                  ib_mean_A: -0.0307
+                   ia_std_A: 0.6306
+                   ib_std_A: 0.5906
+               ia_abs_max_A: 1.3185
+               ib_abs_max_A: 1.3255
+           ia_fundamental_A: 0.7504
+           ib_fundamental_A: 0.6745
+      ia_fit_residual_rms_A: 0.3367
+      ib_fit_residual_rms_A: 0.3474
+             left_delta_rad: -1.1551
+            right_delta_rad: 0
+       left_fit_speed_rad_s: -2.9730
+        command_speed_rad_s: 20
+          electrical_cycles: 9.1243
+                     reason: 1
+                 cmp_errors: 0
+                late_commit: 0
+           full_rate_active: 19999
+            full_rate_valid: 19999
+    full_rate_valid_percent: 100
+            full_rate_cross: 0
+
+                      label: 'ma_pwm10k_020v_20rad_start'
+                    samples: 4096
+             active_samples: 1
+              valid_percent: 100
+       active_valid_percent: 100
+           window_a_percent: 100
+           window_b_percent: 100
+            margin_a_min_us: 14.9000
+            margin_b_min_us: 18.2000
+            adc_a_median_us: 8.4000
+            adc_b_median_us: 8.4000
+             pair_median_us: 16.8000
+                pair_max_us: 17.3000
+         interval_median_us: 100
+            interval_max_us: 110
+                 bus_mean_V: 8.1319
+                  ia_mean_A: -0.0058
+                  ib_mean_A: 0.0017
+                   ia_std_A: 0.1013
+                   ib_std_A: 0.0464
+               ia_abs_max_A: 5.0402
+               ib_abs_max_A: 2.1891
+           ia_fundamental_A: 0
+           ib_fundamental_A: 0
+      ia_fit_residual_rms_A: 0.1013
+      ib_fit_residual_rms_A: 0.0464
+             left_delta_rad: 0
+            right_delta_rad: 0
+       left_fit_speed_rad_s: -4.4302e-04
+        command_speed_rad_s: 20
+          electrical_cycles: 1.0027e-06
+                     reason: 6
+                 cmp_errors: 0
+                late_commit: 0
+           full_rate_active: 1
+            full_rate_valid: 1
+    full_rate_valid_percent: 100
+            full_rate_cross: 0
+
+                      label: 'ma_sync_020v_20rad_start'
+                    samples: 4096
+             active_samples: 1708
+              valid_percent: 100
+       active_valid_percent: 100
+           window_a_percent: 100
+           window_b_percent: 100
+            margin_a_min_us: 13.9000
+            margin_b_min_us: 8
+            adc_a_median_us: 8.4000
+            adc_b_median_us: 8.4000
+             pair_median_us: 16.8000
+                pair_max_us: 17.3000
+         interval_median_us: 100
+            interval_max_us: 112
+                 bus_mean_V: 8.1298
+                  ia_mean_A: 0.1499
+                  ib_mean_A: 0.1153
+                   ia_std_A: 0.7924
+                   ib_std_A: 0.8275
+               ia_abs_max_A: 2.0139
+               ib_abs_max_A: 1.8997
+           ia_fundamental_A: 1.2474
+           ib_fundamental_A: 1.2417
+      ia_fit_residual_rms_A: 0.3278
+      ib_fit_residual_rms_A: 0.1578
+             left_delta_rad: -0.8958
+            right_delta_rad: 0
+       left_fit_speed_rad_s: -2.4609
+        command_speed_rad_s: 20
+          electrical_cycles: 0.8133
+                     reason: 6
+                 cmp_errors: 0
+                late_commit: 0
+           full_rate_active: 1708
+            full_rate_valid: 1708
+    full_rate_valid_percent: 100
+            full_rate_cross: 0
+
+  ���������ֶε� 1��3 struct ����:
+
+    label
+    samples
+    active_samples
+    valid_percent
+    active_valid_percent
+    window_a_percent
+    window_b_percent
+    margin_a_min_us
+    margin_b_min_us
+    adc_a_median_us
+    adc_b_median_us
+    pair_median_us
+    pair_max_us
+    interval_median_us
+    interval_max_us
+    bus_mean_V
+    ia_mean_A
+    ib_mean_A
+    ia_std_A
+    ib_std_A
+    ia_abs_max_A
+    ib_abs_max_A
+    ia_fundamental_A
+    ib_fundamental_A
+    ia_fit_residual_rms_A
+    ib_fit_residual_rms_A
+    left_delta_rad
+    right_delta_rad
+    left_fit_speed_rad_s
+    command_speed_rad_s
+    electrical_cycles
+    reason
+    cmp_errors
+    late_commit
+    full_rate_active
+    full_rate_valid
+    full_rate_valid_percent
+    full_rate_cross
+    uq_V
+    target_follow_ratio
+    electrical_slip_slope_rad_s
+    electrical_slip_range_rad
+    buffer_active_samples
+    buffer_active_last_time_ms
+    last_active_ia_A
+    last_active_ib_A
+    last_active_window_valid
+

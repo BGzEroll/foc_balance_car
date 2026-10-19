@@ -1,0 +1,29 @@
+{
+  "label": "ma_pwm10k_012v_20rad_full",
+  "rows": 4096,
+  "active": 4096,
+  "valid": 4096,
+  "valid_pct": 100.0,
+  "margins_min_us": [
+    14.4,
+    8.1
+  ],
+  "margins_median_us": [
+    15.1,
+    18.2
+  ],
+  "pair_median_us": 16.7,
+  "left_delta_rad": -1.1550873999999998,
+  "right_delta_rad": 0.0,
+  "speed_fit_rad_s": -2.972977684583834,
+  "current_abs_max_A": [
+    1.3185440000000002,
+    1.3254719999999995
+  ],
+  "current_std_A": [
+    0.6306152530699035,
+    0.5905531373192069
+  ],
+  "reason": 1,
+  "late_commit": 0
+}

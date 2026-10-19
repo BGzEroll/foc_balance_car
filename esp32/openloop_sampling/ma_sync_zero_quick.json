@@ -1,0 +1,29 @@
+{
+  "label": "ma_sync_zero",
+  "rows": 4096,
+  "active": 4095,
+  "valid": 4092,
+  "valid_pct": 99.92673992673993,
+  "margins_min_us": [
+    6.3,
+    -2.1
+  ],
+  "margins_median_us": [
+    15.1,
+    18.1
+  ],
+  "pair_median_us": 16.8,
+  "left_delta_rad": 2.220446049250313e-16,
+  "right_delta_rad": 3.3306690738754696e-16,
+  "speed_fit_rad_s": 7.938992313731458e-19,
+  "current_abs_max_A": [
+    0.15794400000000053,
+    0.06304800000000021
+  ],
+  "current_std_A": [
+    0.01083099752044341,
+    0.011577824341538298
+  ],
+  "reason": 1,
+  "late_commit": 0
+}
