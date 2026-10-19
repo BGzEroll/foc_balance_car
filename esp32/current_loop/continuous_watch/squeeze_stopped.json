@@ -1,0 +1,19 @@
+{
+  "version": 19,
+  "running": 0,
+  "requested": 0,
+  "reason": 7,
+  "mask": 3,
+  "bus_V": 8.13,
+  "bus_age_us": 157,
+  "left": -849.4971313,
+  "right": 880.1782837,
+  "left_age_us": 56,
+  "right_age_us": 511,
+  "zero_valid": [
+    1,
+    1
+  ],
+  "records": 802,
+  "heap": 67848
+}

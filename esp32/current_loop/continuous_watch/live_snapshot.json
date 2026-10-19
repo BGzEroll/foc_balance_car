@@ -1,0 +1,32 @@
+{
+  "elapsed_s": 74.52288856124505,
+  "status": {
+    "version": 19,
+    "running": 1,
+    "requested": 1,
+    "reason": 0,
+    "mask": 3,
+    "bus_V": 8.13,
+    "bus_age_us": 256,
+    "left": -732.9421387,
+    "right": 748.1071167,
+    "left_age_us": 182,
+    "right_age_us": 83,
+    "zero_valid": [
+      1,
+      1
+    ],
+    "records": 802,
+    "heap": 67848
+  },
+  "speed_rad_s": [
+    9.836605487326318,
+    10.000566768333213
+  ],
+  "pid": 65936,
+  "state": "running",
+  "target_rad_s": 10,
+  "current_limit_A": 0.7,
+  "base_current_pi": true,
+  "lease_ms": 2000
+}
