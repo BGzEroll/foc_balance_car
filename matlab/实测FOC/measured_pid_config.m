@@ -3,7 +3,7 @@ function [cfg,d,p]=measured_pid_config(name,scenario,envelope,controllerTs)
 if nargin<1,name='selected';end
 if nargin<2,scenario=10;end
 if nargin<3,envelope='explore6';end
-if nargin<4,controllerTs=.001;end
+if nargin<4,controllerTs=.005;end
 assert(isscalar(controllerTs)&&ismember(controllerTs,[.001 .005]),'PID周期可选1ms或5ms');
 p=measured_foc_parameters;d=pid_balance_parameters('normal');
 d.Ts=controllerTs;d.imu_period_s=.005;d.encoder_period_s=controllerTs;

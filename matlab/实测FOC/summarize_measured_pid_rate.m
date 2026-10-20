@@ -49,10 +49,7 @@ end
 copyfile(fullfile(here,'results',coarse,'mixed_course.png'),fullfile(folder,'mixed_course.png'));
 copyfile(fullfile(here,'results',coarse,'truth_vs_sensed.png'),fullfile(folder,'truth_vs_sensed.png'));
 fid=fopen(fullfile(folder,'summary.json'),'w');fprintf(fid,'%s',jsonencode(summary,PrettyPrint=true));fclose(fid);
-parametersFile=fullfile(here,'pid_selected_parameters.json');parameters=jsondecode(fileread(parametersFile));
-parameters.controller_timing=struct('pid_period_s',.001,'encoder_period_s',.001,'imu_period_s',.005,'gains_retuned',false,'validation','pid_rate_validation/summary.json', ...
- 'execution_rates_pass',summary.execution_rates_pass,'functional_course_completed',summary.functional_course_completed,'strict_validation_pass',summary.strict_validation_pass);
-fid=fopen(parametersFile,'w');fprintf(fid,'%s',jsonencode(parameters,PrettyPrint=true));fclose(fid);
+% Comparison reports must not overwrite the selected default controller timing.
 fid=fopen(fullfile(folder,'README.md'),'w');fprintf(fid,'# 上层PID 1kHz后台验证\n\n2026-10-20。PID及编码器观测1kHz；IMU、AR12创新和互补姿态滤波保持200Hz。未改变上层增益、base电流PI、每侧5kHz电流更新或50us电气积分，也未修改实物固件。\n\n');
 fprintf(fid,'- 实际编译周期与时钟日志验证通过：%d；39秒PID时钟点数：%d。\n',summary.execution_rates_pass,r.pid_tick_count);
 fprintf(fid,'- 完整39秒功能场景完成：%d；六块地形接触：%d；坡停门槛：%d。\n',summary.functional_course_completed,r.terrain_pass,r.hill_hold_pass);

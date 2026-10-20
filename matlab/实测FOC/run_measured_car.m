@@ -6,7 +6,7 @@ if nargin<3,initialTiltDeg=3;end
 if nargin<4,sensorsOn=true;end
 if nargin<7,tuning='selected';end
 if nargin<8,if ismember(lower(scenario),{'mixed','limit'}),envelope='explore6';else,envelope='bench';end,end
-if nargin<10,controllerTs=.001;end
+if nargin<10,controllerTs=.005;end
 here=fileparts(mfilename('fullpath'));addpath(fileparts(here));paths=balance_setup;addpath(here,'-begin');sp=measured_sensor_parameters;
 names={'recover','drive','turn','route','push','terrain','bias','slope','slope_hold','mixed','limit'};idx=find(strcmpi(scenario,names),1);assert(~isempty(idx));
 [cfg,d,p]=measured_pid_config(tuning,idx,envelope,controllerTs);

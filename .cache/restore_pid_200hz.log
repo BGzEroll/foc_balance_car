@@ -1,0 +1,8 @@
+PID_RATE_MATH_CHECKS_COMPLETE
+MEASURED_CAR_START recover, 0.05s, initial=3deg, iq<=0.7A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS stopped: 0.0000 s
+recover PID_FOC_BASE: pass=0, position error=0.0006614 m, yaw error=0.0007292 deg, peak torque=0.007901 Nm
+MEASURED_CAR_COMPLETE recover pass=0 duration=0.05 tilt=2.99934
+DEFAULT_200HZ_RESTORED_OK

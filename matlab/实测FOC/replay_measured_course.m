@@ -2,7 +2,7 @@ function fig=replay_measured_course(resultFolder)
 % Replay saved native Multibody truth; this function performs no new physics.
 here=fileparts(mfilename('fullpath'));addpath(fileparts(here));paths=balance_setup;
 if nargin<1
- resultFolder=fullfile(here,'results','mixed_selected_explore6_tilt0_sensor1_macro500us_pid1000us');
+ resultFolder=fullfile(here,'results','mixed_selected_explore6_tilt0_sensor1_macro500us_pid5000us');
  if ~isfile(fullfile(resultFolder,'simulation_measured.mat')),resultFolder=fullfile(here,'results','mixed_selected_explore6_tilt0_sensor1_macro500us');end
 end
 s=load(fullfile(resultFolder,'simulation_measured.mat'),'o');r=jsondecode(fileread(fullfile(resultFolder,'validation.json')));

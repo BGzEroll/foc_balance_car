@@ -59,7 +59,7 @@ logs=find_system(model,'BlockType','ToWorkspace');for k=1:numel(logs),if ~any(en
 configure_measured_timing(model,control(31),p.mechanical_macro_step,sp.Ts);
 set_param(model,'MaxStep',num2str(p.mechanical_macro_step,16),'StopTime','39','SimMechanicsOpenEditorOnUpdate','off');
 set_param(model,'PostLoadFcn',"addpath(fileparts(get_param(bdroot,'FileName')));addpath(fileparts(fileparts(get_param(bdroot,'FileName'))));p=balance_setup;addpath(fullfile(p.root,'模型','仿真模型','通用URDF','meshes'));");
-note=Simulink.Annotation(model,sprintf('PID ONLY at 1kHz: position P -> velocity PI -> pitch PID, yaw PID -> left/right target Iq\nEncoder observations 1kHz; MPU6050/AR12/complementary filter remain 200Hz (held between frames)\nMeasured base current PI, 5kHz per motor; 150us equivalent delay; electrical RK4 50us\nCourse: fast/slow motion, hill hold, platform, descent, staggered bumps, reversal/turn/push\nHigh-current envelopes are simulation extrapolations; hardware settings are unchanged.'));note.Position=[40 40];
+note=Simulink.Annotation(model,sprintf('PID ONLY at 200Hz (default; optional 1kHz): position P -> velocity PI -> pitch PID, yaw PID -> left/right target Iq\nEncoder observations and MPU6050/AR12/complementary filter at 200Hz by default\nMeasured base current PI, 5kHz per motor; 150us equivalent delay; electrical RK4 50us\nCourse: fast/slow motion, hill hold, platform, descent, staggered bumps, reversal/turn/push\nHigh-current envelopes are simulation extrapolations; hardware settings are unchanged.'));note.Position=[40 40];
 Simulink.BlockDiagram.arrangeSystem(model);save_system(model,file);close_system(model,0);fprintf('MEASURED_CAR_BUILT %s\n',file);
  function pth=path(n),pth=[model '/' n];end
  function add(lib,n),add_block(lib,path(n));end

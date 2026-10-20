@@ -13,11 +13,11 @@
     },
     {
       "name": "balance_car_pid_foc.slx",
-      "sha256": "743a523a20f63489ee5a16567d21ba6eec8ac22af107214c2d00c9f0dec1d535"
+      "sha256": "6188d7bc24c5280823160bc4be8da787a01d014ac9435bf04603e072e38cee85"
     },
     {
       "name": "build_measured_car.m",
-      "sha256": "a32b767c2617715943d52a3828d89cb0e5a63a32d612852547e6a36ba8e239c5"
+      "sha256": "4e79c2891122d2e4d8f085529075cc2faedb88a50fce005932eae15941ac9503"
     },
     {
       "name": "calibrate_current_covariance.m",
@@ -209,7 +209,7 @@
     },
     {
       "name": "measured_pid_config.m",
-      "sha256": "827bb81aa418c3fa185dd010e53acfcf110e5468cf4c0b75195433eb4030befb"
+      "sha256": "dc1fbe18f5a2a4f5709f294a4739289bc594e849fadf50ecbefb02450bd089f8"
     },
     {
       "name": "measured_pid_observation.m",
@@ -217,7 +217,7 @@
     },
     {
       "name": "measured_pid_panel.m",
-      "sha256": "f10f3835c93d631bd8e179388323449369c186d0f4b8eeba1cc28db1f10cd8c8"
+      "sha256": "65e92916a2d3486a0a2e8a2f567a3c16394152f30d5ae7428eafe70d3e88b14f"
     },
     {
       "name": "measured_sensor_parameters.m",
@@ -281,7 +281,7 @@
     },
     {
       "name": "pid_selected_parameters.json",
-      "sha256": "bd36954122b66f76e3bbe6aec7e0d5082a2ec028ddde2f094093aff22cef51e4"
+      "sha256": "017fd88975679ed064a68bbc4f04f07def54007f4c86fa78ebbe8b0631a3a002"
     },
     {
       "name": "pid_validation/boundary_screening.json",
@@ -329,11 +329,11 @@
     },
     {
       "name": "README.md",
-      "sha256": "22575caf38ac90f0d5c3587e184a82040781ff88c4f357c00e6966f47d447f14"
+      "sha256": "2e9df05a2824cf95dc8043754513bf1d74a89f283a7b330ac11ad9bd25f6a2ce"
     },
     {
       "name": "replay_measured_course.m",
-      "sha256": "c0ccd487b851f61bbada4e7f6cbdc473aa3b405e09b3ad26f381efdd4666e22d"
+      "sha256": "45ef4d546ae3dbbd8fc63b08949ef36522a1e8cec5c70283d06bb0bc900760f8"
     },
     {
       "name": "report_measured_car.m",
@@ -345,7 +345,7 @@
     },
     {
       "name": "run_measured_car.m",
-      "sha256": "0d9b351fa3b7f2057f075fb4c0759eb9943e37678571b43acd69728da81f78b6"
+      "sha256": "98d7c8118985f9c7a622113d4bbeb122658cc858c788e705f14c7a52b2c49d6a"
     },
     {
       "name": "screen_measured_pid.m",
@@ -361,7 +361,7 @@
     },
     {
       "name": "summarize_measured_pid_rate.m",
-      "sha256": "a1e58c71d35513617cf6451cf74ae066970dfd0998020adc79cbe994118bd77d"
+      "sha256": "73e93878797b08f74c8db89ad738a8a45c40d4bcd4c056867670ba24affc135e"
     },
     {
       "name": "summarize_pid_validation.m",
@@ -373,7 +373,7 @@
     },
     {
       "name": "validate_measured_car.m",
-      "sha256": "0e8460c6225673ead6ffbcea4dec6de6b670bc202177f8986964c917ecfb4087"
+      "sha256": "d2766961e6be47d1641450bc003cac1c928e5b2f750a8c459c1bb38b277d6b26"
     },
     {
       "name": "validate_measured_foc.m",
@@ -418,6 +418,10 @@
     {
       "name": "verify_pid_rate_math.m",
       "sha256": "c4a5231efdd8da778716398b4f182ce1b1d9f330bb9bb868326cad77d6d03ccc"
+    },
+    {
+      "name": "pid_rate_validation/default_200Hz_restored.json",
+      "sha256": "74882bfa3f247ff69406a3003c66edebbd93a0e12d359d5b244d08d127a12c7e"
     }
   ],
   "relocation": {
@@ -430,11 +434,11 @@
   },
   "pid_rate_update": {
     "date": "2026-10-20",
-    "pid_period_s": 0.001,
-    "encoder_period_s": 0.001,
+    "pid_period_s": 0.005,
+    "encoder_period_s": 0.005,
     "imu_period_s": 0.005,
     "current_loop_changed": false,
     "hardware_changed": false,
-    "validation": "pid_rate_validation/summary.json"
+    "validation": "pid_rate_validation/default_200Hz_restored.json"
   }
 }

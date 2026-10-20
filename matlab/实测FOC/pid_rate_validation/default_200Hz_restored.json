@@ -1,0 +1,16 @@
+{
+  "default_pid_period_s": 0.005,
+  "timing": {
+    "pid_period_s": 0.005,
+    "imu_period_s": 0.005,
+    "encoder_period_s": 0.005,
+    "mechanical_macro_step_s": 0.0005,
+    "current_update_period_s": 0.0002,
+    "electrical_integration_step_s": 5E-5
+  },
+  "logged_pid_period_s": 0.005,
+  "pid_tick_count": 11,
+  "timing_validation_pass": true,
+  "smoke_duration_s": 0.05,
+  "scope": "Default rate and compiled execution smoke check only; full-course evidence remains in pid_validation/summary.json"
+}
