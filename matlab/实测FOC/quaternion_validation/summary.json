@@ -1,0 +1,64 @@
+{
+  "status": "complete",
+  "started": "2026-10-20 19:43:22",
+  "scope": "Six-axis attitude estimation comparison; unchanged PID and FOC; simulation only",
+  "kinematics": {
+    "quaternion_max_error_deg": 3.8181918208328448E-6,
+    "legacy_max_error_deg": 114.3047869612284,
+    "max_unit_norm_error": 3.3306690738754696E-16,
+    "note": "Prescribed ideal three-axis IMU motion; not closed-loop car performance"
+  },
+  "current": "",
+  "runs": [
+    {
+      "scenario": "recover",
+      "estimator": "legacy",
+      "completed": true,
+      "fell": false,
+      "pitch_estimate_rms_deg": 0.16134620720723425,
+      "yaw_estimate_rms_deg": 0.018833066875468527,
+      "true_peak_tilt_deg": 3.0000000000000004,
+      "true_final_yaw_error_deg": -0.031588802935721159,
+      "peak_iq_A": 1.0277151886190952,
+      "result_folder": "D:\\code\\Embedded-related\\balance_car\\matlab\\实测FOC\\results\\recover_selected_explore6_tilt3_sensor1_macro250us_pid5000us_attitude_comparison"
+    },
+    {
+      "scenario": "recover",
+      "estimator": "quaternion",
+      "completed": true,
+      "fell": false,
+      "pitch_estimate_rms_deg": 0.24398921948583657,
+      "yaw_estimate_rms_deg": 0.015251349029202081,
+      "true_peak_tilt_deg": 3.324330792968067,
+      "true_final_yaw_error_deg": -0.024975240989538631,
+      "peak_iq_A": 1.0737427281253715,
+      "result_folder": "D:\\code\\Embedded-related\\balance_car\\matlab\\实测FOC\\results\\recover_selected_explore6_tilt3_sensor1_macro250us_pid5000us_quaternion_attitude_comparison"
+    },
+    {
+      "scenario": "route",
+      "estimator": "legacy",
+      "completed": true,
+      "fell": false,
+      "pitch_estimate_rms_deg": 0.33049272684665143,
+      "yaw_estimate_rms_deg": 0.053094170194059265,
+      "true_peak_tilt_deg": 2.0296288262468578,
+      "true_final_yaw_error_deg": -0.083278189723832746,
+      "peak_iq_A": 0.5860351429835684,
+      "result_folder": "D:\\code\\Embedded-related\\balance_car\\matlab\\实测FOC\\results\\route_selected_explore6_tilt0_sensor1_macro250us_pid5000us_attitude_comparison"
+    },
+    {
+      "scenario": "route",
+      "estimator": "quaternion",
+      "completed": true,
+      "fell": false,
+      "pitch_estimate_rms_deg": 0.33468294760131967,
+      "yaw_estimate_rms_deg": 0.048933924315208523,
+      "true_peak_tilt_deg": 1.8399621694270833,
+      "true_final_yaw_error_deg": -0.077605672768660081,
+      "peak_iq_A": 0.54046465734008287,
+      "result_folder": "D:\\code\\Embedded-related\\balance_car\\matlab\\实测FOC\\results\\route_selected_explore6_tilt0_sensor1_macro250us_pid5000us_quaternion_attitude_comparison"
+    }
+  ],
+  "finished": "2026-10-20 20:08:26",
+  "metrics_time_alignment": "Only common logged time interval; no extrapolation"
+}

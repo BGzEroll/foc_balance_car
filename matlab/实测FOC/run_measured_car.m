@@ -1,4 +1,4 @@
-function [o,r]=run_measured_car(scenario,showWindows,initialTiltDeg,sensorsOn,macroStep,durationOverride,tuning,envelope,stressSpeed,controllerTs)
+function [o,r]=run_measured_car(scenario,showWindows,initialTiltDeg,sensorsOn,macroStep,durationOverride,tuning,envelope,stressSpeed,controllerTs,attitudeMode,resultTag)
 % Current-limited, measured actuator variant of the existing Multibody car.
 if nargin<1,scenario='recover';end
 if nargin<2,showWindows=false;end
@@ -7,6 +7,10 @@ if nargin<4,sensorsOn=true;end
 if nargin<7,tuning='selected';end
 if nargin<8,if ismember(lower(scenario),{'mixed','limit'}),envelope='explore6';else,envelope='bench';end,end
 if nargin<10,controllerTs=.005;end
+if nargin<11,attitudeMode='legacy';end
+attitudeMode=validatestring(attitudeMode,{'legacy','quaternion'});
+if nargin<12,resultTag='';end
+assert(isempty(resultTag)||~isempty(regexp(resultTag,'^[A-Za-z0-9_]+$','once')),'Invalid result tag');
 here=fileparts(mfilename('fullpath'));addpath(fileparts(here));paths=balance_setup;addpath(here,'-begin');sp=measured_sensor_parameters;
 names={'recover','drive','turn','route','push','terrain','bias','slope','slope_hold','mixed','limit'};idx=find(strcmpi(scenario,names),1);assert(~isempty(idx));
 [cfg,d,p]=measured_pid_config(tuning,idx,envelope,controllerTs);
@@ -17,9 +21,16 @@ assert(abs(controllerTs/p.mechanical_macro_step-round(controllerTs/p.mechanical_
 d.current_parameters=p;
 model='balance_car_pid_foc';file=fullfile(here,[model '.slx']);if ~isfile(file),build_measured_car;end
 load_system(file);mw=get_param(model,'ModelWorkspace');
+% Refresh the sensor chart in memory only; do not rewrite the existing SLX.
+sensorChart=find(sfroot,'-isa','Stateflow.EMChart','Path',[model '/Measured_sensors']);
+sensorChart.Script=fileread(fullfile(here,'measured_vehicle_sensors.m'));
+sp.cfg=[sp.cfg double(strcmp(attitudeMode,'quaternion'))];
 if ~showWindows,cleanup=onCleanup(@()close_model(model));end
 course=measured_course_definition;
-suffix=sprintf('_pid%gus',controllerTs*1e6);if idx==11
+suffix=sprintf('_pid%gus',controllerTs*1e6);
+if strcmp(attitudeMode,'quaternion'),suffix=[suffix '_quaternion'];end
+if ~isempty(resultTag),suffix=[suffix '_' resultTag];end
+if idx==11
  if nargin<9,stressSpeed=2.5;end
  course.moves(1,3)=stressSpeed*course.moves(1,2)/1.875;cfg(23)=max(cfg(23),stressSpeed*1.15);cfg(24)=deg2rad(35);d.speed_limit=cfg(23);d.pitch_target_limit=cfg(24);d.config=cfg;suffix=[suffix sprintf('_v%g',stressSpeed)];
 end
@@ -45,6 +56,7 @@ if ~isfolder(out),mkdir(out);end
 save(fullfile(out,'simulation_measured.mat'),'o','p','sp','cfg','fc','d','scenario','duration','initialTiltDeg','sensorsOn','terrain','tuning','envelope','timing','-v7.3');
 r=report_measured_car(o,scenario,duration,p,out,terrain,initialTiltDeg,sensorsOn);
 r.pid_tuning=tuning;r.operating_envelope=envelope;r.pid_parameters=d;
+r.attitude_estimator=attitudeMode;
 r.timing=timing;r.result_folder=out;tick=unique(o.pid_tick.Time);r.logged_pid_period_s=median(diff(tick));r.pid_tick_count=numel(tick);
 r.timing_validation_pass=all(abs(diff(tick)-controllerTs)<1e-8);assert(r.timing_validation_pass,'PID clock log does not match requested period');
 if idx==10,r=report_measured_course(o,r,out,p,terrain);end

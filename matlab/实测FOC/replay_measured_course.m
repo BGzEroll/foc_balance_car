@@ -5,7 +5,7 @@ if nargin<1
  resultFolder=fullfile(here,'results','mixed_selected_explore6_tilt0_sensor1_macro500us_pid5000us');
  if ~isfile(fullfile(resultFolder,'simulation_measured.mat')),resultFolder=fullfile(here,'results','mixed_selected_explore6_tilt0_sensor1_macro500us');end
 end
-s=load(fullfile(resultFolder,'simulation_measured.mat'),'o');r=jsondecode(fileread(fullfile(resultFolder,'validation.json')));
+s=load(fullfile(resultFolder,'simulation_measured.mat'),'o','scenario');r=jsondecode(fileread(fullfile(resultFolder,'validation.json')));
 [t,raw]=data(s.o.raw3d);[tl,ql]=data(s.o.left_wheel_q);[tr,qr]=data(s.o.right_wheel_q);[tc,c]=data(s.o.control3d);
 tf=(0:1/25:t(end))';state=interp1(t,raw,tf);wq=[interp1(tl,ql,tf) interp1(tr,qr,tf)];
 a=balance_control_coordinates(state);q=a(:,8:11);yaw=atan2(2*(q(:,1).*q(:,4)+q(:,2).*q(:,3)),1-2*(q(:,3).^2+q(:,4).^2));
@@ -18,7 +18,9 @@ course=measured_course_definition;ang=deg2rad(course.slope_deg);th=.02;track=.13
 top=[0 course.ramp_start+course.ramp_run/2 course.height/2;0 course.ramp_start+course.ramp_run+course.platform_length/2 course.height;0 course.ramp_start+1.5*course.ramp_run+course.platform_length course.height/2; ...
  -track/2 course.bump_start+course.bump_length/2 course.bump_height;track/2 course.right_bump_start+.0175 course.right_bump_height;0 course.full_bump_start+.015 course.full_bump_height];
 angles=[ang 0 -ang 0 0 0];dims=[.45 course.ramp_run/cos(ang) th;.45 course.platform_length th;.45 course.ramp_run/cos(ang) th;.06 course.bump_length th;.06 .035 th;.45 .03 th];
-for j=1:6
+obstacles=1:6;
+if isfield(s,'scenario')&&ismember(s.scenario,{'recover','drive','turn','route','push','bias','limit'}),obstacles=[];end
+for j=obstacles
  v=([-1 -1 -1;1 -1 -1;1 1 -1;-1 1 -1;-1 -1 1;1 -1 1;1 1 1;-1 1 1].*dims(j,:))/2;
  v=(rx(angles(j))*v')'+top(j,:)-[0 -th/2*sin(angles(j)) th/2*cos(angles(j))];
  patch(ax,'Vertices',v,'Faces',[1 2 3 4;5 6 7 8;1 2 6 5;2 3 7 6;3 4 8 7;4 1 5 8],'FaceColor',[.70 .46 .20],'EdgeColor',[.45 .30 .12]);
@@ -44,7 +46,7 @@ baseTime=0;started=tic;update(1);
   for m=1:2,offset=[(2*m-3)*track/2 0 0];handles(m+1).Vertices=(R*((rx(-wq(k,m))*mesh{m+1}')+offset'))'+pos;end
   xlim(ax,pos(1)+[-.27 .27]);ylim(ax,pos(2)+[-.35 .42]);zlim(ax,[max(0,pos(3)-.08) max(.30,pos(3)+.22)]);
   point.XData=pos(2);point.YData=pos(1);cursor.Value=tf(k);slider.Value=tf(k);
-  label.String=sprintf('t = %.2f / %.1f s     真实速度 = %.2f m/s     真实俯仰 = %.1f°     坡度12° / 交错凸起 / 倒车转向 / 推扰',tf(k),tf(end),speed(k),rad2deg(pitch(k)));drawnow limitrate;
+  label.String=sprintf('%s    t = %.2f / %.1f s     真实速度 = %.2f m/s     真实俯仰 = %.1f°',s.scenario,tf(k),tf(end),speed(k),rad2deg(pitch(k)));drawnow limitrate;
  end
  function toggle(~,~)
   if ~play.Value,play.String='播放';return;end

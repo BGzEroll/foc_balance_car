@@ -1,0 +1,92 @@
+MEASURED_CAR_START recover, 4s, initial=3deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+SIM_PROGRESS initializing: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.2970 s
+SIM_PROGRESS running: 0.6075 s
+SIM_PROGRESS running: 0.9145 s
+SIM_PROGRESS running: 1.2160 s
+SIM_PROGRESS running: 1.5208 s
+SIM_PROGRESS running: 1.8290 s
+SIM_PROGRESS running: 2.1380 s
+SIM_PROGRESS running: 2.4465 s
+SIM_PROGRESS running: 2.7553 s
+SIM_PROGRESS running: 3.0720 s
+SIM_PROGRESS running: 3.3828 s
+SIM_PROGRESS running: 3.6863 s
+SIM_PROGRESS running: 3.9983 s
+recover PID_FOC_BASE: pass=1, position error=6.872e-05 m, yaw error=-0.0007593 deg, peak torque=0.012 Nm
+MEASURED_CAR_COMPLETE recover pass=1 duration=4 tilt=2.99934
+MEASURED_CAR_START recover, 4s, initial=3deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.2846 s
+SIM_PROGRESS running: 0.5950 s
+SIM_PROGRESS running: 0.9025 s
+SIM_PROGRESS running: 1.1933 s
+SIM_PROGRESS running: 1.4998 s
+SIM_PROGRESS running: 1.8085 s
+SIM_PROGRESS running: 2.1110 s
+SIM_PROGRESS running: 2.4240 s
+SIM_PROGRESS running: 2.7358 s
+SIM_PROGRESS running: 3.0393 s
+SIM_PROGRESS running: 3.3510 s
+SIM_PROGRESS running: 3.6655 s
+SIM_PROGRESS running: 3.9823 s
+recover PID_FOC_BASE: pass=1, position error=-9.242e-05 m, yaw error=-0.000529 deg, peak torque=0.01258 Nm
+MEASURED_CAR_COMPLETE recover pass=1 duration=4 tilt=2.99935
+MEASURED_CAR_START route, 10s, initial=0deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.0018 s
+SIM_PROGRESS running: 0.1975 s
+SIM_PROGRESS running: 0.4981 s
+SIM_PROGRESS running: 0.8074 s
+SIM_PROGRESS running: 1.1149 s
+SIM_PROGRESS running: 1.4200 s
+SIM_PROGRESS running: 1.7313 s
+SIM_PROGRESS running: 2.0418 s
+SIM_PROGRESS running: 2.4283 s
+SIM_PROGRESS running: 2.8985 s
+SIM_PROGRESS running: 3.4278 s
+SIM_PROGRESS running: 4.0187 s
+SIM_PROGRESS running: 4.5990 s
+SIM_PROGRESS running: 5.1995 s
+SIM_PROGRESS running: 5.7880 s
+SIM_PROGRESS running: 6.3903 s
+SIM_PROGRESS running: 6.9910 s
+SIM_PROGRESS running: 7.5880 s
+SIM_PROGRESS running: 8.1820 s
+SIM_PROGRESS running: 8.7796 s
+SIM_PROGRESS running: 9.3795 s
+SIM_PROGRESS running: 9.9830 s
+route PID_FOC_BASE: pass=1, position error=-0.001088 m, yaw error=-0.00196 deg, peak torque=0.005893 Nm
+MEASURED_CAR_COMPLETE route pass=1 duration=10 tilt=1.52133
+MEASURED_CAR_START route, 10s, initial=0deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.0018 s
+SIM_PROGRESS running: 0.2050 s
+SIM_PROGRESS running: 0.5058 s
+SIM_PROGRESS running: 0.8115 s
+SIM_PROGRESS running: 1.1140 s
+SIM_PROGRESS running: 1.4185 s
+SIM_PROGRESS running: 1.7290 s
+SIM_PROGRESS running: 2.0395 s
+SIM_PROGRESS running: 2.4200 s
+SIM_PROGRESS running: 2.8945 s
+SIM_PROGRESS running: 3.4243 s
+SIM_PROGRESS running: 4.0344 s
+SIM_PROGRESS running: 4.6413 s
+SIM_PROGRESS running: 5.2403 s
+SIM_PROGRESS running: 5.8431 s
+SIM_PROGRESS running: 6.4445 s
+SIM_PROGRESS running: 7.0528 s
+SIM_PROGRESS running: 7.6528 s
+SIM_PROGRESS running: 8.2572 s
+SIM_PROGRESS running: 8.8598 s
+SIM_PROGRESS running: 9.4650 s
+SIM_PROGRESS stopped: 0.0000 s
+route PID_FOC_BASE: pass=1, position error=-0.0008537 m, yaw error=-0.001338 deg, peak torque=0.006379 Nm
+MEASURED_CAR_COMPLETE route pass=1 duration=10 tilt=1.65121
+QUATERNION_COMPARISON_COMPLETE

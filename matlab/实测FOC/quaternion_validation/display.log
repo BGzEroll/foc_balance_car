@@ -1,0 +1,27 @@
+     scenario        estimator       completed    fell     pitch_estimate_rms_deg    yaw_estimate_rms_deg    true_peak_tilt_deg    true_final_yaw_error_deg    peak_iq_A                                                                           result_folder                                                                       
+    ___________    ______________    _________    _____    ______________________    ____________________    __________________    ________________________    _________    ___________________________________________________________________________________________________________________________________________________________
+
+    {'recover'}    {'legacy'    }      true       false           0.16135                  0.018833                     3                 -0.031589              1.0277     {'D:\code\Embedded-related\balance_car\matlab\实测FOC\results\recover_selected_explore6_tilt3_sensor1_macro250us_pid5000us_attitude_comparison'           }
+    {'recover'}    {'quaternion'}      true       false           0.24399                  0.015251                3.3243                 -0.024975              1.0737     {'D:\code\Embedded-related\balance_car\matlab\实测FOC\results\recover_selected_explore6_tilt3_sensor1_macro250us_pid5000us_quaternion_attitude_comparison'}
+    {'route'  }    {'legacy'    }      true       false           0.33049                  0.053094                2.0296                 -0.083278             0.58604     {'D:\code\Embedded-related\balance_car\matlab\实测FOC\results\route_selected_explore6_tilt0_sensor1_macro250us_pid5000us_attitude_comparison'             }
+    {'route'  }    {'quaternion'}      true       false           0.33468                  0.048934                  1.84                 -0.077606             0.54046     {'D:\code\Embedded-related\balance_car\matlab\实测FOC\results\route_selected_explore6_tilt0_sensor1_macro250us_pid5000us_quaternion_attitude_comparison'  }
+
+     scenario        estimator       completed    fell     pitch_estimate_rms_deg    yaw_estimate_rms_deg    true_peak_tilt_deg    true_final_yaw_error_deg    peak_iq_A                                                                           result_folder                                                                       
+    ___________    ______________    _________    _____    ______________________    ____________________    __________________    ________________________    _________    ___________________________________________________________________________________________________________________________________________________________
+
+    {'recover'}    {'legacy'    }      true       false           0.16135                  0.018833                     3                 -0.031589              1.0277     {'D:\code\Embedded-related\balance_car\matlab\实测FOC\results\recover_selected_explore6_tilt3_sensor1_macro250us_pid5000us_attitude_comparison'           }
+    {'recover'}    {'quaternion'}      true       false           0.24399                  0.015251                3.3243                 -0.024975              1.0737     {'D:\code\Embedded-related\balance_car\matlab\实测FOC\results\recover_selected_explore6_tilt3_sensor1_macro250us_pid5000us_quaternion_attitude_comparison'}
+    {'route'  }    {'legacy'    }      true       false           0.33049                  0.053094                2.0296                 -0.083278             0.58604     {'D:\code\Embedded-related\balance_car\matlab\实测FOC\results\route_selected_explore6_tilt0_sensor1_macro250us_pid5000us_attitude_comparison'             }
+    {'route'  }    {'quaternion'}      true       false           0.33468                  0.048934                  1.84                 -0.077606             0.54046     {'D:\code\Embedded-related\balance_car\matlab\实测FOC\results\route_selected_explore6_tilt0_sensor1_macro250us_pid5000us_quaternion_attitude_comparison'  }
+
+D:\code\Embedded-related\balance_car\matlab\实测FOC\replay_measured_course.m
+  <a href="matlab:helpPopup('matlab.ui.Figure')" style="font-weight:bold">Figure</a> (4: PID + FOC：综合场景机械真值回放) - 属性:
+
+      Number: 4
+        Name: 'PID + FOC：综合场景机械真值回放'
+       Color: [1 1 1]
+    Position: [40 70 1440 850]
+       Units: 'pixels'
+
+  显示 <a href="matlab:if exist('f', 'var'), matlab.graphics.internal.getForDisplay('f', f, 'matlab.ui.Figure'), else, matlab.graphics.internal.getForDisplay('f'), end">所有属性</a>
+

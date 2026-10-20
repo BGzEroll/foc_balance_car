@@ -1,0 +1,5 @@
+scenario,estimator,completed,fell,pitch_estimate_rms_deg,yaw_estimate_rms_deg,true_peak_tilt_deg,true_final_yaw_error_deg,peak_iq_A,result_folder
+recover,legacy,1,0,0.161346207207234,0.0188330668754685,3,-0.0315888029357212,1.0277151886191,D:\code\Embedded-related\balance_car\matlab\实测FOC\results\recover_selected_explore6_tilt3_sensor1_macro250us_pid5000us_attitude_comparison
+recover,quaternion,1,0,0.243989219485837,0.0152513490292021,3.32433079296807,-0.0249752409895386,1.07374272812537,D:\code\Embedded-related\balance_car\matlab\实测FOC\results\recover_selected_explore6_tilt3_sensor1_macro250us_pid5000us_quaternion_attitude_comparison
+route,legacy,1,0,0.330492726846651,0.0530941701940593,2.02962882624686,-0.0832781897238327,0.586035142983568,D:\code\Embedded-related\balance_car\matlab\实测FOC\results\route_selected_explore6_tilt0_sensor1_macro250us_pid5000us_attitude_comparison
+route,quaternion,1,0,0.33468294760132,0.0489339243152085,1.83996216942708,-0.0776056727686601,0.540464657340083,D:\code\Embedded-related\balance_car\matlab\实测FOC\results\route_selected_explore6_tilt0_sensor1_macro250us_pid5000us_quaternion_attitude_comparison

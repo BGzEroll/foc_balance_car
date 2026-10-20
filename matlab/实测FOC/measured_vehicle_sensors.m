@@ -2,12 +2,13 @@ function sensed=measured_vehicle_sensors(raw,actuator,cfg)
 %#codegen
 % Reproduce MPU scaling, approximate hardware bandwidth and original complementary filter.
 % raw world frame: X right, Y forward, Z up. Encoder observations come from 5kHz actuator.
-persistent prevV accLP gyroLP accNoise gyroNoise angles seed historyAcc historyGyro
+persistent prevV accLP gyroLP accNoise gyroNoise angles seed historyAcc historyGyro qEstimate
 sensed=raw;
 q=raw(8:11);R=rotation(q);dt=cfg(7);v=[raw(3);raw(5);raw(7)];
 if isempty(prevV)
  prevV=v;accLP=R'*[0;0;1];gyroLP=R'*raw(12:14);accNoise=zeros(3,1);gyroNoise=zeros(3,1);angles=zeros(3,1);seed=9259;
  angles(1)=atan2(accLP(2),accLP(3));angles(2)=atan2(-accLP(1),hypot(accLP(2),accLP(3)));angles(3)=atan2(-R(1,2),R(2,2));
+ qEstimate=q/norm(q); % Same initial attitude reference as the legacy estimator.
  historyAcc=zeros(12,3,3);historyGyro=zeros(12,3,3);
 end
 if cfg(1)<.5,prevV=v;return;end
@@ -33,6 +34,11 @@ ap=atan2(acc(2),acc(3));ar=atan2(-acc(1),hypot(acc(2),acc(3)));
 angles(1)=.98*(angles(1)+gyro(1)*dt)+.02*ap;angles(2)=.98*(angles(2)+gyro(2)*dt)+.02*ar;angles(3)=angles(3)+gyro(3)*dt;
 cx=cos(angles(1)/2);sx=sin(angles(1)/2);cy=cos(angles(2)/2);sy=sin(angles(2)/2);cz=cos(angles(3)/2);sz=sin(angles(3)/2);
 quat=[cx*cy*cz+sx*sy*sz;sx*cy*cz-cx*sy*sz;cx*sy*cz+sx*cy*sz;cx*cy*sz-sx*sy*cz];
+% Optional six-axis quaternion complementary filter. Legacy remains default.
+if numel(cfg)>342 && cfg(343)>.5
+ qEstimate=measured_quaternion_step(qEstimate,gyro,acc,dt,4,cfg(72));
+ quat=qEstimate;Rq=rotation(quat);angles(3)=atan2(Rq(2,1),Rq(1,1));
+end
 sensed(8:11)=quat;Rs=rotation(quat);sensed(12:14)=Rs*gyro;
 forward=cfg(9)*(.5*(actuator(15)+actuator(29))-gyro(1));
 sensed(3)=-sin(angles(3))*forward;sensed(5)=cos(angles(3))*forward;
