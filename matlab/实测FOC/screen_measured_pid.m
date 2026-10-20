@@ -1,9 +1,10 @@
 function results=screen_measured_pid(mode)
 % Fast nonlinear longitudinal surrogate for screening, NOT 3D/FOC validation.
+% Historical prescreen remains 200Hz; it is not the native 1kHz controller.
 % Same mass/inertia/current/voltage/friction, approximate MPU observer. No tire
 % impact, roll, yaw coupling, switching or full electrical integration here.
 if nargin<1,mode='tune';end
-here=fileparts(mfilename('fullpath'));course=measured_course_definition;[cfg,base,p]=measured_pid_config('baseline',10,'explore6');dt=.005;t=(0:dt:course.duration)';N=numel(t);
+here=fileparts(mfilename('fullpath'));course=measured_course_definition;[cfg,base,p]=measured_pid_config('baseline',10,'explore6',.005);dt=.005;t=(0:dt:course.duration)';N=numel(t);
 refs=zeros(N,2);for k=1:N,[r,~,~]=measured_car_reference(t(k),10,course.moves);refs(k,:)=r(1:2)';end
 f=jsondecode(fileread(fullfile(here,'sensor_noise_parameters.json')));rng(20261019);
 ga=zeros(N,3);gg=ga;weights=[max(1-abs(refs(:,2))/.0325/10,0) min(abs(refs(:,2))/.0325/10,1) zeros(N,1)];
@@ -15,7 +16,7 @@ for j=1:3
 end
 noise=[-ga(:,2)/f.acc_common_scale_single_pose_prior -gg(:,1)];
 if strcmp(mode,'boundary')
- [~,g]=measured_pid_config('selected',10,'explore6');rows=struct([]);
+ [~,g]=measured_pid_config('selected',10,'explore6',.005);rows=struct([]);
  for amps=[.7 1.5 3 6 10]
   for speed=[.6 1.5 2.5 4]
    pp=p;pp.Imax=amps;trial=course;trial.moves(1,3)=speed*3.8/1.875;shift=trial.moves(1,3)-3;trial.ramp_start=trial.ramp_start+shift;trial.hold_y=trial.hold_y+shift;

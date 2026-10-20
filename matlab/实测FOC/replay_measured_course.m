@@ -1,7 +1,10 @@
 function fig=replay_measured_course(resultFolder)
 % Replay saved native Multibody truth; this function performs no new physics.
 here=fileparts(mfilename('fullpath'));addpath(fileparts(here));paths=balance_setup;
-if nargin<1,resultFolder=fullfile(here,'results','mixed_selected_explore6_tilt0_sensor1_macro500us');end
+if nargin<1
+ resultFolder=fullfile(here,'results','mixed_selected_explore6_tilt0_sensor1_macro500us_pid1000us');
+ if ~isfile(fullfile(resultFolder,'simulation_measured.mat')),resultFolder=fullfile(here,'results','mixed_selected_explore6_tilt0_sensor1_macro500us');end
+end
 s=load(fullfile(resultFolder,'simulation_measured.mat'),'o');r=jsondecode(fileread(fullfile(resultFolder,'validation.json')));
 [t,raw]=data(s.o.raw3d);[tl,ql]=data(s.o.left_wheel_q);[tr,qr]=data(s.o.right_wheel_q);[tc,c]=data(s.o.control3d);
 tf=(0:1/25:t(end))';state=interp1(t,raw,tf);wq=[interp1(tl,ql,tf) interp1(tr,qr,tf)];
@@ -29,7 +32,8 @@ camlight(ax,'headlight');material(ax,'dull');
 map=axes(fig,'Position',[.70 .58 .27 .31]);plot(map,state(:,4),state(:,2),'Color',[.7 .7 .7]);hold(map,'on');point=plot(map,state(1,4),state(1,2),'o','MarkerFaceColor',[.1 .45 .8]);grid(map,'on');xlabel(map,'前向世界 Y / m');ylabel(map,'横向世界 X / m');title(map,'整段真实轨迹');
 vax=axes(fig,'Position',[.70 .24 .27 .25]);plot(vax,tf,speed,tc,c(:,10),'--');hold(vax,'on');cursor=xline(vax,0,'r');grid(vax,'on');xlabel(vax,'时间 / s');ylabel(vax,'速度 / m/s');legend(vax,'机械真值','指令');
 label=uicontrol(fig,'Style','text','Units','normalized','Position',[.04 .935 .92 .04],'BackgroundColor','w','HorizontalAlignment','left','FontSize',13);
-uicontrol(fig,'Style','text','Units','normalized','Position',[.04 .01 .92 .035],'BackgroundColor','w','String',sprintf('已保存的完整Multibody结果回放；PID / %s / 通过=%d。仅仿真，未提高实物限流。',r.operating_envelope,r.pass),'FontSize',12);
+pidTs=.005;if isfield(r,'timing'),pidTs=r.timing.pid_period_s;end
+uicontrol(fig,'Style','text','Units','normalized','Position',[.04 .01 .92 .035],'BackgroundColor','w','String',sprintf('已保存的完整Multibody结果；PID %gHz / IMU 200Hz / %s / 严格通过=%d。仅仿真。',1/pidTs,r.operating_envelope,r.pass),'FontSize',12);
 play=uicontrol(fig,'Style','togglebutton','String','播放','Value',0,'Units','normalized','Position',[.04 .075 .09 .055],'FontSize',12,'Callback',@toggle);
 slider=uicontrol(fig,'Style','slider','Min',0,'Max',tf(end),'Value',0,'Units','normalized','Position',[.16 .085 .80 .035],'Callback',@seek);
 baseTime=0;started=tic;update(1);

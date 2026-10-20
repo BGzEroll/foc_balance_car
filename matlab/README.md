@@ -2,6 +2,8 @@
 
 当前运行入口仅保留PID，控制链为：位置P → 速度PI → 俯仰PID/偏航PID → 左右目标Iq → base电流环 → 电机电气模型 → Multibody小车。观测包含实测IMU有色扰动、残余零偏、编码器量化和延迟。
 
+当前上层PID与编码器观测默认1kHz，IMU及姿态滤波仍200Hz；面板保留原5ms周期对照。电流PI参数、每侧5kHz电流更新与50us电气积分不变。周期验证和新结果位于`实测FOC/pid_rate_validation/`。
+
 打开`实测FOC/launch_measured_car.m`并运行，即可选择综合场景、电流/电压档位、PID参数对照和噪声开关。旧的`3D仿真/launch_balance_panel.m`也转到这个PID面板。
 
 | 目录 | 用途 |

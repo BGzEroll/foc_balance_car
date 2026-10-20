@@ -42,15 +42,24 @@ add('simulink/Sinks/Terminator','FOC_unused_observations');wire('FOC_outputs/2',
 add('simulink/Discrete/Unit Delay','Encoder_feedback_delay');set_param(path('Encoder_feedback_delay'),'SampleTime',num2str(p.mechanical_macro_step,16),'InitialCondition','zeros(30,1)');wire('Measured_FOC/1','Encoder_feedback_delay/1');
 add('simulink/Discrete/Zero-Order Hold','Encoder_feedback_200Hz');set_param(path('Encoder_feedback_200Hz'),'SampleTime','.005');wire('Encoder_feedback_delay/1','Encoder_feedback_200Hz/1');
 chart('Measured_sensors','measured_vehicle_sensors.m');delete_line(model,'Sample_200Hz/1','Balance_Controller/1');wire('Sample_200Hz/1','Measured_sensors/1');wire('Encoder_feedback_200Hz/1','Measured_sensors/2');wire('Sensor_parameters/1','Measured_sensors/3');wire('Measured_sensors/1','Balance_Controller/1');
+% PID runs independently of the 200Hz IMU/noise/attitude estimator.
+delete_line(model,'Measured_sensors/1','Balance_Controller/1');
+add('simulink/Sources/Digital Clock','PID_clock');
+add('simulink/Discrete/Zero-Order Hold','PID_imu_hold');wire('Measured_sensors/1','PID_imu_hold/1');
+add('simulink/Discrete/Zero-Order Hold','PID_encoder_sample');wire('Encoder_feedback_delay/1','PID_encoder_sample/1');
+chart('PID_observation','measured_pid_observation.m');wire('PID_imu_hold/1','PID_observation/1');wire('PID_encoder_sample/1','PID_observation/2');wire('PID_clock/1','PID_observation/3');wire('Sensor_parameters/1','PID_observation/4');wire('PID_observation/1','Balance_Controller/1');
+add('simulink/Sinks/To Workspace','log_pid_tick');set_param(path('log_pid_tick'),'VariableName','pid_tick','SaveFormat','Timeseries');wire('PID_clock/1','log_pid_tick/1');
+add('simulink/Sinks/To Workspace','log_pid_observation');set_param(path('log_pid_observation'),'VariableName','pid_observation','SaveFormat','Timeseries');wire('PID_observation/1','log_pid_observation/1');
 add('simulink/User-Defined Functions/MATLAB Function','Actual_control_log');c=find(sfroot,'-isa','Stateflow.EMChart','Path',path('Actual_control_log'));c.Script=sprintf('function y=combine(c,tau)\n%%#codegen\ny=[tau;c(3:25)];\nend');
 wire('Balance_Controller/1','Actual_control_log/1');wire('FOC_outputs/1','Actual_control_log/2');
 delete_line(model,'Balance_Controller/1','log_control3d/1');wire('Actual_control_log/1','log_control3d/1');
 add('simulink/Sinks/To Workspace','log_foc_actuator');set_param(path('log_foc_actuator'),'VariableName','foc_actuator','SaveFormat','Timeseries');wire('Measured_FOC/1','log_foc_actuator/1');
 add('simulink/Sinks/To Workspace','log_sensed3d');set_param(path('log_sensed3d'),'VariableName','sensed3d','SaveFormat','Timeseries');wire('Measured_sensors/1','log_sensed3d/1');
-logs=find_system(model,'BlockType','ToWorkspace');for k=1:numel(logs),if ~endsWith(logs{k},'log_foc_actuator')&&~endsWith(logs{k},'log_sensed3d'),set_param(logs{k},'Decimation','10');end,end
+logs=find_system(model,'BlockType','ToWorkspace');for k=1:numel(logs),if ~any(endsWith(logs{k},{'log_foc_actuator','log_sensed3d','log_pid_tick','log_pid_observation'})),set_param(logs{k},'Decimation','10');end,end
+configure_measured_timing(model,control(31),p.mechanical_macro_step,sp.Ts);
 set_param(model,'MaxStep',num2str(p.mechanical_macro_step,16),'StopTime','39','SimMechanicsOpenEditorOnUpdate','off');
 set_param(model,'PostLoadFcn',"addpath(fileparts(get_param(bdroot,'FileName')));addpath(fileparts(fileparts(get_param(bdroot,'FileName'))));p=balance_setup;addpath(fullfile(p.root,'模型','仿真模型','通用URDF','meshes'));");
-note=Simulink.Annotation(model,sprintf('PID ONLY: position P -> velocity PI -> pitch PID, yaw PID -> left/right target Iq\nMeasured base current PI, 5kHz per motor; 150us equivalent delay; quantized PWM/encoder\nMPU6050 200Hz + measured AR12 observation disturbances + complementary filter\nCourse: fast/slow motion, hill hold, platform, descent, staggered bumps, reversal/turn/push\nHigh-current envelopes are simulation extrapolations; hardware settings are unchanged.'));note.Position=[40 40];
+note=Simulink.Annotation(model,sprintf('PID ONLY at 1kHz: position P -> velocity PI -> pitch PID, yaw PID -> left/right target Iq\nEncoder observations 1kHz; MPU6050/AR12/complementary filter remain 200Hz (held between frames)\nMeasured base current PI, 5kHz per motor; 150us equivalent delay; electrical RK4 50us\nCourse: fast/slow motion, hill hold, platform, descent, staggered bumps, reversal/turn/push\nHigh-current envelopes are simulation extrapolations; hardware settings are unchanged.'));note.Position=[40 40];
 Simulink.BlockDiagram.arrangeSystem(model);save_system(model,file);close_system(model,0);fprintf('MEASURED_CAR_BUILT %s\n',file);
  function pth=path(n),pth=[model '/' n];end
  function add(lib,n),add_block(lib,path(n));end

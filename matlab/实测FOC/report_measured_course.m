@@ -37,7 +37,8 @@ nexttile;plot(t,v,tc,c(:,10),'--');grid on;ylabel('真实前向速度 / m/s');le
 nexttile;plot(t,raw(:,6));hold on;yline(.0325+d.height,':');grid on;ylabel('轮轴高度 / m');
 nexttile;plot(t,normal);grid on;ylabel('各地形支持力 / N');legend('上坡','平台','下坡','左凸起','右凸起','整轮减速带','Location','eastoutside');
 nexttile;plot(t,slip);grid on;ylabel('真实滚动滑差 / m/s');xlabel('时间 / s');
-sgtitle(sprintf('综合场景：PID / %s / %s / pass=%d',r.pid_tuning,r.operating_envelope,r.pass));exportgraphics(f,fullfile(out,'mixed_course.png'),'Resolution',140);savefig(f,fullfile(out,'mixed_course.fig'));close(f);
+pidTs=.005;if isfield(r,'timing'),pidTs=r.timing.pid_period_s;end
+sgtitle(sprintf('综合场景：PID %gHz / IMU 200Hz / %s / %s / pass=%d',1/pidTs,r.pid_tuning,r.operating_envelope,r.pass));exportgraphics(f,fullfile(out,'mixed_course.png'),'Resolution',140);savefig(f,fullfile(out,'mixed_course.fig'));close(f);
 fid=fopen(fullfile(out,'validation.json'),'w');fprintf(fid,'%s',jsonencode(r,PrettyPrint=true));fclose(fid);
 fprintf('MIXED_COURSE pass=%d fast=%.3fm/s hold=%.4fm terrain=%d\n',r.pass,r.fast_peak_true_speed_mps,r.slope_hold_mean_world_y_error_m,r.terrain_pass);
 end

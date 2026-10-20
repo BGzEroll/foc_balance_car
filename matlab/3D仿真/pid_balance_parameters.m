@@ -3,7 +3,7 @@ function p=pid_balance_parameters(profile)
 % 输出为仿真等效N*m；实机直接输出A时需要重新整定数值尺度。
 if nargin<1,profile='normal';end
 profile=validatestring(profile,{'normal','agile','slope'});
-p.Ts=.005;
+p.Ts=.005; % 历史理想执行器模型周期；当前实测FOC入口由measured_pid_config覆盖为1ms。
 p.pitch_trim=deg2rad(-.0896225217620993); % USB侧为前后的静态平衡偏置，可实测调整
 p.torque_limit_each=.10;
 % 位置P -> 速度PI -> 俯仰PID，另有偏航PID。

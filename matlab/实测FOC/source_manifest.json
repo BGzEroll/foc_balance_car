@@ -13,11 +13,11 @@
     },
     {
       "name": "balance_car_pid_foc.slx",
-      "sha256": "85674e6271e73557300fd42920b3fef355a9b54b10b4808e76611ad4ccffbc28"
+      "sha256": "743a523a20f63489ee5a16567d21ba6eec8ac22af107214c2d00c9f0dec1d535"
     },
     {
       "name": "build_measured_car.m",
-      "sha256": "2822f9fe8a655e37bc3f910e745bfda2add496d125ef48fcf9e5675d68859807"
+      "sha256": "a32b767c2617715943d52a3828d89cb0e5a63a32d612852547e6a36ba8e239c5"
     },
     {
       "name": "calibrate_current_covariance.m",
@@ -58,6 +58,10 @@
     {
       "name": "configure_measured_course.m",
       "sha256": "cc59418fafae0d8763a83143f7eb4c947a912a88152c9897bf925ac45d9186a9"
+    },
+    {
+      "name": "configure_measured_timing.m",
+      "sha256": "aeb75c0ffdd4c0d2ded137adaf81ccbb1e0330073856a707e9424079614b17c2"
     },
     {
       "name": "data/sensor_noise/analysis.json",
@@ -205,11 +209,15 @@
     },
     {
       "name": "measured_pid_config.m",
-      "sha256": "b667a0783744552f6b56c15f0c2cfec69ec97283472b5e8cefa04e64b3ed77a7"
+      "sha256": "827bb81aa418c3fa185dd010e53acfcf110e5468cf4c0b75195433eb4030befb"
+    },
+    {
+      "name": "measured_pid_observation.m",
+      "sha256": "b59ab72d5d38e88b4618af86dee38c1059c960ff5703d7d0ba8a8a860460afe0"
     },
     {
       "name": "measured_pid_panel.m",
-      "sha256": "5c931f8712faad5751711f8aaed61fd8f7463a76ba4f78d60d06f884e9a6c887"
+      "sha256": "f10f3835c93d631bd8e179388323449369c186d0f4b8eeba1cc28db1f10cd8c8"
     },
     {
       "name": "measured_sensor_parameters.m",
@@ -244,8 +252,36 @@
       "sha256": "bc2cbe934a44f794ada270d0bf84574293ed230d324562b4c42ab62513b69e2a"
     },
     {
+      "name": "pid_rate_validation/integration_checks.json",
+      "sha256": "9e17099f7263236b12f51e3bb88c15db71c2487163911b2e9e1766761fab0958"
+    },
+    {
+      "name": "pid_rate_validation/mixed_course.png",
+      "sha256": "3d61bc92aa273738e9bca9031e0afe055d7b226d744fac8eb5ed5cbc9f923abc"
+    },
+    {
+      "name": "pid_rate_validation/rate_comparison.fig",
+      "sha256": "f4009999a4ac175a43ab906fa58bf7ce96eaad52f0bbd2c97356172e78ab3370"
+    },
+    {
+      "name": "pid_rate_validation/rate_comparison.png",
+      "sha256": "13e3c775e42ea6c5a468adcef850f2046dbd32a5d9b3a0e23eee26502d9dd47f"
+    },
+    {
+      "name": "pid_rate_validation/README.md",
+      "sha256": "e140579479ac0d5471cb18a2a8f2c988df2029195c66a42d7b76ebda93e13d43"
+    },
+    {
+      "name": "pid_rate_validation/summary.json",
+      "sha256": "81fa9b315e489c3feea49d0894465a5207a268839f55b2ffb4d77341b012145f"
+    },
+    {
+      "name": "pid_rate_validation/truth_vs_sensed.png",
+      "sha256": "838410cd57c8a1713daee5cf84bf33c71c39fe435fa8eb6a9280d3fd03299974"
+    },
+    {
       "name": "pid_selected_parameters.json",
-      "sha256": "a876b8cb57e70792c8a18f55bafa72857acd404a3c02c5c21965bff8a6507136"
+      "sha256": "bd36954122b66f76e3bbe6aec7e0d5082a2ec028ddde2f094093aff22cef51e4"
     },
     {
       "name": "pid_validation/boundary_screening.json",
@@ -293,11 +329,11 @@
     },
     {
       "name": "README.md",
-      "sha256": "a9ea6b70278543ba9585aaaba81b2d28053456dd64319b3d5a317db0e1dbe136"
+      "sha256": "22575caf38ac90f0d5c3587e184a82040781ff88c4f357c00e6966f47d447f14"
     },
     {
       "name": "replay_measured_course.m",
-      "sha256": "eca72c30ed2a2424588a38d6f0cc597662fd7b288920ba5edd0aa46771006fa8"
+      "sha256": "c0ccd487b851f61bbada4e7f6cbdc473aa3b405e09b3ad26f381efdd4666e22d"
     },
     {
       "name": "report_measured_car.m",
@@ -305,15 +341,15 @@
     },
     {
       "name": "report_measured_course.m",
-      "sha256": "ba3cf3a050dbb241abd16a64709c828d8b01e98156764159696523ee854dfe40"
+      "sha256": "891994e9da61f6b95cc5afe09f06acdd2022513e395b7ff4fa3927b46c201963"
     },
     {
       "name": "run_measured_car.m",
-      "sha256": "da1bce60d6f2009ae79ce8cbf091043d02f8136b2268a285e885b6be9d3613ad"
+      "sha256": "0d9b351fa3b7f2057f075fb4c0759eb9943e37678571b43acd69728da81f78b6"
     },
     {
       "name": "screen_measured_pid.m",
-      "sha256": "15f5682e56dcda397a3a30892fc405434930833db3810811570147d2e76d5baf"
+      "sha256": "a2082e64672e09c5e288ee8bdb3daf8975e974f69e3ff1a3bb8fe9affecc0264"
     },
     {
       "name": "sensor_noise_parameters.json",
@@ -322,6 +358,10 @@
     {
       "name": "summarize_measured_car.m",
       "sha256": "0f01efddd2285557b5626a9dd69f6fa13630e57158d6a97e82daabcb16a4f64f"
+    },
+    {
+      "name": "summarize_measured_pid_rate.m",
+      "sha256": "a1e58c71d35513617cf6451cf74ae066970dfd0998020adc79cbe994118bd77d"
     },
     {
       "name": "summarize_pid_validation.m",
@@ -333,7 +373,7 @@
     },
     {
       "name": "validate_measured_car.m",
-      "sha256": "3e07469a7b3340cc7618d85c65e5e1daca91d6a555d006f9fba41f9e508fb5ad"
+      "sha256": "0e8460c6225673ead6ffbcea4dec6de6b670bc202177f8986964c917ecfb4087"
     },
     {
       "name": "validate_measured_foc.m",
@@ -368,8 +408,16 @@
       "sha256": "c15ace5367c46a62c3ea2e48ac26b446086c621712b64bde6b58aa16398cd508"
     },
     {
+      "name": "verify_measured_timing.m",
+      "sha256": "dda5fbf1bfecf2174e0346c06b9450de62f1aef75cd38e7984a74ccbe9f46efe"
+    },
+    {
       "name": "verify_noise_profiles.m",
       "sha256": "04bedd8ea6827c1b826617c436977fad8a8f7dfd30eb7977c97d8b885e285d55"
+    },
+    {
+      "name": "verify_pid_rate_math.m",
+      "sha256": "c4a5231efdd8da778716398b4f182ce1b1d9f330bb9bb868326cad77d6d03ccc"
     }
   ],
   "relocation": {
@@ -379,5 +427,14 @@
     "active_branch": "test/foc_current",
     "main_modified": false,
     "validation": "migration_validation.json"
+  },
+  "pid_rate_update": {
+    "date": "2026-10-20",
+    "pid_period_s": 0.001,
+    "encoder_period_s": 0.001,
+    "imu_period_s": 0.005,
+    "current_loop_changed": false,
+    "hardware_changed": false,
+    "validation": "pid_rate_validation/summary.json"
   }
 }

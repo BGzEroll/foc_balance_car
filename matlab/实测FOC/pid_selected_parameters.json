@@ -45,5 +45,15 @@
       "pass": false,
       "full_course_repeated_at_250us": false
     }
+  },
+  "controller_timing": {
+    "pid_period_s": 0.001,
+    "encoder_period_s": 0.001,
+    "imu_period_s": 0.005,
+    "gains_retuned": false,
+    "validation": "pid_rate_validation/summary.json",
+    "execution_rates_pass": true,
+    "functional_course_completed": true,
+    "strict_validation_pass": false
   }
 }

@@ -1,0 +1,22 @@
+{
+  "pass": true,
+  "rows": [
+    {
+      "pid_period_s": 0.001,
+      "distance_after_1s_m": 0.32500000000000245,
+      "each_current_A": 0.0010010000000000151,
+      "integral_expected_A": 0.001001,
+      "pass": true
+    },
+    {
+      "pid_period_s": 0.005,
+      "distance_after_1s_m": 0.32499999999999857,
+      "each_current_A": 0.0010050000000000022,
+      "integral_expected_A": 0.0010049999999999998,
+      "pass": true
+    }
+  ],
+  "imu_period_s": 0.005,
+  "current_pi_unchanged": true,
+  "fresh_encoder_without_new_imu": true
+}
