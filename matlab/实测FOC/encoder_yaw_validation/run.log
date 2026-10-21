@@ -1,0 +1,136 @@
+            A_bias_error: 2.5976e-07
+                  B_bias: 0
+            C_bias_error: 6.0715e-17
+    turn_release_delay_s: [0.0200 0.0200 0.0200]
+              C_variance: 8.1535e-08
+                    pass: 1
+
+       profile        mode     normal_rms_yaw_error_deg    error_at_55s_deg    normal_false_hold_s    slow_turn_false_hold_s    slip_false_hold_s    normal_bias_rms_deg_s
+    ______________    _____    ________________________    ________________    ___________________    ______________________    _________________    _____________________
+
+    {'nominal'   }    {'A'}             0.11688                0.038687                  0                       0                      0                   0.019039      
+    {'nominal'   }    {'B'}            0.072439                0.093503               0.02                      10                      5                  0.0090776      
+    {'nominal'   }    {'C'}              0.2905                0.034703               0.02                      10                      5                   0.048149      
+    {'bias_drift'}    {'A'}             0.75353                  1.0307                  0                       0                      0                   0.044514      
+    {'bias_drift'}    {'B'}              2.0626                  2.7679               0.02                      10                      5                    0.34488      
+    {'bias_drift'}    {'C'}             0.26605                 0.16767               0.02                      10                      5                   0.051403      
+
+MEASURED_CAR_START yaw_test, 14s, initial=0deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.0009 s
+SIM_PROGRESS running: 0.0018 s
+SIM_PROGRESS running: 0.0440 s
+SIM_PROGRESS running: 0.3380 s
+SIM_PROGRESS running: 0.6403 s
+SIM_PROGRESS running: 0.9343 s
+SIM_PROGRESS running: 1.2275 s
+SIM_PROGRESS running: 1.5235 s
+SIM_PROGRESS running: 1.8273 s
+SIM_PROGRESS running: 2.1383 s
+SIM_PROGRESS running: 2.4418 s
+SIM_PROGRESS running: 2.7465 s
+SIM_PROGRESS running: 3.0560 s
+SIM_PROGRESS running: 3.3795 s
+SIM_PROGRESS running: 3.6961 s
+SIM_PROGRESS running: 4.0033 s
+SIM_PROGRESS running: 4.3696 s
+SIM_PROGRESS running: 4.8355 s
+SIM_PROGRESS running: 5.3443 s
+SIM_PROGRESS running: 5.8866 s
+SIM_PROGRESS running: 6.4505 s
+SIM_PROGRESS running: 7.0305 s
+SIM_PROGRESS running: 7.6008 s
+SIM_PROGRESS running: 8.1900 s
+SIM_PROGRESS running: 8.7498 s
+SIM_PROGRESS running: 9.3093 s
+SIM_PROGRESS running: 9.8637 s
+SIM_PROGRESS running: 10.3850 s
+SIM_PROGRESS running: 10.8855 s
+SIM_PROGRESS running: 11.3913 s
+SIM_PROGRESS running: 11.8989 s
+SIM_PROGRESS running: 12.4035 s
+SIM_PROGRESS running: 12.9153 s
+SIM_PROGRESS running: 13.4190 s
+SIM_PROGRESS running: 13.9213 s
+yaw_test PID_FOC_BASE: pass=1, position error=-0.0009705 m, yaw error=-0.01729 deg, peak torque=0.006123 Nm
+MEASURED_CAR_COMPLETE yaw_test pass=0 duration=14 tilt=0.839018
+MEASURED_CAR_START yaw_test, 14s, initial=0deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.0012 s
+SIM_PROGRESS running: 0.0039 s
+SIM_PROGRESS running: 0.2070 s
+SIM_PROGRESS running: 0.5068 s
+SIM_PROGRESS running: 0.8130 s
+SIM_PROGRESS running: 1.1178 s
+SIM_PROGRESS running: 1.4268 s
+SIM_PROGRESS running: 1.7306 s
+SIM_PROGRESS running: 2.0465 s
+SIM_PROGRESS running: 2.3643 s
+SIM_PROGRESS running: 2.6705 s
+SIM_PROGRESS running: 2.9878 s
+SIM_PROGRESS running: 3.3148 s
+SIM_PROGRESS running: 3.6408 s
+SIM_PROGRESS running: 3.9548 s
+SIM_PROGRESS running: 4.3193 s
+SIM_PROGRESS running: 4.7812 s
+SIM_PROGRESS running: 5.2913 s
+SIM_PROGRESS running: 5.8460 s
+SIM_PROGRESS running: 6.4288 s
+SIM_PROGRESS running: 7.0153 s
+SIM_PROGRESS running: 7.6001 s
+SIM_PROGRESS running: 8.1945 s
+SIM_PROGRESS running: 8.7733 s
+SIM_PROGRESS running: 9.3603 s
+SIM_PROGRESS running: 9.9150 s
+SIM_PROGRESS running: 10.4333 s
+SIM_PROGRESS running: 10.9413 s
+SIM_PROGRESS running: 11.4458 s
+SIM_PROGRESS running: 11.9605 s
+SIM_PROGRESS running: 12.4740 s
+SIM_PROGRESS running: 12.9900 s
+SIM_PROGRESS running: 13.5080 s
+SIM_PROGRESS stopped: 0.0000 s
+yaw_test PID_FOC_BASE: pass=1, position error=-0.001021 m, yaw error=-0.01679 deg, peak torque=0.006133 Nm
+MEASURED_CAR_COMPLETE yaw_test pass=0 duration=14 tilt=0.86557
+MEASURED_CAR_START yaw_test, 14s, initial=0deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.0012 s
+SIM_PROGRESS running: 0.0040 s
+SIM_PROGRESS running: 0.2153 s
+SIM_PROGRESS running: 0.5213 s
+SIM_PROGRESS running: 0.8303 s
+SIM_PROGRESS running: 1.1383 s
+SIM_PROGRESS running: 1.4499 s
+SIM_PROGRESS running: 1.7580 s
+SIM_PROGRESS running: 2.0638 s
+SIM_PROGRESS running: 2.3830 s
+SIM_PROGRESS running: 2.6913 s
+SIM_PROGRESS running: 3.0045 s
+SIM_PROGRESS running: 3.3320 s
+SIM_PROGRESS running: 3.6480 s
+SIM_PROGRESS running: 3.9553 s
+SIM_PROGRESS running: 4.3183 s
+SIM_PROGRESS running: 4.7870 s
+SIM_PROGRESS running: 5.2920 s
+SIM_PROGRESS running: 5.8398 s
+SIM_PROGRESS running: 6.4023 s
+SIM_PROGRESS running: 6.9553 s
+SIM_PROGRESS running: 7.5153 s
+SIM_PROGRESS running: 8.0849 s
+SIM_PROGRESS running: 8.6368 s
+SIM_PROGRESS running: 9.1901 s
+SIM_PROGRESS running: 9.7481 s
+SIM_PROGRESS running: 10.2733 s
+SIM_PROGRESS running: 10.7801 s
+SIM_PROGRESS running: 11.2908 s
+SIM_PROGRESS running: 11.8030 s
+SIM_PROGRESS running: 12.3123 s
+SIM_PROGRESS running: 12.8283 s
+SIM_PROGRESS running: 13.3418 s
+SIM_PROGRESS running: 13.8514 s
+yaw_test PID_FOC_BASE: pass=1, position error=-0.0009505 m, yaw error=-0.008617 deg, peak torque=0.005893 Nm
+MEASURED_CAR_COMPLETE yaw_test pass=0 duration=14 tilt=0.814089
+ENCODER_YAW_COMPLETE

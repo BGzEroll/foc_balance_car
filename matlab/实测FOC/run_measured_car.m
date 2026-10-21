@@ -1,4 +1,4 @@
-function [o,r]=run_measured_car(scenario,showWindows,initialTiltDeg,sensorsOn,macroStep,durationOverride,tuning,envelope,stressSpeed,controllerTs,attitudeMode,resultTag)
+function [o,r]=run_measured_car(scenario,showWindows,initialTiltDeg,sensorsOn,macroStep,durationOverride,tuning,envelope,stressSpeed,controllerTs,attitudeMode,resultTag,yawExperiment)
 % Current-limited, measured actuator variant of the existing Multibody car.
 if nargin<1,scenario='recover';end
 if nargin<2,showWindows=false;end
@@ -8,11 +8,13 @@ if nargin<7,tuning='selected';end
 if nargin<8,if ismember(lower(scenario),{'mixed','limit'}),envelope='explore6';else,envelope='bench';end,end
 if nargin<10,controllerTs=.005;end
 if nargin<11,attitudeMode='legacy';end
-attitudeMode=validatestring(attitudeMode,{'legacy','quaternion'});
+attitudeMode=validatestring(attitudeMode,{'legacy','quaternion','ekf','yaw_a','yaw_b','yaw_c'});
+if nargin<13,yawExperiment='nominal';end
+yawExperiment=validatestring(yawExperiment,{'nominal','bias_drift'});
 if nargin<12,resultTag='';end
 assert(isempty(resultTag)||~isempty(regexp(resultTag,'^[A-Za-z0-9_]+$','once')),'Invalid result tag');
 here=fileparts(mfilename('fullpath'));addpath(fileparts(here));paths=balance_setup;addpath(here,'-begin');sp=measured_sensor_parameters;
-names={'recover','drive','turn','route','push','terrain','bias','slope','slope_hold','mixed','limit'};idx=find(strcmpi(scenario,names),1);assert(~isempty(idx));
+names={'recover','drive','turn','route','push','terrain','bias','slope','slope_hold','mixed','limit','yaw_test'};idx=find(strcmpi(scenario,names),1);assert(~isempty(idx));
 [cfg,d,p]=measured_pid_config(tuning,idx,envelope,controllerTs);
 addpath(fullfile(paths.root,'模型','仿真模型','通用URDF','meshes'));
 if nargin>=5,p.mechanical_macro_step=macroStep;p.cfg(31)=round(macroStep/p.Ts);end
@@ -24,11 +26,23 @@ load_system(file);mw=get_param(model,'ModelWorkspace');
 % Refresh the sensor chart in memory only; do not rewrite the existing SLX.
 sensorChart=find(sfroot,'-isa','Stateflow.EMChart','Path',[model '/Measured_sensors']);
 sensorChart.Script=fileread(fullfile(here,'measured_vehicle_sensors.m'));
-sp.cfg=[sp.cfg double(strcmp(attitudeMode,'quaternion'))];
+modeId=double(strcmp(attitudeMode,'quaternion'))+2*double(strcmp(attitudeMode,'ekf'));
+if startsWith(attitudeMode,'yaw_'),modeId=2+find(strcmp(attitudeMode,{'yaw_a','yaw_b','yaw_c'}),1);end
+sp.cfg=[sp.cfg modeId];
+if strcmp(yawExperiment,'bias_drift'),sp.cfg=[sp.cfg 1];end
+% Persist observer internals for gate, bias and false-hold diagnostics.
+logName=[model '/log_yaw_observer'];
+if getSimulinkBlockHandle(logName)<0
+ add_block('simulink/Sinks/To Workspace',logName,'VariableName','yaw_observer','SaveFormat','Timeseries');
+ add_line(model,'Measured_sensors/2','log_yaw_observer/1','autorouting','on');
+end
 if ~showWindows,cleanup=onCleanup(@()close_model(model));end
 course=measured_course_definition;
 suffix=sprintf('_pid%gus',controllerTs*1e6);
 if strcmp(attitudeMode,'quaternion'),suffix=[suffix '_quaternion'];end
+if strcmp(attitudeMode,'ekf'),suffix=[suffix '_ekf'];end
+if startsWith(attitudeMode,'yaw_'),suffix=[suffix '_' attitudeMode];end
+if strcmp(yawExperiment,'bias_drift'),suffix=[suffix '_biasdrift'];end
 if ~isempty(resultTag),suffix=[suffix '_' resultTag];end
 if idx==11
  if nargin<9,stressSpeed=2.5;end
@@ -42,10 +56,12 @@ if idx==10
 else
  configure_measured_course(model,false);kind='mild';if ismember(idx,[8 9]),kind='steep';end;terrain=configure_balance_terrain(model,kind);
  if idx==11,assignin(mw,'terrain_on',0);end
+ if idx==12,assignin(mw,'terrain_on',0);end
 end
 angle=rad2deg(d.pitch_trim);if idx==1,angle=angle+initialTiltDeg;end
 set_param([model '/FloatingBase'],'SphPositionTargetRotationAngle',num2str(angle,16));
-duration=d.motion_profile.durations(idx);if nargin>=6&&~isempty(durationOverride),duration=durationOverride;end
+if idx==12,duration=14;else,duration=d.motion_profile.durations(idx);end
+if nargin>=6&&~isempty(durationOverride),duration=durationOverride;end
 set_param(model,'StopTime',num2str(duration),'SimMechanicsOpenEditorOnUpdate',onoff(showWindows));
 timing=configure_measured_timing(model,controllerTs,p.mechanical_macro_step,sp.Ts);
 if showWindows,open_system(model);end
@@ -57,6 +73,7 @@ save(fullfile(out,'simulation_measured.mat'),'o','p','sp','cfg','fc','d','scenar
 r=report_measured_car(o,scenario,duration,p,out,terrain,initialTiltDeg,sensorsOn);
 r.pid_tuning=tuning;r.operating_envelope=envelope;r.pid_parameters=d;
 r.attitude_estimator=attitudeMode;
+r.yaw_experiment=yawExperiment;
 r.timing=timing;r.result_folder=out;tick=unique(o.pid_tick.Time);r.logged_pid_period_s=median(diff(tick));r.pid_tick_count=numel(tick);
 r.timing_validation_pass=all(abs(diff(tick)-controllerTs)<1e-8);assert(r.timing_validation_pass,'PID clock log does not match requested period');
 if idx==10,r=report_measured_course(o,r,out,p,terrain);end

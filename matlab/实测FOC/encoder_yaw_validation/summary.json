@@ -1,0 +1,157 @@
+{
+  "status": "complete",
+  "current": "",
+  "started": "2026-10-21 20:36:47",
+  "parameters": {
+    "radius_m": 0.0325,
+    "track_m": 0.1325364,
+    "window_s": 0.1,
+    "fast_tau_s": 0.02,
+    "confirm_s": 0.15,
+    "enter_rad_s": 0.0087266462599716477,
+    "exit_rad_s": 0.017453292519943295,
+    "fast_exit_rad_s": 0.052359877559829883,
+    "bias_tau_s": 2,
+    "bias_initial_std_rad_s": 0.0087266462599716477,
+    "bias_walk_rad_s_sqrt_s": 0.00026179938779914941,
+    "zero_rate_std_rad_s": 0.0026179938779914941
+  },
+  "scope": "Encoder-gated yaw only; same legacy pitch filter, PID and FOC; simulation only",
+  "checks": {
+    "A_bias_error": 2.5976433231083423E-7,
+    "B_bias": 0,
+    "C_bias_error": 6.0715321659188248E-17,
+    "turn_release_delay_s": [
+      0.02,
+      0.02,
+      0.02
+    ],
+    "C_variance": 8.1534666256454923E-8,
+    "pass": true
+  },
+  "offline": [
+    {
+      "profile": "nominal",
+      "mode": "A",
+      "normal_rms_yaw_error_deg": 0.11687829325543761,
+      "error_at_55s_deg": 0.038686836603892563,
+      "normal_false_hold_s": 0,
+      "slow_turn_false_hold_s": 0,
+      "slip_false_hold_s": 0,
+      "normal_bias_rms_deg_s": 0.019038770251219739
+    },
+    {
+      "profile": "nominal",
+      "mode": "B",
+      "normal_rms_yaw_error_deg": 0.072439254128074573,
+      "error_at_55s_deg": 0.093503362482416377,
+      "normal_false_hold_s": 0.02,
+      "slow_turn_false_hold_s": 10,
+      "slip_false_hold_s": 5,
+      "normal_bias_rms_deg_s": 0.0090776009070208975
+    },
+    {
+      "profile": "nominal",
+      "mode": "C",
+      "normal_rms_yaw_error_deg": 0.29050070729306943,
+      "error_at_55s_deg": 0.034703445030348473,
+      "normal_false_hold_s": 0.02,
+      "slow_turn_false_hold_s": 10,
+      "slip_false_hold_s": 5,
+      "normal_bias_rms_deg_s": 0.048149233623170286
+    },
+    {
+      "profile": "bias_drift",
+      "mode": "A",
+      "normal_rms_yaw_error_deg": 0.75352938722283691,
+      "error_at_55s_deg": 1.0307037922530076,
+      "normal_false_hold_s": 0,
+      "slow_turn_false_hold_s": 0,
+      "slip_false_hold_s": 0,
+      "normal_bias_rms_deg_s": 0.044513880429962682
+    },
+    {
+      "profile": "bias_drift",
+      "mode": "B",
+      "normal_rms_yaw_error_deg": 2.0626388769246642,
+      "error_at_55s_deg": 2.7678606124825089,
+      "normal_false_hold_s": 0.02,
+      "slow_turn_false_hold_s": 10,
+      "slip_false_hold_s": 5,
+      "normal_bias_rms_deg_s": 0.344875171351726
+    },
+    {
+      "profile": "bias_drift",
+      "mode": "C",
+      "normal_rms_yaw_error_deg": 0.26604591221367,
+      "error_at_55s_deg": 0.16766681061947047,
+      "normal_false_hold_s": 0.02,
+      "slow_turn_false_hold_s": 10,
+      "slip_false_hold_s": 5,
+      "normal_bias_rms_deg_s": 0.051403255435823733
+    }
+  ],
+  "runs": [
+    {
+      "scenario": "yaw_test",
+      "estimator": "yaw_a",
+      "reference_reused": false,
+      "completed": true,
+      "fell": false,
+      "scenario_pass": false,
+      "pitch_estimate_rms_deg": 0.13646719441725069,
+      "yaw_estimate_rms_deg": 2.7435954763077812,
+      "true_peak_tilt_deg": 0.9708180929829725,
+      "true_final_yaw_error_deg": -5.006019084665005,
+      "true_final_distance_error_m": -0.0025488177015665636,
+      "peak_iq_A": 0.58128154064323734,
+      "result_folder": "D:\\code\\Embedded-related\\balance_car\\matlab\\实测FOC\\results\\yaw_test_selected_explore6_tilt0_sensor1_macro250us_pid5000us_yaw_a_biasdrift_encoder_yaw",
+      "confirmed_no_turn_fraction": 0.0057142857142857143,
+      "false_hold_above_1deg_s_s": 0,
+      "true_rotation_during_hold_deg": 0,
+      "final_estimated_bias_deg_s": 5.622011099140632E-5,
+      "turn_bias_profile": "body gyro Z +0.25deg/s +0.015deg/s^2*t; before quantization"
+    },
+    {
+      "scenario": "yaw_test",
+      "estimator": "yaw_b",
+      "reference_reused": false,
+      "completed": true,
+      "fell": false,
+      "scenario_pass": false,
+      "pitch_estimate_rms_deg": 0.13704597925607293,
+      "yaw_estimate_rms_deg": 2.74437435234809,
+      "true_peak_tilt_deg": 0.972170272066997,
+      "true_final_yaw_error_deg": -5.0043780263240372,
+      "true_final_distance_error_m": -0.0027717131520312854,
+      "peak_iq_A": 0.55881304767566886,
+      "result_folder": "D:\\code\\Embedded-related\\balance_car\\matlab\\实测FOC\\results\\yaw_test_selected_explore6_tilt0_sensor1_macro250us_pid5000us_yaw_b_biasdrift_encoder_yaw",
+      "confirmed_no_turn_fraction": 0.022142857142857141,
+      "false_hold_above_1deg_s_s": 0,
+      "true_rotation_during_hold_deg": 0.085178944547320376,
+      "final_estimated_bias_deg_s": 0,
+      "turn_bias_profile": "body gyro Z +0.25deg/s +0.015deg/s^2*t; before quantization"
+    },
+    {
+      "scenario": "yaw_test",
+      "estimator": "yaw_c",
+      "reference_reused": false,
+      "completed": true,
+      "fell": false,
+      "scenario_pass": false,
+      "pitch_estimate_rms_deg": 0.13730383352628997,
+      "yaw_estimate_rms_deg": 3.0644751563200288,
+      "true_peak_tilt_deg": 0.86174253519514732,
+      "true_final_yaw_error_deg": -5.5443441781411087,
+      "true_final_distance_error_m": -0.0020861567702568085,
+      "peak_iq_A": 0.571329691483587,
+      "result_folder": "D:\\code\\Embedded-related\\balance_car\\matlab\\实测FOC\\results\\yaw_test_selected_explore6_tilt0_sensor1_macro250us_pid5000us_yaw_c_biasdrift_encoder_yaw",
+      "confirmed_no_turn_fraction": 0.0082142857142857139,
+      "false_hold_above_1deg_s_s": 0,
+      "true_rotation_during_hold_deg": 0.033557754205685436,
+      "final_estimated_bias_deg_s": -0.039682644651240655,
+      "turn_bias_profile": "body gyro Z +0.25deg/s +0.015deg/s^2*t; before quantization"
+    }
+  ],
+  "finished": "2026-10-21 21:12:19"
+}

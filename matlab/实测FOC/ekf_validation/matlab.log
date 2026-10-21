@@ -1,0 +1,161 @@
+            jacobian_max_error: 4.6892e-07
+         static_final_tilt_deg: 4.2896e-04
+           bias_xy_error_rad_s: 1.8446e-06
+     min_covariance_eigenvalue: 7.9372e-09
+                max_norm_error: 1.1102e-16
+    unobservable_yaw_drift_deg: 2.8648
+       yaw_bias_estimate_rad_s: 0
+         quaternion_sign_error: 0
+                          pass: 1
+
+MEASURED_CAR_START recover, 4s, initial=3deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.0080 s
+SIM_PROGRESS running: 0.3213 s
+SIM_PROGRESS running: 0.6360 s
+SIM_PROGRESS running: 0.9455 s
+SIM_PROGRESS running: 1.2533 s
+SIM_PROGRESS running: 1.5635 s
+SIM_PROGRESS running: 1.8733 s
+SIM_PROGRESS running: 2.1820 s
+SIM_PROGRESS running: 2.4959 s
+SIM_PROGRESS running: 2.8110 s
+SIM_PROGRESS running: 3.1243 s
+SIM_PROGRESS running: 3.4330 s
+SIM_PROGRESS running: 3.7465 s
+SIM_PROGRESS stopped: 0.0000 s
+recover PID_FOC_BASE: pass=1, position error=6.872e-05 m, yaw error=-0.0007593 deg, peak torque=0.012 Nm
+MEASURED_CAR_COMPLETE recover pass=1 duration=4 tilt=2.99934
+MEASURED_CAR_START recover, 4s, initial=3deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.2900 s
+SIM_PROGRESS running: 0.6033 s
+SIM_PROGRESS running: 0.9153 s
+SIM_PROGRESS running: 1.2283 s
+SIM_PROGRESS running: 1.5445 s
+SIM_PROGRESS running: 1.8558 s
+SIM_PROGRESS running: 2.1655 s
+SIM_PROGRESS running: 2.4830 s
+SIM_PROGRESS running: 2.7995 s
+SIM_PROGRESS running: 3.1135 s
+SIM_PROGRESS running: 3.4260 s
+SIM_PROGRESS running: 3.7394 s
+SIM_PROGRESS stopped: 0.0000 s
+recover PID_FOC_BASE: pass=1, position error=-9.242e-05 m, yaw error=-0.000529 deg, peak torque=0.01258 Nm
+MEASURED_CAR_COMPLETE recover pass=1 duration=4 tilt=2.99935
+MEASURED_CAR_START recover, 4s, initial=3deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.2933 s
+SIM_PROGRESS running: 0.6090 s
+SIM_PROGRESS running: 0.9280 s
+SIM_PROGRESS running: 1.2415 s
+SIM_PROGRESS running: 1.5508 s
+SIM_PROGRESS running: 1.8623 s
+SIM_PROGRESS running: 2.1848 s
+SIM_PROGRESS running: 2.5060 s
+SIM_PROGRESS running: 2.8261 s
+SIM_PROGRESS running: 3.1460 s
+SIM_PROGRESS running: 3.4632 s
+SIM_PROGRESS running: 3.7850 s
+recover PID_FOC_BASE: pass=1, position error=0.0004109 m, yaw error=-0.001622 deg, peak torque=0.01261 Nm
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_CAR_COMPLETE recover pass=1 duration=4 tilt=3.91626
+MEASURED_CAR_START route, 10s, initial=0deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.0018 s
+SIM_PROGRESS running: 0.2070 s
+SIM_PROGRESS running: 0.5092 s
+SIM_PROGRESS running: 0.8188 s
+SIM_PROGRESS running: 1.1260 s
+SIM_PROGRESS running: 1.4328 s
+SIM_PROGRESS running: 1.7428 s
+SIM_PROGRESS running: 2.0530 s
+SIM_PROGRESS running: 2.4475 s
+SIM_PROGRESS running: 2.9303 s
+SIM_PROGRESS running: 3.4696 s
+SIM_PROGRESS running: 4.0803 s
+SIM_PROGRESS running: 4.6805 s
+SIM_PROGRESS running: 5.2788 s
+SIM_PROGRESS running: 5.8718 s
+SIM_PROGRESS running: 6.4733 s
+SIM_PROGRESS running: 7.0740 s
+SIM_PROGRESS running: 7.6700 s
+SIM_PROGRESS running: 8.2739 s
+SIM_PROGRESS running: 8.8713 s
+SIM_PROGRESS running: 9.4703 s
+SIM_PROGRESS stopped: 0.0000 s
+route PID_FOC_BASE: pass=1, position error=-0.001088 m, yaw error=-0.00196 deg, peak torque=0.005893 Nm
+MEASURED_CAR_COMPLETE route pass=1 duration=10 tilt=1.52133
+MEASURED_CAR_START route, 10s, initial=0deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.0018 s
+SIM_PROGRESS running: 0.2068 s
+SIM_PROGRESS running: 0.5100 s
+SIM_PROGRESS running: 0.8190 s
+SIM_PROGRESS running: 1.1213 s
+SIM_PROGRESS running: 1.4265 s
+SIM_PROGRESS running: 1.7370 s
+SIM_PROGRESS running: 2.0506 s
+SIM_PROGRESS running: 2.4435 s
+SIM_PROGRESS running: 2.9220 s
+SIM_PROGRESS running: 3.4653 s
+SIM_PROGRESS running: 4.0875 s
+SIM_PROGRESS running: 4.6935 s
+SIM_PROGRESS running: 5.3008 s
+SIM_PROGRESS running: 5.9088 s
+SIM_PROGRESS running: 6.5271 s
+SIM_PROGRESS running: 7.1440 s
+SIM_PROGRESS running: 7.7500 s
+SIM_PROGRESS running: 8.3633 s
+SIM_PROGRESS running: 8.9738 s
+SIM_PROGRESS running: 9.5855 s
+route PID_FOC_BASE: pass=1, position error=-0.0008537 m, yaw error=-0.001338 deg, peak torque=0.006379 Nm
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_CAR_COMPLETE route pass=1 duration=10 tilt=1.65121
+MEASURED_CAR_START route, 10s, initial=0deg, iq<=6A, sensor=1
+SIM_PROGRESS stopped: 0.0000 s
+MEASURED_TIMING pid=200Hz encoder=200Hz imu=200Hz foc_updates=5000Hz electrical_dt=50us
+SIM_PROGRESS running: 0.0031 s
+SIM_PROGRESS running: 0.1075 s
+SIM_PROGRESS running: 0.4090 s
+SIM_PROGRESS running: 0.7168 s
+SIM_PROGRESS running: 1.0258 s
+SIM_PROGRESS running: 1.3290 s
+SIM_PROGRESS running: 1.6391 s
+SIM_PROGRESS running: 1.9473 s
+SIM_PROGRESS running: 2.2985 s
+SIM_PROGRESS running: 2.7723 s
+SIM_PROGRESS running: 3.3016 s
+SIM_PROGRESS running: 3.9158 s
+SIM_PROGRESS running: 4.5534 s
+SIM_PROGRESS running: 5.1706 s
+SIM_PROGRESS running: 5.7503 s
+SIM_PROGRESS running: 6.2895 s
+SIM_PROGRESS running: 6.8325 s
+SIM_PROGRESS running: 7.3925 s
+SIM_PROGRESS running: 7.9663 s
+SIM_PROGRESS running: 8.5430 s
+SIM_PROGRESS running: 9.1265 s
+SIM_PROGRESS running: 9.7120 s
+route PID_FOC_BASE: pass=0, position error=0.01065 m, yaw error=0.04577 deg, peak torque=0.04507 Nm
+MEASURED_CAR_COMPLETE route pass=0 duration=10 tilt=14.4994
+EKF_COMPARISON_COMPLETE
+
+ans = 
+
+  包含以下字段的 struct:
+
+            status: 'complete'
+           started: '2026-10-21 19:28:07'
+           current: ''
+             scope: 'Six-axis multiplicative error-state EKF; unchanged PID/FOC; simulation only'
+    ekf_parameters: [1×1 struct]
+       unit_checks: [1×1 struct]
+              runs: [1×6 struct]
+          finished: '2026-10-21 20:04:46'
+

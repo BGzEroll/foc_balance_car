@@ -19,7 +19,7 @@ top=[0 course.ramp_start+course.ramp_run/2 course.height/2;0 course.ramp_start+c
  -track/2 course.bump_start+course.bump_length/2 course.bump_height;track/2 course.right_bump_start+.0175 course.right_bump_height;0 course.full_bump_start+.015 course.full_bump_height];
 angles=[ang 0 -ang 0 0 0];dims=[.45 course.ramp_run/cos(ang) th;.45 course.platform_length th;.45 course.ramp_run/cos(ang) th;.06 course.bump_length th;.06 .035 th;.45 .03 th];
 obstacles=1:6;
-if isfield(s,'scenario')&&ismember(s.scenario,{'recover','drive','turn','route','push','bias','limit'}),obstacles=[];end
+if isfield(s,'scenario')&&ismember(s.scenario,{'recover','drive','turn','route','push','bias','limit','yaw_test'}),obstacles=[];end
 for j=obstacles
  v=([-1 -1 -1;1 -1 -1;1 1 -1;-1 1 -1;-1 -1 1;1 -1 1;1 1 1;-1 1 1].*dims(j,:))/2;
  v=(rx(angles(j))*v')'+top(j,:)-[0 -th/2*sin(angles(j)) th/2*cos(angles(j))];

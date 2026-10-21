@@ -11,6 +11,9 @@ if scenario==10
  if t>=36.7&&t<36.85,T(3)=.002;end
 elseif scenario==11
  [ref(1),ref(2)]=smooth(t,moves(1,1),moves(1,2),moves(1,3));
+elseif scenario==12 % Straight, left turn, hold, right return; flat ground.
+ [ref(1),ref(2)]=smooth(t,1,11,.6);
+ [a,b]=smooth(t,4,2,pi/6);[c,d]=smooth(t,9,2,-pi/6);ref(5:6)=[a+c;b+d];
 elseif scenario==2
  [a,b]=smooth(t,1,3,.3);[c,d]=smooth(t,6,2,-.2);ref(1:2)=[a+c;b+d];
 elseif scenario==3
