@@ -32,6 +32,7 @@ namespace sensor
     };
 
     bool init();
+    void poll(uint32_t notifications, bool allow_recovery = true);
     bool get_package(package &snapshot);
 }
 

@@ -35,6 +35,8 @@ namespace i2c
 
             uint32_t notify_bit = 0;
             volatile uint64_t completion_time_us = 0;
+            uint64_t submitted_us = 0;
+            bool pending = false;
         };
 
         context left;
@@ -156,6 +158,49 @@ namespace i2c
     }
 
     /**
+     * @brief 重建 I2C 总线及设备
+     *
+     * @param[in, out] ctx I2C 上下文
+     *
+     * @note 仅允许在所有者任务中调用。
+     */
+    void rebuild(context &ctx)
+    {
+        ESP_ERROR_CHECK(i2c_master_bus_reset(ctx.bus));
+        ESP_ERROR_CHECK(i2c_master_bus_rm_device(ctx.dev));
+        ESP_ERROR_CHECK(i2c_del_master_bus(ctx.bus));
+
+        ctx.bus = nullptr;
+        ctx.dev = nullptr;
+        ctx.pending = false;
+        ctx.completion_time_us = 0;
+        ctx.submitted_us = 0;
+
+        ulTaskNotifyValueClear(nullptr, ctx.notify_bit);
+
+        if(&ctx == &left)
+        {
+            init_bus(
+                ctx,
+                LEFT_PORT,
+                LEFT_SDA,
+                LEFT_SCL,
+                LEFT_FREQ_HZ,
+                LEFT_DONE);
+        }
+        else
+        {
+            init_bus(
+                ctx,
+                RIGHT_PORT,
+                RIGHT_SDA,
+                RIGHT_SCL,
+                RIGHT_FREQ_HZ,
+                RIGHT_DONE);
+        }
+    }
+
+    /**
      * @brief 修改右侧 I2C 设备地址
      *
      * @param[in] address 设备地址
@@ -179,14 +224,19 @@ namespace i2c
      */
     void read(context &ctx, const uint8_t *reg, uint8_t *data, size_t size)
     {
-        ESP_ERROR_CHECK(
-            i2c_master_transmit_receive(
-                ctx.dev,
-                reg,
-                1,
-                data,
-                size,
-                -1));
+
+        ctx.submitted_us = sys_time::get_us_tick();
+        ctx.pending = true;
+
+        // 超时由 sensor::poll() 统一检测与恢复。
+        // 不能在这里等待事务完成。
+        i2c_master_transmit_receive(
+            ctx.dev,
+            reg,
+            1,
+            data,
+            size,
+            0);
     }
 
     /**
@@ -201,14 +251,14 @@ namespace i2c
     {
         uint8_t data[2] = {reg, value};
 
-        while(true)
+        for(uint8_t attempt = 0; attempt < 3; ++attempt)
         {
             ESP_ERROR_CHECK(
                 i2c_master_transmit(
                     right.dev,
                     data,
                     sizeof(data),
-                    -1));
+                    20));
 
             uint32_t notification = 0;
 
@@ -217,14 +267,17 @@ namespace i2c
                     RIGHT_DONE,
                     &notification,
                     pdMS_TO_TICKS(20)) == pdTRUE &&
-                    (notification & RIGHT_DONE))
+                (notification & RIGHT_DONE))
             {
                 return;
             }
+
+            rebuild(right);
+            set_right_address(0x68);
         }
+
+        ESP_ERROR_CHECK(ESP_ERR_TIMEOUT);
     }
-
-
 }
 
 namespace as5600
@@ -301,9 +354,7 @@ namespace as5600
                     ++encoder.turns;
                 }
 
-                const uint64_t dt_us =
-                    now_us -
-                    encoder.last_time_us;
+                const uint64_t dt_us = now_us - encoder.last_time_us;
 
                 if(dt_us != 0)
                 {
@@ -421,11 +472,15 @@ namespace mpu6050
 
             calibration_count++;
 
-            if(calibration_count < CALIBRATION_SAMPLES){return false;}
+            if(calibration_count < CALIBRATION_SAMPLES)
+            {
+                return true;
+            }
 
             for(uint8_t i = 0; i < 3; i++)
             {
-                const float raw_offset = static_cast<float>(gyro_offset_sum[i]) /
+                const float raw_offset = 
+                    static_cast<float>(gyro_offset_sum[i]) /
                     static_cast<float>(CALIBRATION_SAMPLES);
 
                 gyro_offset[i] =
@@ -447,37 +502,21 @@ namespace mpu6050
     {
         i2c::set_right_address(ADDRESS);
 
-        /*
-         * PLL X gyro clock
-         */
+        // PLL X gyro clock
         i2c::write_right_sync(REG_PWR_MGMT_1, 0x01);
 
         sys_time::delay_ms(10);
 
-        /*
-         * DLPF_CFG = 3
-         *
-         * Gyro/Accel bandwidth ≈ 44 Hz
-         * Gyro internal output rate = 1 kHz
-         */
+        // DLPF_CFG = 3，带宽约 44 Hz
         i2c::write_right_sync(REG_CONFIG, 0x03);
 
-        /*
-         * 1000 / (1 + 4)
-         * = 200 Hz
-         */
+        // 1000 / (1 + 4) = 200 Hz
         i2c::write_right_sync(REG_SMPLRT_DIV, 0x04);
 
-        /*
-         * ±500 deg/s
-         * 65.5 LSB/(deg/s)
-         */
+        // ±500 deg/s，65.5 LSB/(deg/s)
         i2c::write_right_sync(REG_GYRO_CONFIG, 0x08);
 
-        /*
-         * ±2 g
-         * 16384 LSB/g
-         */
+        // ±2 g，16384 LSB/g
         i2c::write_right_sync(REG_ACCEL_CONFIG, 0x00);
 
         i2c::set_right_address(as5600::ADDRESS);
@@ -574,22 +613,14 @@ namespace mpu6050
             // 俯仰使用 X 轴角速度进行互补滤波
             pitch_rad =
                 (1.0f - ACC_COEF) *
-                (
-                    pitch_rad +
-                    data.gyro[0] * dt
-                ) +
-                ACC_COEF *
-                acc_pitch_rad;
+                (pitch_rad + data.gyro[0] * dt) +
+                ACC_COEF * acc_pitch_rad;
 
             // 横滚使用 Y 轴角速度进行互补滤波
             roll_rad =
                 (1.0f - ACC_COEF) *
-                (
-                    roll_rad +
-                    data.gyro[1] * dt
-                ) +
-                ACC_COEF *
-                acc_roll_rad;
+                (roll_rad + data.gyro[1] * dt) +
+                ACC_COEF * acc_roll_rad;
 
             // 偏航仅积分 Z 轴角速度，保持原有正负 pi 范围
             yaw_rad += data.gyro[2] * dt;
@@ -620,13 +651,17 @@ namespace sensor
     namespace
     {
         constexpr uint64_t MPU_PERIOD_US = 5000;
+        constexpr uint64_t I2C_TIMEOUT_US = 2000;
 
         portMUX_TYPE package_lock = portMUX_INITIALIZER_UNLOCKED;
 
-        package latest_package;
+        package latest_package{};
+
+        TaskHandle_t owner_task = nullptr;
+        bool initialized = false;
+
         bool right_reading_imu = false;
         uint64_t next_imu_time_us = 0;
-        bool started = false;
 
         /**
          * @brief 发布左编码器数据
@@ -637,8 +672,6 @@ namespace sensor
         {
             portENTER_CRITICAL(&package_lock);
             latest_package.left_encoder = data;
-            latest_package.left_encoder.angle_rad = -latest_package.left_encoder.angle_rad;     // 根据实际安装修正方向
-            latest_package.left_encoder.speed_rad_s = -latest_package.left_encoder.speed_rad_s;     // 根据实际安装修正方向
             portEXIT_CRITICAL(&package_lock);
         }
 
@@ -671,6 +704,7 @@ namespace sensor
          */
         void handle_left_encoder()
         {
+            i2c::left.pending = false;
             publish_left(as5600::process(as5600::left, i2c::left.completion_time_us));
             as5600::start_left_read();
         }
@@ -680,10 +714,12 @@ namespace sensor
          */
         void handle_right_encoder()
         {
+            i2c::right.pending = false;
+
             const uint64_t now_us = i2c::right.completion_time_us;
             publish_right(as5600::process(as5600::right, now_us));
 
-            // MPU6050 到时间后插队一次
+            // 到达 IMU 采样时刻时，暂时切换到 MPU6050。
             if(now_us >= next_imu_time_us)
             {
                 do
@@ -695,6 +731,7 @@ namespace sensor
                 right_reading_imu = true;
                 i2c::set_right_address(mpu6050::ADDRESS);
                 mpu6050::start_read();
+
                 return;
             }
 
@@ -706,7 +743,9 @@ namespace sensor
          */
         void handle_imu()
         {
-            imu_data data;
+            i2c::right.pending = false;
+
+            imu_data data{};
             if(mpu6050::process(i2c::right.completion_time_us, data))
             {
                 publish_imu(data);
@@ -719,46 +758,35 @@ namespace sensor
         }
 
         /**
-         * @brief Sensor 任务入口
+         * @brief 检查异步 I2C 事务超时
+         *
+         * @param[in] allow_recovery 是否允许执行总线恢复
          */
-        void task(void *)
+        void recover_stalled_transactions(bool allow_recovery)
         {
-            i2c::init(xTaskGetCurrentTaskHandle());
-
-            mpu6050::init();
-            next_imu_time_us = sys_time::get_us_tick() + MPU_PERIOD_US;
-
-            as5600::start_left_read();
-            as5600::start_right_read();
-
-            while(true)
+            if(!allow_recovery)
             {
-                uint32_t notification = 0;
+                return;
+            }
 
-                xTaskNotifyWait(
-                    0,
-                    UINT32_MAX,
-                    &notification,
-                    pdMS_TO_TICKS(3));
+            const uint64_t now_us = sys_time::get_us_tick();
 
-                if(notification & i2c::LEFT_DONE)
-                {
-                    handle_left_encoder();
-                }
+            if(i2c::left.pending &&
+               now_us - i2c::left.submitted_us > I2C_TIMEOUT_US)
+            {
+                i2c::rebuild(i2c::left);
+                as5600::start_left_read();
+            }
 
-                if(notification & i2c::RIGHT_DONE)
-                {
-                    if(right_reading_imu)
-                    {
-                        handle_imu();
-                    }
-                    else
-                    {
-                        handle_right_encoder();
-                    }
-                }
+            if(i2c::right.pending &&
+               now_us - i2c::right.submitted_us > I2C_TIMEOUT_US)
+            {
+                i2c::rebuild(i2c::right);
 
+                right_reading_imu = false;
+                next_imu_time_us = now_us + MPU_PERIOD_US;
 
+                as5600::start_right_read();
             }
         }
     }
@@ -767,26 +795,70 @@ namespace sensor
      * @brief 初始化传感器模块
      *
      * @return true 初始化成功
-     * @return false Sensor 任务创建失败
+     * @return false 当前任务不符合所有权要求
+     *
+     * @note 不创建任务。初始化与后续 poll() 必须由同一任务执行。
      */
     bool init()
     {
-        if(started){return true;}
+        const TaskHandle_t current_task = xTaskGetCurrentTaskHandle();
 
-        if(xTaskCreatePinnedToCore(
-            task,
-            "sensor",
-            4096,
-            nullptr,
-            5,
-            nullptr,
-            1) != pdPASS)
+        if(initialized)
         {
-            return false;
+            return owner_task == current_task;
         }
 
-        started = true;
+        owner_task = current_task;
+
+        i2c::init(owner_task);
+        mpu6050::init();
+
+        next_imu_time_us =
+            sys_time::get_us_tick() + MPU_PERIOD_US;
+
+        as5600::start_left_read();
+        as5600::start_right_read();
+
+        initialized = true;
+
         return true;
+    }
+
+    /**
+     * @brief 处理传感器事件并推进异步采样
+     *
+     * @param[in] notifications 调用方收到的任务通知位
+     * @param[in] allow_recovery 是否允许恢复 I2C 总线
+     *
+     * @note 不等待任务通知，不创建任务。
+     *       总线恢复只在 allow_recovery 为 true 时执行。
+     */
+    void poll(uint32_t notifications, bool allow_recovery)
+    {
+        if(!initialized ||
+           owner_task != xTaskGetCurrentTaskHandle())
+        {
+            return;
+        }
+
+        if(notifications & i2c::LEFT_DONE)
+        {
+            handle_left_encoder();
+        }
+
+        if(notifications & i2c::RIGHT_DONE)
+        {
+            if(right_reading_imu)
+            {
+                handle_imu();
+            }
+            else
+            {
+                handle_right_encoder();
+            }
+        }
+
+        recover_stalled_transactions(allow_recovery);
     }
 
     /**
@@ -794,7 +866,7 @@ namespace sensor
      *
      * @param[out] snapshot 传感器数据快照
      *
-     * @return true 数据有效
+     * @return true IMU 已发布有效数据
      * @return false IMU 尚未完成校准
      */
     bool get_package(package &snapshot)
@@ -802,6 +874,7 @@ namespace sensor
         portENTER_CRITICAL(&package_lock);
         snapshot = latest_package;
         portEXIT_CRITICAL(&package_lock);
+
         return snapshot.imu.timestamp_us != 0;
     }
 }
