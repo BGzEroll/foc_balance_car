@@ -474,7 +474,7 @@ namespace mpu6050
 
             if(calibration_count < CALIBRATION_SAMPLES)
             {
-                return true;
+                return false;
             }
 
             for(uint8_t i = 0; i < 3; i++)
