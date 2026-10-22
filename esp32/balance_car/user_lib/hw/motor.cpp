@@ -24,7 +24,7 @@ namespace adc
 {
     namespace
     {
-        constexpr uint32_t CPU_MHZ = 160;
+        constexpr uint32_t CPU_MHZ = CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ;
         constexpr uint32_t BASELINE_COUNT = 512;
         constexpr adc_channel_t CHANNEL[5] =
         {
@@ -226,6 +226,7 @@ namespace adc
 namespace pwm
 {
     constexpr uint32_t PERIOD = 8000;
+    constexpr uint32_t CYCLES_PER_TICK = CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ / 80;
     constexpr uint32_t NEUTRAL = 2000;
     constexpr uint32_t SAMPLE_TIMEOUT_US = 1000;
     constexpr uint32_t BUS_TIMEOUT_US = 5000;
@@ -814,11 +815,13 @@ namespace pwm
         uint16_t b = 0;
         const bool ok_a = adc::read(adc::CHANNEL[index * 2], a);
         out.raw_a = a;
-        out.a_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + 1U) / 2U;
+        out.a_end = out.a_start +
+            (esp_cpu_get_cycle_count() - cycles + CYCLES_PER_TICK - 1U) / CYCLES_PER_TICK;
         out.b_start = out.a_end;
         const bool ok_b = adc::read(adc::CHANNEL[index * 2 + 1], b);
         out.raw_b = b;
-        out.b_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + 1U) / 2U;
+        out.b_end = out.a_start +
+            (esp_cpu_get_cycle_count() - cycles + CYCLES_PER_TICK - 1U) / CYCLES_PER_TICK;
         out.raw_bus = __atomic_load_n(&bus_raw, __ATOMIC_ACQUIRE);
 
         const bool window_a = !output_enabled ||
@@ -966,6 +969,8 @@ namespace foc
         constexpr float KI = 226.194672f;
         constexpr float BUS_LIMIT_RATIO = 0.08f;
         constexpr float POLE_PAIRS = 7.0f;
+        constexpr uint32_t SINE_TABLE_SIZE = 4096;
+        constexpr uint32_t SINE_TABLE_MASK = SINE_TABLE_SIZE - 1;
 
         struct state
         {
@@ -978,6 +983,7 @@ namespace foc
         };
 
         state motors[2] = {};
+        DRAM_ATTR float sine_table[SINE_TABLE_SIZE] = {};
 
         /**
          * @brief 归一化电角度
@@ -988,8 +994,43 @@ namespace foc
          */
         float wrap(float angle)
         {
-            angle = fmodf(angle, TWO_PI);
-            return angle < 0.0f ? angle + TWO_PI : angle;
+            // 单圈角度使用快速归一化，大角度保留通用处理
+            if(fabsf(angle) > 64.0f)
+            {
+                angle = fmodf(angle, TWO_PI);
+            }
+            else
+            {
+                angle -= static_cast<int32_t>(angle * (1.0f / TWO_PI)) * TWO_PI;
+            }
+
+            if(angle < 0.0f)
+            {
+                angle += TWO_PI;
+            }
+
+            return angle >= TWO_PI ? 0.0f : angle;
+        }
+
+        /**
+         * @brief 通过正弦表和线性插值计算电角度的正弦、余弦
+         *
+         * @param[in] angle 已归一化的电角度，单位 rad，允许校准末端的 2π
+         * @param[out] sn 电角度正弦
+         * @param[out] cs 电角度余弦
+         */
+        void sincos(float angle, float &sn, float &cs)
+        {
+            const float position = angle * (SINE_TABLE_SIZE / TWO_PI);
+            const uint32_t whole = static_cast<uint32_t>(position);
+            const float fraction = position - static_cast<float>(whole);
+            const uint32_t index = whole & SINE_TABLE_MASK;
+            const uint32_t cosine = (index + SINE_TABLE_SIZE / 4) & SINE_TABLE_MASK;
+
+            sn = sine_table[index] + fraction *
+                (sine_table[(index + 1) & SINE_TABLE_MASK] - sine_table[index]);
+            cs = sine_table[cosine] + fraction *
+                (sine_table[(cosine + 1) & SINE_TABLE_MASK] - sine_table[cosine]);
         }
 
         /**
@@ -1029,6 +1070,19 @@ namespace foc
             }
 
             return out;
+        }
+    }
+
+    /**
+     * @brief 初始化内部 RAM 中的正弦查找表
+     *
+     * @note 在控制任务和 PWM 定时器启动前调用
+     */
+    void init()
+    {
+        for(uint32_t i = 0; i < SINE_TABLE_SIZE; ++i)
+        {
+            sine_table[i] = sinf(static_cast<float>(i) * (TWO_PI / SINE_TABLE_SIZE));
         }
     }
 
@@ -1113,8 +1167,9 @@ namespace foc
         const float ib = adc::current(index * 2 + 1, raw.raw_b, index);
         const float ic = -ia - ib;
         const float beta = (ia + 2.0f * ib) * INV_SQRT3;
-        const float cs = cosf(theta);
-        const float sn = sinf(theta);
+        float cs = 0.0f;
+        float sn = 0.0f;
+        sincos(theta, sn, cs);
         const float id = ia * cs + beta * sn;
         const float iq = beta * cs - ia * sn;
 
@@ -1156,11 +1211,11 @@ namespace foc
             vd = KP * error_d + candidate_d;
             vq = KP * error_q + candidate_q;
             const float limit = BUS_LIMIT_RATIO * bus;
-            const float magnitude = sqrtf(vd * vd + vq * vq);
+            const float magnitude_squared = vd * vd + vq * vq;
 
-            if(magnitude > limit)
+            if(magnitude_squared > limit * limit)
             {
-                const float scale = limit / magnitude;
+                const float scale = limit / sqrtf(magnitude_squared);
                 vd *= scale;
                 vq *= scale;
                 motors[index].integral_d = vd - KP * error_d;
@@ -1669,6 +1724,7 @@ namespace motor
         ESP_ERROR_CHECK(gpio_set_level(GPIO_NUM_7, 1));
         vTaskDelay(pdMS_TO_TICKS(10));
         adc::init();
+        foc::init();
 
         if(xTaskCreatePinnedToCore(task, "motor_control", 8192,
                                    nullptr, 5, nullptr, 1) != pdPASS)
