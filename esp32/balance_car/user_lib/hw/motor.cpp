@@ -997,15 +997,14 @@ namespace foc
          *
          * @param[in] vd d 轴电压
          * @param[in] vq q 轴电压
-         * @param[in] theta 电角度
+         * @param[in] cs 电角度余弦
+         * @param[in] sn 电角度正弦
          * @param[in] bus 母线电压
          *
          * @return 三相 PWM 命令
          */
-        pwm::command modulation(float vd, float vq, float theta, float bus)
+        pwm::command modulation(float vd, float vq, float cs, float sn, float bus)
         {
-            const float cs = cosf(theta);
-            const float sn = sinf(theta);
             const float alpha = vd * cs - vq * sn;
             const float beta = vd * sn + vq * cs;
             const float phase[3] =
@@ -1174,7 +1173,7 @@ namespace foc
             }
         }
 
-        output = modulation(vd, vq, theta, bus);
+        output = modulation(vd, vq, cs, sn, bus);
         output.generation = pwm::get_generation();
         output.sample_us = raw.timestamp_us;
         return true;
