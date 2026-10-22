@@ -964,7 +964,7 @@ namespace foc
         constexpr float INV_SQRT3 = 0.57735026919f;
         constexpr float KP = 0.060318579f;
         constexpr float KI = 226.194672f;
-        constexpr float BUS_LIMIT_RATIO = 0.22f;
+        constexpr float BUS_LIMIT_RATIO = 0.08f;
         constexpr float POLE_PAIRS = 7.0f;
 
         struct state
@@ -1015,14 +1015,16 @@ namespace foc
                 -0.5f * alpha - 0.8660254f * beta
             };
 
-            const float valley = fminf(phase[0], fminf(phase[1], phase[2]));
+            const float highest = fmaxf(phase[0], fmaxf(phase[1], phase[2]));
+            const float lowest = fminf(phase[0], fminf(phase[1], phase[2]));
+            const float zero = -0.5f * (highest + lowest);
             pwm::command out{};
             uint32_t *duty[3] = {&out.duty_a, &out.duty_b, &out.duty_c};
 
             for(uint32_t i = 0; i < 3; ++i)
             {
                 const float value =
-                    320.0f + (phase[i] - valley) / bus * 4000.0f + 0.5f;
+                    (0.5f + (phase[i] + zero) / bus) * 4000.0f + 0.5f;
                 const uint32_t count = static_cast<uint32_t>(fmaxf(value, 0.0f));
                 *duty[i] = count < 320 ? 320 : (count > 3680 ? 3680 : count);
             }
