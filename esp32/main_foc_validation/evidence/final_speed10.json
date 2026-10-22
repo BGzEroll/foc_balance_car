@@ -1,0 +1,273 @@
+{
+  "STATUS": [
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.145,
+      "stage": 6,
+      "aligned": [
+        0,
+        0
+      ],
+      "direction": [
+        0,
+        0
+      ],
+      "zero": [
+        0.0,
+        0.0
+      ],
+      "pi_updates": [
+        0,
+        0
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.139,
+      "stage": 6,
+      "aligned": [
+        0,
+        0
+      ],
+      "direction": [
+        0,
+        0
+      ],
+      "zero": [
+        0.0,
+        0.0
+      ],
+      "pi_updates": [
+        0,
+        0
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.148,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.295302391,
+        2.224287987
+      ],
+      "pi_updates": [
+        0,
+        0
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.139,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.295302391,
+        2.224287987
+      ],
+      "pi_updates": [
+        19998,
+        19979
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.148,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.295302391,
+        2.224287987
+      ],
+      "pi_updates": [
+        19998,
+        19979
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.145,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.295302391,
+        2.224287987
+      ],
+      "pi_updates": [
+        19998,
+        19979
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.148,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.295302391,
+        2.224287987
+      ],
+      "pi_updates": [
+        19998,
+        19979
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.139,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.295302391,
+        2.224287987
+      ],
+      "pi_updates": [
+        19998,
+        19979
+      ]
+    }
+  ],
+  "METRIC": [
+    {
+      "motor": 1,
+      "n": 2350,
+      "id_mean": -0.0004998,
+      "iq_mean": 0.1358811,
+      "id_error_rms": 0.0188239,
+      "iq_error_rms": 0.0341119,
+      "voltage_max": 0.1821251,
+      "saturated": 0,
+      "max_gap_us": 400,
+      "active": 20000,
+      "valid": 20000,
+      "min_margin_ticks": 433
+    },
+    {
+      "motor": 2,
+      "n": 2350,
+      "id_mean": -0.0001469,
+      "iq_mean": 0.1220018,
+      "id_error_rms": 0.018066,
+      "iq_error_rms": 0.0208652,
+      "voltage_max": 0.1257412,
+      "saturated": 0,
+      "max_gap_us": 400,
+      "active": 19999,
+      "valid": 19998,
+      "min_margin_ticks": 59
+    }
+  ],
+  "META": [
+    {
+      "kind": 2,
+      "value": 10.0,
+      "duration_ms": 4000,
+      "mask": 3,
+      "cap": 0.4,
+      "ratio": 0.04,
+      "rows": 1599,
+      "metric_snapshot_hz": 1000,
+      "csv_hz": 200
+    }
+  ],
+  "command": "SPEED 3 10 4000 0.4 0.04",
+  "ack_seconds": 0.1623115999973379
+}

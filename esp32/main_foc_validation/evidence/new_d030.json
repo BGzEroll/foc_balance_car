@@ -1,0 +1,246 @@
+{
+  "STATUS": [
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.175,
+      "stage": 6,
+      "aligned": [
+        0,
+        0
+      ],
+      "direction": [
+        0,
+        0
+      ],
+      "zero": [
+        0.0,
+        0.0
+      ],
+      "task_state": 2
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.166,
+      "stage": 6,
+      "aligned": [
+        0,
+        0
+      ],
+      "direction": [
+        0,
+        0
+      ],
+      "zero": [
+        0.0,
+        0.0
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.175,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.292233944,
+        2.140369892
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 1,
+      "fault_pc": 1077375128,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.166,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.292233944,
+        2.140369892
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 1,
+      "fault_pc": 1077375128,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.163,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.292233944,
+        2.140369892
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 1,
+      "fault_pc": 1077375128,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.166,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.292233944,
+        2.140369892
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 1,
+      "fault_pc": 1077375128,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.163,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.292233944,
+        2.140369892
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 1,
+      "fault_pc": 1077375128,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.166,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.292233944,
+        2.140369892
+      ],
+      "task_state": 0
+    }
+  ],
+  "METRIC": [
+    {
+      "motor": 1,
+      "n": 0,
+      "id_mean": 0.0,
+      "iq_mean": 0.0,
+      "id_error_rms": 0.0,
+      "iq_error_rms": 0.0,
+      "voltage_max": 0.043873,
+      "saturated": 0,
+      "max_gap_us": 800,
+      "active": 1375,
+      "valid": 1373,
+      "min_margin_ticks": 60
+    },
+    {
+      "motor": 2,
+      "n": 0,
+      "id_mean": 0.0,
+      "iq_mean": 0.0,
+      "id_error_rms": 0.0,
+      "iq_error_rms": 0.0,
+      "voltage_max": 0.0415571,
+      "saturated": 0,
+      "max_gap_us": 805,
+      "active": 1376,
+      "valid": 1369,
+      "min_margin_ticks": 67
+    }
+  ],
+  "META": [
+    {
+      "kind": 1,
+      "value": 0.3,
+      "duration_ms": 3500,
+      "mask": 3,
+      "cap": 0.12,
+      "ratio": 0.015,
+      "rows": 30
+    }
+  ],
+  "command": "DTEST 3 0.3 3500 0.12 0.015"
+}

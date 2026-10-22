@@ -1,0 +1,247 @@
+{
+  "STATUS": [
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.172,
+      "stage": 6,
+      "aligned": [
+        0,
+        0
+      ],
+      "direction": [
+        0,
+        0
+      ],
+      "zero": [
+        0.0,
+        0.0
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.175,
+      "stage": 6,
+      "aligned": [
+        0,
+        0
+      ],
+      "direction": [
+        0,
+        0
+      ],
+      "zero": [
+        0.0,
+        0.0
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.169,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.321448803,
+        2.115281582
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 0,
+      "fault_pc": 1077375188,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.163,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.321448803,
+        2.115281582
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 0,
+      "fault_pc": 1077375188,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.166,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.321448803,
+        2.115281582
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 0,
+      "fault_pc": 1077375188,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.163,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.321448803,
+        2.115281582
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 0,
+      "fault_pc": 1077375188,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.175,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.321448803,
+        2.115281582
+      ],
+      "task_state": 0
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 7,
+      "fault_motor": 0,
+      "fault_pc": 1077375188,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.169,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.321448803,
+        2.115281582
+      ],
+      "task_state": 0
+    }
+  ],
+  "METRIC": [
+    {
+      "motor": 1,
+      "n": 0,
+      "id_mean": 0.0,
+      "iq_mean": 0.0,
+      "id_error_rms": 0.0,
+      "iq_error_rms": 0.0,
+      "voltage_max": 0.1334089,
+      "saturated": 0,
+      "max_gap_us": 1000,
+      "active": 744,
+      "valid": 728,
+      "min_margin_ticks": 59
+    },
+    {
+      "motor": 2,
+      "n": 0,
+      "id_mean": 0.0,
+      "iq_mean": 0.0,
+      "id_error_rms": 0.0,
+      "iq_error_rms": 0.0,
+      "voltage_max": 0.0542011,
+      "saturated": 0,
+      "max_gap_us": 1000,
+      "active": 744,
+      "valid": 724,
+      "min_margin_ticks": 2
+    }
+  ],
+  "META": [
+    {
+      "kind": 2,
+      "value": -27.5,
+      "duration_ms": 4000,
+      "mask": 3,
+      "cap": 0.4,
+      "ratio": 0.04,
+      "rows": 58
+    }
+  ],
+  "command": "SPEED 3 -27.5 4000 0.4 0.04",
+  "ack_seconds": 0.1628309860097943
+}

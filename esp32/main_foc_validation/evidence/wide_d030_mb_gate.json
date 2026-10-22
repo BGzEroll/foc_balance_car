@@ -1,0 +1,15 @@
+{
+  "label": "wide_d030_mb",
+  "result": "PASS_BENCH_GATE",
+  "motors": [
+    {
+      "motor": 2,
+      "speed_rad_s": null,
+      "id_mean": 0.3006092,
+      "valid": 17500,
+      "active": 17500,
+      "max_PI_gap_us": 220,
+      "observed_voltage_max_V": 0.0392409
+    }
+  ]
+}

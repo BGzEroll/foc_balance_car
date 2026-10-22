@@ -1,0 +1,15 @@
+{
+  "label": "wide_mb27p5",
+  "result": "PASS_BENCH_GATE",
+  "motors": [
+    {
+      "motor": 2,
+      "speed_rad_s": 27.50551539865839,
+      "id_mean": -0.0025953,
+      "valid": 19999,
+      "active": 19999,
+      "max_PI_gap_us": 224,
+      "observed_voltage_max_V": 0.2969109
+    }
+  ]
+}

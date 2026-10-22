@@ -1,11 +1,6 @@
-#include "hw/sensor.h"
-#include "hw/bat.h"
-#include "test.h"
+extern void foc_bench_init();
 
 extern "C" void app_init(void)
 {
-    // sensor::init();
-    // bat::init();
-
-    test::init();
+    foc_bench_init();
 }

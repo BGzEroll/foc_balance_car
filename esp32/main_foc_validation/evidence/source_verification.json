@@ -1,0 +1,14 @@
+{
+  "result": "PASS",
+  "files": {
+    "esp32/balance_car/main/CMakeLists.txt": "f174d5d308dc24d1379a3d1914b715556dbc31aeabc2c36b292e9f8ebc618bcc",
+    "esp32/balance_car/main/motor.lf": "5fe897ce9301459921dde84b732bef574c478f8efc4601c878795577f39df457",
+    "esp32/balance_car/user_lib/app.cpp": "ad466a614199bba297c99c73065ff2a58f37050ce2d5d946eab60842832913fe",
+    "esp32/balance_car/user_lib/foc_bench.cpp": "55a4a1bde7f8164eeeb3278b42cf91ec0250842cfb64be81ccd9f6c9be7c6c24",
+    "esp32/balance_car/user_lib/hw/motor.cpp": "7f6f7481fc99d49025a2b844d16523c940e15517d59e71d99205f70c3c28ca23",
+    "esp32/balance_car/user_lib/hw/motor.h": "defb6bab875bdff91b2475dd4796186d3757c003746c48d0a35c355dafacedfd",
+    "esp32/balance_car/user_lib/hw/sensor.cpp": "0be3a76b9da11910e8fe7373a029b771058caf13630e19928028100f69a93d68",
+    "esp32/balance_car/user_lib/hw/sensor.h": "2b7f9f9751d87d1812eac2bac83428b62180bab8ad53fccb04a80686a1fd0d5f"
+  },
+  "note": "Both sides normalize CRLF to LF. sdkconfig semantic settings checked separately."
+}

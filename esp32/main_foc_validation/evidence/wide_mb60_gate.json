@@ -1,0 +1,15 @@
+{
+  "label": "wide_mb60",
+  "result": "PASS_BENCH_GATE",
+  "motors": [
+    {
+      "motor": 2,
+      "speed_rad_s": 60.029562340605764,
+      "id_mean": -0.0057445,
+      "valid": 19999,
+      "active": 19999,
+      "max_PI_gap_us": 215,
+      "observed_voltage_max_V": 0.6095073
+    }
+  ]
+}

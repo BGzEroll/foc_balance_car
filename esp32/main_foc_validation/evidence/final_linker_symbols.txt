@@ -1,0 +1,13 @@
+3fcac2e0 b motor::(anonymous namespace)::task_ready
+3fcac32c b pwm::on_sample(mcpwm_timer_t*, mcpwm_timer_event_data_t const*, void*)::sequence
+3fcac334 b pwm::on_sample(mcpwm_timer_t*, mcpwm_timer_event_data_t const*, void*)::turn
+3fcac338 b pwm::on_empty(mcpwm_timer_t*, mcpwm_timer_event_data_t const*, void*)::divider
+40376f0c T pwm::on_peak(mcpwm_timer_t*, mcpwm_timer_event_data_t const*, void*)
+40377170 T pwm::on_empty(mcpwm_timer_t*, mcpwm_timer_event_data_t const*, void*)
+40377310 T pwm::on_commit(mcpwm_timer_t*, mcpwm_timer_event_data_t const*, void*)
+40377498 T pwm::on_sample(mcpwm_timer_t*, mcpwm_timer_event_data_t const*, void*)
+40378884 T sqrtf
+40378f00 T cosf
+40379210 T sinf
+403807b0 T foc::update(unsigned long, pwm::sample const&, sensor::encoder_data const&, motor::target_current const&, bool, float, float, motor::current_info&, pwm::command&)
+40380c40 t motor::(anonymous namespace)::task(void*)

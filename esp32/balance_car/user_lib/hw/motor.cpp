@@ -13,7 +13,10 @@
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #include "hal/adc_ll.h"
+#pragma GCC diagnostic pop
 #include "soc/mcpwm_struct.h"
 #include "soc/sens_reg.h"
 
@@ -222,6 +225,7 @@ namespace adc
 
 namespace pwm
 {
+    uint32_t bench_deadline_us = 0;
     constexpr uint32_t PERIOD = 8000;
     constexpr uint32_t NEUTRAL = 2000;
     constexpr uint32_t SAMPLE_TIMEOUT_US = 1000;
@@ -306,6 +310,7 @@ namespace pwm
         uint32_t fault_raw_a = 0;
         uint32_t fault_raw_b = 0;
         uint32_t fault_us = 0;
+        uint32_t fault_pc = 0;
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -423,7 +428,7 @@ namespace pwm
      * @param[in] raw_a 第一相 ADC 原始值
      * @param[in] raw_b 第二相 ADC 原始值
      */
-    void IRAM_ATTR trip(
+    void IRAM_ATTR __attribute__((noinline)) trip(
         motor::fault_code code,
         uint8_t index = 0xFF,
         uint16_t raw_a = 0,
@@ -435,6 +440,7 @@ namespace pwm
             &fault, &expected, static_cast<uint32_t>(code), false,
             __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
         {
+            fault_pc = reinterpret_cast<uint32_t>(__builtin_return_address(0));
             __atomic_store_n(&fault_motor, index, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_a, raw_a, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_b, raw_b, __ATOMIC_RELAXED);
@@ -464,6 +470,7 @@ namespace pwm
     {
         motor::fault_info out{};
         out.code = get_fault_code();
+        out.active = out.code != motor::fault_code::NONE;
         out.motor_index = __atomic_load_n(&fault_motor, __ATOMIC_RELAXED);
         out.raw_a = __atomic_load_n(&fault_raw_a, __ATOMIC_RELAXED);
         out.raw_b = __atomic_load_n(&fault_raw_b, __ATOMIC_RELAXED);
@@ -617,7 +624,12 @@ namespace pwm
 
         if(wanted)
         {
-            if(now - __atomic_load_n(&heartbeat_us, __ATOMIC_ACQUIRE) > 3000)
+            if(bench_deadline_us && static_cast<int32_t>(now - bench_deadline_us) >= 0)
+            {
+                stop();
+                return false;
+            }
+            if(static_cast<int32_t>(now - __atomic_load_n(&heartbeat_us, __ATOMIC_ACQUIRE)) > 3000)
             {
                 trip(motor::fault_code::TASK_TIMEOUT);
             }
@@ -831,6 +843,9 @@ namespace pwm
                     (window_a ? 8U : 0U) |
                     (window_b ? 16U : 0U) |
                     (same_cycle ? 32U : 0U);
+#ifdef MOTOR_SAMPLE_HOOK
+        MOTOR_SAMPLE_HOOK(index, out, output_enabled);
+#endif
 
         const bool over = adc::overcurrent(index, a, b);
 
@@ -959,8 +974,9 @@ namespace foc
         constexpr float INV_SQRT3 = 0.57735026919f;
         constexpr float KP = 0.060318579f;
         constexpr float KI = 226.194672f;
-        constexpr float VOLTAGE_LIMIT = 0.12f;
-        constexpr float BUS_LIMIT_RATIO = 0.015f;
+        float voltage_limit = 0.12f;
+        float bus_limit_ratio = 0.015f;
+        bool low_side_clamp = false;
         constexpr float POLE_PAIRS = 7.0f;
 
         struct state
@@ -970,6 +986,7 @@ namespace foc
             float integral_d = 0.0f;
             float integral_q = 0.0f;
             uint32_t last_sample_us = 0;
+            uint32_t updates = 0, max_dt_us = 0;
             bool aligned = false;
         };
 
@@ -1019,8 +1036,11 @@ namespace foc
 
             for(uint32_t i = 0; i < 3; ++i)
             {
-                const float value =
-                    (0.5f + (phase[i] + common) / bus) * 4000.0f + 0.5f;
+                // Bench wide mode: equal common-mode shift preserves line
+                // voltages; ratio <= .24 keeps compares <= 1983 (< neutral).
+                const float value = low_side_clamp
+                    ? 320.0f + (phase[i] - valley) / bus * 4000.0f + 0.5f
+                    : (0.5f + (phase[i] + common) / bus) * 4000.0f + 0.5f;
                 const uint32_t count = static_cast<uint32_t>(fmaxf(value, 0.0f));
                 *duty[i] = count < 320 ? 320 : (count > 3680 ? 3680 : count);
             }
@@ -1053,6 +1073,8 @@ namespace foc
             motors[i].integral_d = 0.0f;
             motors[i].integral_q = 0.0f;
             motors[i].last_sample_us = 0;
+            motors[i].updates = 0;
+            motors[i].max_dt_us = 0;
         }
     }
 
@@ -1143,6 +1165,9 @@ namespace foc
                 return false;
             }
 
+            ++motors[index].updates;
+            if(dt_us > motors[index].max_dt_us) { motors[index].max_dt_us=dt_us; }
+
             const float dt = dt_us * 1.0e-6f;
             const float error_d = target.id_A - id;
             const float error_q = target.iq_A - iq;
@@ -1151,7 +1176,7 @@ namespace foc
 
             vd = KP * error_d + candidate_d;
             vq = KP * error_q + candidate_q;
-            const float limit = fminf(VOLTAGE_LIMIT, BUS_LIMIT_RATIO * bus);
+            const float limit = fminf(voltage_limit, bus_limit_ratio * bus);
             const float magnitude = sqrtf(vd * vd + vq * vq);
 
             if(magnitude > limit)
@@ -1170,6 +1195,12 @@ namespace foc
         }
 
         output = modulation(vd, vq, theta, bus);
+        info.vd_V = vd;
+        info.vq_V = vq;
+        info.voltage_limit_V = fminf(voltage_limit, bus_limit_ratio * bus);
+#ifdef MOTOR_CONTROL_HOOK
+        if(!aligning) { MOTOR_CONTROL_HOOK(index, info, target); }
+#endif
         output.generation = pwm::get_generation();
         output.sample_us = raw.timestamp_us;
         return true;
@@ -1194,6 +1225,7 @@ namespace motor
         constexpr float ALIGN_MAX_SPEED = 0.5f;
         constexpr float TWO_PI = 6.28318530718f;
         constexpr float MAX_TARGET_A = 2.0f;
+        float speed_trip_rad_s = 40.0f;
 
         enum class stage : uint8_t
         {
@@ -1202,12 +1234,17 @@ namespace motor
             SWEEP,
             FINAL,
             STOP,
-            RUN
+            RUN,
+            IDLE
         };
 
         struct session
         {
+#ifdef MOTOR_BENCH_MANUAL_ARM
+            stage state = stage::IDLE;
+#else
             stage state = stage::WAITING;
+#endif
             uint8_t motor = 0;
             uint32_t began_us = 0;
             uint32_t boot_us = 0;
@@ -1310,6 +1347,7 @@ namespace motor
          */
         void calibrate(const sensor::package &sensors, uint32_t now, uint64_t now64)
         {
+            if(calibration.state == stage::IDLE) { return; }
             const sensor::encoder_data encoders[2] =
             {
                 sensors.left_encoder,
@@ -1323,7 +1361,7 @@ namespace motor
                 pwm::get_bus(bus_raw, bus_us);
 
                 const bool bus_valid = bus_us != 0 &&
-                    now - bus_us <= pwm::BUS_TIMEOUT_US &&
+                    now32() - bus_us <= pwm::BUS_TIMEOUT_US &&
                     adc::valid_bus(bus_raw);
 
                 if(bus_valid && fresh(encoders[0], now64) && fresh(encoders[1], now64))
@@ -1342,7 +1380,8 @@ namespace motor
             {
                 for(uint32_t i = 0; i < 2; ++i)
                 {
-                    if(!fresh(encoders[i], now64))
+                    if(pwm::is_requested() && (pwm::mask & (1U << i)) &&
+                       !fresh(encoders[i], now64))
                     {
                         pwm::trip(fault_code::SENSOR_TIMEOUT, i);
                     }
@@ -1367,10 +1406,12 @@ namespace motor
                     calibration.state = stage::RUN;
                     calibration.began_us = now;
 
+#ifndef MOTOR_BENCH_MANUAL_ARM
                     if(!pwm::start(3U))
                     {
                         pwm::trip(fault_code::ALIGNMENT);
                     }
+#endif
                 }
                 return;
             }
@@ -1479,7 +1520,7 @@ namespace motor
                 return;
             }
 
-            if(now - sample.timestamp_us > pwm::SAMPLE_TIMEOUT_US)
+            if(now32() - sample.timestamp_us > pwm::SAMPLE_TIMEOUT_US)
             {
                 pwm::trip(fault_code::SAMPLE_TIMEOUT, index);
                 return;
@@ -1488,6 +1529,7 @@ namespace motor
             uint16_t bus_raw = 0;
             uint32_t bus_stamp = 0;
             pwm::get_bus(bus_raw, bus_stamp);
+            now = now32();
 
             if(bus_stamp == 0 || now - bus_stamp > pwm::BUS_TIMEOUT_US)
             {
@@ -1577,12 +1619,11 @@ namespace motor
                 xTaskNotifyWait(0, UINT32_MAX, &notifications, 0);
                 sensor::poll(notifications, !pwm::is_requested());
 
-                const uint32_t now = now32();
-                const uint64_t now64 = static_cast<uint64_t>(esp_timer_get_time());
-                pwm::heartbeat(now);
-
                 sensor::package sensors{};
                 sensor::get_package(sensors);
+                const uint64_t now64 = static_cast<uint64_t>(esp_timer_get_time());
+                const uint32_t now = static_cast<uint32_t>(now64);
+                pwm::heartbeat(now);
 
                 if(pwm::get_fault_code() == fault_code::NONE)
                 {
@@ -1600,6 +1641,7 @@ namespace motor
                     }
 
                     calibration.seen_sequence[index] = sample.sequence;
+                    if(!(sample.flags & 1U) || !pwm::is_running()) { continue; }
 
                     if(pwm::get_fault_code() != fault_code::NONE ||
                        static_cast<int32_t>(sample.timestamp_us - calibration.began_us) < 0)
@@ -1616,7 +1658,7 @@ namespace motor
                         break;
                     }
 
-                    if(fabsf(encoder.speed_rad_s) > 40.0f)
+                    if(fabsf(encoder.speed_rad_s) > speed_trip_rad_s)
                     {
                         pwm::trip(fault_code::SENSOR_TIMEOUT, index);
                         break;

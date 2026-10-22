@@ -1,0 +1,163 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x18 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 21 2026 23:58:12
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0d810h ( 55312) map
+I (96) esp_image: segment 1: paddr=0001d838 vaddr=3fc91500 size=027e0h ( 10208) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1d178h (119160) map
+I (123) esp_image: segment 3: paddr=0003d1a0 vaddr=3fc93ce0 size=00b58h (  2904) load
+I (124) esp_image: segment 4: paddr=0003dd00 vaddr=40374000 size=0d4b8h ( 54456) load
+I (139) esp_image: segment 5: paddr=0004b1c0 vaddr=50000000 size=00024h (    36) load
+I (145) boot: Loaded app from partition at offset 0x10000
+I (145) boot: Disabling RNG early entropy source...
+I (157) cpu_start: Multicore app
+I (166) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (167) cpu_start: Pro cpu start user code
+I (167) cpu_start: cpu freq: 160000000 Hz
+I (168) app_init: Application information:
+I (172) app_init: Project name:     balance_car
+I (176) app_init: App version:      v1.0.0-23-gfcaeb92-dirty
+I (182) app_init: Compile time:     Oct 22 2026 21:59:06
+I (187) app_init: ELF file SHA256:  bb6630833...
+I (191) app_init: ESP-IDF:          v6.0.2
+I (195) efuse_init: Min chip rev:     v0.0
+I (199) efuse_init: Max chip rev:     v0.99 
+I (203) efuse_init: Chip rev:         v0.2
+I (207) heap_init: Initializing. RAM available for dynamic allocation:
+I (213) heap_init: At 3FC974D0 len 00052240 (328 KiB): RAM
+I (218) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (223) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (228) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (234) spi_flash: detected chip: gd
+I (237) spi_flash: flash io: dio
+W (240) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (253) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (258) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (265) main_task: Started on CPU0
+I (284) main_task: Calling app_main()
+BENCH original_motor baseline auto-alignment bounded=8s
+W (435) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (454) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+BOOT 260469 stage=0 motor=0 ready=0 fault=0 bus=0.000 run=0 request=0 a=0.000000 b=0.000000 id=0.00000,0.00000 iq=0.00000,0.00000
+BOOT 361386 stage=1 motor=0 ready=0 fault=8 bus=8.184 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 462442 stage=1 motor=0 ready=0 fault=8 bus=8.172 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 563395 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 664440 stage=1 motor=0 ready=0 fault=8 bus=8.175 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 765395 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 866395 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 967395 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1068394 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1169387 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1270392 stage=1 motor=0 ready=0 fault=8 bus=8.190 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1371396 stage=1 motor=0 ready=0 fault=8 bus=8.190 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1472439 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1573386 stage=1 motor=0 ready=0 fault=8 bus=8.184 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1674394 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1775397 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1876440 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 1977395 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2078440 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2179387 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2280431 stage=1 motor=0 ready=0 fault=8 bus=8.190 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2381387 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2482395 stage=1 motor=0 ready=0 fault=8 bus=8.175 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2583395 stage=1 motor=0 ready=0 fault=8 bus=8.196 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2684398 stage=1 motor=0 ready=0 fault=8 bus=8.190 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2785397 stage=1 motor=0 ready=0 fault=8 bus=8.196 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2886401 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 2987395 stage=1 motor=0 ready=0 fault=8 bus=8.175 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3088401 stage=1 motor=0 ready=0 fault=8 bus=8.190 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3189389 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3290399 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3391390 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3492440 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3593394 stage=1 motor=0 ready=0 fault=8 bus=8.190 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3694401 stage=1 motor=0 ready=0 fault=8 bus=8.175 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3795395 stage=1 motor=0 ready=0 fault=8 bus=8.184 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3896392 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 3997387 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 4098440 stage=1 motor=0 ready=0 fault=8 bus=8.175 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 4199400 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 4300399 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 4401398 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 4502401 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 4603396 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 4704400 stage=1 motor=0 ready=0 fault=8 bus=8.190 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 4805396 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 4906399 stage=1 motor=0 ready=0 fault=8 bus=8.184 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 5007396 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 5108401 stage=1 motor=0 ready=0 fault=8 bus=8.175 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 5209397 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+E (5492) task_wdt: Task watchdog got triggered. The following tasks/users did not reset the watchdog in time:
+E (5492) task_wdt:  - IDLE1 (CPU 1)
+E (5492) task_wdt: Tasks currently running:
+E (5492) task_wdt: CPU 0: IDLE0
+E (5492) task_wdt: CPU 1: motor_control
+E (5492) task_wdt: Print CPU 1 backtrace
+
+
+Backtrace: 0x4037806A:0x3FC9302C |<-CORRUPTED
+
+W (5513) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (5543) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+BOOT 5310464 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 5448444 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 5549387 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 5650395 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 5751439 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 5852444 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 5953390 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6054394 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6155390 stage=1 motor=0 ready=0 fault=8 bus=8.190 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6256393 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6357393 stage=1 motor=0 ready=0 fault=8 bus=8.175 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6458396 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6559384 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6660431 stage=1 motor=0 ready=0 fault=8 bus=8.184 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6761391 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6862393 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 6963439 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7064434 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7165393 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7266401 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7367389 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7468441 stage=1 motor=0 ready=0 fault=8 bus=8.175 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7569391 stage=1 motor=0 ready=0 fault=8 bus=8.187 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7670441 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7771397 stage=1 motor=0 ready=0 fault=8 bus=8.193 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7872399 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 7973392 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 8074397 stage=1 motor=0 ready=0 fault=8 bus=8.181 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+BOOT 8175390 stage=1 motor=0 ready=0 fault=8 bus=8.190 run=0 request=0 a=5.881282 b=0.000000 id=-0.00051,0.00000 iq=0.00134,0.00000
+STOPPED run=0 request=0
+I (8510) main_task: Returned from app_main()
+E (10492) task_wdt: Task watchdog got triggered. The following tasks/users did not reset the watchdog in time:
+E (10492) task_wdt:  - IDLE1 (CPU 1)
+E (10492) task_wdt: Tasks currently running:
+E (10492) task_wdt: CPU 0: IDLE0
+E (10492) task_wdt: CPU 1: motor_control
+E (10492) task_wdt: Print CPU 1 backtrace
+
+
+Backtrace: 0x4037806A:0x3FC9302C |<-CORRUPTED
+

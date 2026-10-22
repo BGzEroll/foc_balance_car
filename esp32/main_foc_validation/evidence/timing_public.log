@@ -1,0 +1,84 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 21 2026 23:58:12
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0db20h ( 56096) map
+I (97) esp_image: segment 1: paddr=0001db48 vaddr=3fc91700 size=024d0h (  9424) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1ee9ch (126620) map
+I (124) esp_image: segment 3: paddr=0003eec4 vaddr=3fc93bd0 size=00f34h (  3892) load
+I (126) esp_image: segment 4: paddr=0003fe00 vaddr=40374000 size=0d604h ( 54788) load
+I (141) esp_image: segment 5: paddr=0004d40c vaddr=50000000 size=00024h (    36) load
+I (147) boot: Loaded app from partition at offset 0x10000
+I (147) boot: Disabling RNG early entropy source...
+I (159) cpu_start: Multicore app
+I (168) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (168) cpu_start: Pro cpu start user code
+I (168) cpu_start: cpu freq: 160000000 Hz
+I (170) app_init: Application information:
+I (174) app_init: Project name:     balance_car
+I (178) app_init: App version:      v1.0.0-23-gfcaeb92-dirty
+I (183) app_init: Compile time:     Oct 22 2026 22:52:18
+I (188) app_init: ELF file SHA256:  49fbbeb94...
+I (193) app_init: ESP-IDF:          v6.0.2
+I (197) efuse_init: Min chip rev:     v0.0
+I (200) efuse_init: Max chip rev:     v0.99 
+I (204) efuse_init: Chip rev:         v0.2
+I (208) heap_init: Initializing. RAM available for dynamic allocation:
+I (215) heap_init: At 3FCAA410 len 0003F300 (252 KiB): RAM
+I (220) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (225) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (230) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (236) spi_flash: detected chip: gd
+I (239) spi_flash: flash io: dio
+W (242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (254) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (260) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (267) main_task: Started on CPU0
+I (286) main_task: Calling app_main()
+W (437) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (455) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+BENCH_READY default=stopped ARM then finite DTEST/SPEED; STOP anytime
+STATUS {"running":0,"requested":0,"ready":0,"fault":0,"fault_motor":255,"fault_pc":0,"raw_a":0,"raw_b":0,"bus":8.18100,"stage":6,"aligned":[0,0],"direction":[0,0],"zero":[0.000000000,0.000000000],"task_state":0}
+STATUS {"running":0,"requested":0,"ready":0,"fault":0,"fault_motor":255,"fault_pc":0,"raw_a":0,"raw_b":0,"bus":8.18700,"stage":6,"aligned":[0,0],"direction":[0,0],"zero":[0.000000000,0.000000000],"task_state":0}
+ARM_OK
+ALIGNED
+STATUS {"running":0,"requested":0,"ready":0,"fault":0,"fault_motor":255,"fault_pc":0,"raw_a":0,"raw_b":0,"bus":8.19000,"stage":5,"aligned":[1,1],"direction":[1,1],"zero":[5.353447914,2.224272728],"task_state":0}
+ACCEPTED
+DONE
+TIMING poll_max_us=400 foc_max_us=277 fault_step=2 command_age=1051
+STATUS {"running":0,"requested":0,"ready":0,"fault":7,"fault_motor":0,"fault_pc":1077375176,"raw_a":0,"raw_b":0,"bus":8.19300,"stage":5,"aligned":[1,1],"direction":[1,1],"zero":[5.353447914,2.224272728],"task_state":0}
+TIMING poll_max_us=400 foc_max_us=277 fault_step=2 command_age=1051
+STATUS {"running":0,"requested":0,"ready":0,"fault":7,"fault_motor":0,"fault_pc":1077375176,"raw_a":0,"raw_b":0,"bus":8.19300,"stage":5,"aligned":[1,1],"direction":[1,1],"zero":[5.353447914,2.224272728],"task_state":0}
+TIMING poll_max_us=400 foc_max_us=277 fault_step=2 command_age=1051
+STATUS {"running":0,"requested":0,"ready":0,"fault":7,"fault_motor":0,"fault_pc":1077375176,"raw_a":0,"raw_b":0,"bus":8.18400,"stage":5,"aligned":[1,1],"direction":[1,1],"zero":[5.353447914,2.224272728],"task_state":0}
+METRIC {"motor":1,"n":0,"id_mean":0.0000000,"iq_mean":0.0000000,"id_error_rms":0.0000000,"iq_error_rms":0.0000000,"voltage_max":0.0004190,"saturated":0,"max_gap_us":807,"active":6,"valid":5,"min_margin_ticks":669}
+METRIC {"motor":2,"n":1,"id_mean":0.5505390,"iq_mean":0.0130317,"id_error_rms":0.5505390,"iq_error_rms":0.0130317,"voltage_max":0.0600000,"saturated":0,"max_gap_us":200,"active":5,"valid":5,"min_margin_ticks":339}
+META {"kind":2,"value":-27.50000,"duration_ms":4000,"mask":3,"cap":0.40000,"ratio":0.04000,"rows":2}
+CSV us,motor,id,iq,target_d,target_q,speed,angle,vd,vq,bus,limit
+R 160,1,0.000598,-0.003924,0.000000,0.000000,0.000000,2.560214,-0.000063,0.000414,8.18400,0.327720
+R 4294747357,2,0.550539,0.013032,0.000000,0.000000,-0.000000,5.703341,0.060000,0.000000,8.18400,0.120000
+END
+TIMING poll_max_us=400 foc_max_us=277 fault_step=2 command_age=1051
+STATUS {"running":0,"requested":0,"ready":0,"fault":7,"fault_motor":0,"fault_pc":1077375176,"raw_a":0,"raw_b":0,"bus":8.17500,"stage":5,"aligned":[1,1],"direction":[1,1],"zero":[5.353447914,2.224272728],"task_state":0}
+TIMING poll_max_us=400 foc_max_us=277 fault_step=2 command_age=1051
+STATUS {"running":0,"requested":0,"ready":0,"fault":7,"fault_motor":0,"fault_pc":1077375176,"raw_a":0,"raw_b":0,"bus":8.18400,"stage":5,"aligned":[1,1],"direction":[1,1],"zero":[5.353447914,2.224272728],"task_state":0}

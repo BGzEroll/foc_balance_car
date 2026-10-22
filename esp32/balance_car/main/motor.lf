@@ -1,0 +1,27 @@
+# 将电流环与本次使用的数学函数放入内部 RAM，减少缓存未命中造成的时延。
+[mapping:foc_current_code]
+archive: libmain.a
+entries:
+    foc_bench (noflash)
+    motor (noflash)
+
+[mapping:foc_current_math]
+archive: libc.a
+entries:
+    libm_machine_xtensa_sf_sqrt (noflash)
+    libm_math_sf_cos (noflash)
+    libm_math_sf_sin (noflash)
+    libm_math_sf_rem_pio2 (noflash)
+    libm_math_kf_cos (noflash)
+    libm_math_kf_sin (noflash)
+    libm_math_kf_rem_pio2 (noflash)
+    libm_math_sf_floor (noflash)
+    libm_common_sf_scalbn (noflash)
+    libm_common_sf_fmax (noflash)
+    libm_common_sf_fmin (noflash)
+    libm_common_math_inexactf (noflash)
+
+[mapping:foc_current_sqrt]
+archive: libgcc.a
+entries:
+    _sqrtf (noflash)
