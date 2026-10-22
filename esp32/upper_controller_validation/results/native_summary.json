@@ -1,0 +1,32 @@
+{
+  "source_branch": "test/foc_current",
+  "source_commit": "207729fa6435fd8a87485c622fdbe5fa7c250d8d",
+  "samples": 14400,
+  "adapter_samples": 6000,
+  "groups": 6,
+  "period_s": 0.005,
+  "Kt_Nm_A": 0.013311959501823515,
+  "max_abs_error": {
+    "left_current_A": 2.6428915369969275e-05,
+    "right_current_A": 2.818235049201201e-05,
+    "target_speed_m_s": 1.2616174114993273e-06,
+    "target_pitch_rad": 1.8964743929983374e-06,
+    "distance_m": 9.798486900192138e-07
+  },
+  "tolerance": [
+    0.0002,
+    0.0002,
+    2e-05,
+    2e-05,
+    2e-05
+  ],
+  "pass": true,
+  "adapter_max_abs_error": {
+    "speed_m_s": 7.352134101523689e-08,
+    "pitch_rad": 5.524896901087928e-08,
+    "pitch_rate_rad_s": 9.627714192550485e-08,
+    "yaw_rad": 2.894169499612076e-07,
+    "yaw_rate_rad_s": 1.2471007704295545e-07
+  },
+  "adapter_pass": true
+}

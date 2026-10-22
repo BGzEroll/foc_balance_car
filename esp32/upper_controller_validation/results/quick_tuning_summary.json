@@ -1,0 +1,57 @@
+{
+  "live_balance_10000_0_7": {
+    "pitch_rms_deg": 2.9572288830785887,
+    "pitch_std_deg": 2.8508216783836886,
+    "pitch_min_deg": -5.6866477134093465,
+    "pitch_max_deg": 5.339935367123658,
+    "saturation_fraction": 0.834375,
+    "distance_final_m": 0.026983561,
+    "metadata": {
+      "result": 0,
+      "rows": 400,
+      "updates": 2000,
+      "max_dt_us": 5008,
+      "max_calculate_us": 153
+    }
+  },
+  "continuous_balance_0_0_7_window_1": {
+    "pitch_rms_deg": 1.2985574096297543,
+    "pitch_std_deg": 0.7528296076694241,
+    "pitch_min_deg": -3.591557634662486,
+    "pitch_max_deg": 0.2258026384131677,
+    "saturation_fraction": 0.546875,
+    "distance_final_m": -0.0037363928,
+    "metadata": {
+      "result": 0,
+      "rows": 400,
+      "updates": 8610,
+      "max_dt_us": 5017,
+      "max_calculate_us": 181,
+      "velocity_kp_velocity_ki_pitch_kd": [
+        0.7,
+        0.3,
+        0.04
+      ]
+    }
+  },
+  "continuous_balance_0_0_7_window_2": {
+    "pitch_rms_deg": 0.872016457279528,
+    "pitch_std_deg": 0.3329559157605615,
+    "pitch_min_deg": 0.26329010384425333,
+    "pitch_max_deg": 1.544440108890559,
+    "saturation_fraction": 0.5625,
+    "distance_final_m": -0.0021201281,
+    "metadata": {
+      "result": 0,
+      "rows": 400,
+      "updates": 32512,
+      "max_dt_us": 5039,
+      "max_calculate_us": 248,
+      "velocity_kp_velocity_ki_pitch_kd": [
+        0.5,
+        0.2,
+        0.05
+      ]
+    }
+  }
+}

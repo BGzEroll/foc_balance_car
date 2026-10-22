@@ -65,6 +65,8 @@ namespace motor
     {
         bool initialized = false;
         bool ready = false;
+        bool calibrated = false;
+        bool running = false;
 
         target_current target[2] = {};
         current_info current[2] = {};
@@ -76,6 +78,10 @@ namespace motor
     };
 
     bool init();
+    bool calibrate();
+    bool start(uint32_t duration_ms, uint32_t mask = 3);
+    void keep_alive();
+    void stop();
     bool set_target_current(motor_id id, const target_current &target);
     bool get_info(foc_info &snapshot);
 }

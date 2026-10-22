@@ -1,0 +1,59 @@
+{
+  "status": "functional_course_completed_with_odometry_and_numerical_limits",
+  "gains": {
+    "position_kp": 1.3,
+    "velocity_kp": 1.4,
+    "velocity_ki": 1.2,
+    "pitch_kp": 0.4,
+    "pitch_ki": 0.005,
+    "pitch_kd": 0.025,
+    "yaw_kp": 0.105,
+    "yaw_ki": 0.01,
+    "yaw_kd": 0.02
+  },
+  "selected_screening": {
+    "score": 0.59656040984318548,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.059201867469896939,
+    "hill_hold_position_error": -0.0095407169559581263,
+    "max_pitch_deg": 19.515492014746169,
+    "saturation_fraction": 0,
+    "name": "v1.40_i1.20_d0.025"
+  },
+  "baseline_screening": {
+    "score": 2.5422326169695508,
+    "completed_fraction": 1,
+    "fast_velocity_rms": 0.10298826664409665,
+    "hill_hold_position_error": -0.14321553230275816,
+    "max_pitch_deg": 24.034663910391171,
+    "saturation_fraction": 0,
+    "name": "baseline"
+  },
+  "scope": "Nonlinear longitudinal screening only; no tire impacts or full FOC. Must validate native model.",
+  "native_validation": {
+    "summary": "pid_validation/summary.json",
+    "full_course_pass": false,
+    "mechanical_step_s": 0.0005,
+    "step_refinement": {
+      "available": true,
+      "duration_s": 4.7998016940107755,
+      "max_pitch_difference_deg": 0.75694353054056762,
+      "max_world_position_difference_m": 0.0010980672300422395,
+      "max_forward_speed_difference_mps": 0.015197796885502116,
+      "pitch_tolerance_deg": 0.15,
+      "position_tolerance_m": 0.002,
+      "pass": false,
+      "full_course_repeated_at_250us": false
+    }
+  },
+  "controller_timing": {
+    "pid_period_s": 0.005,
+    "encoder_period_s": 0.005,
+    "imu_period_s": 0.005,
+    "gains_retuned": false,
+    "validation": "pid_validation/summary.json",
+    "execution_rates_pass": true,
+    "functional_course_completed": true,
+    "strict_validation_pass": false
+  }
+}

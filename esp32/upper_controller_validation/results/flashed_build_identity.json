@@ -1,0 +1,16 @@
+{
+  "branch": "codex/test-upper-controller",
+  "main": "9faaf7f22f017444cb60e80a31227c53518281e4",
+  "files": {
+    "esp32/balance_car/main/CMakeLists.txt": "530c939c4d401f3850c8b7a553b4f84fed80ccfad35b4d314818f9802e837bd7",
+    "esp32/balance_car/user_lib/balance.cpp": "add60edd3f1454dd0fdbc8c2f64ba701b806c1fb515ebd1b0153ac6866ce00fe",
+    "esp32/balance_car/user_lib/balance.h": "ff71d01e7bc45d0d91b0dff77847d578766256dc673b0a9cdf632e8ed97d008f",
+    "esp32/balance_car/user_lib/test.cpp": "109b63212c9bf5f0f1380ccdd6434b6fcbcde81b83fb02cd13f28b92f7af7c40",
+    "esp32/balance_car/user_lib/hw/motor.cpp": "6b9259a03c4b4c4204918f56694f774a2c88e03584a6b7160be6bce0c9249f52",
+    "esp32/balance_car/user_lib/hw/motor.h": "c039007e08f013833fcb09acf6127806be307e37058d90151d39179fe8eb41ca"
+  },
+  "balance_car.bin_sha256": "60f421106df89affd95f450b3c7d7eb7f0b537fc7ddc1f54827e5d1ddbf935ef",
+  "balance_car.elf_sha256": "1b33ad4bc26cd7e0e795061254c576c8fb39b5f29c91f704937dd5bb2da7242a",
+  "pre_upper_flash_2MB.bin_sha256": "426d67ffc81f315b20fa6661a4c082c94e17810ae43909fd263696779d2806c0",
+  "source_parity": true
+}
