@@ -40,6 +40,7 @@ namespace motor
         float electrical_angle_rad = 0.0f;
         float mechanical_angle_rad = 0.0f;
         float mechanical_speed_rad_s = 0.0f;
+        float encoder_direction = 0.0f;
 
         float phase_A[3] = {};
         float id_A = 0.0f;

@@ -1123,6 +1123,7 @@ namespace foc
         info.electrical_angle_rad = theta;
         info.mechanical_angle_rad = encoder.angle_rad;
         info.mechanical_speed_rad_s = encoder.speed_rad_s;
+        info.encoder_direction = aligning ? 0.0f : motors[index].direction;
         info.phase_A[0] = ia;
         info.phase_A[1] = ib;
         info.phase_A[2] = ic;
