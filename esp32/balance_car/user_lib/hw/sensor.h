@@ -10,6 +10,7 @@ namespace sensor
         uint64_t timestamp_us = 0;
 
         float angle_rad = 0.0f;
+        float single_turn_rad = 0.0f;
         float speed_rad_s = 0.0f;
     };
 

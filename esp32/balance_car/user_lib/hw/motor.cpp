@@ -1104,7 +1104,7 @@ namespace foc
             const int32_t age = static_cast<int32_t>(
                 raw.timestamp_us - static_cast<uint32_t>(encoder.timestamp_us));
             const float predicted_angle =
-                encoder.angle_rad + encoder.speed_rad_s * (age * 1.0e-6f);
+                encoder.single_turn_rad + encoder.speed_rad_s * (age * 1.0e-6f);
             theta = wrap(motors[index].direction * POLE_PAIRS * predicted_angle -
                          motors[index].zero_rad);
         }

@@ -372,8 +372,9 @@ namespace as5600
 
             sensor::encoder_data data;
             data.timestamp_us = now_us;
+            data.single_turn_rad = static_cast<float>(raw) * COUNT_TO_RAD;
             data.angle_rad = static_cast<float>(encoder.turns) * TWO_PI +
-                             static_cast<float>(raw) * COUNT_TO_RAD;
+                             data.single_turn_rad;
             data.speed_rad_s = encoder.speed_rad_s;
 
             return data;
