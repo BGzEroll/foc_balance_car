@@ -33,7 +33,7 @@ namespace test
         constexpr uint32_t SENSOR_WAIT_MS = 1;
         constexpr uint32_t DISPLAY_PERIOD_MS = 100;
 
-        // 仅由显示任务使用，放在静态区以减少任务栈占用。
+        // 仅由显示任务使用，放在静态区以减少任务栈占用
         char previous[ROW_COUNT][ROW_SIZE] = {};
         char current[ROW_COUNT][ROW_SIZE] = {};
         char output[ROW_COUNT * (ROW_SIZE + 20) + 32] = {};
@@ -60,7 +60,7 @@ namespace test
         /**
          * @brief 处理传感器事件并持续推进异步采样
          *
-         * Sensor 的初始化、轮询及 I2C 总线恢复均由本任务负责。
+         * Sensor 的初始化、轮询及 I2C 总线恢复均由本任务负责
          */
         void sensor_task(void *)
         {
@@ -81,7 +81,7 @@ namespace test
                     &notifications,
                     pdMS_TO_TICKS(SENSOR_WAIT_MS));
 
-                // 电机尚未接入，当前允许执行 I2C 总线恢复。
+                // 电机尚未接入，当前允许执行 I2C 总线恢复
                 sensor::poll(notifications, true);
             }
         }
@@ -256,7 +256,7 @@ namespace test
         /**
          * @brief 串口数据显示任务
          *
-         * 仅读取传感器快照，不直接操作 Sensor 的 I2C 状态机。
+         * 仅读取传感器快照，不直接操作 Sensor 的 I2C 状态机
          */
         void display_task(void *)
         {

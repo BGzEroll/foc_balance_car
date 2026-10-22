@@ -162,7 +162,7 @@ namespace i2c
      *
      * @param[in, out] ctx I2C 上下文
      *
-     * @note 仅允许在所有者任务中调用。
+     * @note 仅允许在所有者任务中调用
      */
     void rebuild(context &ctx)
     {
@@ -228,8 +228,8 @@ namespace i2c
         ctx.submitted_us = sys_time::get_us_tick();
         ctx.pending = true;
 
-        // 超时由 sensor::poll() 统一检测与恢复。
-        // 不能在这里等待事务完成。
+        // 超时由 sensor::poll() 统一检测与恢复
+        // 不能在这里等待事务完成
         i2c_master_transmit_receive(
             ctx.dev,
             reg,
@@ -719,7 +719,7 @@ namespace sensor
             const uint64_t now_us = i2c::right.completion_time_us;
             publish_right(as5600::process(as5600::right, now_us));
 
-            // 到达 IMU 采样时刻时，暂时切换到 MPU6050。
+            // 到达 IMU 采样时刻时，暂时切换到 MPU6050
             if(now_us >= next_imu_time_us)
             {
                 do
@@ -797,7 +797,7 @@ namespace sensor
      * @return true 初始化成功
      * @return false 当前任务不符合所有权要求
      *
-     * @note 不创建任务。初始化与后续 poll() 必须由同一任务执行。
+     * @note 不创建任务。初始化与后续 poll() 必须由同一任务执行
      */
     bool init()
     {
@@ -830,8 +830,8 @@ namespace sensor
      * @param[in] notifications 调用方收到的任务通知位
      * @param[in] allow_recovery 是否允许恢复 I2C 总线
      *
-     * @note 不等待任务通知，不创建任务。
-     *       总线恢复只在 allow_recovery 为 true 时执行。
+     * @note 不等待任务通知，不创建任务
+     *       总线恢复只在 allow_recovery 为 true 时执行
      */
     void poll(uint32_t notifications, bool allow_recovery)
     {

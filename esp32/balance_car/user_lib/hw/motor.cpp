@@ -30,7 +30,7 @@ namespace adc
         };
 
         adc_oneshot_unit_handle_t handle = nullptr;
-        uint16_t voltage_mv[5][4096] = {};
+        uint16_t voltage_mv[4096] = {};
         float offset_V[4] = {};
         uint16_t current_low[4] = {};
         uint16_t current_high[4] = {};
@@ -41,7 +41,7 @@ namespace adc
     /**
      * @brief 初始化 ADC1、校准查找表和四路零电流偏置
      *
-     * @note 初始化时电机 PWM 必须保持关闭。
+     * @note 初始化时电机 PWM 必须保持关闭
      */
     void init()
     {
@@ -56,25 +56,26 @@ namespace adc
         for(uint32_t ch = 0; ch < 5; ++ch)
         {
             ESP_ERROR_CHECK(adc_oneshot_config_channel(handle, CHANNEL[ch], &config));
-
-            adc_cali_curve_fitting_config_t cal_config{};
-            cal_config.unit_id = ADC_UNIT_1;
-            cal_config.chan = CHANNEL[ch];
-            cal_config.atten = ADC_ATTEN_DB_12;
-            cal_config.bitwidth = ADC_BITWIDTH_12;
-
-            adc_cali_handle_t calibration = nullptr;
-            ESP_ERROR_CHECK(adc_cali_create_scheme_curve_fitting(&cal_config, &calibration));
-
-            for(uint32_t raw = 0; raw < 4096; ++raw)
-            {
-                int mv = 0;
-                ESP_ERROR_CHECK(adc_cali_raw_to_voltage(calibration, raw, &mv));
-                voltage_mv[ch][raw] = static_cast<uint16_t>(mv < 0 ? 0 : mv);
-            }
-
-            ESP_ERROR_CHECK(adc_cali_delete_scheme_curve_fitting(calibration));
         }
+
+        // ESP32-S3 的 ADC1 通道在相同衰减和位宽下共用电压校准表
+        adc_cali_curve_fitting_config_t cal_config{};
+        cal_config.unit_id = ADC_UNIT_1;
+        cal_config.chan = CHANNEL[0];
+        cal_config.atten = ADC_ATTEN_DB_12;
+        cal_config.bitwidth = ADC_BITWIDTH_12;
+
+        adc_cali_handle_t calibration = nullptr;
+        ESP_ERROR_CHECK(adc_cali_create_scheme_curve_fitting(&cal_config, &calibration));
+
+        for(uint32_t raw = 0; raw < 4096; ++raw)
+        {
+            int mv = 0;
+            ESP_ERROR_CHECK(adc_cali_raw_to_voltage(calibration, raw, &mv));
+            voltage_mv[raw] = static_cast<uint16_t>(mv < 0 ? 0 : mv);
+        }
+
+        ESP_ERROR_CHECK(adc_cali_delete_scheme_curve_fitting(calibration));
 
         for(uint32_t n = 0; n < BASELINE_COUNT; ++n)
         {
@@ -82,7 +83,7 @@ namespace adc
             {
                 int raw = 0;
                 ESP_ERROR_CHECK(adc_oneshot_read(handle, CHANNEL[ch], &raw));
-                offset_V[ch] += voltage_mv[ch][raw] * (0.001f / BASELINE_COUNT);
+                offset_V[ch] += voltage_mv[raw] * (0.001f / BASELINE_COUNT);
             }
         }
 
@@ -91,7 +92,7 @@ namespace adc
             for(uint32_t raw = 0; raw < 4096; ++raw)
             {
                 const float current =
-                    (voltage_mv[ch][raw] * 0.001f - offset_V[ch]) * 4.0f;
+                    (voltage_mv[raw] * 0.001f - offset_V[ch]) * 4.0f;
 
                 if(current < -2.0f)
                 {
@@ -107,7 +108,7 @@ namespace adc
 
         for(uint32_t raw = 0; raw < 4096; ++raw)
         {
-            const float voltage = voltage_mv[4][raw] * 0.003f;
+            const float voltage = voltage_mv[raw] * 0.003f;
 
             if(voltage < 5.0f)
             {
@@ -201,7 +202,7 @@ namespace adc
     float current(uint32_t channel, uint16_t raw, uint32_t index)
     {
         constexpr float GAIN[2] = {-4.0f, -4.0f};
-        return (voltage_mv[channel][raw] * 0.001f - offset_V[channel]) * GAIN[index];
+        return (voltage_mv[raw] * 0.001f - offset_V[channel]) * GAIN[index];
     }
 
     /**
@@ -213,7 +214,7 @@ namespace adc
      */
     float voltage(uint16_t raw)
     {
-        return voltage_mv[4][raw] * 0.003f;
+        return voltage_mv[raw] * 0.003f;
     }
 
 
@@ -396,7 +397,7 @@ namespace pwm
     /**
      * @brief 立即关闭六路 PWM 输出
      *
-     * @note 可以从 MCPWM ISR 调用。
+     * @note 可以从 MCPWM ISR 调用
      */
     void IRAM_ATTR stop()
     {
@@ -705,7 +706,7 @@ namespace pwm
     }
 
     /**
-     * @brief 在原实验分支验证过的相位窗口更新六路比较值
+     * @brief 在验证过的相位窗口更新六路比较值
      *
      * @return false 不要求任务切换
      */
@@ -852,7 +853,7 @@ namespace pwm
     /**
      * @brief 配置固定六路 MCPWM、双定时器与全部 ISR 回调
      *
-     * @note 初始化后六路输出仍被强制为低电平。
+     * @note 初始化后六路输出仍被强制为低电平
      */
     void init()
     {
@@ -1192,7 +1193,7 @@ namespace motor
         constexpr float ALIGN_MAX_DELTA = 1.5f;
         constexpr float ALIGN_MAX_SPEED = 0.5f;
         constexpr float TWO_PI = 6.28318530718f;
-        constexpr float MAX_TARGET_A = 0.7f;
+        constexpr float MAX_TARGET_A = 2.0f;
 
         enum class stage : uint8_t
         {
@@ -1653,7 +1654,7 @@ namespace motor
             return true;
         }
 
-        // 固定硬件的 PVCC 门控；PWM 在初始化期间保持强制低电平。
+        // 固定硬件的 PVCC 门控；PWM 在初始化期间保持强制低电平
         pwm::init();
         ESP_ERROR_CHECK(gpio_set_direction(GPIO_NUM_7, GPIO_MODE_OUTPUT));
         ESP_ERROR_CHECK(gpio_set_level(GPIO_NUM_7, 1));
