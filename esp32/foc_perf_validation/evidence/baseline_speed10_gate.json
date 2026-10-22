@@ -1,0 +1,24 @@
+{
+  "label": "baseline_speed10",
+  "result": "PASS_BENCH_GATE",
+  "motors": [
+    {
+      "motor": 1,
+      "speed_rad_s": 9.820037701585358,
+      "id_mean": -0.0004961,
+      "valid": 20000,
+      "active": 20000,
+      "max_PI_gap_us": 209,
+      "observed_voltage_max_V": 0.1827437
+    },
+    {
+      "motor": 2,
+      "speed_rad_s": 9.99717722530462,
+      "id_mean": -0.0006497,
+      "valid": 19999,
+      "active": 20000,
+      "max_PI_gap_us": 400,
+      "observed_voltage_max_V": 0.1286398
+    }
+  ]
+}

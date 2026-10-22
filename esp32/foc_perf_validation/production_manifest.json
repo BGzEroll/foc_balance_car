@@ -1,0 +1,9 @@
+{
+  "base_main": "a8d1b4fc4aa608fc89710a3e8f1fd8e1b05571e0",
+  "production_source_sha256_lf": {
+    "esp32/balance_car/user_lib/hw/motor.cpp": "f3b01c00c04649aeac5a468c46f241089147298054389319b5ec6fd2098471e3",
+    "esp32/balance_car/sdkconfig": "02f93e36550b94fd62e2eca8bb57f15392a99d884692486417963159f3089aeb",
+    "esp32/balance_car/user_lib/hw/foc_math.h": "58e7b7d06fa392facebbbbaeb90ecdee510de7fefbd13f65194bc252308fa235"
+  },
+  "note": "Production-only patch. Hardware bench wraps this same math and timing code; no main mutation."
+}

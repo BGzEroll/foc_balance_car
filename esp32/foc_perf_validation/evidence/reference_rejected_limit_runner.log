@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/perf_evidence/run_reference.py", line 39, in <module>
+    setting('LIMIT '+' '.join(map(str,a.limit)),'LIMIT_OK')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/perf_evidence/run_reference.py", line 21, in setting
+    if ack.encode() not in data[before:]:raise RuntimeError('Setting rejected: '+command)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Setting rejected: LIMIT 0.08 0.652

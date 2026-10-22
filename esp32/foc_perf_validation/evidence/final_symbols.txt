@@ -1,0 +1,4 @@
+403800f4 00000508 T foc::update(unsigned long, pwm::sample const&, sensor::encoder_data const&, motor::target_current const&, bool, float, float, motor::current_info&, pwm::command&)
+3fcafd04 00000004 b motor::(anonymous namespace)::task_ready
+403805fc 00000972 t motor::(anonymous namespace)::task(void*)
+3fc95fcc 00004000 d foc_math::sine_table

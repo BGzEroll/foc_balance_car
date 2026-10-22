@@ -1,0 +1,24 @@
+{
+  "label": "lut_negative27",
+  "result": "PASS_BENCH_GATE",
+  "motors": [
+    {
+      "motor": 1,
+      "speed_rad_s": -27.29213185437429,
+      "id_mean": 0.0029956,
+      "valid": 20000,
+      "active": 20000,
+      "max_PI_gap_us": 211,
+      "observed_voltage_max_V": 0.3504516
+    },
+    {
+      "motor": 2,
+      "speed_rad_s": -27.495735488505986,
+      "id_mean": 0.004222,
+      "valid": 19999,
+      "active": 19999,
+      "max_PI_gap_us": 213,
+      "observed_voltage_max_V": 0.2914051
+    }
+  ]
+}

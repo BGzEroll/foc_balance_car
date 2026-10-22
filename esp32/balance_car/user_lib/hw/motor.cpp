@@ -1,6 +1,7 @@
 #include "motor.h"
 
 #include "sensor.h"
+#include "foc_math.h"
 #include <math.h>
 #include "driver/gpio.h"
 #include "driver/mcpwm_prelude.h"
@@ -24,7 +25,7 @@ namespace adc
 {
     namespace
     {
-        constexpr uint32_t CPU_MHZ = 160;
+        constexpr uint32_t CPU_MHZ = CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ;
         constexpr uint32_t BASELINE_COUNT = 512;
         constexpr adc_channel_t CHANNEL[5] =
         {
@@ -225,7 +226,9 @@ namespace adc
 
 namespace pwm
 {
+    uint32_t bench_deadline_us = 0;
     constexpr uint32_t PERIOD = 8000;
+    constexpr uint32_t CYCLES_PER_TICK = CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ / 80;
     constexpr uint32_t NEUTRAL = 2000;
     constexpr uint32_t SAMPLE_TIMEOUT_US = 1000;
     constexpr uint32_t BUS_TIMEOUT_US = 5000;
@@ -309,6 +312,7 @@ namespace pwm
         uint32_t fault_raw_a = 0;
         uint32_t fault_raw_b = 0;
         uint32_t fault_us = 0;
+        uint32_t fault_pc = 0;
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -426,7 +430,7 @@ namespace pwm
      * @param[in] raw_a 第一相 ADC 原始值
      * @param[in] raw_b 第二相 ADC 原始值
      */
-    void IRAM_ATTR trip(
+    void IRAM_ATTR __attribute__((noinline)) trip(
         motor::fault_code code,
         uint8_t index = 0xFF,
         uint16_t raw_a = 0,
@@ -438,6 +442,7 @@ namespace pwm
             &fault, &expected, static_cast<uint32_t>(code), false,
             __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
         {
+            fault_pc = reinterpret_cast<uint32_t>(__builtin_return_address(0));
             __atomic_store_n(&fault_motor, index, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_a, raw_a, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_b, raw_b, __ATOMIC_RELAXED);
@@ -621,6 +626,11 @@ namespace pwm
 
         if(wanted)
         {
+            if(bench_deadline_us && static_cast<int32_t>(now - bench_deadline_us) >= 0)
+            {
+                stop();
+                return false;
+            }
             if(static_cast<int32_t>(
                    now - __atomic_load_n(&heartbeat_us, __ATOMIC_ACQUIRE)) > 3000)
             {
@@ -814,11 +824,11 @@ namespace pwm
         uint16_t b = 0;
         const bool ok_a = adc::read(adc::CHANNEL[index * 2], a);
         out.raw_a = a;
-        out.a_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + 1U) / 2U;
+        out.a_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + CYCLES_PER_TICK - 1U) / CYCLES_PER_TICK;
         out.b_start = out.a_end;
         const bool ok_b = adc::read(adc::CHANNEL[index * 2 + 1], b);
         out.raw_b = b;
-        out.b_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + 1U) / 2U;
+        out.b_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + CYCLES_PER_TICK - 1U) / CYCLES_PER_TICK;
         out.raw_bus = __atomic_load_n(&bus_raw, __ATOMIC_ACQUIRE);
 
         const bool window_a = !output_enabled ||
@@ -836,6 +846,10 @@ namespace pwm
                     (window_a ? 8U : 0U) |
                     (window_b ? 16U : 0U) |
                     (same_cycle ? 32U : 0U);
+
+#ifdef MOTOR_SAMPLE_HOOK
+        MOTOR_SAMPLE_HOOK(index, out, output_enabled);
+#endif
 
         const bool over = adc::overcurrent(index, a, b);
 
@@ -964,7 +978,8 @@ namespace foc
         constexpr float INV_SQRT3 = 0.57735026919f;
         constexpr float KP = 0.060318579f;
         constexpr float KI = 226.194672f;
-        constexpr float BUS_LIMIT_RATIO = 0.08f;
+        float voltage_limit = 0.652f;
+        float bus_limit_ratio = 0.08f;
         constexpr float POLE_PAIRS = 7.0f;
 
         struct state
@@ -974,6 +989,8 @@ namespace foc
             float integral_d = 0.0f;
             float integral_q = 0.0f;
             uint32_t last_sample_us = 0;
+            uint32_t updates = 0, max_dt_us = 0;
+            uint32_t max_compute_us = 0, max_command_age_us = 0;
             bool aligned = false;
         };
 
@@ -988,8 +1005,7 @@ namespace foc
          */
         float wrap(float angle)
         {
-            angle = fmodf(angle, TWO_PI);
-            return angle < 0.0f ? angle + TWO_PI : angle;
+            return foc_math::wrap(angle);
         }
 
         /**
@@ -1056,6 +1072,8 @@ namespace foc
             motors[i].integral_d = 0.0f;
             motors[i].integral_q = 0.0f;
             motors[i].last_sample_us = 0;
+            motors[i].updates = motors[i].max_dt_us = 0;
+            motors[i].max_compute_us = motors[i].max_command_age_us = 0;
         }
     }
 
@@ -1113,8 +1131,9 @@ namespace foc
         const float ib = adc::current(index * 2 + 1, raw.raw_b, index);
         const float ic = -ia - ib;
         const float beta = (ia + 2.0f * ib) * INV_SQRT3;
-        const float cs = cosf(theta);
-        const float sn = sinf(theta);
+        float cs = 0.0f;
+        float sn = 0.0f;
+        foc_math::sincos(theta, sn, cs);
         const float id = ia * cs + beta * sn;
         const float iq = beta * cs - ia * sn;
 
@@ -1147,6 +1166,8 @@ namespace foc
                 return false;
             }
 
+            ++motors[index].updates;
+            if(dt_us > motors[index].max_dt_us) { motors[index].max_dt_us = dt_us; }
             const float dt = dt_us * 1.0e-6f;
             const float error_d = target.id_A - id;
             const float error_q = target.iq_A - iq;
@@ -1155,12 +1176,12 @@ namespace foc
 
             vd = KP * error_d + candidate_d;
             vq = KP * error_q + candidate_q;
-            const float limit = BUS_LIMIT_RATIO * bus;
-            const float magnitude = sqrtf(vd * vd + vq * vq);
+            const float limit = fminf(voltage_limit, bus_limit_ratio * bus);
+            const float magnitude_squared = vd * vd + vq * vq;
 
-            if(magnitude > limit)
+            if(magnitude_squared > limit * limit)
             {
-                const float scale = limit / magnitude;
+                const float scale = limit / sqrtf(magnitude_squared);
                 vd *= scale;
                 vq *= scale;
                 motors[index].integral_d = vd - KP * error_d;
@@ -1173,6 +1194,9 @@ namespace foc
             }
         }
 
+        info.vd_V = vd;
+        info.vq_V = vq;
+        info.voltage_limit_V = fminf(voltage_limit, bus_limit_ratio * bus);
         output = modulation(vd, vq, cs, sn, bus);
         output.generation = pwm::get_generation();
         output.sample_us = raw.timestamp_us;
@@ -1198,6 +1222,7 @@ namespace motor
         constexpr float ALIGN_MAX_SPEED = 0.5f;
         constexpr float TWO_PI = 6.28318530718f;
         constexpr float MAX_TARGET_A = 2.0f;
+        float speed_trip_rad_s = 40.0f;
 
         enum class stage : uint8_t
         {
@@ -1206,12 +1231,17 @@ namespace motor
             SWEEP,
             FINAL,
             STOP,
-            RUN
+            RUN,
+            IDLE
         };
 
         struct session
         {
+#ifdef MOTOR_BENCH_MANUAL_ARM
+            stage state = stage::IDLE;
+#else
             stage state = stage::WAITING;
+#endif
             uint8_t motor = 0;
             uint32_t began_us = 0;
             uint32_t boot_us = 0;
@@ -1314,6 +1344,7 @@ namespace motor
          */
         void calibrate(const sensor::package &sensors, uint32_t now, uint64_t now64)
         {
+            if(calibration.state == stage::IDLE) { return; }
             const sensor::encoder_data encoders[2] =
             {
                 sensors.left_encoder,
@@ -1373,10 +1404,12 @@ namespace motor
                     calibration.state = stage::RUN;
                     calibration.began_us = now;
 
+#ifndef MOTOR_BENCH_MANUAL_ARM
                     if(!pwm::start(3U))
                     {
                         pwm::trip(fault_code::ALIGNMENT);
                     }
+#endif
                 }
                 return;
             }
@@ -1542,6 +1575,7 @@ namespace motor
             current_info current{};
             pwm::command output{};
 
+            const uint32_t compute_began_us = now32();
             if(!foc::update(
                 index, sample, encoder, get_target(index),
                 aligning, theta, voltage, current, output))
@@ -1552,6 +1586,13 @@ namespace motor
 
             publish_current(index, current);
             pwm::set_command(index, output);
+            if(!aligning)
+            {
+                const uint32_t ended_us = now32();
+                auto &state = foc::motors[index];
+                state.max_compute_us = fmaxf(state.max_compute_us, ended_us - compute_began_us);
+                state.max_command_age_us = fmaxf(state.max_command_age_us, ended_us - sample.timestamp_us);
+            }
         }
 
         /**
@@ -1625,7 +1666,7 @@ namespace motor
                         break;
                     }
 
-                    if(fabsf(encoder.speed_rad_s) > 40.0f)
+                    if(fabsf(encoder.speed_rad_s) > speed_trip_rad_s)
                     {
                         pwm::trip(fault_code::SENSOR_TIMEOUT, index);
                         break;
@@ -1669,6 +1710,7 @@ namespace motor
         ESP_ERROR_CHECK(gpio_set_level(GPIO_NUM_7, 1));
         vTaskDelay(pdMS_TO_TICKS(10));
         adc::init();
+        foc_math::init();
 
         if(xTaskCreatePinnedToCore(task, "motor_control", 8192,
                                    nullptr, 5, nullptr, 1) != pdPASS)

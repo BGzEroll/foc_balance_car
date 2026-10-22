@@ -1,0 +1,11 @@
+{
+  "result": "PASS_PATCH_AND_TARGET_COMPILE",
+  "base_main": "a8d1b4fc4aa608fc89710a3e8f1fd8e1b05571e0",
+  "temporary_tree": "/tmp/foc_production_patch_uqjm3o3o",
+  "files_verified": [
+    "esp32/balance_car/user_lib/hw/motor.cpp",
+    "esp32/balance_car/sdkconfig",
+    "esp32/balance_car/user_lib/hw/foc_math.h"
+  ],
+  "note": "Uses actual Xtensa -O2 compiler and 240 MHz generated config. No bench code in production motor."
+}

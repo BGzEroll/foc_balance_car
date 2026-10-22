@@ -1,0 +1,181 @@
+--- a/esp32/balance_car/user_lib/hw/motor.cpp
++++ b/esp32/balance_car/user_lib/hw/motor.cpp
+@@ -1,6 +1,7 @@
+ #include "motor.h"
+ 
+ #include "sensor.h"
++#include "foc_math.h"
+ #include <math.h>
+ #include "driver/gpio.h"
+ #include "driver/mcpwm_prelude.h"
+@@ -24,7 +25,7 @@
+ {
+     namespace
+     {
+-        constexpr uint32_t CPU_MHZ = 160;
++        constexpr uint32_t CPU_MHZ = CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ;
+         constexpr uint32_t BASELINE_COUNT = 512;
+         constexpr adc_channel_t CHANNEL[5] =
+         {
+@@ -226,6 +227,7 @@
+ namespace pwm
+ {
+     constexpr uint32_t PERIOD = 8000;
++    constexpr uint32_t CYCLES_PER_TICK = CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ / 80;
+     constexpr uint32_t NEUTRAL = 2000;
+     constexpr uint32_t SAMPLE_TIMEOUT_US = 1000;
+     constexpr uint32_t BUS_TIMEOUT_US = 5000;
+@@ -814,11 +816,11 @@
+         uint16_t b = 0;
+         const bool ok_a = adc::read(adc::CHANNEL[index * 2], a);
+         out.raw_a = a;
+-        out.a_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + 1U) / 2U;
++        out.a_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + CYCLES_PER_TICK - 1U) / CYCLES_PER_TICK;
+         out.b_start = out.a_end;
+         const bool ok_b = adc::read(adc::CHANNEL[index * 2 + 1], b);
+         out.raw_b = b;
+-        out.b_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + 1U) / 2U;
++        out.b_end = out.a_start + (esp_cpu_get_cycle_count() - cycles + CYCLES_PER_TICK - 1U) / CYCLES_PER_TICK;
+         out.raw_bus = __atomic_load_n(&bus_raw, __ATOMIC_ACQUIRE);
+ 
+         const bool window_a = !output_enabled ||
+@@ -988,8 +990,7 @@
+          */
+         float wrap(float angle)
+         {
+-            angle = fmodf(angle, TWO_PI);
+-            return angle < 0.0f ? angle + TWO_PI : angle;
++            return foc_math::wrap(angle);
+         }
+ 
+         /**
+@@ -1113,8 +1114,9 @@
+         const float ib = adc::current(index * 2 + 1, raw.raw_b, index);
+         const float ic = -ia - ib;
+         const float beta = (ia + 2.0f * ib) * INV_SQRT3;
+-        const float cs = cosf(theta);
+-        const float sn = sinf(theta);
++        float cs = 0.0f;
++        float sn = 0.0f;
++        foc_math::sincos(theta, sn, cs);
+         const float id = ia * cs + beta * sn;
+         const float iq = beta * cs - ia * sn;
+ 
+@@ -1156,11 +1158,11 @@
+             vd = KP * error_d + candidate_d;
+             vq = KP * error_q + candidate_q;
+             const float limit = BUS_LIMIT_RATIO * bus;
+-            const float magnitude = sqrtf(vd * vd + vq * vq);
+-
+-            if(magnitude > limit)
+-            {
+-                const float scale = limit / magnitude;
++            const float magnitude_squared = vd * vd + vq * vq;
++
++            if(magnitude_squared > limit * limit)
++            {
++                const float scale = limit / sqrtf(magnitude_squared);
+                 vd *= scale;
+                 vq *= scale;
+                 motors[index].integral_d = vd - KP * error_d;
+@@ -1669,6 +1671,7 @@
+         ESP_ERROR_CHECK(gpio_set_level(GPIO_NUM_7, 1));
+         vTaskDelay(pdMS_TO_TICKS(10));
+         adc::init();
++        foc_math::init();
+ 
+         if(xTaskCreatePinnedToCore(task, "motor_control", 8192,
+                                    nullptr, 5, nullptr, 1) != pdPASS)
+--- a/esp32/balance_car/sdkconfig
++++ b/esp32/balance_car/sdkconfig
+@@ -1901,11 +1901,11 @@
+ # default:
+ # CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_80 is not set
+ # default:
+-CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_160=y
+-# default:
+-# CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240 is not set
+-# default:
+-CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ=160
++# CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_160 is not set
++# default:
++CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
++# default:
++CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ=240
+ 
+ #
+ # Cache config
+@@ -3717,9 +3717,9 @@
+ CONFIG_CONSOLE_UART_NUM=0
+ CONFIG_CONSOLE_UART_BAUDRATE=115200
+ # CONFIG_ESP32S3_DEFAULT_CPU_FREQ_80 is not set
+-CONFIG_ESP32S3_DEFAULT_CPU_FREQ_160=y
+-# CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240 is not set
+-CONFIG_ESP32S3_DEFAULT_CPU_FREQ_MHZ=160
++# CONFIG_ESP32S3_DEFAULT_CPU_FREQ_160 is not set
++CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240=y
++CONFIG_ESP32S3_DEFAULT_CPU_FREQ_MHZ=240
+ CONFIG_ESP_SYSTEM_PMP_IDRAM_SPLIT=y
+ CONFIG_ESP_SYSTEM_MEMPROT_FEATURE_VIA_TEE=y
+ CONFIG_ESP_SYSTEM_MEMPROT_FEATURE=y
+--- /dev/null
++++ b/esp32/balance_car/user_lib/hw/foc_math.h
+@@ -0,0 +1,58 @@
++#ifndef FOC_MATH_H
++#define FOC_MATH_H
++
++#include <math.h>
++#include <stdint.h>
++#include "esp_attr.h"
++
++namespace foc_math
++{
++    constexpr float TWO_PI = 6.28318530718f;
++    constexpr uint32_t TABLE_SIZE = 4096;
++    constexpr uint32_t TABLE_MASK = TABLE_SIZE - 1;
++    static DRAM_ATTR float sine_table[TABLE_SIZE];
++
++    inline void init()
++    {
++        for(uint32_t i = 0; i < TABLE_SIZE; ++i)
++        {
++            sine_table[i] = sinf(static_cast<float>(i) * (TWO_PI / TABLE_SIZE));
++        }
++    }
++
++    // 单圈角度产生的正常输入在此范围内；保留大角度归一化能力。
++    inline float wrap(float angle)
++    {
++        if(fabsf(angle) > 64.0f)
++        {
++            angle = fmodf(angle, TWO_PI);
++        }
++        else
++        {
++            angle -= static_cast<int32_t>(angle * (1.0f / TWO_PI)) * TWO_PI;
++        }
++
++        if(angle < 0.0f)
++        {
++            angle += TWO_PI;
++        }
++
++        return angle >= TWO_PI ? 0.0f : angle;
++    }
++
++    // 输入为 [0, 2π)，余弦共用正弦表的四分之一周期偏移。
++    inline void sincos(float angle, float &sn, float &cs)
++    {
++        const float position = angle * (TABLE_SIZE / TWO_PI);
++        const uint32_t whole = static_cast<uint32_t>(position);
++        const float fraction = position - static_cast<float>(whole);
++        const uint32_t index = whole & TABLE_MASK;
++        const uint32_t cosine = (index + TABLE_SIZE / 4) & TABLE_MASK;
++        sn = sine_table[index] + fraction *
++            (sine_table[(index + 1) & TABLE_MASK] - sine_table[index]);
++        cs = sine_table[cosine] + fraction *
++            (sine_table[(cosine + 1) & TABLE_MASK] - sine_table[cosine]);
++    }
++}
++
++#endif

@@ -47,6 +47,7 @@ namespace motor
         float iq_A = 0.0f;
 
         bool valid = false;
+        float vd_V = 0.0f, vq_V = 0.0f, voltage_limit_V = 0.0f;
     };
 
     struct fault_info

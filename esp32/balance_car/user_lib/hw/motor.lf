@@ -3,6 +3,7 @@
 archive: libmain.a
 entries:
     motor (noflash)
+    perf_bench (noflash)
 
 [mapping:foc_current_math]
 archive: libc.a

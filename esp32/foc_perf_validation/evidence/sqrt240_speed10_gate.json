@@ -1,0 +1,24 @@
+{
+  "label": "sqrt240_speed10",
+  "result": "PASS_BENCH_GATE",
+  "motors": [
+    {
+      "motor": 1,
+      "speed_rad_s": 9.790420135456388,
+      "id_mean": 0.0007569,
+      "valid": 19999,
+      "active": 19999,
+      "max_PI_gap_us": 211,
+      "observed_voltage_max_V": 0.17758
+    },
+    {
+      "motor": 2,
+      "speed_rad_s": 9.999858267910927,
+      "id_mean": 0.0003653,
+      "valid": 20000,
+      "active": 20000,
+      "max_PI_gap_us": 212,
+      "observed_voltage_max_V": 0.1281235
+    }
+  ]
+}

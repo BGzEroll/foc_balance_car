@@ -1,0 +1,1 @@
+{"result":"PASS_NUMERICAL","random_cases":2000000,"lut_component_abs_error":5.48579573434e-07,"wrap_circular_error_rad":1.43051147461e-06,"combined_vs_old_component_error":1.90734863281e-06,"max_pwm_compare_delta_ticks":1,"conditional_sqrt_voltage_delta":0,"lut_ram_bytes":16384,"note":"Host numerical verification only; MCU cycles measured separately."}

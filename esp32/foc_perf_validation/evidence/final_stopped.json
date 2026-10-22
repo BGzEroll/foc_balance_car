@@ -1,0 +1,28 @@
+{
+  "running": 0,
+  "requested": 0,
+  "ready": 0,
+  "fault": 0,
+  "fault_motor": 255,
+  "fault_pc": 0,
+  "raw_a": 0,
+  "raw_b": 0,
+  "bus": 8.1,
+  "stage": 6,
+  "aligned": [
+    0,
+    0
+  ],
+  "direction": [
+    0,
+    0
+  ],
+  "zero": [
+    0.0,
+    0.0
+  ],
+  "pi_updates": [
+    0,
+    0
+  ]
+}

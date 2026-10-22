@@ -1,0 +1,315 @@
+{
+  "STATUS": [
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.151,
+      "stage": 6,
+      "aligned": [
+        0,
+        0
+      ],
+      "direction": [
+        0,
+        0
+      ],
+      "zero": [
+        0.0,
+        0.0
+      ],
+      "pi_updates": [
+        0,
+        0
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.148,
+      "stage": 6,
+      "aligned": [
+        0,
+        0
+      ],
+      "direction": [
+        0,
+        0
+      ],
+      "zero": [
+        0.0,
+        0.0
+      ],
+      "pi_updates": [
+        0,
+        0
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.163,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.311295033,
+        2.182854176
+      ],
+      "pi_updates": [
+        0,
+        0
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.16,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.311295033,
+        2.182854176
+      ],
+      "pi_updates": [
+        20000,
+        19999
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.154,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.311295033,
+        2.182854176
+      ],
+      "pi_updates": [
+        20000,
+        19999
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.16,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.311295033,
+        2.182854176
+      ],
+      "pi_updates": [
+        20000,
+        19999
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.163,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.311295033,
+        2.182854176
+      ],
+      "pi_updates": [
+        20000,
+        19999
+      ]
+    },
+    {
+      "running": 0,
+      "requested": 0,
+      "ready": 0,
+      "fault": 0,
+      "fault_motor": 255,
+      "fault_pc": 0,
+      "raw_a": 0,
+      "raw_b": 0,
+      "bus": 8.175,
+      "stage": 5,
+      "aligned": [
+        1,
+        1
+      ],
+      "direction": [
+        1,
+        1
+      ],
+      "zero": [
+        5.311295033,
+        2.182854176
+      ],
+      "pi_updates": [
+        20000,
+        19999
+      ]
+    }
+  ],
+  "METRIC": [
+    {
+      "motor": 1,
+      "n": 2350,
+      "id_mean": 0.0028548,
+      "iq_mean": 0.174045,
+      "id_error_rms": 0.0316966,
+      "iq_error_rms": 0.0435415,
+      "voltage_max": 0.3522539,
+      "saturated": 0,
+      "max_gap_us": 213,
+      "active": 20000,
+      "valid": 20000,
+      "min_margin_ticks": 413
+    },
+    {
+      "motor": 2,
+      "n": 2350,
+      "id_mean": 0.0049154,
+      "iq_mean": 0.1708208,
+      "id_error_rms": 0.0298303,
+      "iq_error_rms": 0.030059,
+      "voltage_max": 0.2976315,
+      "saturated": 0,
+      "max_gap_us": 213,
+      "active": 19999,
+      "valid": 19999,
+      "min_margin_ticks": 430
+    }
+  ],
+  "META": [
+    {
+      "kind": 2,
+      "value": 27.5,
+      "duration_ms": 4000,
+      "mask": 3,
+      "cap": 0.652,
+      "ratio": 0.08,
+      "rows": 1599,
+      "metric_snapshot_hz": 1000,
+      "csv_hz": 200
+    }
+  ],
+  "TIMING": [
+    {
+      "motor": 1,
+      "compute_max_us": 30,
+      "command_age_max_us": 160
+    },
+    {
+      "motor": 2,
+      "compute_max_us": 25,
+      "command_age_max_us": 181
+    }
+  ],
+  "MATH": [
+    {
+      "kind": "fmod_sin_cos",
+      "cpu_mhz": 240,
+      "cycles_mean": 621.81,
+      "cycles_min": 619.385,
+      "cycles_max": 624.697
+    },
+    {
+      "kind": "fast_wrap_sin_cos",
+      "cpu_mhz": 240,
+      "cycles_mean": 495.816,
+      "cycles_min": 493.227,
+      "cycles_max": 499.965
+    },
+    {
+      "kind": "fast_wrap_sincosf",
+      "cpu_mhz": 240,
+      "cycles_mean": 512.024,
+      "cycles_min": 509.359,
+      "cycles_max": 516.141
+    },
+    {
+      "kind": "fast_wrap_lut4096",
+      "cpu_mhz": 240,
+      "cycles_mean": 117.713,
+      "cycles_min": 116.994,
+      "cycles_max": 119.783
+    }
+  ],
+  "command": "SPEED 3 27.5 4000 0.652 0.08",
+  "ack_seconds": 0.16214388000662439
+}
