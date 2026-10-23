@@ -80,6 +80,10 @@ namespace balance
         for(unsigned row=0;row<2;++row)
             for(unsigned column=0;column<8;++column)
                 effort[row]-=lqi_config::K[row][column]*tuning.lqi_scale[column]*error[column];
+        // Always warm the filter so online blend changes do not reset its history.
+        const float filtered=controller.notch.update(effort[0]);
+        const float mix=fmaxf(0.0f,fminf(1.0f,tuning.common_notch_mix));
+        effort[0]+=mix*(filtered-effort[0]);
         const float current[2]={(effort[0]-effort[1])*0.5f,(effort[0]+effort[1])*0.5f};
         const float cap=fminf(6.0f,fabsf(limit.current_A));
         output out{};out.saturated=fmaxf(fabsf(current[0]),fabsf(current[1]))>cap;

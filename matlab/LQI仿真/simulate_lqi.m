@@ -7,6 +7,7 @@ p=d.parameters;Ts=d.Ts;N=round(options.duration/Ts)+1;t=(0:N-1)'*Ts;rng(options.
 x=zeros(6,1);if strcmp(scenario,'recover'),x(3)=deg2rad(options.initial_deg);end
 xi=zeros(2,1);iq=zeros(2,1);queue=zeros(2,options.delay_cycles+1);ref=zeros(6,1);
 X=zeros(N,6);U=zeros(N,2);REF=zeros(N,6);XI=zeros(N,2);SAT=false(N,1);fault=false;fell=false;
+nh=zeros(4,1);notchInitialized=false;
 for k=1:N
  now=t(k);ref(:)=0;force=0;torque=0;yawTorque=0;
  if strcmp(scenario,'drive'),[ref(1),ref(2)]=move(now,2,4,.15);[ref(5),ref(6)]=move(now,7,3,deg2rad(20));end
@@ -17,6 +18,12 @@ for k=1:N
  m=x;m(3)=m(3)+options.noise_pitch*randn;m(4)=m(4)+options.noise_rate*randn;
  e=m-ref;e(5)=atan2(sin(e(5)),cos(e(5)));candidate=max(-d.integral_limit,min(d.integral_limit,xi+Ts*d.C*e));
  effort=-d.K*m+d.K*ref-d.Ki*xi;
+ if isfield(options,'common_notch')
+  n=options.common_notch;raw=effort(1);
+  if ~notchInitialized,nh(:)=raw;notchInitialized=true;y=raw;
+  else,y=n.b(1)*raw+n.b(2)*nh(1)+n.b(3)*nh(2)-n.a(2)*nh(3)-n.a(3)*nh(4);end
+  nh=[raw;nh(1);y;nh(3)];effort(1)=raw+n.mix*(y-raw);
+ end
  raw=[(effort(1)-effort(2))/2;(effort(1)+effort(2))/2];
  command=max(-d.current_limit_each,min(d.current_limit_each,raw));sat=any(abs(raw)>d.current_limit_each);
  if ~sat,xi=candidate;end

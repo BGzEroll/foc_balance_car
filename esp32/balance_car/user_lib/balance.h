@@ -1,5 +1,6 @@
 #ifndef BALANCE_H
 #define BALANCE_H
+#include "common_notch.h"
 
 // Fixed LQI update; observe() retains the hardware-tested coordinate mapping.
 namespace balance
@@ -32,6 +33,7 @@ namespace balance
     {
         // Multipliers of the eight columns of the MATLAB LQI matrix.
         float lqi_scale[8] = {1,1,1,1,1,1,1,1};
+        float common_notch_mix = 0.0f;
         float velocity_kp = 1.4f;
         float velocity_ki = 1.2f;
         float pitch_kd = 1.878010521f; // A*s/rad, total common effort
@@ -52,6 +54,7 @@ namespace balance
         float pitch_integral = 0.0f; // LQI unused zero
         float yaw_integral = 0.0f;
         bool first_sample = true;
+        common_notch::state notch{};
     };
 
     struct output

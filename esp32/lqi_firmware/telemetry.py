@@ -1,4 +1,4 @@
-"""BCU3 layout. Online firmware uses first eight legacy gain slots as LQI scales."""
+"""BCU3: first eight legacy gain slots are LQI scales; position_kp is notch mix."""
 import struct
 LQI_SCALE_NAMES=('distance','speed','pitch','pitch_rate','yaw','yaw_rate','position_integral','yaw_integral')
 WIRE2=struct.Struct("<IIQQQ13I34f")

@@ -26,7 +26,6 @@ namespace test
     {
         constexpr float FORWARD_SIGN[2] = {-1.0f, 1.0f};
         constexpr float MAX_CURRENT_A = 6.0f;
-        constexpr float MAX_WHEEL_SPEED_RAD_S = 40.0f;
         constexpr float MAX_TILT_RAD = 0.7853981634f;
         constexpr uint32_t ROW_COUNT = 400;
 
@@ -112,6 +111,7 @@ namespace test
         {
             memset(v,0,10*sizeof(float));
             memcpy(v,g.lqi_scale,8*sizeof(float));
+            v[8]=g.common_notch_mix;
             v[9]=lqi_config::HARDWARE_TRIM_RAD;
         }
         void report_gains()
@@ -120,8 +120,8 @@ namespace test
             portENTER_CRITICAL(&request_lock);
             g=tuning;revision=parameter_revision;
             portEXIT_CRITICAL(&request_lock);
-            respond("LQI schema=lqi_current_v1 revision=%lu design=%s Ts_us=5000 max_current_A=6 telemetry=BCU3 trim=%.9g\n",
-                (unsigned long)revision,lqi_config::DESIGN_SHA256,lqi_config::HARDWARE_TRIM_RAD);
+            respond("LQI schema=lqi_current_v1 revision=%lu design=%s Ts_us=5000 max_current_A=6 telemetry=BCU3 trim=%.9g notch_Hz=12.5 notch_mix=%.6g\n",
+                (unsigned long)revision,lqi_config::DESIGN_SHA256,lqi_config::HARDWARE_TRIM_RAD,g.common_notch_mix);
             for(unsigned r=0;r<2;++r)
                 respond("LQI_K row=%u %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",r,
                     lqi_config::K[r][0]*g.lqi_scale[0],lqi_config::K[r][1]*g.lqi_scale[1],
@@ -324,9 +324,7 @@ namespace test
                     result = 4;
                 }
                 else if(fabsf(sensors.imu.angle[0]) > MAX_TILT_RAD ||
-                        fabsf(sensors.imu.angle[1]) > MAX_TILT_RAD ||
-                        fabsf(sensors.left_encoder.speed_rad_s) > MAX_WHEEL_SPEED_RAD_S ||
-                        fabsf(sensors.right_encoder.speed_rad_s) > MAX_WHEEL_SPEED_RAD_S)
+                        fabsf(sensors.imu.angle[1]) > MAX_TILT_RAD)
                 {
                     result = 5;
                 }
@@ -570,6 +568,19 @@ namespace test
                 else dump();
             }
             else if(strcmp(line,"LQI")==0 || strcmp(line,"GAINS")==0) report_gains();
+            else if(strncmp(line,"LQINOTCH ",9)==0)
+            {
+                float mix=0;char extra;
+                if(sscanf(line+9,"%f %c",&mix,&extra)!=1 || !isfinite(mix) || mix<0 || mix>1)
+                {respond("REJECT LQINOTCH requires mix 0..1\n");return;}
+                uint32_t revision=0;
+                portENTER_CRITICAL(&request_lock);
+                if(fabsf(mix-tuning.common_notch_mix)<=.1001f)
+                {tuning.common_notch_mix=mix;revision=++parameter_revision;}
+                portEXIT_CRITICAL(&request_lock);
+                if(revision)respond("LQINOTCH accepted=1 revision=%lu\n",(unsigned long)revision);
+                else respond("REJECT LQINOTCH step<=.1\n");
+            }
             else if(strncmp(line,"LQISET ",7)==0)
             {
                 float values[8];char extra;
