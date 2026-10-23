@@ -1,0 +1,105 @@
+{
+  "branch": "codex/lqi-simulation",
+  "main_unchanged": "9faaf7f22f017444cb60e80a31227c53518281e4",
+  "controller": "LQI only",
+  "nominal_nonlinear_cases_pass": 6,
+  "combined_uncertainty_cases_pass": 9,
+  "native_multibody": [
+    {
+      "controller": "LQI",
+      "scenario": "recover",
+      "duration_s": 6,
+      "fell": false,
+      "peak_pitch_deg": 5.000000000000001,
+      "tail_position_error_m": -0.0001477649623965714,
+      "tail_yaw_error_deg": -8.097605410547987e-08,
+      "peak_each_current_A": 0.9632188621372296,
+      "saturation_fraction": 0,
+      "scope": "Native CAD Multibody; ideal current tracking, no measured IMU or FOC dynamics. Separate planar suite screens those uncertainties."
+    },
+    {
+      "controller": "LQI",
+      "scenario": "push",
+      "duration_s": 9,
+      "fell": false,
+      "peak_pitch_deg": 4.058064726513459,
+      "tail_position_error_m": -0.00011674372457497976,
+      "tail_yaw_error_deg": -0.004559969598187126,
+      "peak_each_current_A": 0.39771342566075674,
+      "saturation_fraction": 0,
+      "scope": "Native CAD Multibody; ideal current tracking, no measured IMU or FOC dynamics. Separate planar suite screens those uncertainties."
+    },
+    {
+      "controller": "LQI",
+      "scenario": "bias",
+      "duration_s": 18,
+      "fell": false,
+      "peak_pitch_deg": 1.9078116366014202,
+      "tail_position_error_m": 1.0574636787392354e-07,
+      "tail_yaw_error_deg": 8.341857726309595e-08,
+      "peak_each_current_A": 0.13678824558316377,
+      "saturation_fraction": 0,
+      "scope": "Native CAD Multibody; ideal current tracking, no measured IMU or FOC dynamics. Separate planar suite screens those uncertainties."
+    }
+  ],
+  "saturation_recovery": {
+    "scenario": "recover",
+    "options": {
+      "initial_deg": 15,
+      "Kt_scale": 1,
+      "delay_cycles": 1,
+      "current_lag_s": 0.001,
+      "noise_pitch": 0,
+      "noise_rate": 0,
+      "seed": 23,
+      "duration": 18,
+      "fault_injection": false
+    },
+    "completed": true,
+    "fell": false,
+    "injected_timing_fault": false,
+    "duration_s": 18,
+    "peak_pitch_deg": 15.058592480989248,
+    "tail_position_error_m": -6.3195310142311e-08,
+    "tail_speed_m_s": 1.6039605489449108e-07,
+    "tail_yaw_error_deg": 7.902542250586847e-19,
+    "pitch_rms_deg": 0.9612590434482792,
+    "peak_each_current_A": 2,
+    "saturation_fraction": 0.0013885031935573452,
+    "pass": true
+  },
+  "expected_timing_stop_failure": true,
+  "main_meshes": [
+    {
+      "path": "模型/仿真模型/通用URDF/meshes/body.obj",
+      "sha256": "baad91976b2896160a708fe9daba45a3d6a6480ee9081df2c26fbf24150e2235",
+      "geometry_changed": false
+    },
+    {
+      "path": "模型/仿真模型/通用URDF/meshes/body.stl",
+      "sha256": "a5795e3a6d70fe1ab5b48b8f7282af1a9d14194bdcca2f9daa1b9114d50e249f",
+      "geometry_changed": false
+    },
+    {
+      "path": "模型/仿真模型/通用URDF/meshes/left_wheel.obj",
+      "sha256": "3dcbe42b022de483766c36195110abf6224dd6b6b0cb955dbbe917f1ee6dc114",
+      "geometry_changed": false
+    },
+    {
+      "path": "模型/仿真模型/通用URDF/meshes/left_wheel.stl",
+      "sha256": "2fd861c353fc20b4364ad7570a54c8a1ad7e88d4cc87961d71b01ebb271b67c5",
+      "geometry_changed": false
+    },
+    {
+      "path": "模型/仿真模型/通用URDF/meshes/right_wheel.obj",
+      "sha256": "b24382d1809d9e9b0dc0585586b83ac4f2881a0ce74aed30e7ae64ee3b9ea45a",
+      "geometry_changed": false
+    },
+    {
+      "path": "模型/仿真模型/通用URDF/meshes/right_wheel.stl",
+      "sha256": "945199b2ac911f383b39fecbca209fab6cdf57b7ac7591141c946f2667ce1c59",
+      "geometry_changed": false
+    }
+  ],
+  "hardware_commands_executed": false
+}

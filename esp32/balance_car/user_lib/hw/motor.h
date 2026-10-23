@@ -59,12 +59,21 @@ namespace motor
 
         uint16_t raw_a = 0;
         uint16_t raw_b = 0;
+        uint32_t detail = 0; // high byte: timeout source; low 24 bits: age/dt in us
+        uint32_t adc_age_us = 0;
+        uint32_t heartbeat_age_us = 0;
+        uint32_t control_phase = 0;
+        uint32_t sample_flags = 0, sample_start_tick = 0, sample_end_tick = 0;
+        uint32_t sample_duty_a = 0, sample_duty_b = 0;
     };
 
     struct foc_info
     {
         bool initialized = false;
         bool ready = false;
+        bool calibrated = false;
+        bool running = false;
+        uint32_t pwm_core = 0;
 
         target_current target[2] = {};
         current_info current[2] = {};
@@ -76,8 +85,16 @@ namespace motor
     };
 
     bool init();
+    bool calibrate();
+    bool start(uint32_t duration_ms, uint32_t mask = 3);
+    void keep_alive();
+    void stop();
     bool set_target_current(motor_id id, const target_current &target);
     bool get_info(foc_info &snapshot);
+    // OTA interlock is acknowledged by the motor task before any flash writes.
+    void set_update_lock(bool locked);
+    bool update_locked();
+    bool update_stopped();
 }
 
 #endif

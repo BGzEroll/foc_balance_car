@@ -1,4 +1,5 @@
 #include "motor.h"
+#include "../realtime_config.h"
 
 #include "sensor.h"
 #include <math.h>
@@ -19,6 +20,11 @@
 #pragma GCC diagnostic pop
 #include "soc/mcpwm_struct.h"
 #include "soc/sens_reg.h"
+
+namespace {
+    uint32_t update_inhibit = 0;
+    uint32_t update_acknowledged = 0;
+}
 
 namespace adc
 {
@@ -97,12 +103,12 @@ namespace adc
                 const float current =
                     (voltage_mv[raw] * 0.001f - offset_V[ch]) * 4.0f;
 
-                if(current < -2.0f)
+                if(current < -2.5f)
                 {
                     current_low[ch] = raw;
                 }
 
-                if(current <= 2.0f)
+                if(current <= 2.5f)
                 {
                     current_high[ch] = raw;
                 }
@@ -172,7 +178,7 @@ namespace adc
      * @param[in] a A 相原始采样
      * @param[in] b B 相原始采样
      *
-     * @return true 原始采样超出 ±2 A 对应的 ADC 范围
+     * @return true 原始采样超出 ±2.5 A 对应的 ADC 范围；目标电流上限仍为 2 A
      */
     bool IRAM_ATTR overcurrent(uint32_t index, uint16_t a, uint16_t b)
     {
@@ -301,6 +307,7 @@ namespace pwm
         uint32_t cycle = 0;
         uint32_t enable_cycle = 0;
         uint32_t heartbeat_us = 0;
+        uint32_t deadline_us = 0;
         uint32_t last_valid_sample_us[2] = {};
         uint32_t bus_raw = 0;
         uint32_t bus_us = 0;
@@ -310,6 +317,12 @@ namespace pwm
         uint32_t fault_raw_a = 0;
         uint32_t fault_raw_b = 0;
         uint32_t fault_us = 0;
+        uint32_t fault_detail = 0;
+        uint32_t fault_adc_age_us = 0, fault_heartbeat_age_us = 0;
+        uint32_t irq_core = 0;
+        uint32_t control_phase = 0, fault_control_phase = 0;
+        uint32_t fault_sample_flags = 0, fault_sample_start_tick = 0, fault_sample_end_tick = 0;
+        uint32_t fault_sample_duty_a = 0, fault_sample_duty_b = 0;
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -431,7 +444,11 @@ namespace pwm
         motor::fault_code code,
         uint8_t index = 0xFF,
         uint16_t raw_a = 0,
-        uint16_t raw_b = 0)
+        uint16_t raw_b = 0,
+        uint32_t detail = 0,
+        uint32_t adc_age_us = 0,
+        uint32_t heartbeat_age_us = 0,
+        const sample *source_sample = nullptr)
     {
         uint32_t expected = 0;
 
@@ -442,6 +459,18 @@ namespace pwm
             __atomic_store_n(&fault_motor, index, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_a, raw_a, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_b, raw_b, __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_detail, detail, __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_control_phase, __atomic_load_n(&control_phase,__ATOMIC_RELAXED),__ATOMIC_RELAXED);
+            __atomic_store_n(&fault_adc_age_us, adc_age_us, __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_heartbeat_age_us, heartbeat_age_us, __ATOMIC_RELAXED);
+            if(source_sample)
+            {
+                fault_sample_flags = source_sample->flags;
+                fault_sample_start_tick = source_sample->a_start;
+                fault_sample_end_tick = source_sample->b_end;
+                fault_sample_duty_a = source_sample->duty_a;
+                fault_sample_duty_b = source_sample->duty_b;
+            }
             __atomic_store_n(&fault_us, now32(), __ATOMIC_RELEASE);
         }
 
@@ -472,6 +501,15 @@ namespace pwm
         out.motor_index = __atomic_load_n(&fault_motor, __ATOMIC_RELAXED);
         out.raw_a = __atomic_load_n(&fault_raw_a, __ATOMIC_RELAXED);
         out.raw_b = __atomic_load_n(&fault_raw_b, __ATOMIC_RELAXED);
+        out.detail = __atomic_load_n(&fault_detail, __ATOMIC_RELAXED);
+        out.control_phase = __atomic_load_n(&fault_control_phase,__ATOMIC_RELAXED);
+        out.adc_age_us = __atomic_load_n(&fault_adc_age_us, __ATOMIC_RELAXED);
+        out.heartbeat_age_us = __atomic_load_n(&fault_heartbeat_age_us, __ATOMIC_RELAXED);
+        out.sample_flags = fault_sample_flags;
+        out.sample_start_tick = fault_sample_start_tick;
+        out.sample_end_tick = fault_sample_end_tick;
+        out.sample_duty_a = fault_sample_duty_a;
+        out.sample_duty_b = fault_sample_duty_b;
 
         const uint32_t stamp = __atomic_load_n(&fault_us, __ATOMIC_ACQUIRE);
 
@@ -622,6 +660,14 @@ namespace pwm
 
         if(wanted)
         {
+            const uint32_t deadline = __atomic_load_n(&deadline_us, __ATOMIC_ACQUIRE);
+
+            if(deadline != 0 && static_cast<int32_t>(now - deadline) >= 0)
+            {
+                stop();
+                return false;
+            }
+
             if(static_cast<int32_t>(
                    now - __atomic_load_n(&heartbeat_us, __ATOMIC_ACQUIRE)) > 3000)
             {
@@ -640,7 +686,8 @@ namespace pwm
                     if((active & (1U << i)) &&
                        now - last_valid_sample_us[i] > SAMPLE_TIMEOUT_US)
                     {
-                        trip(motor::fault_code::SAMPLE_TIMEOUT, i);
+                        trip(motor::fault_code::SAMPLE_TIMEOUT, i, 0, 0,
+                             0x01000000U | ((now-last_valid_sample_us[i]) & 0xffffffU));
                         break;
                     }
                 }
@@ -741,7 +788,11 @@ namespace pwm
             else if(enabled && value[i].sample_us != 0 &&
                     now - value[i].sample_us > SAMPLE_TIMEOUT_US)
             {
-                trip(motor::fault_code::SAMPLE_TIMEOUT, i);
+                const uint32_t heartbeat_age = now-__atomic_load_n(&heartbeat_us,__ATOMIC_ACQUIRE);
+                trip(motor::fault_code::SAMPLE_TIMEOUT, i, 0, 0,
+                     0x02000000U | ((now-value[i].sample_us) & 0xffffffU),
+                     now-__atomic_load_n(&last_valid_sample_us[i],__ATOMIC_ACQUIRE),
+                     static_cast<int32_t>(heartbeat_age)<0 ? 0U : heartbeat_age);
                 return false;
             }
         }
@@ -842,10 +893,12 @@ namespace pwm
 
         const bool over = adc::overcurrent(index, a, b);
 
-        if(output_enabled && (!raw_ok || over))
+        // Only an electrically valid low-side aperture represents phase current.
+        // Reject late samples; the unchanged 1ms valid-sample watchdog remains.
+        if(output_enabled && (!raw_ok || (over && window_a && window_b && same_cycle)))
         {
             trip(raw_ok ? motor::fault_code::OVERCURRENT
-                        : motor::fault_code::ADC_READ, index, a, b);
+                        : motor::fault_code::ADC_READ, index, a, b, 0, 0, 0, &out);
         }
 
         if(output_enabled && raw_ok && !over && window_a && window_b && same_cycle)
@@ -866,6 +919,7 @@ namespace pwm
     void init()
     {
         gpio_config_t pins{};
+        irq_core = xPortGetCoreID();
         for(uint32_t i = 0; i < 6; ++i)
         {
             pins.pin_bit_mask |= 1ULL << PINS[i];
@@ -927,6 +981,7 @@ namespace pwm
         ESP_ERROR_CHECK(mcpwm_new_timer_sync_src(timer, &sync_config, &sync));
         mcpwm_timer_sync_phase_config_t phase_config{};
         phase_config.sync_src = sync;
+        // Restore the previously powered, turning-motor timing for UART use.
         phase_config.count_value = 1600;
         phase_config.direction = MCPWM_TIMER_DIRECTION_UP;
         ESP_ERROR_CHECK(mcpwm_timer_set_phase_on_sync(sample_timer, &phase_config));
@@ -1256,6 +1311,7 @@ namespace motor
 
         enum class stage : uint8_t
         {
+            IDLE,
             WAITING,
             LOCK,
             SWEEP,
@@ -1266,7 +1322,7 @@ namespace motor
 
         struct session
         {
-            stage state = stage::WAITING;
+            stage state = stage::IDLE;
             uint8_t motor = 0;
             uint32_t began_us = 0;
             uint32_t boot_us = 0;
@@ -1285,6 +1341,10 @@ namespace motor
         uint32_t task_ready = 0;
         uint32_t sensor_ok = 0;
         uint32_t ready = 0;
+        uint32_t calibrated = 0;
+        uint32_t request = 0;
+        uint32_t request_duration_ms = 0;
+        uint32_t request_mask = 0;
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -1369,6 +1429,11 @@ namespace motor
          */
         void calibrate(const sensor::package &sensors, uint32_t now, uint64_t now64)
         {
+            if(calibration.state == stage::IDLE)
+            {
+                return;
+            }
+
             const sensor::encoder_data encoders[2] =
             {
                 sensors.left_encoder,
@@ -1428,10 +1493,11 @@ namespace motor
                     calibration.state = stage::RUN;
                     calibration.began_us = now;
 
-                    if(!pwm::start(3U))
-                    {
-                        pwm::trip(fault_code::ALIGNMENT);
-                    }
+                    portENTER_CRITICAL(&info_lock);
+                    latest.current[0].encoder_direction = foc::motors[0].direction;
+                    latest.current[1].encoder_direction = foc::motors[1].direction;
+                    portEXIT_CRITICAL(&info_lock);
+                    __atomic_store_n(&calibrated, 1U, __ATOMIC_RELEASE);
                 }
                 return;
             }
@@ -1540,7 +1606,8 @@ namespace motor
 
             if(now32() - sample.timestamp_us > pwm::SAMPLE_TIMEOUT_US)
             {
-                pwm::trip(fault_code::SAMPLE_TIMEOUT, index);
+                pwm::trip(fault_code::SAMPLE_TIMEOUT, index, sample.raw_a, sample.raw_b,
+                          0x03000000U | ((now32()-sample.timestamp_us) & 0xffffffU));
                 return;
             }
 
@@ -1597,11 +1664,13 @@ namespace motor
             current_info current{};
             pwm::command output{};
 
+            const uint32_t foc_dt = sample.timestamp_us-foc::motors[index].last_sample_us;
             if(!foc::update(
                 index, sample, encoder, get_target(index),
                 aligning, theta, voltage, current, output))
             {
-                pwm::trip(fault_code::SAMPLE_TIMEOUT, index);
+                pwm::trip(fault_code::SAMPLE_TIMEOUT, index, sample.raw_a, sample.raw_b,
+                          0x04000000U | (foc_dt & 0xffffffU));
                 return;
             }
 
@@ -1634,22 +1703,66 @@ namespace motor
             {
                 uint32_t notifications = 0;
                 xTaskNotifyWait(0, UINT32_MAX, &notifications, 0);
+                __atomic_store_n(&pwm::control_phase,1U,__ATOMIC_RELAXED);
                 sensor::poll(notifications, !pwm::is_requested());
 
                 sensor::package sensors{};
+                __atomic_store_n(&pwm::control_phase,2U,__ATOMIC_RELAXED);
                 sensor::get_package(sensors);
 
                 const uint64_t now64 = static_cast<uint64_t>(esp_timer_get_time());
                 const uint32_t now = static_cast<uint32_t>(now64);
                 pwm::heartbeat(now);
 
+                uint32_t operation = __atomic_exchange_n(&request, 0U, __ATOMIC_ACQ_REL);
+                // Even a previously queued CAL/start is discarded under this lock.
+                const bool inhibited = update_locked();
+                if(inhibited) operation = 2;
+
+                if(operation == 1)
+                {
+                    calibration = session{};
+                    calibration.state = stage::WAITING;
+                    calibration.boot_us = now;
+                    calibration.began_us = now;
+                    __atomic_store_n(&calibrated, 0U, __ATOMIC_RELEASE);
+                    __atomic_store_n(&pwm::deadline_us, now + 12000000U, __ATOMIC_RELEASE);
+                }
+                else if(operation == 2)
+                {
+                    pwm::stop();
+
+                    if(!__atomic_load_n(&calibrated, __ATOMIC_ACQUIRE))
+                    {
+                        calibration.state = stage::IDLE;
+                    }
+                }
+                else if(operation == 3 && calibration.state == stage::RUN)
+                {
+                    foc::reset();
+                    portENTER_CRITICAL(&info_lock);
+                    latest.target[0] = target_current{};
+                    latest.target[1] = target_current{};
+                    portEXIT_CRITICAL(&info_lock);
+                    calibration.began_us = now;
+                    __atomic_store_n(&pwm::deadline_us,
+                        now + (request_duration_ms == 0 ? 30000U : request_duration_ms * 1000U),
+                        __ATOMIC_RELEASE);
+                    pwm::start(request_mask);
+                }
+
+                if(inhibited)
+                    __atomic_store_n(&update_acknowledged, 1U, __ATOMIC_RELEASE);
+
                 if(pwm::get_fault_code() == fault_code::NONE)
                 {
+                    __atomic_store_n(&pwm::control_phase,3U,__ATOMIC_RELAXED);
                     calibrate(sensors, now, now64);
                 }
 
                 for(uint32_t index = 0; index < 2; ++index)
                 {
+                    __atomic_store_n(&pwm::control_phase,4U,__ATOMIC_RELAXED);
                     pwm::sample sample{};
 
                     if(!pwm::get_sample(index, sample) ||
@@ -1695,18 +1808,19 @@ namespace motor
                     __atomic_store_n(&ready, 1U, __ATOMIC_RELEASE);
                 }
 
-                if(pwm::get_fault_code() != fault_code::NONE)
+                if(!pwm::is_running() || pwm::get_fault_code() != fault_code::NONE)
                 {
                     __atomic_store_n(&ready, 0U, __ATOMIC_RELEASE);
                 }
 
+                __atomic_store_n(&pwm::control_phase,5U,__ATOMIC_RELAXED);
                 taskYIELD();
             }
         }
     }
 
     /**
-     * @brief 初始化电机硬件并启动自动校准任务
+     * @brief 初始化电机硬件，等待测试模块请求校准
      *
      * @return true 初始化成功
      * @return false 传感器任务初始化失败
@@ -1727,7 +1841,8 @@ namespace motor
         foc::init();
 
         if(xTaskCreatePinnedToCore(task, "motor_control", 8192,
-                                   nullptr, 5, nullptr, 1) != pdPASS)
+                                   nullptr, realtime_config::SENSOR_FOC_PRIORITY, nullptr,
+                                   realtime_config::SENSOR_FOC_CORE) != pdPASS)
         {
             gpio_set_level(GPIO_NUM_7, 0);
             return false;
@@ -1748,6 +1863,78 @@ namespace motor
         __atomic_store_n(&initialized, 1U, __ATOMIC_RELEASE);
         return true;
     }
+
+    /**
+     * @brief 请求重新辨识方向和电角度零偏，完成后保持停机
+     */
+    bool calibrate()
+    {
+        if(update_locked() || !__atomic_load_n(&initialized, __ATOMIC_ACQUIRE) ||
+           pwm::is_requested() || pwm::is_running() ||
+           __atomic_load_n(&request, __ATOMIC_ACQUIRE) != 0 ||
+           pwm::get_fault_code() != fault_code::NONE)
+        {
+            return false;
+        }
+
+        __atomic_store_n(&calibrated, 0U, __ATOMIC_RELEASE);
+        __atomic_store_n(&request, 1U, __ATOMIC_RELEASE);
+        return true;
+    }
+
+    /**
+     * @brief 请求电流环运行，连续模式由上层定期续期
+     *
+     * @param[in] duration_ms 本次输出最长时间，单位 ms，0 表示连续模式
+     * @param[in] mask bit0 为左电机，bit1 为右电机
+     *
+     * @return true 已接收请求，实际就绪状态由 get_info 返回
+     */
+    bool start(uint32_t duration_ms, uint32_t mask)
+    {
+        if(update_locked() || (duration_ms != 0 && duration_ms < 50) || duration_ms > 10000 || mask == 0 || mask > 3 ||
+           !__atomic_load_n(&calibrated, __ATOMIC_ACQUIRE) ||
+           __atomic_load_n(&request, __ATOMIC_ACQUIRE) != 0 ||
+           pwm::is_requested() || pwm::is_running() ||
+           pwm::get_fault_code() != fault_code::NONE)
+        {
+            return false;
+        }
+
+        request_duration_ms = duration_ms;
+        request_mask = mask;
+        __atomic_store_n(&request, 3U, __ATOMIC_RELEASE);
+        return true;
+    }
+
+    /**
+     * @brief 为连续模式更新上层控制心跳，失联三十毫秒后停止输出
+     */
+    void keep_alive()
+    {
+        if(pwm::is_requested() && pwm::get_fault_code() == fault_code::NONE)
+        {
+            __atomic_store_n(&pwm::deadline_us, now32() + 30000U, __ATOMIC_RELEASE);
+        }
+    }
+
+    /**
+     * @brief 立即停止输出，并取消尚未完成的校准
+     */
+    void stop()
+    {
+        pwm::stop();
+        __atomic_store_n(&ready, 0U, __ATOMIC_RELEASE);
+        __atomic_store_n(&request, 2U, __ATOMIC_RELEASE);
+    }
+
+    void set_update_lock(bool locked)
+    {
+        __atomic_store_n(&update_acknowledged, 0U, __ATOMIC_RELEASE);
+        __atomic_store_n(&update_inhibit, locked ? 1U : 0U, __ATOMIC_RELEASE);
+    }
+    bool update_locked() { return __atomic_load_n(&update_inhibit, __ATOMIC_ACQUIRE); }
+    bool update_stopped() { return update_locked() && __atomic_load_n(&update_acknowledged, __ATOMIC_ACQUIRE); }
 
     /**
      * @brief 设置指定电机的目标 d/q 轴电流
@@ -1797,8 +1984,12 @@ namespace motor
         portEXIT_CRITICAL(&info_lock);
 
         snapshot.initialized = true;
+        snapshot.pwm_core = pwm::irq_core;
         snapshot.fault = pwm::get_fault();
+        snapshot.calibrated = __atomic_load_n(&calibrated, __ATOMIC_ACQUIRE) != 0;
+        snapshot.running = pwm::is_running();
         snapshot.ready = __atomic_load_n(&ready, __ATOMIC_ACQUIRE) != 0 &&
+                         snapshot.running &&
                          snapshot.fault.code == fault_code::NONE;
 
         uint16_t bus_raw = 0;

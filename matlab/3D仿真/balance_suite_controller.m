@@ -3,9 +3,9 @@ function out=balance_suite_controller(raw,cfg)
 % raw=[time x vx y vy z vz qw qx qy qz wx wy wz]，角速度在世界坐标。
 % out=[实际tau(2) state(6) ref(6) force(3) torque(3) fall 执行指令(2) PID目标(2)]。
 % cfg(16)=2时执行指令是iq/A；其余模式为转矩/Nm。
-persistent distance prevV velocityIntegral pitchIntegral yawIntegral
+persistent distance prevV velocityIntegral pitchIntegral yawIntegral lqiIntegral
 if isempty(distance)
- distance=0;prevV=0;velocityIntegral=0;pitchIntegral=0;yawIntegral=0;
+ distance=0;prevV=0;velocityIntegral=0;pitchIntegral=0;yawIntegral=0;lqiIntegral=zeros(2,1);
 end
 t=raw(1); qw=raw(8);qx=raw(9);qy=raw(10);qz=raw(11);
 R=[1-2*(qy^2+qz^2) 2*(qx*qy-qw*qz) 2*(qx*qz+qw*qy); ...
@@ -61,6 +61,14 @@ error=state-ref;
 pidTarget=zeros(2,1);
 if cfg(16)<.5
  K=reshape(cfg(4:15),2,6);effort=-K*error;
+elseif cfg(16)>2.5
+ K=reshape(cfg(4:15),2,6);Ki=reshape(cfg(38:41),2,2);
+ integralError=[error(1);atan2(sin(error(5)),cos(error(5)))];
+ candidate=lqiIntegral+Ts*integralError;
+ candidate=max(-[.3;1],min([.3;1],candidate));
+ effort=-K*error-Ki*lqiIntegral;
+ wheel=[(effort(1)-effort(2))/2;(effort(1)+effort(2))/2];
+ if max(abs(wheel))<=cfg(2),lqiIntegral=candidate;end
 else
  targetV=clamp(ref(2)+cfg(22)*(ref(1)-state(1)),cfg(23));
  velocityError=targetV-v;

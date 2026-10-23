@@ -1,0 +1,33 @@
+{
+  "utc": "2026-10-23T17:27:01.080111+00:00",
+  "design": "50659c3c9ee783bec1e8c2cf337aaae11e0ce3a2d7e7159eda2b5297846508bf",
+  "image_sha256": "ae3621ea905bbc24db5e7f312c5f235fbff90cfe9d9bef9548bc9b3a09bb0f15",
+  "main": "9faaf7f22f017444cb60e80a31227c53518281e4",
+  "post_initialization_status": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1210 imu_us=55471512 pitch=0.040762 roll=0.218541 yaw=-0.002571 raw_a=-0.000755 raw_b=0.046437 dir_a=0 dir_b=0 active=0 pwm_core=0 controller=LQI",
+  "idle_bcu3_frames": 397,
+  "crc_errors": 0,
+  "motor_start_commands_executed": false,
+  "native_equivalence": {
+    "samples": 16000,
+    "max_errors": [
+      1.1938702260128053e-06,
+      1.1292413106822607e-06,
+      7.537757196196537e-09,
+      4.9981685457112235e-11,
+      1.4952698301762268e-08,
+      2.9703261961167016e-08,
+      0.0,
+      0.0
+    ],
+    "saturated_samples": 15112,
+    "current_cap_A": 2,
+    "scope": "Compiled firmware controller versus MATLAB-exported Kaug double reference, including first sample, distance integration, yaw wrap, caps and integral freezing. No powered validation."
+  },
+  "remote_source_verification": {
+    "source_files": 23,
+    "all_matching": true,
+    "branch": "codex/lqi-simulation",
+    "main": "9faaf7f22f017444cb60e80a31227c53518281e4"
+  },
+  "hardware_protections_unchanged": true
+}

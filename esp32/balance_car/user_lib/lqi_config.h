@@ -1,0 +1,11 @@
+#pragma once
+#include <stdint.h>
+namespace lqi_config {
+constexpr float K[2][8]={{-2.697468257e+01f,-1.579317916e+01f,-2.207535022e+01f,-1.842563706e+00f,1.914280222e-14f,-5.561333861e-18f,-1.369714206e+01f,4.341179127e-13f},{-2.511858200e-13f,2.236752384e-14f,4.707201436e-15f,1.598287091e-15f,3.115963065e+00f,6.947101950e-01f,-1.026355436e-13f,2.491671498e+00f}};
+constexpr float PERIOD_S=0.005f;
+constexpr float HARDWARE_TRIM_RAD=-0.001564208089f;
+constexpr float POSITION_INTEGRAL_LIMIT=0.3f;
+constexpr float YAW_INTEGRAL_LIMIT=1.0f;
+constexpr uint32_t REVISION=1348836412U;
+constexpr const char *DESIGN_SHA256="50659c3c9ee783bec1e8c2cf337aaae11e0ce3a2d7e7159eda2b5297846508bf";
+}

@@ -27,3 +27,31 @@ slprj/
 *.slxc
 /matlab/**/*.slx.autosave
 
+# Local LQI measurements and generated reports.
+/matlab/LQI仿真/data/
+/matlab/LQI仿真/results/
+/matlab/LQI仿真/*.log
+
+/esp32/balance_car/user_lib/*credentials.h
+/esp32/lqi_firmware/results/
+/esp32/lqi_firmware/firmware/
+
+# Existing local test tools and captures retained during migration.
+
+/esp32/balance_car/user_lib/wifi_credentials.h
+/esp32/balance_car/user_lib/ota_credentials.h
+/esp32/ota/token.json
+/esp32/ota/results/*.log
+/esp32/wifi_debug/results/**/*.log
+/esp32/wifi_debug/.tools/
+/esp32/wifi_debug/firmware/
+/esp32/wifi_debug/build.log
+/esp32/wifi_debug/results_flash.log
+/esp32/wifi_debug/results/**/*.jsonl
+
+# Wi-Fi tuning local captures and generated validation intermediates.
+/esp32/tuning_preparation/sessions/
+/esp32/tuning_preparation/results/*.log
+/esp32/tuning_preparation/results/equivalence_vectors.csv
+/esp32/tuning_preparation/results/synthetic_pipeline/
+

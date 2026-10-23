@@ -1,0 +1,35 @@
+{
+  "schema": "lqi_current_v1",
+  "Ts": 0.005,
+  "Kaug": [
+    [
+      -26.97468256953428,
+      -15.793179159222644,
+      -22.075350219142692,
+      -1.8425637057356452,
+      1.9142802216884578e-14,
+      -5.561333861422848e-18,
+      -13.697142062406954,
+      4.3411791271636314e-13
+    ],
+    [
+      -2.51185819954371e-13,
+      2.2367523835471384e-14,
+      4.707201435847756e-15,
+      1.5982870908221855e-15,
+      3.115963064877302,
+      0.6947101949965655,
+      -1.0263554355163256e-13,
+      2.491671498228273
+    ]
+  ],
+  "integral_limit": [
+    0.3,
+    1
+  ],
+  "current_limit_A": 2,
+  "simulation_pitch_trim_rad": 0.0015642080886889027,
+  "hardware_pitch_trim_rad": -0.001564208089,
+  "hardware_adapter": "Tested forward/left/up observation; MA=-1 MB=+1; trapezoid distance. Hardware trim retained separately from CAD. Position integral uses legacy velocity_integral field, pitch_integral zero.",
+  "design_sha256": "50659c3c9ee783bec1e8c2cf337aaae11e0ce3a2d7e7159eda2b5297846508bf"
+}

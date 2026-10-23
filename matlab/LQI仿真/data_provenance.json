@@ -1,0 +1,29 @@
+{
+  "main_commit": "9faaf7f22f017444cb60e80a31227c53518281e4",
+  "files": [
+    {
+      "source": "D:\\code\\Embedded-related\\balance_car\\esp32\\tuning_preparation\\sessions\\uart200_20261023_204537\\oscillation_20261023_205742\\samples.csv",
+      "local": "data/samples.csv",
+      "sha256": "b95bf64610371a45a4bcb15619de0e2f471b8a863a187a52ec41111373cb5616",
+      "bytes": 28114007
+    },
+    {
+      "source": "D:\\code\\Embedded-related\\balance_car\\esp32\\tuning_preparation\\profiles\\uart_live_current_2A.json",
+      "local": "data/pid_reference.json",
+      "sha256": "6329984253ed3cff44c8abd13444126d3c4924af8283882e1754bbe6e42318ee",
+      "bytes": 1411
+    },
+    {
+      "source": "D:\\code\\Embedded-related\\balance_car\\esp32\\tuning_preparation\\sessions\\uart200_20261023_204537\\oscillation_20261023_205742\\disturbance_model_validation.json",
+      "local": "data/rejected_local_model.json",
+      "sha256": "149587dbab79771828d9e280d6652791ca7be06aa9128536eb3e40e1cfc264ab",
+      "bytes": 1052
+    },
+    {
+      "source": "D:\\code\\Embedded-related\\balance_car\\esp32\\tuning_preparation\\sessions\\uart200_20261023_204537\\oscillation_20261023_205742\\physics_correction_200hz.json",
+      "local": "data/rejected_physics_fit.json",
+      "sha256": "916ed00abd6fe2ba9c5322f04771b4ec9adb941a397c27ebcc10177bb0f2cec8",
+      "bytes": 916
+    }
+  ]
+}
