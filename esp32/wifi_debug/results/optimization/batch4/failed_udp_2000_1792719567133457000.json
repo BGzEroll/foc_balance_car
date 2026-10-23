@@ -1,0 +1,9 @@
+{
+  "transport": "UDP",
+  "requested_hz": 2000,
+  "duration_s": 10.0,
+  "batch": 4,
+  "datagrams_received": 2257,
+  "error": "TimeoutError: No reply to NET",
+  "received_total": 9028
+}

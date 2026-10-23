@@ -1,12 +1,15 @@
 #include "test.h"
 
 #include "balance.h"
+#include "wifi_debug.h"
 #include "hw/motor.h"
 #include "hw/sensor.h"
 
 #include "driver/uart.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/queue.h"
+#include <stdarg.h>
 #include "esp_timer.h"
 
 #include <math.h>
@@ -62,11 +65,32 @@ namespace test
         uint32_t result = 0;
         uint32_t write_index = 0;
         portMUX_TYPE log_lock = portMUX_INITIALIZER_UNLOCKED;
+        uint32_t scheduler_updates = 0, scheduler_max_dt_us = 0;
         uint32_t updates = 0;
         uint32_t maximum_dt_us = 0;
         uint32_t maximum_calculate_us = 0;
         row rows[ROW_COUNT] = {};
         row snapshot[ROW_COUNT] = {};
+
+        struct network_request { char line[96]; };
+        struct network_reply { char text[768]; };
+        QueueHandle_t command_queue = nullptr, reply_queue = nullptr;
+        char *reply_text = nullptr;
+        size_t reply_used = 0;
+        // Only the console task executes commands, for both UART and TCP.
+        void respond(const char *format, ...)
+        {
+            va_list args;
+            va_start(args, format);
+            if(reply_text)
+            {
+                const size_t remaining = sizeof(network_reply::text) - reply_used;
+                int n = vsnprintf(reply_text + reply_used, remaining, format, args);
+                if(n > 0) reply_used += static_cast<size_t>(n) < remaining ? n : remaining - 1;
+            }
+            else vprintf(format, args);
+            va_end(args);
+        }
 
         /**
          * @brief 输出当前硬件状态，角度和速度均采用车身前进坐标
@@ -77,7 +101,7 @@ namespace test
             sensor::get_package(sensors);
             motor::foc_info foc{};
             motor::get_info(foc);
-            printf("STATUS calibrated=%u running=%u ready=%u fault=%lu bus=%.4f "
+            respond("STATUS calibrated=%u running=%u ready=%u fault=%lu bus=%.4f "
                    "imu_us=%llu pitch=%.6f roll=%.6f yaw=%.6f "
                    "raw_a=%.6f raw_b=%.6f dir_a=%.0f dir_b=%.0f active=%lu\n",
                    foc.calibrated, foc.running, foc.ready,
@@ -102,6 +126,7 @@ namespace test
             uint64_t previous_us = 0;
             float yaw_zero = 0.0f;
             uint32_t log_stride = 1;
+            uint64_t previous_wake_us = 0;
 
             while(true)
             {
@@ -111,6 +136,12 @@ namespace test
                 motor::foc_info foc{};
                 motor::get_info(foc);
                 const uint64_t now = esp_timer_get_time();
+                if(previous_wake_us) {
+                    const uint32_t dt = now - previous_wake_us;
+                    if(dt > scheduler_max_dt_us) __atomic_store_n(&scheduler_max_dt_us, dt, __ATOMIC_RELAXED);
+                }
+                previous_wake_us = now;
+                __atomic_add_fetch(&scheduler_updates, 1U, __ATOMIC_RELAXED);
                 const bool fresh = sensors.imu.timestamp_us != 0 &&
                     now - sensors.imu.timestamp_us <= 20000 &&
                     sensors.left_encoder.timestamp_us != 0 &&
@@ -359,6 +390,110 @@ namespace test
             printf("CSV_END\n");
         }
 
+        void dispatch(const char *line)
+        {
+            if(strcmp(line, "SCHEDRESET") == 0)
+            {
+                __atomic_store_n(&scheduler_max_dt_us, 0U, __ATOMIC_RELAXED);
+                respond("SCHEDRESET OK\n");
+            }
+            else if(strcmp(line, "STOP") == 0)
+            {
+                __atomic_store_n(&requested, 0U, __ATOMIC_RELEASE);
+                motor::stop();
+                __atomic_store_n(&cancel, 1U, __ATOMIC_RELEASE);
+                respond("STOPPED\n");
+            }
+            else if(strcmp(line, "STATUS") == 0)
+            {
+                status();
+            }
+            else if(strcmp(line, "DUMP") == 0)
+            {
+                if(reply_text) respond("REJECT use STREAM or serial DUMP\n");
+                else dump();
+            }
+            else if(strncmp(line, "TUNE ", 5) == 0)
+            {
+                balance::gains next{};
+
+                if(sscanf(line, "TUNE %f %f %f", &next.velocity_kp,
+                          &next.velocity_ki, &next.pitch_kd) != 3 ||
+                   !isfinite(next.velocity_kp) || !isfinite(next.velocity_ki) ||
+                   !isfinite(next.pitch_kd) || next.velocity_kp < 0.0f ||
+                   next.velocity_kp > 2.0f || next.velocity_ki < 0.0f ||
+                   next.velocity_ki > 2.0f || next.pitch_kd < 0.005f || next.pitch_kd > 0.1f)
+                {
+                    respond("REJECT tuning\n");
+                }
+                else
+                {
+                    portENTER_CRITICAL(&request_lock);
+                    tuning = next;
+                    portEXIT_CRITICAL(&request_lock);
+                    respond("TUNING velocity_kp=%.4f velocity_ki=%.4f pitch_kd=%.4f\n",
+                           tuning.velocity_kp, tuning.velocity_ki, tuning.pitch_kd);
+                }
+            }
+            else if(__atomic_load_n(&active, __ATOMIC_ACQUIRE) ||
+                    __atomic_load_n(&requested, __ATOMIC_ACQUIRE))
+            {
+                respond("BUSY\n");
+            }
+            else if(strcmp(line, "CAL") == 0)
+            {
+                sensor::package sensors{};
+                sensor::get_package(sensors);
+                const bool imu_ready = sensors.imu.timestamp_us != 0 &&
+                    esp_timer_get_time() - sensors.imu.timestamp_us <= 20000;
+                respond("CAL accepted=%u\n", imu_ready && motor::calibrate());
+            }
+            else
+            {
+                char command[16] = {};
+                unsigned duration = 0;
+                unsigned index = 0;
+                float cap = 0.0f;
+                run next{};
+
+                if(sscanf(line, "PROBE %u %f %u", &index, &cap, &duration) == 3 && index < 2)
+                {
+                    next.type = mode::PROBE;
+                    next.motor = index;
+                }
+                else if(sscanf(line, "%15s %u %f", command, &duration, &cap) == 3)
+                {
+                    if(strcmp(command, "SHADOW") == 0)
+                    {
+                        next.type = mode::SHADOW;
+                    }
+                    else if(strcmp(command, "BALANCE") == 0)
+                    {
+                        next.type = mode::BALANCE;
+                    }
+                }
+
+                if(next.type == mode::IDLE || (duration == 0 && next.type != mode::BALANCE) ||
+                   (duration != 0 && duration < 50) || duration > 10000 ||
+                   !isfinite(cap) || fabsf(cap) > MAX_CURRENT_A || fabsf(cap) < 0.001f)
+                {
+                    respond("REJECT command\n");
+                    return;
+                }
+
+                next.duration_ms = duration;
+                next.current_A = cap;
+                next.tuning = tuning;
+                portENTER_CRITICAL(&request_lock);
+                pending = next;
+                portEXIT_CRITICAL(&request_lock);
+                __atomic_store_n(&requested, 1U, __ATOMIC_RELEASE);
+                respond("RUN accepted=1 mode=%lu duration_ms=%u cap=%.4f tuning=%.4f,%.4f,%.4f\n",
+                       static_cast<unsigned long>(next.type), duration, cap,
+                       tuning.velocity_kp, tuning.velocity_ki, tuning.pitch_kd);
+            }
+        }
+
         /**
          * @brief 接收串口命令，所有带输出试验均设置独立 PWM 截止时间
          */
@@ -367,17 +502,28 @@ namespace test
             uart_driver_install(UART_NUM_0, 1024, 0, 0, nullptr, 0);
             char line[96] = {};
             uint32_t used = 0;
-            printf("UPPER_BENCH_READY 200Hz default=STOP forward_sign=-1,+1\n");
+            respond("UPPER_BENCH_READY 200Hz default=STOP forward_sign=-1,+1\n");
 
             while(true)
             {
                 if(__atomic_exchange_n(&ended, 0U, __ATOMIC_ACQ_REL))
                 {
-                    printf("DONE result=%lu rows=%lu updates=%lu max_dt_us=%lu max_calculate_us=%lu\n",
+                    respond("DONE result=%lu rows=%lu updates=%lu max_dt_us=%lu max_calculate_us=%lu\n",
                            static_cast<unsigned long>(result), static_cast<unsigned long>(count),
                            static_cast<unsigned long>(updates), static_cast<unsigned long>(maximum_dt_us),
                            static_cast<unsigned long>(maximum_calculate_us));
                     status();
+                }
+
+                network_request request{};
+                if(xQueueReceive(command_queue, &request, 0) == pdTRUE)
+                {
+                    network_reply reply{};
+                    reply_text = reply.text;
+                    reply_used = 0;
+                    dispatch(request.line);
+                    reply_text = nullptr;
+                    xQueueSend(reply_queue, &reply, portMAX_DELAY);
                 }
 
                 uint8_t ch = 0;
@@ -399,102 +545,33 @@ namespace test
                 line[used] = '\0';
                 used = 0;
 
-                if(strcmp(line, "STOP") == 0)
-                {
-                    motor::stop();
-                    __atomic_store_n(&cancel, 1U, __ATOMIC_RELEASE);
-                    printf("STOPPED\n");
-                }
-                else if(strcmp(line, "STATUS") == 0)
-                {
-                    status();
-                }
-                else if(strcmp(line, "DUMP") == 0)
-                {
-                    dump();
-                }
-                else if(strncmp(line, "TUNE ", 5) == 0)
-                {
-                    balance::gains next{};
-
-                    if(sscanf(line, "TUNE %f %f %f", &next.velocity_kp,
-                              &next.velocity_ki, &next.pitch_kd) != 3 ||
-                       !isfinite(next.velocity_kp) || !isfinite(next.velocity_ki) ||
-                       !isfinite(next.pitch_kd) || next.velocity_kp < 0.0f ||
-                       next.velocity_kp > 2.0f || next.velocity_ki < 0.0f ||
-                       next.velocity_ki > 2.0f || next.pitch_kd < 0.005f || next.pitch_kd > 0.1f)
-                    {
-                        printf("REJECT tuning\n");
-                    }
-                    else
-                    {
-                        portENTER_CRITICAL(&request_lock);
-                        tuning = next;
-                        portEXIT_CRITICAL(&request_lock);
-                        printf("TUNING velocity_kp=%.4f velocity_ki=%.4f pitch_kd=%.4f\n",
-                               tuning.velocity_kp, tuning.velocity_ki, tuning.pitch_kd);
-                    }
-                }
-                else if(__atomic_load_n(&active, __ATOMIC_ACQUIRE) ||
-                        __atomic_load_n(&requested, __ATOMIC_ACQUIRE))
-                {
-                    printf("BUSY\n");
-                }
-                else if(strcmp(line, "CAL") == 0)
-                {
-                    sensor::package sensors{};
-                    sensor::get_package(sensors);
-                    const bool imu_ready = sensors.imu.timestamp_us != 0 &&
-                        esp_timer_get_time() - sensors.imu.timestamp_us <= 20000;
-                    printf("CAL accepted=%u\n", imu_ready && motor::calibrate());
-                }
-                else
-                {
-                    char command[16] = {};
-                    unsigned duration = 0;
-                    unsigned index = 0;
-                    float cap = 0.0f;
-                    run next{};
-
-                    if(sscanf(line, "PROBE %u %f %u", &index, &cap, &duration) == 3 && index < 2)
-                    {
-                        next.type = mode::PROBE;
-                        next.motor = index;
-                    }
-                    else if(sscanf(line, "%15s %u %f", command, &duration, &cap) == 3)
-                    {
-                        if(strcmp(command, "SHADOW") == 0)
-                        {
-                            next.type = mode::SHADOW;
-                        }
-                        else if(strcmp(command, "BALANCE") == 0)
-                        {
-                            next.type = mode::BALANCE;
-                        }
-                    }
-
-                    if(next.type == mode::IDLE || (duration == 0 && next.type != mode::BALANCE) ||
-                       (duration != 0 && duration < 50) || duration > 10000 ||
-                       !isfinite(cap) || fabsf(cap) > MAX_CURRENT_A || fabsf(cap) < 0.001f)
-                    {
-                        printf("REJECT command\n");
-                        continue;
-                    }
-
-                    next.duration_ms = duration;
-                    next.current_A = cap;
-                    next.tuning = tuning;
-                    portENTER_CRITICAL(&request_lock);
-                    pending = next;
-                    portEXIT_CRITICAL(&request_lock);
-                    __atomic_store_n(&requested, 1U, __ATOMIC_RELEASE);
-                    printf("RUN accepted=1 mode=%lu duration_ms=%u cap=%.4f tuning=%.4f,%.4f,%.4f\n",
-                           static_cast<unsigned long>(next.type), duration, cap,
-                           tuning.velocity_kp, tuning.velocity_ki, tuning.pitch_kd);
-                }
+                dispatch(line);
                 fflush(stdout);
             }
         }
+    }
+
+    bool network_command(const char *line, char *response, size_t capacity)
+    {
+        if(strlen(line) >= sizeof(network_request::line)) return false;
+        network_request request{};
+        snprintf(request.line, sizeof(request.line), "%s", line);
+        if(xQueueSend(command_queue, &request, 0) != pdTRUE) return false;
+        network_reply reply{};
+        // Commands execute on console task; CAL starts async motor calibration.
+        // Wait for this reply before submitting another request.
+        if(xQueueReceive(reply_queue, &reply, portMAX_DELAY) != pdTRUE) return false;
+        snprintf(response, capacity, "%s", reply.text);
+        return true;
+    }
+
+    void network_stats(uint32_t &u, uint32_t &dt, uint32_t &calc, uint32_t &mode)
+    {
+        // Diagnostic counters only; no network operation runs in control task.
+        u = __atomic_load_n(&scheduler_updates, __ATOMIC_RELAXED);
+        dt = __atomic_load_n(&scheduler_max_dt_us, __ATOMIC_RELAXED);
+        calc = __atomic_load_n(&maximum_calculate_us, __ATOMIC_RELAXED);
+        mode = __atomic_load_n(&active, __ATOMIC_ACQUIRE);
     }
 
     /**
@@ -502,9 +579,12 @@ namespace test
      */
     bool init()
     {
+        command_queue = xQueueCreate(1, sizeof(network_request));
+        reply_queue = xQueueCreate(1, sizeof(network_reply));
+        if(!command_queue || !reply_queue) return false;
         return xTaskCreatePinnedToCore(control_task, "upper_control", 6144,
                    nullptr, 2, nullptr, 0) == pdPASS &&
                xTaskCreatePinnedToCore(console_task, "upper_console", 6144,
-                   nullptr, 1, nullptr, 0) == pdPASS;
+                   nullptr, 1, nullptr, 0) == pdPASS && wifi_debug::init();
     }
 }

@@ -1,0 +1,28 @@
+{
+  "balance_car.bin": "27692c7b8512c0d3f138e2f56c94fb3d5476a5c8037d56f3f4f7c42d6bff9427",
+  "bootloader.bin": "c0c86ecec2cb49785f61d4bb0acb52e4bbb74859ff16be5c770dd7a32bc4b698",
+  "partition-table.bin": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820",
+  "pre_wifi_2MB.bin": "f65275cdfa4e4be5bd8873dc2900b6e1b709d475d538af06b769d6deb5af7207",
+  "branch": "codex/test-upper-controller",
+  "main_before": "9faaf7f22f017444cb60e80a31227c53518281e4",
+  "main_after": "9faaf7f22f017444cb60e80a31227c53518281e4",
+  "source_sha256": {
+    "main/CMakeLists.txt": "5a84df6a6c2f8a0dab8c13f3adeacd6b0465823fea6fc54c983621e3f7fb0094",
+    "user_lib/test.cpp": "0dff7d0ce34e94d446542716d8f5060253159b6e86dd20921c902ddc82d55bd5",
+    "user_lib/test.h": "03374368fcb9a69f4ab324f341550957134223417a65ac1ab7c1bcb6aecb8695",
+    "user_lib/wifi_debug.cpp": "670ae3e1c6fa32b35b871e97f3ffd708e518a4208905adfcba63d51c364e082d",
+    "user_lib/wifi_debug.h": "d5b602e34e3a136c803def25de9f1c990327c4cde6ed7baf27cf72592926e522"
+  },
+  "remote_source_verified": true,
+  "remote_binary_verified": true,
+  "validated_sdkconfig": {
+    "CONFIG_LWIP_TCPIP_TASK_AFFINITY": "0x7FFFFFFF",
+    "CONFIG_LWIP_TCPIP_CORE_LOCKING": null,
+    "CONFIG_LWIP_CHECK_THREAD_SAFETY": null,
+    "CONFIG_LWIP_IRAM_OPTIMIZATION": null,
+    "CONFIG_ESP_WIFI_DYNAMIC_TX_BUFFER_NUM": "32",
+    "CONFIG_ESP_WIFI_TX_BA_WIN": "6",
+    "CONFIG_ESP32S3_INSTRUCTION_CACHE_SIZE": "0x4000",
+    "CONFIG_ESP32S3_INSTRUCTION_CACHE_WRAP": null
+  }
+}
