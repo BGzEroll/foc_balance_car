@@ -59,6 +59,7 @@ namespace motor
 
         uint16_t raw_a = 0;
         uint16_t raw_b = 0;
+        uint32_t detail = 0; // high byte: timeout source; low 24 bits: age/dt in us
     };
 
     struct foc_info

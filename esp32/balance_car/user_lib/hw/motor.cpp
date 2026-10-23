@@ -316,6 +316,7 @@ namespace pwm
         uint32_t fault_raw_a = 0;
         uint32_t fault_raw_b = 0;
         uint32_t fault_us = 0;
+        uint32_t fault_detail = 0;
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -437,7 +438,8 @@ namespace pwm
         motor::fault_code code,
         uint8_t index = 0xFF,
         uint16_t raw_a = 0,
-        uint16_t raw_b = 0)
+        uint16_t raw_b = 0,
+        uint32_t detail = 0)
     {
         uint32_t expected = 0;
 
@@ -448,6 +450,7 @@ namespace pwm
             __atomic_store_n(&fault_motor, index, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_a, raw_a, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_b, raw_b, __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_detail, detail, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_us, now32(), __ATOMIC_RELEASE);
         }
 
@@ -478,6 +481,7 @@ namespace pwm
         out.motor_index = __atomic_load_n(&fault_motor, __ATOMIC_RELAXED);
         out.raw_a = __atomic_load_n(&fault_raw_a, __ATOMIC_RELAXED);
         out.raw_b = __atomic_load_n(&fault_raw_b, __ATOMIC_RELAXED);
+        out.detail = __atomic_load_n(&fault_detail, __ATOMIC_RELAXED);
 
         const uint32_t stamp = __atomic_load_n(&fault_us, __ATOMIC_ACQUIRE);
 
@@ -654,7 +658,8 @@ namespace pwm
                     if((active & (1U << i)) &&
                        now - last_valid_sample_us[i] > SAMPLE_TIMEOUT_US)
                     {
-                        trip(motor::fault_code::SAMPLE_TIMEOUT, i);
+                        trip(motor::fault_code::SAMPLE_TIMEOUT, i, 0, 0,
+                             0x01000000U | ((now-last_valid_sample_us[i]) & 0xffffffU));
                         break;
                     }
                 }
@@ -755,7 +760,8 @@ namespace pwm
             else if(enabled && value[i].sample_us != 0 &&
                     now - value[i].sample_us > SAMPLE_TIMEOUT_US)
             {
-                trip(motor::fault_code::SAMPLE_TIMEOUT, i);
+                trip(motor::fault_code::SAMPLE_TIMEOUT, i, 0, 0,
+                     0x02000000U | ((now-value[i].sample_us) & 0xffffffU));
                 return false;
             }
         }
@@ -1565,7 +1571,8 @@ namespace motor
 
             if(now32() - sample.timestamp_us > pwm::SAMPLE_TIMEOUT_US)
             {
-                pwm::trip(fault_code::SAMPLE_TIMEOUT, index);
+                pwm::trip(fault_code::SAMPLE_TIMEOUT, index, sample.raw_a, sample.raw_b,
+                          0x03000000U | ((now32()-sample.timestamp_us) & 0xffffffU));
                 return;
             }
 
@@ -1622,11 +1629,13 @@ namespace motor
             current_info current{};
             pwm::command output{};
 
+            const uint32_t foc_dt = sample.timestamp_us-foc::motors[index].last_sample_us;
             if(!foc::update(
                 index, sample, encoder, get_target(index),
                 aligning, theta, voltage, current, output))
             {
-                pwm::trip(fault_code::SAMPLE_TIMEOUT, index);
+                pwm::trip(fault_code::SAMPLE_TIMEOUT, index, sample.raw_a, sample.raw_b,
+                          0x04000000U | (foc_dt & 0xffffffU));
                 return;
             }
 

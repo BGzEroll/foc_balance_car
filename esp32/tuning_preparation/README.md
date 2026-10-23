@@ -1,6 +1,6 @@
 # 今晚无线 PID 调参与实物—仿真闭环准备
 
-测试分支 `codex/test-upper-controller`；main 不动。PID 仍为 5 ms / 200 Hz，内层 FOC、方向映射、每轮最大 0.7 A 和保护逻辑保持。准备阶段不校准、不使能电机。USB 当前仍连接，今晚拔掉的是主控数据线，保留独立供电；拔线后的行为需要当晚确认。
+测试分支 `codex/test-upper-controller`；main 不动。PID 仍为 5 ms / 200 Hz，内层 FOC、方向映射、每轮目标电流最大 2 A 和保护逻辑保持。准备阶段不校准、不使能电机。USB 当前仍连接，今晚拔掉的是主控数据线，保留独立供电；拔线后的行为需要当晚确认。
 
 ## 已准备
 
@@ -42,7 +42,7 @@ GAINS
 MARK wheels_free_still
 CAL
 MARK on_ground_held
-BALANCE 0 0.7
+BALANCE 0 2.0
 MARK hands_free_baseline
 SET velocity_kp 0.5
 TUNEA 0.5 0.2 3.756021
@@ -50,7 +50,7 @@ MARK segment_end
 QUIT
 ```
 
-CAL 会通电对齐，只能在用户确认车身静止、双轮自由悬空后执行；需确认 calibrated=1 且两轮方向正确。BALANCE 必须在用户已放稳/拿稳、姿态符合启动范围时执行。`BALANCE 0 0.7` 是连续运行，不因记录窗口结束而断力。上述不是自动脚本，准备阶段没有执行 CAL/BALANCE。STOP 是明确的停机命令，落地时应先拿稳。
+CAL 会通电对齐，只能在用户确认车身静止、双轮自由悬空后执行；需确认 calibrated=1 且两轮方向正确。BALANCE 必须在用户已放稳/拿稳、姿态符合启动范围时执行。`BALANCE 0 2.0` 是连续运行，不因记录窗口结束而断力。上述不是自动脚本，准备阶段没有执行 CAL/BALANCE。STOP 是明确的停机命令，落地时应先拿稳。
 
 `SET key value` 修改一个参数；`TUNEA velocity_kp velocity_ki pitch_kd` 修改三项；`GAINSSET` 一次原子应用全部十项。成功返回 GAINS、单位 schema 和递增 revision；每个控制快照带实际用于计算的那版参数。
 
@@ -90,3 +90,9 @@ explore_current_pid(fullfile(folder,'identified_plant.mat'));
 - 合成数据工作流及“拒绝停机数据辨识”测试通过；合成模型不是实物辨识结果。离线搜索若所有候选失败，输出 no_feasible_candidate，旧候选不会被误用。
 - MATLAB 离屏绘图在当前批处理环境阻塞，已将绘图设为显式可选；数值导入、辨识、搜索无需绘图即可运行。
 - 固件与本地/开发机源码及三份刷入镜像使用 verify_identity.py 核对；不更改 main。
+
+## 2026-10-23 现场更新
+
+用户要求上层每轮目标电流上限改为 2 A，默认 limits 与命令范围已同步。内层目标电流矢量上限原本就是 2 A。ADC 原有约 ±2 A 相电流保护保持，因此 Iq 指令接近 2 A 时，电流纹波仍可能触发该保护，不保证可持续运行在 2 A。旧 wired_B_current.json 的 0.7 A 作为历史基线保留；MATLAB 辨识/仿真从实测 current_limit_A 读取本次限流。
+
+新增 FAULT 命令：source=1 有效采样间隔超时；2 PWM 指令样本过期；3 FOC 消费样本过期；4 FOC 更新拒绝，age_or_dt_us 为相应年龄或间隔。未放宽任何超时阈值。

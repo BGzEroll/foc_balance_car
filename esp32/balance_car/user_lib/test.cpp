@@ -21,7 +21,7 @@ namespace test
     namespace
     {
         constexpr float FORWARD_SIGN[2] = {-1.0f, 1.0f};
-        constexpr float MAX_CURRENT_A = 0.7f;
+        constexpr float MAX_CURRENT_A = 2.0f;
         constexpr float MAX_WHEEL_SPEED_RAD_S = 12.0f;
         constexpr uint32_t ROW_COUNT = 400;
 
@@ -487,6 +487,13 @@ namespace test
             else if(strcmp(line, "STATUS") == 0)
             {
                 status();
+            }
+            else if(strcmp(line, "FAULT") == 0)
+            {
+                motor::foc_info m{}; motor::get_info(m);
+                respond("FAULT code=%lu motor=%u time_us=%llu source=%lu age_or_dt_us=%lu raw_a=%u raw_b=%u\n",
+                    (unsigned long)m.fault.code,m.fault.motor_index,(unsigned long long)m.fault.timestamp_us,
+                    (unsigned long)(m.fault.detail>>24),(unsigned long)(m.fault.detail&0xffffffU),m.fault.raw_a,m.fault.raw_b);
             }
             else if(strcmp(line, "DUMP") == 0)
             {

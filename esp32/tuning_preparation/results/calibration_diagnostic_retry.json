@@ -1,0 +1,9 @@
+{
+  "telemetry_during_calibration": false,
+  "statuses": [
+    "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.0520 imu_us=44681130 pitch=0.022137 roll=0.098347 yaw=-0.000296 raw_a=0.582908 raw_b=0.000000 dir_a=0 dir_b=0 active=0",
+    "STATUS calibrated=0 running=0 ready=0 fault=7 bus=8.0670 imu_us=45196125 pitch=0.022540 roll=0.098038 yaw=-0.000330 raw_a=0.812673 raw_b=0.000000 dir_a=0 dir_b=0 active=0"
+  ],
+  "fault": "FAULT code=7 motor=0 time_us=45193941 source=2 age_or_dt_us=1050 raw_a=0 raw_b=0",
+  "final_status": "STATUS calibrated=0 running=0 ready=0 fault=7 bus=8.0850 imu_us=45236293 pitch=0.022022 roll=0.097914 yaw=-0.000312 raw_a=-0.898050 raw_b=0.000000 dir_a=0 dir_b=0 active=0"
+}

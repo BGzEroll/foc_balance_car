@@ -1,0 +1,7 @@
+{
+  "statuses": [
+    "STATUS calibrated=0 running=0 ready=0 fault=7 bus=8.0580 imu_us=41608459 pitch=0.018522 roll=0.085805 yaw=-0.058862 raw_a=1.398762 raw_b=0.451719 dir_a=0 dir_b=0 active=0"
+  ],
+  "fault": "FAULT code=7 motor=0 time_us=41604344 source=2 age_or_dt_us=1050 raw_a=0 raw_b=0",
+  "final_status": "STATUS calibrated=0 running=0 ready=0 fault=7 bus=8.0580 imu_us=41668457 pitch=0.020667 roll=0.085008 yaw=-0.058891 raw_a=-0.000016 raw_b=-0.010238 dir_a=0 dir_b=0 active=0"
+}
