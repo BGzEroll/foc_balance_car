@@ -5,6 +5,8 @@ addpath(fullfile(root,'LQR参数计算'));addpath(fullfile(root,'3D仿真'));
 d=calculate_lqr;motor=balance_current_parameters;
 data=load(fullfile(folder,'identified_plant.mat'),'model');base=data.model.baseline;
 assert(data.model.valid_for_search,'Measured model rejected');
+assert(isfield(data.model,'disturbance_validation_passed')&&data.model.disturbance_validation_passed,...
+ 'Independent multi-step model validation is required');
 proposal=jsondecode(fileread(fullfile(folder,'candidate_review_only.json')));
 profiles={base,base,proposal.gains};profiles{2}.pitch_kd=1.8;
 labels={'baseline','D_only_1p8','measured_model_proposal'};rows=[];

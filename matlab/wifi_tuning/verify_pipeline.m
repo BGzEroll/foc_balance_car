@@ -18,7 +18,12 @@ names=fieldnames(profile.gains);
 for k=1:numel(names),T.(names{k})(:)=profile.gains.(names{k});end
 writetable(T,fullfile(folder,'samples.csv'));
 fid=fopen(fullfile(folder,'metadata.json'),'w');fprintf(fid,'%s',jsonencode(struct('source','SYNTHETIC PIPELINE TEST; not actual hardware')));fclose(fid);
-model=fit_current_plant(folder,[1 11]);assert(model.valid_for_search);
+model=fit_current_plant(folder,[1 7]);assert(model.valid_for_search);
+blocked=false;
+try,explore_current_pid(fullfile(folder,'identified_plant.mat'));catch e,blocked=contains(e.message,'Multi-step validation');end
+assert(blocked,'Single-step fit must not authorize gain search');
+validation=validate_disturbance_model(folder,[1 7],[7.5 11.5]);
+assert(validation.accepted_for_disturbance_search,'Synthetic multi-step validation failed');
 explore_current_pid(fullfile(folder,'identified_plant.mat'));
 % Insufficient/idle data must not silently produce a plant model.
 T.mode(:)=0;idle=fullfile(folder,'idle_reject');if ~isfolder(idle),mkdir(idle);end

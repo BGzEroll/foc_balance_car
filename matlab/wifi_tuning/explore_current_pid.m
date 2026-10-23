@@ -2,6 +2,8 @@ function candidates=explore_current_pid(model_file)
 % Local-model screening only. Never sends parameters to the car.
 data=load(model_file,'model');model=data.model;
 assert(model.valid_for_search,'Model validation gate failed');
+assert(isfield(model,'disturbance_validation_passed')&&model.disturbance_validation_passed,...
+ 'Multi-step validation on a separate time segment is required before gain search');
 base=model.baseline;results=[];profiles={};
 for vp=[.6 .8 1 1.2]
  for vi=[.5 1 1.5]
