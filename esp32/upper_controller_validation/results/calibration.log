@@ -1,0 +1,106 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 23 2026 03:06:28
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0d6a8h ( 54952) map
+I (96) esp_image: segment 1: paddr=0001d6d0 vaddr=3fc93d00 size=02948h ( 10568) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1cb88h (117640) map
+I (123) esp_image: segment 3: paddr=0003cbb0 vaddr=3fc96648 size=05550h ( 21840) load
+I (128) esp_image: segment 4: paddr=00042108 vaddr=40374000 size=0fc68h ( 64616) load
+I (143) esp_image: segment 5: paddr=00051d78 vaddr=50000000 size=00024h (    36) load
+I (151) boot: Loaded app from partition at offset 0x10000
+I (151) boot: Disabling RNG early entropy source...
+I (161) cpu_start: Multicore app
+I (170) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (171) cpu_start: Pro cpu start user code
+I (171) cpu_start: cpu freq: 240000000 Hz
+I (172) app_init: Application information:
+I (176) app_init: Project name:     balance_car
+I (180) app_init: App version:      v1.0.0-30-g9faaf7f-dirty
+I (186) app_init: Compile time:     Oct 23 2026 03:28:07
+I (191) app_init: ELF file SHA256:  4becea3bc...
+I (195) app_init: ESP-IDF:          v6.0.2
+I (199) efuse_init: Min chip rev:     v0.0
+I (203) efuse_init: Max chip rev:     v0.99 
+I (207) efuse_init: Chip rev:         v0.2
+I (211) heap_init: Initializing. RAM available for dynamic allocation:
+I (217) heap_init: At 3FCA84C0 len 00041250 (260 KiB): RAM
+I (222) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (227) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (232) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (238) spi_flash: detected chip: gd
+I (241) spi_flash: flash io: dio
+W (244) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (257) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (262) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (269) main_task: Started on CPU0
+I (288) main_task: Calling app_main()
+W (411) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (429) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+I (470) main_task: Returned from app_main()
+UPPER_BENCH_READY 200Hz default=STOP forward_sign=-1,+1
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1900 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.000000 dir_a=0 dir_b=0 active=0
+CAL accepted=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1990 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.009533 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.015798 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.047657 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1900 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.039561 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2020 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.000593 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.004630 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.003209 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1990 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.052770 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=-0.484211 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2020 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.007715 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.021629 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1750 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.014828 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1870 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.000868 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.042980 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=-0.444857 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=-0.224110 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.002331 raw_b=0.000001 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.055968 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.011214 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.000006 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1990 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.017146 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2020 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.002005 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2020 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.001649 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2020 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=-0.000000 raw_b=0.001613 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1990 imu_us=5406594 pitch=0.024449 roll=0.087763 yaw=-0.000042 raw_a=-0.000000 raw_b=0.001772 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1870 imu_us=5606545 pitch=0.024062 roll=0.087530 yaw=-0.000010 raw_a=-0.000000 raw_b=0.069888 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=5806679 pitch=0.023862 roll=0.087479 yaw=-0.000035 raw_a=-0.000000 raw_b=0.012425 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2020 imu_us=6011544 pitch=0.023445 roll=0.087294 yaw=-0.000054 raw_a=-0.000000 raw_b=0.006648 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=6211595 pitch=0.023340 roll=0.087519 yaw=-0.000013 raw_a=-0.000000 raw_b=0.049690 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=6411544 pitch=0.023276 roll=0.087423 yaw=-0.000006 raw_a=-0.000000 raw_b=0.007674 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=6616545 pitch=0.023283 roll=0.087339 yaw=0.000002 raw_a=-0.000000 raw_b=0.100353 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2020 imu_us=6816546 pitch=0.023433 roll=0.087758 yaw=0.000008 raw_a=-0.000000 raw_b=0.100540 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1990 imu_us=7016630 pitch=0.023655 roll=0.087646 yaw=0.000069 raw_a=-0.000000 raw_b=0.000633 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=7221541 pitch=0.023609 roll=0.087133 yaw=0.000050 raw_a=-0.000000 raw_b=0.003205 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1900 imu_us=7421597 pitch=0.023639 roll=0.087379 yaw=0.000070 raw_a=-0.000000 raw_b=0.013482 dir_a=0 dir_b=0 active=0
+STOPPED
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=7776530 pitch=0.023471 roll=0.087450 yaw=0.000113 raw_a=-0.000000 raw_b=0.027899 dir_a=0 dir_b=0 active=0
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import base64,sys;sys.argv=["bench",base64.b64decode("eyJhY3Rpb24iOiAiY2FsIiwgImNvbW1hbmQiOiAiU0hBRE9XIDEwMDAgMC4yNSIsICJuYW1lIjogImNhbGlicmF0aW9uIn0=").decode()];exec(base64.b64decode("CmltcG9ydCBqc29uLHNlcmlhbCxzeXMsdGltZQphcmdzPWpzb24ubG9hZHMoc3lzLmFyZ3ZbMV0pCnBvcnQ9c2VyaWFsLlNlcmlhbChwb3J0PU5vbmUsYmF1ZHJhdGU9MTE1MjAwLHRpbWVvdXQ9LjA1KQpwb3J0LmR0cj1GYWxzZTtwb3J0LnJ0cz1GYWxzZQpwb3J0LnBvcnQ9Jy9kZXYvc2VyaWFsL2J5LWlkL3VzYi0xYTg2X1VTQl9TaW5nbGVfU2VyaWFsXzVBMzMwMTQyNDUtaWYwMCcKcG9ydC5vcGVuKCkKZGVmIHNlbmQoY29tbWFuZCk6CiAgICBwb3J0LndyaXRlKChjb21tYW5kKydcbicpLmVuY29kZSgpKTtwb3J0LmZsdXNoKCkKZGVmIGNvbGxlY3Qoc2Vjb25kcyx1bnRpbD1Ob25lKToKICAgIGVuZD10aW1lLm1vbm90b25pYygpK3NlY29uZHM7ZGF0YT1ieXRlYXJyYXkoKQogICAgd2hpbGUgdGltZS5tb25vdG9uaWMoKTxlbmQ6CiAgICAgICAgY2h1bms9cG9ydC5yZWFkKDQwOTYpCiAgICAgICAgZGF0YS5leHRlbmQoY2h1bmspCiAgICAgICAgaWYgdW50aWwgYW5kIHVudGlsIGluIGRhdGE6YnJlYWsKICAgIHRleHQ9ZGF0YS5kZWNvZGUoZXJyb3JzPSdyZXBsYWNlJyk7cHJpbnQodGV4dCxlbmQ9JycsZmx1c2g9VHJ1ZSkKICAgIHJldHVybiB0ZXh0CnRyeToKICAgIGNvbGxlY3QoLjIpCiAgICBzZW5kKCdTVEFUVVMnKTtjb2xsZWN0KC4zKQogICAgaWYgYXJnc1snYWN0aW9uJ109PSdjYWwnOgogICAgICAgIHNlbmQoJ0NBTCcpO2NvbGxlY3QoLjMpCiAgICAgICAgZm9yIGkgaW4gcmFuZ2UoMzUpOgogICAgICAgICAgICBzZW5kKCdTVEFUVVMnKTt0ZXh0PWNvbGxlY3QoLjIpCiAgICAgICAgICAgIGlmICdjYWxpYnJhdGVkPTEnIGluIHRleHQ6YnJlYWsKICAgICAgICBlbHNlOnJhaXNlIFJ1bnRpbWVFcnJvcignQ2FsaWJyYXRpb24gZGlkIG5vdCBmaW5pc2gnKQogICAgZWxpZiBhcmdzWydhY3Rpb24nXT09J3J1bic6CiAgICAgICAgc2VuZChhcmdzWydjb21tYW5kJ10pO3RleHQ9Y29sbGVjdCgzLjUsYidET05FIHJlc3VsdD0nKQogICAgICAgIGlmICdET05FIHJlc3VsdD0nIG5vdCBpbiB0ZXh0OnJhaXNlIFJ1bnRpbWVFcnJvcignTm8gcnVuIGNvbXBsZXRpb24nKQogICAgICAgIGNvbGxlY3QoLjIpCiAgICAgICAgc2VuZCgnRFVNUCcpO3RleHQ9Y29sbGVjdCgxMixiJ0NTVl9FTkQnKQogICAgICAgIGlmICdDU1ZfRU5EJyBub3QgaW4gdGV4dDpyYWlzZSBSdW50aW1lRXJyb3IoJ0luY29tcGxldGUgQ1NWJykKZmluYWxseToKICAgIHNlbmQoJ1NUT1AnKTtjb2xsZWN0KC4xNSkKICAgIHNlbmQoJ1NUQVRVUycpO2NvbGxlY3QoLjIpCiAgICBwb3J0LmNsb3NlKCkK"))
+                                                                                                                                                                       ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 26, in <module>
+RuntimeError: Calibration did not finish

@@ -11,7 +11,7 @@ s=serial.Serial(port=None,baudrate=921600,timeout=.02);s.dtr=False;s.rts=False;s
 raw=(folder/'serial.bin').open('wb');log=(folder/'commands.log').open('w',encoding='utf-8',buffering=1)
 events=(folder/'events.jsonl').open('w',encoding='utf-8',buffering=1);csvfile=(folder/'samples.csv').open('w',newline='',encoding='utf-8');writer=csv.writer(csvfile);writer.writerow(['received_monotonic',*FIELDS2])
 buf=bytearray();lines=[];last=None;frames=0;crc_errors=0;missing=0;previous_cycle=None
-meta=dict(controller='LQI',operator_present=True,calibration_and_start_authorized=True,control_period_s=.005,current_limit_A=2,normal_operation_timeout=False)
+meta=dict(controller='LQI',operator_present=True,calibration_and_start_authorized=True,control_period_s=.005,current_limit_A=6,normal_operation_timeout=False)
 def save():
  meta.update(frames=frames,crc_errors=crc_errors,missing_cycles=missing,latest=last)
  (folder/'metadata.json').write_text(json.dumps(meta,indent=2),encoding='utf-8')
@@ -52,7 +52,7 @@ def command(text,prefix=None,seconds=3):
 def status():
  line=command('STATUS');return dict(re.findall(r'(\w+)=([^ ]+)',line))
 try:
- pump(.15);st=status();assert st['controller']=='LQI' and st['fault']=='0',st
+ pump(5);st=status();assert st['controller']=='LQI' and st['fault']=='0',st
  assert st['running']=='0' and st['active']=='0',st
  meta['initial_status']=st;meta['design']=json.loads((H/'lqi_design.json').read_text())['design_sha256'];save();print('LQI_LIVE_SESSION '+str(folder),flush=True)
  if st['calibrated']!='1':
@@ -74,7 +74,7 @@ try:
   if stable>=3:break
   pump(.3)
  else:raise TimeoutError('Calibrated but pose never entered upright stationary start range; no BALANCE sent')
- meta['start_status']=st;assert 'accepted=1' in command('BALANCE 0 2.0','RUN')
+ meta['start_status']=st;assert 'accepted=1' in command('BALANCE 0 6.0','RUN')
  command('UARTSTREAM 200','UARTSTREAM');pump(.3);st=status()
  assert st['running']=='1' and st['ready']=='1' and st['fault']=='0',st
  meta['running_status']=st;save();print('LQI_CONTINUOUS_RUNNING logging enabled; no timed torque cutoff',flush=True)

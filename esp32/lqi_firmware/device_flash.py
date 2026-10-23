@@ -24,7 +24,7 @@ def receive(s,seconds):
  while time.monotonic()<end:data+=s.read(max(1,s.in_waiting))
  return data
 with open_serial() as s:
- receive(s,.1);s.write(b'STATUS\n');data=receive(s,2)
+ receive(s,5);s.write(b'STATUS\n');data=receive(s,2)
  match=re.search(rb'STATUS [^\r\n]+',data);assert match,'No preflash STATUS'
  before=match.group().decode();assert 'running=0 ' in before and 'active=0' in before,before
 print('PREFLIGHT stopped; no motor commands',flush=True)

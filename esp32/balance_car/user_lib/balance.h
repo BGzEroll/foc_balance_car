@@ -23,7 +23,7 @@ namespace balance
 
     struct limits
     {
-        float current_A = 2.0f;
+        float current_A = 6.0f;
         float speed_m_s = 0.65f;
         float pitch_rad = 0.13962634f;
     };

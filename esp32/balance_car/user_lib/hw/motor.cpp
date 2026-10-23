@@ -103,12 +103,12 @@ namespace adc
                 const float current =
                     (voltage_mv[raw] * 0.001f - offset_V[ch]) * 4.0f;
 
-                if(current < -2.5f)
+                if(current < -6.0f)
                 {
                     current_low[ch] = raw;
                 }
 
-                if(current <= 2.5f)
+                if(current <= 6.0f)
                 {
                     current_high[ch] = raw;
                 }
@@ -178,7 +178,7 @@ namespace adc
      * @param[in] a A 相原始采样
      * @param[in] b B 相原始采样
      *
-     * @return true 原始采样超出 ±2.5 A 对应的 ADC 范围；目标电流上限仍为 2 A
+     * @return true 原始采样超出 ±6 A 保护范围；目标电流上限为 6 A
      */
     bool IRAM_ATTR overcurrent(uint32_t index, uint16_t a, uint16_t b)
     {
@@ -1022,7 +1022,7 @@ namespace foc
         constexpr float INV_SQRT3 = 0.57735026919f;
         constexpr float KP = 0.060318579f;
         constexpr float KI = 226.194672f;
-        constexpr float BUS_LIMIT_RATIO = 0.08f;
+        constexpr float BUS_LIMIT_RATIO = 0.48f;
         constexpr float POLE_PAIRS = 7.0f;
         constexpr uint32_t SINE_TABLE_SIZE = 4096;
         constexpr uint32_t SINE_TABLE_MASK = SINE_TABLE_SIZE - 1;
@@ -1307,7 +1307,7 @@ namespace motor
         constexpr float ALIGN_MAX_DELTA = 1.5f;
         constexpr float ALIGN_MAX_SPEED = 0.5f;
         constexpr float TWO_PI = 6.28318530718f;
-        constexpr float MAX_TARGET_A = 2.0f;
+        constexpr float MAX_TARGET_A = 6.0f;
 
         enum class stage : uint8_t
         {

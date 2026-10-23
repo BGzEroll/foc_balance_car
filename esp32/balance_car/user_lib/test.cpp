@@ -25,7 +25,7 @@ namespace test
     namespace
     {
         constexpr float FORWARD_SIGN[2] = {-1.0f, 1.0f};
-        constexpr float MAX_CURRENT_A = 2.0f;
+        constexpr float MAX_CURRENT_A = 6.0f;
         constexpr float MAX_WHEEL_SPEED_RAD_S = 40.0f;
         constexpr float MAX_TILT_RAD = 0.7853981634f;
         constexpr uint32_t ROW_COUNT = 400;
@@ -114,7 +114,7 @@ namespace test
         }
         void report_gains()
         {
-            respond("LQI schema=lqi_current_v1 revision=%lu design=%s Ts_us=5000 max_current_A=2 telemetry=BCU3 trim=%.9g\n",
+            respond("LQI schema=lqi_current_v1 revision=%lu design=%s Ts_us=5000 max_current_A=6 telemetry=BCU3 trim=%.9g\n",
                 (unsigned long)lqi_config::REVISION,lqi_config::DESIGN_SHA256,lqi_config::HARDWARE_TRIM_RAD);
             for(unsigned r=0;r<2;++r)
                 respond("LQI_K row=%u %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",r,

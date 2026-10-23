@@ -1,0 +1,131 @@
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x1a (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xda0
+load:0x403cb700,len:0x2f54
+entry 0x403c8908
+I (24) boot: ESP-IDF v6.0.2 2nd stage bootloader
+I (25) boot: compile time Oct 23 2026 03:06:28
+I (25) boot: Multicore bootloader
+I (25) boot: chip revision: v0.2
+I (28) boot: efuse block revision: v1.3
+I (31) boot.esp32s3: Boot SPI Speed : 80MHz
+I (35) boot.esp32s3: SPI Mode       : DIO
+I (39) boot.esp32s3: SPI Flash Size : 2MB
+I (43) boot: Enabling RNG early entropy source...
+I (47) boot: Partition Table:
+I (50) boot: ## Label            Usage          Type ST Offset   Length
+I (56) boot:  0 nvs              WiFi data        01 02 00009000 00006000
+I (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000
+I (69) boot:  2 factory          factory app      00 00 00010000 00100000
+I (76) boot: End of partition table
+I (79) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=0d6e8h ( 55016) map
+I (96) esp_image: segment 1: paddr=0001d710 vaddr=3fc93d00 size=02908h ( 10504) load
+I (99) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=1cbe0h (117728) map
+I (123) esp_image: segment 3: paddr=0003cc08 vaddr=3fc96608 size=05590h ( 21904) load
+I (128) esp_image: segment 4: paddr=000421a0 vaddr=40374000 size=0fc68h ( 64616) load
+I (143) esp_image: segment 5: paddr=00051e10 vaddr=50000000 size=00024h (    36) load
+I (151) boot: Loaded app from partition at offset 0x10000
+I (151) boot: Disabling RNG early entropy source...
+I (161) cpu_start: Multicore app
+I (170) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (171) cpu_start: Pro cpu start user code
+I (171) cpu_start: cpu freq: 240000000 Hz
+I (172) app_init: Application information:
+I (176) app_init: Project name:     balance_car
+I (180) app_init: App version:      v1.0.0-30-g9faaf7f-dirty
+I (186) app_init: Compile time:     Oct 23 2026 03:28:07
+I (191) app_init: ELF file SHA256:  4ab774d8e...
+I (195) app_init: ESP-IDF:          v6.0.2
+I (199) efuse_init: Min chip rev:     v0.0
+I (203) efuse_init: Max chip rev:     v0.99 
+I (207) efuse_init: Chip rev:         v0.2
+I (211) heap_init: Initializing. RAM available for dynamic allocation:
+I (217) heap_init: At 3FCA9DC0 len 0003F950 (254 KiB): RAM
+I (222) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (227) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (232) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (238) spi_flash: detected chip: gd
+I (241) spi_flash: flash io: dio
+W (244) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (257) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (263) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (269) main_task: Started on CPU0
+I (288) main_task: Calling app_main()
+W (411) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+W (430) i2c.master: Please note i2c asynchronous is only used for specific scenario currently. It's experimental for other users because user cannot get bus error from API. And It's not compatible with ``i2c_master_probe``. If user makes sure there won't be any error on bus and tested with no problem, this message can be ignored.
+I (470) main_task: Returned from app_main()
+UPPER_BENCH_READY 200Hz default=STOP forward_sign=-1,+1
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1870 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=198.639694 raw_b=0.000000 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1840 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.013079 raw_b=0.075797 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.085048 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1900 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.001772 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1870 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.032556 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.170261 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1990 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.008119 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1870 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.002147 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2020 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.048191 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=-0.423245 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1870 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.001367 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1870 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=-0.324372 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.092012 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.009078 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1900 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.000565 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.039265 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2020 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.053396 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.001930 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.007924 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1900 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=-0.438842 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1870 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.108037 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.011145 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1990 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=-0.270160 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1930 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.028972 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1900 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.006998 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1810 imu_us=0 pitch=-0.000000 roll=0.000000 yaw=0.000000 raw_a=0.000000 raw_b=0.154185 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1960 imu_us=5301646 pitch=0.026356 roll=0.087623 yaw=-0.000009 raw_a=0.000000 raw_b=0.013644 dir_a=0 dir_b=0 active=0
+CAL accepted=1
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.2020 imu_us=5806577 pitch=0.021270 roll=0.088090 yaw=-0.000089 raw_a=1.140444 raw_b=-0.001404 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1960 imu_us=6006533 pitch=0.025707 roll=0.088182 yaw=-0.000013 raw_a=0.621419 raw_b=0.000031 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.2020 imu_us=6211732 pitch=0.023327 roll=0.085411 yaw=-0.000039 raw_a=1.178352 raw_b=0.023963 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1990 imu_us=6411650 pitch=0.023813 roll=0.085152 yaw=-0.000071 raw_a=0.505481 raw_b=-0.001747 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1990 imu_us=6611578 pitch=0.024446 roll=0.087517 yaw=-0.000056 raw_a=1.148915 raw_b=0.000002 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.2020 imu_us=6816598 pitch=0.022622 roll=0.088096 yaw=-0.000070 raw_a=1.573917 raw_b=0.038601 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1930 imu_us=7016632 pitch=0.022180 roll=0.088086 yaw=-0.000123 raw_a=0.000000 raw_b=-0.000834 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.2020 imu_us=7216679 pitch=0.024796 roll=0.087169 yaw=-0.000115 raw_a=0.000000 raw_b=0.000003 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1900 imu_us=7421585 pitch=0.023938 roll=0.085377 yaw=-0.000056 raw_a=0.000000 raw_b=-0.000001 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1990 imu_us=7621675 pitch=0.024085 roll=0.085932 yaw=-0.000073 raw_a=0.000000 raw_b=1.538709 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1930 imu_us=7821632 pitch=0.024463 roll=0.087489 yaw=-0.000101 raw_a=0.000000 raw_b=0.428490 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1930 imu_us=8026632 pitch=0.023374 roll=0.088158 yaw=-0.000100 raw_a=0.000000 raw_b=1.066102 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.2020 imu_us=8226632 pitch=0.023220 roll=0.087186 yaw=-0.000092 raw_a=0.000000 raw_b=1.300282 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.2020 imu_us=8426638 pitch=0.024592 roll=0.086440 yaw=-0.000052 raw_a=0.000000 raw_b=0.347001 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1930 imu_us=8631632 pitch=0.023612 roll=0.086096 yaw=-0.000063 raw_a=0.000000 raw_b=1.452826 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.2020 imu_us=8831536 pitch=0.024538 roll=0.087569 yaw=-0.000094 raw_a=0.000000 raw_b=-0.108615 dir_a=0 dir_b=0 active=0
+STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.2020 imu_us=9031642 pitch=0.022782 roll=0.087572 yaw=-0.000123 raw_a=0.000000 raw_b=-0.000000 dir_a=0 dir_b=0 active=0
+STATUS calibrated=1 running=0 ready=0 fault=0 bus=8.1960 imu_us=9236644 pitch=0.023045 roll=0.087591 yaw=-0.000172 raw_a=0.000000 raw_b=-0.000003 dir_a=1 dir_b=1 active=0
+RUN accepted=1 mode=3 duration_ms=80 cap=-0.4500
+DONE result=0 rows=16
+STATUS calibrated=1 running=0 ready=0 fault=0 bus=8.1930 imu_us=9526669 pitch=0.024672 roll=0.086205 yaw=-0.000123 raw_a=7.060427 raw_b=-0.120012 dir_a=1 dir_b=1 active=0
+CSV_BEGIN result=0 rows=16
+t_us,dt_us,pitch,roll,pitch_rate,yaw,yaw_rate,speed,distance,target_speed,target_pitch,cmd_a,cmd_b,iq_a,iq_b,id_a,id_b,raw_a,raw_b,forward_a,forward_b,saturated,imu_age_us,encoder_age_us,calculate_us,angle_a,angle_b,current_age_a_us,current_age_b_us
+4995,4995,0.024265332,0.087455645,-0.020364126,-3.7900463e-07,-0.001861759,-0.00066612789,0,0,0.00093657582,-0.44999999,0,-0.0079938723,0.041016083,0.0220907,1.2541784,2.2140516e-42,-9.4761635e-05,-2.2140516e-42,-9.4761635e-05,0,503,131,232,5.2492824,1.1934371,154,339854
+9997,5002,0.023848711,0.087515123,-0.016256666,7.2225812e-06,0.00010289964,-0.0070669511,-1.9332698e-05,2.5132505e-05,0.0099754669,-0.44999999,0,0.47914547,0.041016083,0.015492933,1.2541784,0.40249956,-1.8820738e-05,-0.40249956,-1.8820738e-05,0,515,134,63,5.2508163,1.1934371,156,344856
+14995,4998,0.02346517,0.08751563,0.0013091351,1.2184682e-05,0.0011094139,-0.015245909,-7.5114847e-05,9.7649296e-05,0.021619592,-0.44999999,0,0.42441487,0.041016083,-0.003579567,1.2541784,0.94100815,-3.8253943e-06,-0.94100815,-3.8253943e-06,0,503,123,34,5.2554183,1.1934371,154,349854
+19995,5000,0.022985939,0.087417394,0.027034141,1.8434002e-05,0.0036319729,-0.029297717,-0.0001864739,0.00024241606,0.041672036,-0.44999999,0,0.45849827,0.041016083,-0.0012107517,1.2541784,1.8574315,-7.716622e-07,-1.8574315,-7.716622e-07,0,531,132,73,5.2646222,1.1934371,154,354854
+24996,5001,0.022599941,0.087305665,0.031268343,4.0167273e-05,0.0072101853,-0.034133989,-0.00034505318,0.00044856913,0.04893893,-0.44999999,0,0.44314206,0.041016083,0.010565096,1.2541784,2.1641085,-1.5309129e-07,-2.1641085,-1.5309129e-07,0,653,133,59,5.2753601,1.1934371,155,359855
+29995,4999,0.022428188,0.087288916,0.020166112,6.0037652e-05,0.0057027121,-0.045712657,-0.00054466981,0.0007080707,0.065790884,-0.44999999,0,0.43014368,0.041016083,-0.014602283,1.2541784,2.8542595,-3.0133595e-08,-2.8542595,-3.0133595e-08,0,585,93,66,5.2907,1.1934371,154,364854
+34995,5000,0.022591995,0.087387897,0.01995061,4.6310073e-05,-0.0010028926,-0.063163929,-0.00081686128,0.0010619196,0.09082488,-0.44999999,0,0.45229059,0.041016083,-0.00091143069,1.2541784,3.926585,-6.064333e-09,-3.926585,-6.064333e-09,0,575,94,54,5.3106418,1.1934371,154,369854
+39995,5000,0.023078935,0.087522015,0.035337176,1.805088e-05,-0.0025929001,-0.069207832,-0.0011477907,0.0014921279,0.099927492,-0.44999999,0,0.45122141,0.041016083,-0.0063894112,1.2541784,4.3288941,-1.2202637e-09,-4.3288941,-1.2202637e-09,0,592,92,67,5.3321176,1.1934371,154,374854
+44995,5000,0.023680199,0.087516122,0.043458689,1.0955962e-05,0.0024006185,-0.074505694,-0.0015070746,0.0019591968,0.10803298,-0.44999999,0,0.4756743,0.041016083,-0.02280782,1.2541784,4.6719704,-2.5361666e-10,-4.6719704,-2.5361666e-10,0,552,132,34,5.3566608,1.1934371,154,379854
+49995,5000,0.024329556,0.087393455,0.022643525,5.6713077e-05,0.011005939,-0.077885121,-0.0018880516,0.0024544671,0.11348081,-0.44999999,0,0.45724183,0.041016083,-0.046582077,1.2541784,5.2128816,0.37291631,-5.2128816,0.37291631,0,459,116,59,5.3827386,1.1949711,154,384854
+54997,5002,0.024901977,0.087244973,-0.0061030416,9.1174879e-05,0.0063469317,-0.093657464,-0.002316908,0.0030119803,0.13644058,-0.44999999,0,0.46157414,0.041016083,0.05147386,1.2541784,5.5923371,-0.16014548,-5.5923371,-0.16014548,0,432,134,63,5.4103503,1.1934371,156,389856
+59995,4998,0.02540976,0.087113313,-0.019323824,6.2003528e-05,-0.0076502883,-0.097609162,-0.0027950746,0.0036335969,0.13962634,-0.44999999,0,0.4715831,0.041016083,0.029777527,1.2541784,5.8185453,-0.14834069,-5.8185453,-0.14834069,0,517,132,75,5.439496,1.1934371,154,394854
+64995,5000,0.025691291,0.086936854,-0.024079029,2.537854e-07,-0.01448286,-0.10116173,-0.0032920018,0.0042796023,0.13962634,-0.44999999,0,0.45056003,0.041016083,0.023266908,1.2541784,6.0201001,-0.15474646,-6.0201001,-0.15474646,0,510,123,35,5.4701757,1.1934371,154,399854
+69995,5000,0.025646273,0.08668144,-0.022477897,-1.5963727e-05,-0.0052403281,-0.11556008,-0.0038338061,0.0049839476,0.13962634,-0.44999999,0,0.43114391,0.041016083,0.0034348762,1.2541784,7.0345149,-0.031180656,-7.0345149,-0.031180656,0,555,132,73,5.5054574,1.1934371,154,404854
+74995,5000,0.025331829,0.086486645,-0.020709615,3.5060963e-05,0.0082949465,-0.12355936,-0.0044316049,0.005761086,0.13962634,-0.44999999,0,0.4376061,0.041016083,-0.010551194,1.2541784,7.5576277,-0.0061939699,-7.5576277,-0.0061939699,0,478,132,35,5.5422726,1.1934371,154,409854
+79995,5000,0.024853762,0.086332493,-0.022763174,8.1453611e-05,0.0073175207,-0.13028583,-0.0050662179,0.0065860827,0.13962634,-0.44999999,0,0.43114111,0.041016083,0.01780781,1.2541784,7.9722495,-0.0012444605,-7.9722495,-0.0012444605,0,463,120,77,5.5821562,1.1934371,154,414854
+CSV_END
+STOPPED
+STATUS calibrated=1 running=0 ready=0 fault=0 bus=8.1990 imu_us=10391669 pitch=0.023600 roll=0.087655 yaw=-0.000183 raw_a=-0.000002 raw_b=-0.000048 dir_a=1 dir_b=1 active=0

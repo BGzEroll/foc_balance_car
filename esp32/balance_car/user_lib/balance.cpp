@@ -82,7 +82,7 @@ namespace balance
             for(unsigned column=0;column<8;++column)
                 effort[row]-=lqi_config::K[row][column]*error[column];
         const float current[2]={(effort[0]-effort[1])*0.5f,(effort[0]+effort[1])*0.5f};
-        const float cap=fminf(2.0f,fabsf(limit.current_A));
+        const float cap=fminf(6.0f,fabsf(limit.current_A));
         output out{};out.saturated=fmaxf(fabsf(current[0]),fabsf(current[1]))>cap;
         out.current_A[0]=clamp(current[0],cap);out.current_A[1]=clamp(current[1],cap);
         out.target_speed_m_s=target.speed_m_s;out.target_pitch_rad=lqi_config::HARDWARE_TRIM_RAD;
