@@ -1,5 +1,6 @@
 """921600-baud CRC-checked 200Hz logging, live commands, no STOP on logger exit."""
 import argparse,csv,json,queue,runpy,struct,sys,threading,time,zlib
+from collections import deque
 from datetime import datetime,timezone
 from pathlib import Path
 HERE=Path(__file__).resolve().parent
@@ -15,6 +16,7 @@ class Link:
   self.csv=(folder/'samples.csv').open('w',newline='',encoding='utf-8');self.writer=csv.writer(self.csv)
   self.writer.writerow(['received_monotonic',*FIELDS2]);self.events=(folder/'events.jsonl').open('w',encoding='utf-8')
   self.buffer=bytearray();self.lines=[];self.rows=0;self.bad_crc=0;self.dropped=0;self.last_cycle=None;self.times=[]
+  self.observations=deque(maxlen=16000)
  def pump(self,seconds=.02):
   end=time.monotonic()+seconds
   while time.monotonic()<end:
@@ -27,6 +29,7 @@ class Link:
      if zlib.crc32(data)&0xffffffff!=crc:self.bad_crc+=1;del self.buffer[0];continue
      values=WIRE2.unpack(data);del self.buffer[:224];now=time.perf_counter()
      self.writer.writerow([now,*values]);self.rows+=1;self.times.append(now)
+     self.observations.append(values)
      cycle=values[FIELDS2.index('cycle')]
      if self.last_cycle is not None and cycle>self.last_cycle:self.dropped+=max(0,cycle-self.last_cycle-1)
      self.last_cycle=cycle
@@ -41,6 +44,7 @@ class Link:
      else:break
   self.csv.flush();self.raw.flush();self.ascii.flush()
  def command(self,text,prefix=None,timeout=3):
+  if len(text.encode('ascii'))>=95:raise ValueError('Command exceeds 96-byte firmware UART line buffer')
   before=len(self.lines);self.s.write((text+'\n').encode());start=time.monotonic()
   prefix=prefix or {'GAINSSET':'GAINS','SET':'GAINS','BALANCE':'RUN'}.get(text.split()[0],text.split()[0])
   while time.monotonic()-start<timeout:
