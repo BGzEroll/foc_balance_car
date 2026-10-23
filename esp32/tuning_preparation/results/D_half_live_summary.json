@@ -1,0 +1,29 @@
+[
+  {
+    "active_s": 4.685152,
+    "samples": 501,
+    "pitch_rms_deg": 0.502878834341284,
+    "saturation_fraction": 0.0,
+    "stop_result": "4",
+    "fault": "0",
+    "last_pitch_deg": 0.577938857859009
+  },
+  {
+    "active_s": 0.036387,
+    "samples": 7,
+    "pitch_rms_deg": 6.076654438024189,
+    "saturation_fraction": 0.14285714285714285,
+    "stop_result": "4",
+    "fault": "0",
+    "last_pitch_deg": -4.083722720313257
+  },
+  {
+    "active_s": 1.535059,
+    "samples": 242,
+    "pitch_rms_deg": 1.074734909372535,
+    "saturation_fraction": 0.07024793388429752,
+    "stop_result": "8",
+    "fault": "7",
+    "last_pitch_deg": 0.41579859797766305
+  }
+]

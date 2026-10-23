@@ -1,0 +1,78 @@
+[
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1810 imu_us=30695959 pitch=-0.165418 roll=0.114432 yaw=-0.001045 raw_a=0.000000 raw_b=0.000000 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "CAL",
+    "reply": "CAL accepted=1"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1750 imu_us=30980954 pitch=-0.161302 roll=0.119003 yaw=0.062727 raw_a=0.354750 raw_b=0.024405 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1870 imu_us=31250988 pitch=-0.162125 roll=0.120002 yaw=0.102955 raw_a=0.194007 raw_b=-0.004694 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1840 imu_us=31520959 pitch=-0.115880 roll=0.120998 yaw=0.156162 raw_a=0.357107 raw_b=-0.315439 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1810 imu_us=31785872 pitch=-0.050459 roll=0.119009 yaw=0.184516 raw_a=0.330883 raw_b=-0.490086 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1870 imu_us=32046027 pitch=0.077153 roll=0.117264 yaw=0.197755 raw_a=1.309911 raw_b=-1.911961 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1840 imu_us=32305895 pitch=0.785029 roll=0.146813 yaw=0.118960 raw_a=0.427397 raw_b=-5.347522 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1660 imu_us=32580926 pitch=1.422230 roll=0.139520 yaw=0.077365 raw_a=1.302037 raw_b=-0.163042 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1660 imu_us=32841024 pitch=1.409318 roll=0.116213 yaw=0.079137 raw_a=0.024321 raw_b=-0.011629 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1810 imu_us=33111041 pitch=1.407211 roll=0.104739 yaw=0.079969 raw_a=-0.000000 raw_b=0.122535 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1900 imu_us=33386031 pitch=1.404595 roll=0.090221 yaw=0.086233 raw_a=-0.000013 raw_b=0.542393 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1750 imu_us=33666053 pitch=1.403812 roll=0.073278 yaw=0.099196 raw_a=-0.000031 raw_b=1.261367 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1930 imu_us=33931100 pitch=1.413558 roll=0.056366 yaw=0.118549 raw_a=-0.000000 raw_b=0.458954 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=0 running=1 ready=0 fault=0 bus=8.1930 imu_us=34205992 pitch=1.407423 roll=0.075011 yaw=0.124983 raw_a=-0.000000 raw_b=0.819211 dir_a=0 dir_b=0 active=0 pwm_core=0"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=1 running=0 ready=0 fault=0 bus=8.1870 imu_us=34476069 pitch=1.410456 roll=0.086764 yaw=0.129325 raw_a=0.003049 raw_b=0.230768 dir_a=1 dir_b=1 active=0 pwm_core=0"
+  },
+  {
+    "command": "BALANCE 0 0.7",
+    "reply": "RUN accepted=1 mode=2 duration_ms=0 cap=0.7000 tuning=0.5000,0.2000,3.7560"
+  },
+  {
+    "command": "STATUS",
+    "reply": "STATUS calibrated=1 running=0 ready=0 fault=0 bus=8.1750 imu_us=34631038 pitch=1.410461 roll=0.095025 yaw=0.128644 raw_a=0.000000 raw_b=-0.000000 dir_a=1 dir_b=1 active=0 pwm_core=0"
+  },
+  {
+    "command": "FAULT",
+    "reply": "FAULT code=0 motor=255 time_us=0 source=0 age_or_dt_us=0 raw_a=0 raw_b=0 adc_age_us=0 heartbeat_age_us=0 control_phase=0"
+  }
+]

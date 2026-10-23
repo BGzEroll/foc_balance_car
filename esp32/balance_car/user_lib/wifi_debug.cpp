@@ -1,4 +1,5 @@
 #include "wifi_debug.h"
+#include "realtime_config.h"
 #include "wifi_credentials.h"
 #include "test.h"
 #include "hw/sensor.h"
@@ -22,6 +23,7 @@ namespace {
 constexpr uint16_t PORT = 3333;
 bool connected = false;
 bool server_ready = false;
+bool radio_enabled = true;
 // All fields little endian; 112 bytes. Sensor timestamps distinguish fresh data
 // from repeated network snapshots. The control loop remains 200 Hz.
 struct __attribute__((packed)) packet {
@@ -102,7 +104,7 @@ void network_task(void *) {
         uint64_t now = esp_timer_get_time();
         if(!__atomic_load_n(&connected, __ATOMIC_ACQUIRE)) {
             if(client >= 0) { close(client); client = -1; hz = 0; }
-            if(now >= retry) { esp_wifi_connect(); retry = now + 5000000; }
+            if(now >= retry && __atomic_load_n(&radio_enabled,__ATOMIC_ACQUIRE)) { esp_wifi_connect(); retry = now + 5000000; }
             vTaskDelay(pdMS_TO_TICKS(100)); continue;
         }
         if(client < 0) {
@@ -189,6 +191,11 @@ void network_task(void *) {
 bool is_ready() {
     return __atomic_load_n(&connected,__ATOMIC_ACQUIRE) && __atomic_load_n(&server_ready,__ATOMIC_ACQUIRE);
 }
+bool set_enabled(bool enabled) {
+    __atomic_store_n(&radio_enabled,enabled,__ATOMIC_RELEASE);
+    if(!enabled) __atomic_store_n(&connected,false,__ATOMIC_RELEASE);
+    return (enabled?esp_wifi_start():esp_wifi_stop())==ESP_OK;
+}
 bool init() {
     esp_err_t err = nvs_flash_init();
     // Preserve NVS calibration/configuration rather than silently erasing it.
@@ -212,6 +219,7 @@ bool init() {
         mac[0], mac[1], mac[2], mac[3], mac[4], mac[5], DEBUG_WIFI_SSID);
     ESP_ERROR_CHECK(esp_wifi_start());
     ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
-    return xTaskCreatePinnedToCore(network_task, "wifi_debug", 6144, nullptr, 1, nullptr, 0) == pdPASS;
+    return xTaskCreatePinnedToCore(network_task, "wifi_debug", 6144, nullptr,
+        realtime_config::NETWORK_PRIORITY, nullptr, realtime_config::NETWORK_CORE) == pdPASS;
 }
 }

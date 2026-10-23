@@ -1,0 +1,12 @@
+{
+  "unique_cycles": 1758,
+  "duration_s": 10.474833,
+  "pitch_rms_deg": 3.005469350974353,
+  "pitch_peak_deg": 10.615713088239245,
+  "saturation_fraction": 0.6871444823663254,
+  "current_limits": [
+    0.699999988079071
+  ],
+  "last_active_pitch_deg": -1.9644287861966632,
+  "note": "Operator reported free-standing balance with oscillation. Run ended by lower FOC fault6; no STOP command sent."
+}

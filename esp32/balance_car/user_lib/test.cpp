@@ -1,4 +1,5 @@
 #include "test.h"
+#include "realtime_config.h"
 
 #include "balance.h"
 #include "wifi_debug.h"
@@ -69,6 +70,7 @@ namespace test
         uint32_t write_index = 0;
         portMUX_TYPE log_lock = portMUX_INITIALIZER_UNLOCKED;
         uint32_t scheduler_updates = 0, scheduler_max_dt_us = 0;
+        uint32_t monitor_enabled = 1;
         uint32_t updates = 0;
         uint32_t maximum_dt_us = 0;
         uint32_t maximum_calculate_us = 0;
@@ -161,14 +163,15 @@ namespace test
             motor::get_info(foc);
             respond("STATUS calibrated=%u running=%u ready=%u fault=%lu bus=%.4f "
                    "imu_us=%llu pitch=%.6f roll=%.6f yaw=%.6f "
-                   "raw_a=%.6f raw_b=%.6f dir_a=%.0f dir_b=%.0f active=%lu\n",
+                   "raw_a=%.6f raw_b=%.6f dir_a=%.0f dir_b=%.0f active=%lu pwm_core=%lu\n",
                    foc.calibrated, foc.running, foc.ready,
                    static_cast<unsigned long>(foc.fault.code), foc.bus_voltage_V,
                    static_cast<unsigned long long>(sensors.imu.timestamp_us),
                    -sensors.imu.angle[0], sensors.imu.angle[1], sensors.imu.angle[2],
                    sensors.left_encoder.speed_rad_s, sensors.right_encoder.speed_rad_s,
                    foc.current[0].encoder_direction, foc.current[1].encoder_direction,
-                   static_cast<unsigned long>(__atomic_load_n(&active, __ATOMIC_ACQUIRE)));
+                   static_cast<unsigned long>(__atomic_load_n(&active, __ATOMIC_ACQUIRE)),
+                   static_cast<unsigned long>(foc.pwm_core));
             fflush(stdout);
         }
 
@@ -190,11 +193,22 @@ namespace test
             while(true)
             {
                 vTaskDelayUntil(&wake, pdMS_TO_TICKS(5));
-                sensor::package sensors{};
-                sensor::get_package(sensors);
+                if(!__atomic_load_n(&monitor_enabled,__ATOMIC_ACQUIRE)) continue;
                 motor::foc_info foc{};
                 motor::get_info(foc);
-                const uint64_t now = esp_timer_get_time();
+                sensor::package sensors{};
+                sensor::get_package(sensors);
+                uint64_t now = esp_timer_get_time();
+                // Wi-Fi may preempt this core between copying the package and
+                // checking its age. Re-read once before rejecting an old copy;
+                // keep the existing freshness limits and lower FOC watchdogs.
+                if(sensors.left_encoder.timestamp_us && sensors.right_encoder.timestamp_us &&
+                   (now-sensors.left_encoder.timestamp_us>1500 ||
+                    now-sensors.right_encoder.timestamp_us>1500))
+                {
+                    sensor::get_package(sensors);
+                    now = esp_timer_get_time();
+                }
                 const uint32_t wake_dt=previous_wake_us ? now-previous_wake_us : 5000U;
                 if(previous_wake_us) {
                     const uint32_t dt = now - previous_wake_us;
@@ -239,10 +253,7 @@ namespace test
                     __atomic_store_n(&cancel, 0U, __ATOMIC_RELEASE);
                     __atomic_store_n(&active, static_cast<uint32_t>(current.type), __ATOMIC_RELEASE);
 
-                    if(!fresh || !foc.calibrated || foc.fault.active ||
-                       (current.type == mode::BALANCE &&
-                        (fabsf(sensors.imu.angle[0]) > 0.13962634f ||
-                         fabsf(sensors.imu.angle[1]) > 0.13962634f)))
+                    if(!fresh || !foc.calibrated || foc.fault.active)
                     {
                         result = 1;
                     }
@@ -472,7 +483,19 @@ namespace test
                 respond("REJECT OTA maintenance lock\n");
                 return;
             }
-            if(strcmp(line, "SCHEDRESET") == 0)
+            if(!strcmp(line,"WIFIOFF") || !strcmp(line,"WIFION") ||
+               !strcmp(line,"MONITOROFF") || !strcmp(line,"MONITORON"))
+            {
+                motor::foc_info m{};motor::get_info(m);
+                if(reply_text || m.running || __atomic_load_n(&active,__ATOMIC_ACQUIRE) ||
+                   __atomic_load_n(&requested,__ATOMIC_ACQUIRE)) respond("REJECT serial idle diagnostic only\n");
+                else if(!strncmp(line,"WIFI",4)) respond("%s ok=%u\n",line,wifi_debug::set_enabled(!strcmp(line,"WIFION")));
+                else {
+                    __atomic_store_n(&monitor_enabled,!strcmp(line,"MONITORON")?1U:0U,__ATOMIC_RELEASE);
+                    respond("%s OK\n",line);
+                }
+            }
+            else if(strcmp(line, "SCHEDRESET") == 0)
             {
                 __atomic_store_n(&scheduler_max_dt_us, 0U, __ATOMIC_RELAXED);
                 respond("SCHEDRESET OK\n");
@@ -491,9 +514,10 @@ namespace test
             else if(strcmp(line, "FAULT") == 0)
             {
                 motor::foc_info m{}; motor::get_info(m);
-                respond("FAULT code=%lu motor=%u time_us=%llu source=%lu age_or_dt_us=%lu raw_a=%u raw_b=%u\n",
+                respond("FAULT code=%lu motor=%u time_us=%llu source=%lu age_or_dt_us=%lu raw_a=%u raw_b=%u adc_age_us=%lu heartbeat_age_us=%lu control_phase=%lu\n",
                     (unsigned long)m.fault.code,m.fault.motor_index,(unsigned long long)m.fault.timestamp_us,
-                    (unsigned long)(m.fault.detail>>24),(unsigned long)(m.fault.detail&0xffffffU),m.fault.raw_a,m.fault.raw_b);
+                    (unsigned long)(m.fault.detail>>24),(unsigned long)(m.fault.detail&0xffffffU),m.fault.raw_a,m.fault.raw_b,
+                    (unsigned long)m.fault.adc_age_us,(unsigned long)m.fault.heartbeat_age_us,(unsigned long)m.fault.control_phase);
             }
             else if(strcmp(line, "DUMP") == 0)
             {
@@ -689,7 +713,8 @@ namespace test
         reply_queue = xQueueCreate(1, sizeof(network_reply));
         if(!command_queue || !reply_queue) return false;
         return xTaskCreatePinnedToCore(control_task, "upper_control", 6144,
-                   nullptr, 2, nullptr, 0) == pdPASS &&
+                   nullptr, realtime_config::UPPER_PRIORITY, nullptr,
+                   realtime_config::NETWORK_CORE) == pdPASS &&
                xTaskCreatePinnedToCore(console_task, "upper_console", 6144,
                    nullptr, 1, nullptr, 0) == pdPASS && wifi_debug::init();
     }

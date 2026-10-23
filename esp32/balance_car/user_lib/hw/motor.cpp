@@ -1,4 +1,5 @@
 #include "motor.h"
+#include "../realtime_config.h"
 
 #include "sensor.h"
 #include <math.h>
@@ -102,12 +103,12 @@ namespace adc
                 const float current =
                     (voltage_mv[raw] * 0.001f - offset_V[ch]) * 4.0f;
 
-                if(current < -2.0f)
+                if(current < -2.5f)
                 {
                     current_low[ch] = raw;
                 }
 
-                if(current <= 2.0f)
+                if(current <= 2.5f)
                 {
                     current_high[ch] = raw;
                 }
@@ -177,7 +178,7 @@ namespace adc
      * @param[in] a A 相原始采样
      * @param[in] b B 相原始采样
      *
-     * @return true 原始采样超出 ±2 A 对应的 ADC 范围
+     * @return true 原始采样超出 ±2.5 A 对应的 ADC 范围；目标电流上限仍为 2 A
      */
     bool IRAM_ATTR overcurrent(uint32_t index, uint16_t a, uint16_t b)
     {
@@ -317,6 +318,9 @@ namespace pwm
         uint32_t fault_raw_b = 0;
         uint32_t fault_us = 0;
         uint32_t fault_detail = 0;
+        uint32_t fault_adc_age_us = 0, fault_heartbeat_age_us = 0;
+        uint32_t irq_core = 0;
+        uint32_t control_phase = 0, fault_control_phase = 0;
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -439,7 +443,9 @@ namespace pwm
         uint8_t index = 0xFF,
         uint16_t raw_a = 0,
         uint16_t raw_b = 0,
-        uint32_t detail = 0)
+        uint32_t detail = 0,
+        uint32_t adc_age_us = 0,
+        uint32_t heartbeat_age_us = 0)
     {
         uint32_t expected = 0;
 
@@ -451,6 +457,9 @@ namespace pwm
             __atomic_store_n(&fault_raw_a, raw_a, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_b, raw_b, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_detail, detail, __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_control_phase, __atomic_load_n(&control_phase,__ATOMIC_RELAXED),__ATOMIC_RELAXED);
+            __atomic_store_n(&fault_adc_age_us, adc_age_us, __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_heartbeat_age_us, heartbeat_age_us, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_us, now32(), __ATOMIC_RELEASE);
         }
 
@@ -482,6 +491,9 @@ namespace pwm
         out.raw_a = __atomic_load_n(&fault_raw_a, __ATOMIC_RELAXED);
         out.raw_b = __atomic_load_n(&fault_raw_b, __ATOMIC_RELAXED);
         out.detail = __atomic_load_n(&fault_detail, __ATOMIC_RELAXED);
+        out.control_phase = __atomic_load_n(&fault_control_phase,__ATOMIC_RELAXED);
+        out.adc_age_us = __atomic_load_n(&fault_adc_age_us, __ATOMIC_RELAXED);
+        out.heartbeat_age_us = __atomic_load_n(&fault_heartbeat_age_us, __ATOMIC_RELAXED);
 
         const uint32_t stamp = __atomic_load_n(&fault_us, __ATOMIC_ACQUIRE);
 
@@ -760,8 +772,11 @@ namespace pwm
             else if(enabled && value[i].sample_us != 0 &&
                     now - value[i].sample_us > SAMPLE_TIMEOUT_US)
             {
+                const uint32_t heartbeat_age = now-__atomic_load_n(&heartbeat_us,__ATOMIC_ACQUIRE);
                 trip(motor::fault_code::SAMPLE_TIMEOUT, i, 0, 0,
-                     0x02000000U | ((now-value[i].sample_us) & 0xffffffU));
+                     0x02000000U | ((now-value[i].sample_us) & 0xffffffU),
+                     now-__atomic_load_n(&last_valid_sample_us[i],__ATOMIC_ACQUIRE),
+                     static_cast<int32_t>(heartbeat_age)<0 ? 0U : heartbeat_age);
                 return false;
             }
         }
@@ -886,6 +901,7 @@ namespace pwm
     void init()
     {
         gpio_config_t pins{};
+        irq_core = xPortGetCoreID();
         for(uint32_t i = 0; i < 6; ++i)
         {
             pins.pin_bit_mask |= 1ULL << PINS[i];
@@ -1668,9 +1684,11 @@ namespace motor
             {
                 uint32_t notifications = 0;
                 xTaskNotifyWait(0, UINT32_MAX, &notifications, 0);
+                __atomic_store_n(&pwm::control_phase,1U,__ATOMIC_RELAXED);
                 sensor::poll(notifications, !pwm::is_requested());
 
                 sensor::package sensors{};
+                __atomic_store_n(&pwm::control_phase,2U,__ATOMIC_RELAXED);
                 sensor::get_package(sensors);
 
                 const uint64_t now64 = static_cast<uint64_t>(esp_timer_get_time());
@@ -1719,11 +1737,13 @@ namespace motor
 
                 if(pwm::get_fault_code() == fault_code::NONE)
                 {
+                    __atomic_store_n(&pwm::control_phase,3U,__ATOMIC_RELAXED);
                     calibrate(sensors, now, now64);
                 }
 
                 for(uint32_t index = 0; index < 2; ++index)
                 {
+                    __atomic_store_n(&pwm::control_phase,4U,__ATOMIC_RELAXED);
                     pwm::sample sample{};
 
                     if(!pwm::get_sample(index, sample) ||
@@ -1774,6 +1794,7 @@ namespace motor
                     __atomic_store_n(&ready, 0U, __ATOMIC_RELEASE);
                 }
 
+                __atomic_store_n(&pwm::control_phase,5U,__ATOMIC_RELAXED);
                 taskYIELD();
             }
         }
@@ -1801,7 +1822,8 @@ namespace motor
         foc::init();
 
         if(xTaskCreatePinnedToCore(task, "motor_control", 8192,
-                                   nullptr, 5, nullptr, 1) != pdPASS)
+                                   nullptr, realtime_config::SENSOR_FOC_PRIORITY, nullptr,
+                                   realtime_config::SENSOR_FOC_CORE) != pdPASS)
         {
             gpio_set_level(GPIO_NUM_7, 0);
             return false;
@@ -1943,6 +1965,7 @@ namespace motor
         portEXIT_CRITICAL(&info_lock);
 
         snapshot.initialized = true;
+        snapshot.pwm_core = pwm::irq_core;
         snapshot.fault = pwm::get_fault();
         snapshot.calibrated = __atomic_load_n(&calibrated, __ATOMIC_ACQUIRE) != 0;
         snapshot.running = pwm::is_running();

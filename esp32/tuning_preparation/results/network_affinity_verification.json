@@ -1,0 +1,12 @@
+{
+  "probe_samples": 596,
+  "fault_samples": 0,
+  "results": [
+    "0"
+  ],
+  "limit_A": 0.05,
+  "controller_hz": 200,
+  "lwip_core": 0,
+  "threshold_us": 1000,
+  "notes": "Two separate unloaded 2-second current probes; not ground PID validation"
+}

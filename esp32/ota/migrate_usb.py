@@ -41,14 +41,20 @@ def identity():
 
 
 def main():
+    global BACKUP
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--port', default='COM10')
     p.add_argument('--host', default='192.168.114.243')
     p.add_argument('--baud', default='921600')
     p.add_argument('--backup-only', action='store_true')
+    p.add_argument('--recover-offline', action='store_true', help='USB recovery after explicit on-site wheels-free confirmation; holds ROM until write')
     args = p.parse_args()
     guard()
-    print(stopped(args.host), flush=True)
+    if args.recover_offline:
+        BACKUP=FW/'pre_usb_recovery_20261023_8MB.bin'
+        print('OFFLINE_USB_RECOVERY: operator confirmed wheels free; ROM holds outputs stopped',flush=True)
+    else:
+        print(stopped(args.host), flush=True)
     config = (ROOT/'esp32/balance_car/sdkconfig').read_text()
     for flag in ['CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y', 'CONFIG_PARTITION_TABLE_CUSTOM=y',
                  'CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE=y']:
@@ -65,6 +71,7 @@ def main():
     assert actual == expected, actual
     image_info((FW/'balance_car.bin').read_bytes())
     command = ['--chip','esp32s3','--port',args.port,'--baud',args.baud]
+    if args.recover_offline: command += ['--after','no-reset']
     # Verify physical identity/capacity before any writes, even when a backup already exists.
     captured = io.StringIO()
     with contextlib.redirect_stdout(captured):
@@ -73,15 +80,16 @@ def main():
     assert '34:cd:b0:38:ac:90' in evidence.lower(), 'Unexpected board MAC'
     assert '8MB' in evidence.replace(' ', ''), 'Physical flash is not 8 MB'
     print('CHIP_OK ESP32-S3 MAC 34:CD:B0:38:AC:90 flash=8MB', flush=True)
-    backup_manifest = FW/'pre_ota_8MB.json'
+    backup_manifest = BACKUP.with_suffix('.json')
+    nvs_backup = BACKUP.with_name(BACKUP.stem+'_nvs.bin')
     if not BACKUP.exists():
-        partial = FW/'pre_ota_8MB.partial'
+        partial = BACKUP.with_suffix('.partial')
         esptool.main(command + ['read-flash','0','0x800000',str(partial)])
         assert partial.stat().st_size == 0x800000
         partial.rename(BACKUP)
-        (FW/'pre_ota_nvs.bin').write_bytes(BACKUP.read_bytes()[0x9000:0xf000])
+        nvs_backup.write_bytes(BACKUP.read_bytes()[0x9000:0xf000])
         backup_manifest.write_text(json.dumps(dict(mac='34:CD:B0:38:AC:90', bytes=0x800000,
-            sha256=digest(BACKUP), nvs_sha256=digest(FW/'pre_ota_nvs.bin'),
+            sha256=digest(BACKUP), nvs_sha256=digest(nvs_backup),
             utc=datetime.now(timezone.utc).isoformat()),indent=2))
     manifest=json.loads(backup_manifest.read_text())
     assert BACKUP.stat().st_size == 0x800000 and digest(BACKUP) == manifest['sha256']
@@ -92,7 +100,8 @@ def main():
     result = identity()
     # Only otadata is erased. Preserve NVS/PHY and leave factory as the rescue application.
     esptool.main(command + ['erase-region','0x190000','0x2000'])
-    esptool.main(command + ['write-flash','--flash-mode','dio','--flash-size','8MB','--flash-freq','80m',
+    write_command = command[:-2] if args.recover_offline else command
+    esptool.main(write_command + ['write-flash','--flash-mode','dio','--flash-size','8MB','--flash-freq','80m',
         '0x0',str(FW/'bootloader.bin'),'0x8000',str(FW/'partition-table.bin'),'0x10000',str(FW/'balance_car.bin')])
     guard()
     result.update(migration_utc=datetime.now(timezone.utc).isoformat(), backup=manifest, partitions=actual)

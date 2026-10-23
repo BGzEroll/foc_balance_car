@@ -60,6 +60,9 @@ namespace motor
         uint16_t raw_a = 0;
         uint16_t raw_b = 0;
         uint32_t detail = 0; // high byte: timeout source; low 24 bits: age/dt in us
+        uint32_t adc_age_us = 0;
+        uint32_t heartbeat_age_us = 0;
+        uint32_t control_phase = 0;
     };
 
     struct foc_info
@@ -68,6 +71,7 @@ namespace motor
         bool ready = false;
         bool calibrated = false;
         bool running = false;
+        uint32_t pwm_core = 0;
 
         target_current target[2] = {};
         current_info current[2] = {};
