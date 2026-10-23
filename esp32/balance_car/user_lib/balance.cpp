@@ -8,16 +8,6 @@ namespace balance
     {
         constexpr float PERIOD_S = 0.005f;
         constexpr float WHEEL_RADIUS_M = 0.0325f;
-        constexpr float KT_NM_A = 0.013311959501823515f;
-        constexpr float PITCH_TRIM_RAD = -0.0896225217620993f * 0.017453292519943295f;
-
-        constexpr float POSITION_KP = 1.3f;
-        constexpr float PITCH_KP = 0.4f;
-        constexpr float PITCH_KI = 0.005f;
-        constexpr float YAW_KP = 0.105f;
-        constexpr float YAW_KI = 0.01f;
-        constexpr float YAW_KD = 0.02f;
-
         constexpr float VELOCITY_INTEGRAL_LIMIT = 1.2f;
         constexpr float PITCH_INTEGRAL_LIMIT = 0.25f;
         constexpr float YAW_INTEGRAL_LIMIT = 0.5f;
@@ -95,7 +85,7 @@ namespace balance
 
         output out{};
         out.target_speed_m_s = clamp(
-            target.speed_m_s + POSITION_KP * (target.position_m - controller.distance_m),
+            target.speed_m_s + tuning.position_kp * (target.position_m - controller.distance_m),
             limit.speed_m_s);
 
         const float velocity_error = out.target_speed_m_s - measured.speed_m_s;
@@ -106,7 +96,7 @@ namespace balance
                                    tuning.velocity_ki * velocity_integral;
         out.target_pitch_rad = clamp(target_pitch, limit.pitch_rad);
 
-        const float pitch_error = measured.pitch_rad - PITCH_TRIM_RAD -
+        const float pitch_error = measured.pitch_rad - tuning.pitch_trim_rad -
                                   out.target_pitch_rad;
         const float pitch_integral = clamp(
             controller.pitch_integral + PERIOD_S * pitch_error,
@@ -117,12 +107,12 @@ namespace balance
             controller.yaw_integral + PERIOD_S * yaw_error,
             YAW_INTEGRAL_LIMIT);
 
-        const float common = (PITCH_KP / KT_NM_A) * pitch_error +
-                             (PITCH_KI / KT_NM_A) * pitch_integral +
-                             (tuning.pitch_kd / KT_NM_A) * measured.pitch_rate_rad_s;
-        const float differential = (YAW_KP / KT_NM_A) * yaw_error +
-                                   (YAW_KI / KT_NM_A) * yaw_integral +
-                                   (YAW_KD / KT_NM_A) *
+        const float common = tuning.pitch_kp * pitch_error +
+                             tuning.pitch_ki * pitch_integral +
+                             tuning.pitch_kd * measured.pitch_rate_rad_s;
+        const float differential = tuning.yaw_kp * yaw_error +
+                                   tuning.yaw_ki * yaw_integral +
+                                   tuning.yaw_kd *
                                        (target.yaw_rate_rad_s - measured.yaw_rate_rad_s);
         const float current[2] =
         {

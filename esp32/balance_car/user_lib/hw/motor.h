@@ -84,6 +84,10 @@ namespace motor
     void stop();
     bool set_target_current(motor_id id, const target_current &target);
     bool get_info(foc_info &snapshot);
+    // OTA interlock is acknowledged by the motor task before any flash writes.
+    void set_update_lock(bool locked);
+    bool update_locked();
+    bool update_stopped();
 }
 
 #endif

@@ -1,0 +1,31 @@
+{
+  "schema": "current_pid_v1",
+  "period_s": 0.005,
+  "current_limit_A": 0.7,
+  "origin": "legacy wired B; unit-equivalent only; NOT validated cable-free",
+  "gains": {
+    "velocity_kp": 0.5,
+    "velocity_ki": 0.2,
+    "pitch_kd": 3.7560210420675366,
+    "pitch_kp": 30.048168336540293,
+    "pitch_ki": 0.37560210420675366,
+    "yaw_kp": 7.887644188341826,
+    "yaw_ki": 0.7512042084135073,
+    "yaw_kd": 1.5024084168270146,
+    "position_kp": 1.3,
+    "pitch_trim_rad": -0.0015642080886889029
+  },
+  "legacy_conversion_Kt_Nm_A": 0.013311959501823515,
+  "units": {
+    "pitch_kp": "A/rad (total two-wheel effort)",
+    "pitch_ki": "A/(rad*s)",
+    "pitch_kd": "A*s/rad",
+    "yaw_kp": "A/rad (differential effort)",
+    "yaw_ki": "A/(rad*s)",
+    "yaw_kd": "A*s/rad",
+    "velocity_kp": "rad/(m/s)",
+    "velocity_ki": "rad/m",
+    "position_kp": "1/s",
+    "pitch_trim_rad": "rad"
+  }
+}

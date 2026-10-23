@@ -1,0 +1,28 @@
+{
+  "controller_schema": "current_pid_v1",
+  "wire": "BCW2",
+  "bytes": 220,
+  "idle_rows": 3986,
+  "mode": 0,
+  "motor_running": false,
+  "fault_samples": 0,
+  "revisions": [
+    1,
+    2
+  ],
+  "actual_current_parameters_verified": true,
+  "net": "NET rssi=-50 hz=200 bytes=112 attempts=3987 drops=0 missed=3",
+  "native_equivalence": {
+    "samples": 36000,
+    "max_current_or_state_error": 4.76837158203e-07
+  },
+  "matlab_equivalence": {
+    "samples": 36000,
+    "max_error_A_or_rad": 6.10579896050123e-06,
+    "controller_period_s": 0.005
+  },
+  "ota_partition": "8MB proposal verified; not selected or flashed",
+  "synthetic_pipeline": "PASS; all candidate profiles rejected on synthetic fixture; idle fit rejected",
+  "main": "9faaf7f22f017444cb60e80a31227c53518281e4",
+  "branch": "codex/test-upper-controller"
+}

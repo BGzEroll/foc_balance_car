@@ -55,7 +55,10 @@ namespace test
         };
 
         run pending{};
-        balance::gains tuning{0.5f, 0.2f, 0.05f};
+        balance::gains tuning{0.5f, 0.2f, 3.7560210421f};
+        uint32_t parameter_revision = 1;
+        telemetry latest_telemetry{};
+        portMUX_TYPE telemetry_lock = portMUX_INITIALIZER_UNLOCKED;
         portMUX_TYPE request_lock = portMUX_INITIALIZER_UNLOCKED;
         uint32_t requested = 0;
         uint32_t active = 0;
@@ -90,6 +93,61 @@ namespace test
             }
             else vprintf(format, args);
             va_end(args);
+        }
+
+        void gain_values(const balance::gains &g, float v[10])
+        {
+            const float values[] = {g.velocity_kp,g.velocity_ki,g.pitch_kd,g.pitch_kp,g.pitch_ki,
+                g.yaw_kp,g.yaw_ki,g.yaw_kd,g.position_kp,g.pitch_trim_rad};
+            memcpy(v, values, sizeof(values));
+        }
+        bool valid_gains(const balance::gains &g)
+        {
+            float v[10]; gain_values(g,v);
+            const float low[] = {0,0,0,0,0,0,0,0,0,-0.1f};
+            const float high[] = {2,2,15,100,10,30,10,10,5,0.1f};
+            for(unsigned i=0;i<10;++i) if(!isfinite(v[i]) || v[i]<low[i] || v[i]>high[i]) return false;
+            return true;
+        }
+        void report_gains()
+        {
+            portENTER_CRITICAL(&request_lock);
+            const balance::gains g=tuning; const uint32_t revision=parameter_revision;
+            portEXIT_CRITICAL(&request_lock);
+            respond("GAINS schema=current_pid_v1 revision=%lu velocity_kp=%.9g velocity_ki=%.9g pitch_kd=%.9g pitch_kp=%.9g pitch_ki=%.9g yaw_kp=%.9g yaw_ki=%.9g yaw_kd=%.9g position_kp=%.9g pitch_trim_rad=%.9g\n",
+                (unsigned long)revision,g.velocity_kp,g.velocity_ki,g.pitch_kd,g.pitch_kp,g.pitch_ki,
+                g.yaw_kp,g.yaw_ki,g.yaw_kd,g.position_kp,g.pitch_trim_rad);
+        }
+        void publish(const sensor::package &s,const motor::foc_info &m,uint64_t now,uint32_t dt,
+                     const balance::state &state,const balance::output &out,uint32_t calc,uint32_t current_mode,const balance::gains *applied=nullptr,uint32_t applied_revision=0,float current_cap=0,float yaw_reference=0)
+        {
+            telemetry t{}; t.sample_us=now;t.imu_us=s.imu.timestamp_us;
+            t.cycle=scheduler_updates;t.dt_us=dt;t.mode=current_mode;t.result=result;
+            t.fault=static_cast<uint32_t>(m.fault.code);
+            t.flags=(m.calibrated?1U:0U)|(m.running?2U:0U)|(m.ready?4U:0U);
+            t.imu_age_us=now-s.imu.timestamp_us;
+            t.encoder_age_us=now-(s.left_encoder.timestamp_us<s.right_encoder.timestamp_us?s.left_encoder.timestamp_us:s.right_encoder.timestamp_us);
+            t.current_age_a_us=now-m.current[0].timestamp_us;t.current_age_b_us=now-m.current[1].timestamp_us;
+            t.raw_a=s.left_encoder.speed_rad_s;t.raw_b=s.right_encoder.speed_rad_s;
+            const float forward[]={FORWARD_SIGN[0]*m.current[0].encoder_direction*t.raw_a,
+                                   FORWARD_SIGN[1]*m.current[1].encoder_direction*t.raw_b};
+            const auto observed=balance::observe(s.imu.angle,s.imu.gyro,forward);
+            t.pitch=observed.pitch_rad;t.roll=s.imu.angle[1];t.pitch_rate=observed.pitch_rate_rad_s;
+            t.yaw=observed.yaw_rad-yaw_reference;t.yaw_rate=observed.yaw_rate_rad_s;t.speed=observed.speed_m_s;
+            t.distance=state.distance_m;t.target_speed=out.target_speed_m_s;t.target_pitch=out.target_pitch_rad;
+            t.command_a=out.current_A[0];t.command_b=out.current_A[1];t.saturated=out.saturated;
+            t.iq_a=m.current[0].iq_A;t.iq_b=m.current[1].iq_A;t.id_a=m.current[0].id_A;t.id_b=m.current[1].id_A;
+            t.angle_a=s.left_encoder.angle_rad;t.angle_b=s.right_encoder.angle_rad;t.bus=m.bus_voltage_V;t.calculate_us=calc;t.current_limit_A=fabsf(current_cap);
+            t.velocity_integral=state.velocity_integral;t.pitch_integral=state.pitch_integral;t.yaw_integral=state.yaw_integral;
+            float values[10];
+            if(applied) { gain_values(*applied,values); t.revision=applied_revision; }
+            else {
+                portENTER_CRITICAL(&request_lock);
+                gain_values(tuning,values);t.revision=parameter_revision;
+                portEXIT_CRITICAL(&request_lock);
+            }
+            memcpy(t.gains,values,sizeof(values));
+            portENTER_CRITICAL(&telemetry_lock); latest_telemetry=t;portEXIT_CRITICAL(&telemetry_lock);
         }
 
         /**
@@ -127,6 +185,7 @@ namespace test
             float yaw_zero = 0.0f;
             uint32_t log_stride = 1;
             uint64_t previous_wake_us = 0;
+            uint32_t applied_revision=1;
 
             while(true)
             {
@@ -136,6 +195,7 @@ namespace test
                 motor::foc_info foc{};
                 motor::get_info(foc);
                 const uint64_t now = esp_timer_get_time();
+                const uint32_t wake_dt=previous_wake_us ? now-previous_wake_us : 5000U;
                 if(previous_wake_us) {
                     const uint32_t dt = now - previous_wake_us;
                     if(dt > scheduler_max_dt_us) __atomic_store_n(&scheduler_max_dt_us, dt, __ATOMIC_RELAXED);
@@ -148,6 +208,16 @@ namespace test
                     now - sensors.left_encoder.timestamp_us <= 1500 &&
                     sensors.right_encoder.timestamp_us != 0 &&
                     now - sensors.right_encoder.timestamp_us <= 1500;
+
+                if(motor::update_locked())
+                {
+                    __atomic_store_n(&requested, 0U, __ATOMIC_RELEASE);
+                    __atomic_store_n(&active, 0U, __ATOMIC_RELEASE);
+                    current.type = mode::IDLE;
+                    controller = balance::state{};
+                    publish(sensors,foc,now,wake_dt,controller,balance::output{},0,0);
+                    continue;
+                }
 
                 if(__atomic_exchange_n(&requested, 0U, __ATOMIC_ACQ_REL))
                 {
@@ -187,6 +257,7 @@ namespace test
 
                 if(current.type == mode::IDLE)
                 {
+                    publish(sensors,foc,now,wake_dt,controller,balance::output{},0,0);
                     continue;
                 }
 
@@ -242,6 +313,7 @@ namespace test
 
                 portENTER_CRITICAL(&request_lock);
                 current.tuning = tuning;
+                applied_revision=parameter_revision;
                 portEXIT_CRITICAL(&request_lock);
                 const uint64_t calculate_began_us = esp_timer_get_time();
                 const float roll = sensors.imu.angle[1];
@@ -304,6 +376,8 @@ namespace test
                 {
                     maximum_calculate_us = calculate_us;
                 }
+
+                publish(sensors,foc,now,dt_us,controller,output,calculate_us,static_cast<uint32_t>(current.type),&current.tuning,applied_revision,current.current_A,yaw_zero);
 
                 if((updates - 1U) % log_stride != 0)
                 {
@@ -392,6 +466,12 @@ namespace test
 
         void dispatch(const char *line)
         {
+            if(motor::update_locked() && strcmp(line,"STOP") && strcmp(line,"STATUS") &&
+               strcmp(line,"GAINS") && strcmp(line,"SCHEDRESET"))
+            {
+                respond("REJECT OTA maintenance lock\n");
+                return;
+            }
             if(strcmp(line, "SCHEDRESET") == 0)
             {
                 __atomic_store_n(&scheduler_max_dt_us, 0U, __ATOMIC_RELAXED);
@@ -413,26 +493,40 @@ namespace test
                 if(reply_text) respond("REJECT use STREAM or serial DUMP\n");
                 else dump();
             }
-            else if(strncmp(line, "TUNE ", 5) == 0)
+            else if(strcmp(line,"GAINS")==0) report_gains();
+            else if(strncmp(line,"TUNE ",5)==0) respond("REJECT legacy torque units; use TUNEA or GAINSSET current_pid_v1\n");
+            else if(strncmp(line,"TUNEA ",6)==0 || strncmp(line,"SET ",4)==0 || strncmp(line,"GAINSSET ",9)==0)
             {
-                balance::gains next{};
-
-                if(sscanf(line, "TUNE %f %f %f", &next.velocity_kp,
-                          &next.velocity_ki, &next.pitch_kd) != 3 ||
-                   !isfinite(next.velocity_kp) || !isfinite(next.velocity_ki) ||
-                   !isfinite(next.pitch_kd) || next.velocity_kp < 0.0f ||
-                   next.velocity_kp > 2.0f || next.velocity_ki < 0.0f ||
-                   next.velocity_ki > 2.0f || next.pitch_kd < 0.005f || next.pitch_kd > 0.1f)
-                {
-                    respond("REJECT tuning\n");
+                portENTER_CRITICAL(&request_lock); balance::gains next=tuning;portEXIT_CRITICAL(&request_lock);
+                int used=0; bool parsed=false;
+                if(strncmp(line,"TUNEA ",6)==0)
+                    parsed=sscanf(line,"TUNEA %f %f %f %n",&next.velocity_kp,&next.velocity_ki,&next.pitch_kd,&used)==3 && line[used]==0;
+                else if(strncmp(line,"GAINSSET ",9)==0)
+                    parsed=sscanf(line,"GAINSSET %f %f %f %f %f %f %f %f %f %f %n",
+                        &next.velocity_kp,&next.velocity_ki,&next.pitch_kd,&next.pitch_kp,&next.pitch_ki,
+                        &next.yaw_kp,&next.yaw_ki,&next.yaw_kd,&next.position_kp,&next.pitch_trim_rad,&used)==10 && line[used]==0;
+                else {
+                    char key[24]{}; float value=0;
+                    parsed=sscanf(line,"SET %23s %f %n",key,&value,&used)==2 && line[used]==0;
+                    if(parsed) {
+                        float *slot=nullptr;
+                        if(!strcmp(key,"velocity_kp"))slot=&next.velocity_kp;
+                        else if(!strcmp(key,"velocity_ki"))slot=&next.velocity_ki;
+                        else if(!strcmp(key,"pitch_kd"))slot=&next.pitch_kd;
+                        else if(!strcmp(key,"pitch_kp"))slot=&next.pitch_kp;
+                        else if(!strcmp(key,"pitch_ki"))slot=&next.pitch_ki;
+                        else if(!strcmp(key,"yaw_kp"))slot=&next.yaw_kp;
+                        else if(!strcmp(key,"yaw_ki"))slot=&next.yaw_ki;
+                        else if(!strcmp(key,"yaw_kd"))slot=&next.yaw_kd;
+                        else if(!strcmp(key,"position_kp"))slot=&next.position_kp;
+                        else if(!strcmp(key,"pitch_trim_rad"))slot=&next.pitch_trim_rad;
+                        if(slot)*slot=value;else parsed=false;
+                    }
                 }
-                else
-                {
-                    portENTER_CRITICAL(&request_lock);
-                    tuning = next;
-                    portEXIT_CRITICAL(&request_lock);
-                    respond("TUNING velocity_kp=%.4f velocity_ki=%.4f pitch_kd=%.4f\n",
-                           tuning.velocity_kp, tuning.velocity_ki, tuning.pitch_kd);
+                if(!parsed || !valid_gains(next)) respond("REJECT current gain range/format\n");
+                else {
+                    portENTER_CRITICAL(&request_lock);tuning=next;++parameter_revision;portEXIT_CRITICAL(&request_lock);
+                    report_gains();
                 }
             }
             else if(__atomic_load_n(&active, __ATOMIC_ACQUIRE) ||
@@ -549,6 +643,11 @@ namespace test
                 fflush(stdout);
             }
         }
+    }
+
+    void get_telemetry(telemetry &out)
+    {
+        portENTER_CRITICAL(&telemetry_lock);out=latest_telemetry;portEXIT_CRITICAL(&telemetry_lock);
     }
 
     bool network_command(const char *line, char *response, size_t capacity)

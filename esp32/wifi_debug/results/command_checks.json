@@ -1,12 +1,13 @@
 {
-  "status_before": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1810 imu_us=76992685 pitch=0.016166 roll=0.189769 yaw=0.012795 raw_a=0.000000 raw_b=0.171658 dir_a=0 dir_b=0 active=0",
+  "status_before": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1660 imu_us=142442674 pitch=0.016389 roll=0.190748 yaw=0.025716 raw_a=0.000000 raw_b=-0.375511 dir_a=0 dir_b=0 active=0",
   "ping": "PONG command_check",
-  "tuning": "TUNING velocity_kp=0.5000 velocity_ki=0.2000 pitch_kd=0.0500",
-  "nonfinite_tuning": "REJECT tuning",
+  "tuning": "GAINS schema=current_pid_v1 revision=2 velocity_kp=0.5 velocity_ki=0.200000003 pitch_kd=3.75602102 pitch_kp=30.0481682 pitch_ki=0.375602096 yaw_kp=7.88764429 yaw_ki=0.751204193 yaw_kd=1.50240839 position_kp=1.29999995 pitch_trim_rad=-0.00156420807",
+  "legacy_units": "REJECT legacy torque units; use TUNEA or GAINSSET current_pid_v1",
+  "nonfinite_tuning": "REJECT current gain range/format",
   "oversized_line": "REJECT line too long",
   "unsupported_rate": "REJECT STREAM TCP|UDP 0..200 [udp_port]",
   "network_dump": "REJECT use STREAM or serial DUMP",
   "stop": "STOPPED",
-  "status_after": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1810 imu_us=77112662 pitch=0.016091 roll=0.189769 yaw=0.012832 raw_a=0.000000 raw_b=0.016412 dir_a=0 dir_b=0 active=0",
+  "status_after": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1630 imu_us=142667562 pitch=0.016062 roll=0.190977 yaw=0.025754 raw_a=0.000000 raw_b=0.035704 dir_a=0 dir_b=0 active=0",
   "network": "NET rssi=-50 hz=0 bytes=112 attempts=0 drops=0 missed=0"
 }

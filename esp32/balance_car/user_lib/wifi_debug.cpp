@@ -21,6 +21,7 @@ namespace wifi_debug {
 namespace {
 constexpr uint16_t PORT = 3333;
 bool connected = false;
+bool server_ready = false;
 // All fields little endian; 112 bytes. Sensor timestamps distinguish fresh data
 // from repeated network snapshots. The control loop remains 200 Hz.
 struct __attribute__((packed)) packet {
@@ -84,6 +85,7 @@ void network_task(void *) {
         close(server); vTaskDelete(nullptr); return;
     }
     fcntl(server, F_SETFL, O_NONBLOCK);
+    __atomic_store_n(&server_ready, true, __ATOMIC_RELEASE);
     int client = -1, udp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if(udp >= 0) {
         sockaddr_in udp_local = local; udp_local.sin_port = htons(PORT + 1);
@@ -93,7 +95,7 @@ void network_task(void *) {
     }
     sockaddr_in peer{}, destination{};
     char line[96]{}; size_t used = 0; bool overflow = false;
-    unsigned hz = 0; bool use_udp = false;
+    unsigned hz = 0; bool use_udp = false, extended = false;
     uint32_t seq = 0, dropped = 0, missed = 0;
     uint64_t due = 0, retry = esp_timer_get_time() + 5000000;
     while(true) {
@@ -137,20 +139,22 @@ void network_task(void *) {
                 else if(strcmp(line, "NET") == 0) {
                     wifi_ap_record_t ap{}; esp_wifi_sta_get_ap_info(&ap);
                     snprintf(reply, sizeof(reply), "NET rssi=%d hz=%u bytes=%u attempts=%lu drops=%lu missed=%lu\n",
-                        ap.rssi, hz, unsigned(sizeof(packet)), (unsigned long)seq,
+                        ap.rssi, hz, unsigned(extended?220:sizeof(packet)), (unsigned long)seq,
                         (unsigned long)dropped, (unsigned long)missed);
-                } else if(strncmp(line, "STREAM ", 7) == 0) {
+                } else if(strncmp(line, "STREAM ", 7) == 0 || strncmp(line,"STREAM2 ",8)==0) {
                     char transport[8]{}; unsigned rate = 0, port = 3334;
-                    int fields = sscanf(line, "STREAM %7s %u %u", transport, &rate, &port);
+                    const bool request_extended = strncmp(line,"STREAM2 ",8)==0;
+                    int fields = sscanf(line + (request_extended?8:7), "%7s %u %u", transport, &rate, &port);
                     if(fields < 2 || rate > 200 || port == 0 || port > 65535 ||
                        (strcmp(transport, "TCP") && strcmp(transport, "UDP")) ||
                        (!strcmp(transport, "UDP") && udp < 0)) {
                         snprintf(reply, sizeof(reply), "REJECT STREAM TCP|UDP 0..200 [udp_port]\n");
                     } else {
+                        extended=request_extended;
                         hz = rate; use_udp = !strcmp(transport, "UDP");
                         destination = peer; destination.sin_port = htons(port);
                         seq = dropped = missed = 0; due = esp_timer_get_time() + 10000;
-                        snprintf(reply, sizeof(reply), "STREAM %s %u bytes=%u\n", transport, rate, unsigned(sizeof(packet)));
+                        snprintf(reply, sizeof(reply), "STREAM %s %u bytes=%u\n", transport, rate, unsigned(extended?220:sizeof(packet)));
                     }
                 } else if(!test::network_command(line, reply, sizeof(reply))) {
                     snprintf(reply, sizeof(reply), "REJECT console busy\n");
@@ -163,9 +167,16 @@ void network_task(void *) {
                 if(now - due >= interval) { missed += (now - due) / interval; due = now; }
                 due += interval;
                 packet p{}; p.sequence = seq++; snapshot(p);
+                struct __attribute__((packed)) wire2 { uint32_t magic, sequence; uint64_t sent_us; test::telemetry payload; };
+                wire2 newer{};
+                const void *data=&p; size_t bytes=sizeof(p);
+                if(extended) {
+                    newer.magic=0x32574342;newer.sequence=p.sequence;newer.sent_us=p.sent_us;
+                    test::get_telemetry(newer.payload);data=&newer;bytes=sizeof(newer);
+                }
                 if(use_udp) {
-                    if(sendto(udp, &p, sizeof(p), 0, reinterpret_cast<sockaddr *>(&destination), sizeof(destination)) != sizeof(p)) ++dropped;
-                } else failed = !send_all(client, &p, sizeof(p));
+                    if(sendto(udp, data, bytes, 0, reinterpret_cast<sockaddr *>(&destination), sizeof(destination)) != static_cast<int>(bytes)) ++dropped;
+                } else failed = !send_all(client, data, bytes);
             }
         }
         if(failed) { close(client); client = -1; hz = 0; }
@@ -175,6 +186,9 @@ void network_task(void *) {
 }
 }
 
+bool is_ready() {
+    return __atomic_load_n(&connected,__ATOMIC_ACQUIRE) && __atomic_load_n(&server_ready,__ATOMIC_ACQUIRE);
+}
 bool init() {
     esp_err_t err = nvs_flash_init();
     // Preserve NVS calibration/configuration rather than silently erasing it.

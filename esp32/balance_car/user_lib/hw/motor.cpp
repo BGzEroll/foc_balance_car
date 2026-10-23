@@ -20,6 +20,11 @@
 #include "soc/mcpwm_struct.h"
 #include "soc/sens_reg.h"
 
+namespace {
+    uint32_t update_inhibit = 0;
+    uint32_t update_acknowledged = 0;
+}
+
 namespace adc
 {
     namespace
@@ -1663,7 +1668,10 @@ namespace motor
                 const uint32_t now = static_cast<uint32_t>(now64);
                 pwm::heartbeat(now);
 
-                const uint32_t operation = __atomic_exchange_n(&request, 0U, __ATOMIC_ACQ_REL);
+                uint32_t operation = __atomic_exchange_n(&request, 0U, __ATOMIC_ACQ_REL);
+                // Even a previously queued CAL/start is discarded under this lock.
+                const bool inhibited = update_locked();
+                if(inhibited) operation = 2;
 
                 if(operation == 1)
                 {
@@ -1696,6 +1704,9 @@ namespace motor
                         __ATOMIC_RELEASE);
                     pwm::start(request_mask);
                 }
+
+                if(inhibited)
+                    __atomic_store_n(&update_acknowledged, 1U, __ATOMIC_RELEASE);
 
                 if(pwm::get_fault_code() == fault_code::NONE)
                 {
@@ -1808,7 +1819,7 @@ namespace motor
      */
     bool calibrate()
     {
-        if(!__atomic_load_n(&initialized, __ATOMIC_ACQUIRE) ||
+        if(update_locked() || !__atomic_load_n(&initialized, __ATOMIC_ACQUIRE) ||
            pwm::is_requested() || pwm::is_running() ||
            __atomic_load_n(&request, __ATOMIC_ACQUIRE) != 0 ||
            pwm::get_fault_code() != fault_code::NONE)
@@ -1831,7 +1842,7 @@ namespace motor
      */
     bool start(uint32_t duration_ms, uint32_t mask)
     {
-        if((duration_ms != 0 && duration_ms < 50) || duration_ms > 10000 || mask == 0 || mask > 3 ||
+        if(update_locked() || (duration_ms != 0 && duration_ms < 50) || duration_ms > 10000 || mask == 0 || mask > 3 ||
            !__atomic_load_n(&calibrated, __ATOMIC_ACQUIRE) ||
            __atomic_load_n(&request, __ATOMIC_ACQUIRE) != 0 ||
            pwm::is_requested() || pwm::is_running() ||
@@ -1866,6 +1877,14 @@ namespace motor
         __atomic_store_n(&ready, 0U, __ATOMIC_RELEASE);
         __atomic_store_n(&request, 2U, __ATOMIC_RELEASE);
     }
+
+    void set_update_lock(bool locked)
+    {
+        __atomic_store_n(&update_acknowledged, 0U, __ATOMIC_RELEASE);
+        __atomic_store_n(&update_inhibit, locked ? 1U : 0U, __ATOMIC_RELEASE);
+    }
+    bool update_locked() { return __atomic_load_n(&update_inhibit, __ATOMIC_ACQUIRE); }
+    bool update_stopped() { return update_locked() && __atomic_load_n(&update_acknowledged, __ATOMIC_ACQUIRE); }
 
     /**
      * @brief 设置指定电机的目标 d/q 轴电流

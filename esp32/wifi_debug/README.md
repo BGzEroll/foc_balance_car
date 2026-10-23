@@ -14,7 +14,7 @@ python esp32/wifi_debug/client.py 192.168.114.243 --seconds 30
 
 客户端默认测试 UDP 200 Hz。TCP 3333 接收逐行命令并确认；UDP 3334 向同一 TCP 连接来源 IP 发送遥测。客户端先向 UDP 3334 发探测包，再通过 TCP `STREAM UDP 200 接收端口` 订阅。`STREAM UDP 0` 关闭。每个 UDP 数据报一条 112 字节记录，允许 0～200 Hz，超过范围拒绝。保留 TCP 遥测以便对照，日常采用 UDP。
 
-`TUNE 0.5 0.2 0.05` 沿用 B 组参数；`STATUS`、`STOP`、`CAL`、`BALANCE` 等仍通过统一 console 命令队列执行。CAL 会通电对齐，BALANCE/PROBE 会输出电流，本次通信测试未执行这些命令。网络不提供串口式 DUMP；使用 STREAM 或串口导出。
+`TUNEA 0.5 0.2 3.756021` 使用等效 B 组电流参数；旧 TUNE 命令拒绝。完整准备流程见 `../tuning_preparation/README.md`；`STATUS`、`STOP`、`CAL`、`BALANCE` 等仍通过统一 console 命令队列执行。CAL 会通电对齐，BALANCE/PROBE 会输出电流，本次通信测试未执行这些命令。网络不提供串口式 DUMP；使用 STREAM 或串口导出。
 
 ## 时间与保护
 

@@ -15,6 +15,16 @@ FIELDS = ["magic", "sequence", "sent_us", "imu_us", "pitch", "roll", "yaw",
           "target_a", "target_b", "bus", "updates", "max_dt_us", "max_calculate_us",
           "active", "fault", "current_age_a_us", "current_age_b_us"]
 
+# BCW2: 16-byte transport header plus packed control-cycle payload.
+WIRE2 = struct.Struct("<IIQQQ13I34f")
+FIELDS2 = ["magic","sequence","sent_us","sample_us","imu_us","cycle","dt_us","revision",
+ "mode","result","fault","flags","saturated","imu_age_us","encoder_age_us",
+ "current_age_a_us","current_age_b_us","calculate_us",
+ "pitch","roll","pitch_rate","yaw","yaw_rate","speed","distance","target_speed","target_pitch",
+ "command_a","command_b","iq_a","iq_b","id_a","id_b","raw_a","raw_b","angle_a","angle_b","bus","current_limit_A","velocity_integral","pitch_integral","yaw_integral",
+ "velocity_kp","velocity_ki","pitch_kd","pitch_kp","pitch_ki","yaw_kp","yaw_ki","yaw_kd","position_kp","pitch_trim_rad"]
+assert WIRE2.size == 220 and len(WIRE2.unpack(bytes(220))) == len(FIELDS2)
+
 
 def percentile(values, p):
     if not values:
@@ -44,9 +54,10 @@ class Client:
         self.tcp.sendall((command + "\n").encode("ascii"))
 
     def record(self, data, received):
-        if len(data) != WIRE.size or data[:4] != MAGIC:
+        wire = WIRE2 if data[:4] == b"BCW2" else WIRE
+        if len(data) != wire.size or data[:4] not in (MAGIC,b"BCW2"):
             raise ValueError("Bad telemetry frame")
-        self.records.append((received, WIRE.unpack(data)))
+        self.records.append((received, wire.unpack(data)))
 
     def pump(self, timeout=.05):
         ready, _, _ = select.select([self.tcp, self.udp], [], [], timeout)
@@ -59,6 +70,8 @@ class Client:
                     except BlockingIOError:
                         break
                     if sender[0] == self.host:
+                        if data[:4] == b"BCW2":
+                            self.datagrams += 1; self.record(data,time.perf_counter()); continue
                         if len(data) % WIRE.size: raise ValueError("Bad datagram size")
                         self.datagrams += 1
                         for offset in range(0, len(data), WIRE.size):
@@ -69,11 +82,12 @@ class Client:
                     raise ConnectionError("Car closed TCP connection")
                 self.buffer.extend(data)
                 while self.buffer:
-                    if self.buffer[:4] == MAGIC:
-                        if len(self.buffer) < WIRE.size:
+                    if self.buffer[:4] in (MAGIC,b"BCW2"):
+                        size = WIRE2.size if self.buffer[:4] == b"BCW2" else WIRE.size
+                        if len(self.buffer) < size:
                             break
-                        self.record(self.buffer[:WIRE.size], received)
-                        del self.buffer[:WIRE.size]
+                        self.record(self.buffer[:size], received)
+                        del self.buffer[:size]
                     else:
                         end = self.buffer.find(b"\n")
                         if end < 0:
@@ -89,7 +103,7 @@ class Client:
 
     def command(self, text, prefix=None, timeout=3):
         verb = text.split()[0]
-        prefix = prefix or {"TUNE": "TUNING", "BALANCE": "RUN", "SHADOW": "RUN",
+        prefix = prefix or {"TUNEA": "GAINS", "SET":"GAINS", "GAINSSET":"GAINS", "BALANCE": "RUN", "SHADOW": "RUN",
                             "PROBE": "RUN"}.get(verb, verb)
         before = len(self.lines)
         self.send(text)

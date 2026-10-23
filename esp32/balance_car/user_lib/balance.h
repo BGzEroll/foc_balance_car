@@ -31,7 +31,14 @@ namespace balance
     {
         float velocity_kp = 1.4f;
         float velocity_ki = 1.2f;
-        float pitch_kd = 0.025f;
+        float pitch_kd = 1.878010521f; // A*s/rad, total common effort
+        float pitch_kp = 30.04816834f;
+        float pitch_ki = 0.3756021042f;
+        float yaw_kp = 7.887644188f;
+        float yaw_ki = 0.7512042084f;
+        float yaw_kd = 1.502408417f;
+        float position_kp = 1.3f;
+        float pitch_trim_rad = -0.001564208089f;
     };
 
     struct state

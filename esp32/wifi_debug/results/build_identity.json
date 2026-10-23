@@ -1,17 +1,67 @@
 {
-  "balance_car.bin": "27692c7b8512c0d3f138e2f56c94fb3d5476a5c8037d56f3f4f7c42d6bff9427",
-  "bootloader.bin": "c0c86ecec2cb49785f61d4bb0acb52e4bbb74859ff16be5c770dd7a32bc4b698",
-  "partition-table.bin": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820",
-  "pre_wifi_2MB.bin": "f65275cdfa4e4be5bd8873dc2900b6e1b709d475d538af06b769d6deb5af7207",
   "branch": "codex/test-upper-controller",
   "main_before": "9faaf7f22f017444cb60e80a31227c53518281e4",
   "main_after": "9faaf7f22f017444cb60e80a31227c53518281e4",
+  "balance_car.bin": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+  "bootloader.bin": "f01ee429fed0de45a38507db175d319891c64478d12ad7ae4cca380ce22d9e87",
+  "partition-table.bin": "f2eb82e822d6d270994d7940f57f168404d6122dbcd247764175b7e8778eb628",
   "source_sha256": {
-    "main/CMakeLists.txt": "5a84df6a6c2f8a0dab8c13f3adeacd6b0465823fea6fc54c983621e3f7fb0094",
-    "user_lib/test.cpp": "0dff7d0ce34e94d446542716d8f5060253159b6e86dd20921c902ddc82d55bd5",
-    "user_lib/test.h": "03374368fcb9a69f4ab324f341550957134223417a65ac1ab7c1bcb6aecb8695",
-    "user_lib/wifi_debug.cpp": "670ae3e1c6fa32b35b871e97f3ffd708e518a4208905adfcba63d51c364e082d",
-    "user_lib/wifi_debug.h": "d5b602e34e3a136c803def25de9f1c990327c4cde6ed7baf27cf72592926e522"
+    "CMakeLists.txt": "06358062e6ad53eac17046024f93c10bfa8a302255fc7c229965db632961862e",
+    "sdkconfig": "4710789f144384a223ab0d87d625b257b5b318f96dfee78eab460513dee47860",
+    "user_lib/balance.cpp": "b0eb71c17378954634c4bb03f65badfef525881c7e3f40cd1d798b3f38e64370",
+    "user_lib/balance.h": "98d2b60d9a888ea4d3457983f12262f332c0aea6abc6db772ee94c0b8e374dd8",
+    "main/CMakeLists.txt": "0244a66e73d3a1d357bd77b6221a0c0dfd5015ec69c8113d66222dcbd380b951",
+    "user_lib/test.cpp": "6d759e79aea9d7a8d804668e0e843b974a46430fa31cdb544f29fa1b6f96ca39",
+    "user_lib/test.h": "7212e16666b01879e4bf1b4fbb4eefac4fca71f28164cbfd4525f3ba4ef530da",
+    "user_lib/wifi_debug.cpp": "ab30375a783dcca91b0348bdb09144cff4de5fd5809d78489544ece0fd6b8958",
+    "user_lib/wifi_debug.h": "943bbb1495efeeaff665f9bc0f96114b80d109c04ec173f1493f684a92f997e3",
+    "user_lib/app.cpp": "af4cf8009639f30395161e6c058c4db73eeb39ae81326039df4275d4efe71798",
+    "user_lib/ota.cpp": "5e245dd8958e857b2d768475c79221d3e588dfb0903c9bae7f4ee410bb8476e0",
+    "user_lib/ota.h": "eea7e10e09985aef86b77a69f46aa92f5d0e0825b58448030bece0902de0c8bb",
+    "user_lib/hw/motor.cpp": "a7b804793998f85c446d2729010afe38dda157970a6c689ba5a66a1ec0675f64",
+    "user_lib/hw/motor.h": "acd16edf377134524b0606917a46ec74f0f206f8a314f65bd7e4190caf6dd2c4",
+    "../tuning_preparation/ota_partitions_8mb.csv": "60a340c542b619f1fc192f18e766e027c6aea41782490522434ae2e8708dfbdf"
+  },
+  "application": {
+    "bytes": 917488,
+    "sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "version": "current_pid_v1-ota1",
+    "project": "balance_car"
+  },
+  "migration_utc": "2026-10-23T05:49:29.834838+00:00",
+  "backup": {
+    "mac": "34:CD:B0:38:AC:90",
+    "bytes": 8388608,
+    "sha256": "d1b755531cef63c6860a1518d4b6af96325d8587d0c0c0b2a6613d3e372d085d",
+    "nvs_sha256": "6bc5d9afc6f59461bd292429f804b21203af063a80fc8308a386a7a88a6374fe",
+    "utc": "2026-10-23T05:45:42.480294+00:00"
+  },
+  "partitions": {
+    "nvs": [
+      36864,
+      24576
+    ],
+    "phy_init": [
+      61440,
+      4096
+    ],
+    "factory": [
+      65536,
+      1572864
+    ],
+    "otadata": [
+      1638400,
+      8192
+    ],
+    "ota_0": [
+      1703936,
+      2097152
+    ],
+    "ota_1": [
+      3801088,
+      2097152
+    ]
   },
   "remote_source_verified": true,
   "remote_binary_verified": true,
@@ -23,6 +73,25 @@
     "CONFIG_ESP_WIFI_DYNAMIC_TX_BUFFER_NUM": "32",
     "CONFIG_ESP_WIFI_TX_BA_WIN": "6",
     "CONFIG_ESP32S3_INSTRUCTION_CACHE_SIZE": "0x4000",
-    "CONFIG_ESP32S3_INSTRUCTION_CACHE_WRAP": null
+    "CONFIG_ESP32S3_INSTRUCTION_CACHE_WRAP": null,
+    "CONFIG_ESPTOOLPY_FLASHSIZE": "\"8MB\"",
+    "CONFIG_PARTITION_TABLE_CUSTOM_FILENAME": "\"../tuning_preparation/ota_partitions_8mb.csv\"",
+    "CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE": "y"
+  },
+  "ota_running": {
+    "schema": "current_pid_v1",
+    "running": "ota_0",
+    "boot": "ota_0",
+    "state": 2,
+    "pending_verify": false,
+    "healthy": true,
+    "locked": false,
+    "motor_ack": false,
+    "staged": false,
+    "target": "",
+    "staged_sha256": "",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "confirm_remaining_ms": 0,
+    "uptime_ms": 87955
   }
 }

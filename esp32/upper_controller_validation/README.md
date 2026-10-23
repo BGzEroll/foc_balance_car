@@ -1,3 +1,5 @@
+> 历史有线基线记录：用户后续反馈该组参数仍来回摆动，不能视为无串口线时已稳定。当前接口已迁移为电流单位，旧 TUNE 命令拒绝；今晚准备见 ../tuning_preparation/README.md。
+
 # 上层控制器移植与快速实测
 
 测试分支：`codex/test-upper-controller`。基线 main 为 `9faaf7f`，本次改动不合入 main。

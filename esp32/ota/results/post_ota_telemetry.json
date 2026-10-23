@@ -1,0 +1,17 @@
+{
+  "seconds": 20,
+  "requested_hz": 200,
+  "frame_bytes": 220,
+  "received": 3802,
+  "unique_sequences": 3802,
+  "lost_sequences": 0,
+  "received_hz": 199.9937807774565,
+  "control_hz": 199.98567847890504,
+  "nonzero_fault_samples": 0,
+  "nonzero_active_samples": 0,
+  "max_dt_us": 7142,
+  "max_imu_age_us": 6403,
+  "status_before": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2230 imu_us=32209107 pitch=0.016349 roll=0.190605 yaw=0.000323 raw_a=0.000000 raw_b=-0.315145 dir_a=0 dir_b=0 active=0",
+  "status_after": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2260 imu_us=52274078 pitch=0.016246 roll=0.190956 yaw=0.001242 raw_a=0.000000 raw_b=0.119056 dir_a=0 dir_b=0 active=0",
+  "passed": true
+}

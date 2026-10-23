@@ -17,6 +17,8 @@ root = HERE.parents[1]
 assert subprocess.check_output(["git", "branch", "--show-current"], cwd=root, text=True).strip() == "codex/test-upper-controller"
 before = subprocess.check_output(["git", "rev-parse", "main"], cwd=root, text=True).strip()
 assert before == "9faaf7f22f017444cb60e80a31227c53518281e4"
+configuration=(root / "esp32/balance_car/sdkconfig").read_text(encoding="utf-8")
+assert 'CONFIG_PARTITION_TABLE_SINGLE_APP=y' in configuration and 'CONFIG_ESPTOOLPY_FLASHSIZE_2MB=y' in configuration, "OTA migration requires its reviewed, separate USB procedure"
 fw = HERE / "firmware"
 backup = fw / "pre_wifi_2MB.bin"
 if not backup.exists():
@@ -33,7 +35,7 @@ identity["source_sha256"] = {
     str(p.relative_to(root)).replace("\\", "/"): hashlib.sha256(p.read_bytes()).hexdigest()
     for p in [root / "esp32/balance_car/main/CMakeLists.txt",
               *(root / "esp32/balance_car/user_lib" / name for name in
-                ["test.cpp", "test.h", "wifi_debug.cpp", "wifi_debug.h"])]
+                ["test.cpp", "test.h", "balance.cpp", "balance.h", "wifi_debug.cpp", "wifi_debug.h"])]
 }
 (HERE / "results").mkdir(exist_ok=True)
 (HERE / "results/build_identity.json").write_text(json.dumps(identity, indent=2), encoding="utf-8")

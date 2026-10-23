@@ -13,8 +13,8 @@ try:
     results["status_before"] = status
     results["ping"] = c.command("PING command_check", "PONG")
     # Reapply existing B defaults; no current output is requested.
-    results["tuning"] = c.command("TUNE 0.5 0.2 0.05")
-    for name, command in [("nonfinite_tuning", "TUNE nan 0.2 0.05"),
+    results["tuning"] = c.command("TUNEA 0.5 0.2 3.756021042")
+    for name, command in [("legacy_units", "TUNE 0.5 0.2 0.05"), ("nonfinite_tuning", "TUNEA nan 0.2 3.756021042"),
                           ("oversized_line", "X" * 120),
                           ("unsupported_rate", "STREAM UDP 201"),
                           ("network_dump", "DUMP")]:

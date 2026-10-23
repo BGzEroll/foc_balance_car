@@ -9,8 +9,10 @@ BRANCH = "codex/test-upper-controller"
 BASELINE = "9faaf7f22f017444cb60e80a31227c53518281e4"
 assert subprocess.check_output(["git", "branch", "--show-current"], cwd=ROOT, text=True).strip() == BRANCH
 assert subprocess.check_output(["git", "rev-parse", "main"], cwd=ROOT, text=True).strip() == BASELINE
-files = ["sdkconfig", "main/CMakeLists.txt", "user_lib/test.h", "user_lib/test.cpp",
-         "user_lib/wifi_debug.h", "user_lib/wifi_debug.cpp", "user_lib/wifi_credentials.h"]
+files = ["CMakeLists.txt", "user_lib/balance.cpp", "user_lib/balance.h", "sdkconfig", "main/CMakeLists.txt", "user_lib/test.h", "user_lib/test.cpp",
+         "user_lib/wifi_debug.h", "user_lib/wifi_debug.cpp", "user_lib/wifi_credentials.h",
+         "user_lib/app.cpp", "user_lib/ota.cpp", "user_lib/ota.h", "user_lib/ota_credentials.h",
+         "user_lib/hw/motor.cpp", "user_lib/hw/motor.h", "../tuning_preparation/ota_partitions_8mb.csv"]
 payload = {f: base64.b64encode((ROOT / "esp32/balance_car" / f).read_bytes()).decode() for f in files}
 program = r'''
 import base64,json,pathlib,subprocess,sys
@@ -22,8 +24,12 @@ exclude=root/'.git/info/exclude'
 rule='/esp32/balance_car/user_lib/wifi_credentials.h'
 if rule not in exclude.read_text():
     with exclude.open('a') as f: f.write('\n'+rule+'\n')
+rule='/esp32/balance_car/user_lib/ota_credentials.h'
+if rule not in exclude.read_text():
+    with exclude.open('a') as f: f.write('\n'+rule+'\n')
 for name,data in json.load(sys.stdin).items():
     p=root/'esp32/balance_car'/name
+    p.parent.mkdir(parents=True,exist_ok=True)
     p.write_bytes(base64.b64decode(data))
 print('SYNC_OK test branch only; credentials ignored')
 '''
@@ -36,4 +42,6 @@ firmware.mkdir(exist_ok=True)
 remote_build = "develop:/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/wifi_debug/"
 for name in ["balance_car.bin", "bootloader/bootloader.bin", "partition_table/partition-table.bin"]:
     subprocess.run(["scp", remote_build + name, str(firmware / Path(name).name)], check=True)
+subprocess.run(["scp", "develop:/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/sdkconfig",
+                str(ROOT / "esp32/balance_car/sdkconfig")], check=True)
 print("FETCH_OK matching application, bootloader and partition table")

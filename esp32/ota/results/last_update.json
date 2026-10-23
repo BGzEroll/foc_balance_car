@@ -1,0 +1,47 @@
+{
+  "image": {
+    "bytes": 917488,
+    "sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "version": "current_pid_v1-ota1",
+    "project": "balance_car"
+  },
+  "seconds": 10.343,
+  "response": {
+    "ok": true,
+    "staged": true,
+    "locked": true
+  },
+  "staged_status": {
+    "schema": "current_pid_v1",
+    "running": "ota_1",
+    "boot": "ota_1",
+    "state": 2,
+    "pending_verify": false,
+    "healthy": true,
+    "locked": true,
+    "motor_ack": true,
+    "staged": true,
+    "target": "ota_0",
+    "staged_sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+    "elf_sha256": "06d134872d53c8b98eb2ba566c659e10032847dbec64e734aa3623d99cda55b4",
+    "confirm_remaining_ms": 0,
+    "uptime_ms": 54808
+  },
+  "boot_status": {
+    "schema": "current_pid_v1",
+    "running": "ota_0",
+    "boot": "ota_0",
+    "state": 2,
+    "pending_verify": false,
+    "healthy": true,
+    "locked": false,
+    "motor_ack": false,
+    "staged": false,
+    "target": "",
+    "staged_sha256": "",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "confirm_remaining_ms": 0,
+    "uptime_ms": 6091
+  }
+}

@@ -1,0 +1,306 @@
+{
+  "initial": {
+    "schema": "current_pid_v1",
+    "running": "ota_0",
+    "boot": "ota_0",
+    "state": 2,
+    "pending_verify": false,
+    "healthy": true,
+    "locked": false,
+    "motor_ack": false,
+    "staged": false,
+    "target": "",
+    "staged_sha256": "",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "confirm_remaining_ms": 0,
+    "uptime_ms": 37316
+  },
+  "stopped_before": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2170 imu_us=37377613 pitch=0.015826 roll=0.191117 yaw=0.001025 raw_a=0.000000 raw_b=-0.363850 dir_a=0 dir_b=0 active=0",
+  "image": {
+    "bytes": 917488,
+    "sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "version": "current_pid_v1-ota1",
+    "project": "balance_car"
+  },
+  "unauthorized": {
+    "status": 401,
+    "response": {
+      "error": "unauthorized"
+    }
+  },
+  "wrong_schema": {
+    "status": 400,
+    "response": {
+      "error": "SHA256 or schema header"
+    }
+  },
+  "interrupted_64k": {
+    "schema": "current_pid_v1",
+    "running": "ota_0",
+    "boot": "ota_0",
+    "state": 2,
+    "pending_verify": false,
+    "healthy": true,
+    "locked": false,
+    "motor_ack": false,
+    "staged": false,
+    "target": "",
+    "staged_sha256": "",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "confirm_remaining_ms": 0,
+    "uptime_ms": 41735
+  },
+  "wrong_hash": {
+    "status": 422,
+    "response": {
+      "error": "incomplete, hash mismatch or incompatible image"
+    }
+  },
+  "after_wrong_hash": {
+    "schema": "current_pid_v1",
+    "running": "ota_0",
+    "boot": "ota_0",
+    "state": 2,
+    "pending_verify": false,
+    "healthy": true,
+    "locked": false,
+    "motor_ack": false,
+    "staged": false,
+    "target": "",
+    "staged_sha256": "",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "confirm_remaining_ms": 0,
+    "uptime_ms": 51781
+  },
+  "corrupt_image": {
+    "status": 422,
+    "response": {
+      "error": "image validation failed"
+    }
+  },
+  "after_corrupt": {
+    "schema": "current_pid_v1",
+    "running": "ota_0",
+    "boot": "ota_0",
+    "state": 2,
+    "pending_verify": false,
+    "healthy": true,
+    "locked": false,
+    "motor_ack": false,
+    "staged": false,
+    "target": "",
+    "staged_sha256": "",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "confirm_remaining_ms": 0,
+    "uptime_ms": 61956
+  },
+  "first_update": {
+    "image": {
+      "bytes": 917488,
+      "sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "version": "current_pid_v1-ota1",
+      "project": "balance_car"
+    },
+    "seconds": 10.134,
+    "response": {
+      "ok": true,
+      "staged": true,
+      "locked": true
+    },
+    "staged_status": {
+      "schema": "current_pid_v1",
+      "running": "ota_0",
+      "boot": "ota_0",
+      "state": 2,
+      "pending_verify": false,
+      "healthy": true,
+      "locked": true,
+      "motor_ack": true,
+      "staged": true,
+      "target": "ota_1",
+      "staged_sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "confirm_remaining_ms": 0,
+      "uptime_ms": 72284
+    },
+    "boot_status": {
+      "schema": "current_pid_v1",
+      "running": "ota_1",
+      "boot": "ota_1",
+      "state": 2,
+      "pending_verify": false,
+      "healthy": true,
+      "locked": false,
+      "motor_ack": false,
+      "staged": false,
+      "target": "",
+      "staged_sha256": "",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "confirm_remaining_ms": 0,
+      "uptime_ms": 7684
+    }
+  },
+  "cancel_stage": {
+    "image": {
+      "bytes": 917488,
+      "sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "version": "current_pid_v1-ota1",
+      "project": "balance_car"
+    },
+    "seconds": 10.351,
+    "response": {
+      "ok": true,
+      "staged": true,
+      "locked": true
+    },
+    "staged_status": {
+      "schema": "current_pid_v1",
+      "running": "ota_1",
+      "boot": "ota_1",
+      "state": 2,
+      "pending_verify": false,
+      "healthy": true,
+      "locked": true,
+      "motor_ack": true,
+      "staged": true,
+      "target": "ota_0",
+      "staged_sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "confirm_remaining_ms": 0,
+      "uptime_ms": 18183
+    }
+  },
+  "maintenance_rejection": "REJECT OTA maintenance lock",
+  "maintenance_status": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2230 imu_us=18239642 pitch=0.016177 roll=0.190923 yaw=-0.000518 raw_a=0.000000 raw_b=0.093277 dir_a=0 dir_b=0 active=0",
+  "cancelled": {
+    "schema": "current_pid_v1",
+    "running": "ota_1",
+    "boot": "ota_1",
+    "state": 2,
+    "pending_verify": false,
+    "healthy": true,
+    "locked": false,
+    "motor_ack": false,
+    "staged": false,
+    "target": "",
+    "staged_sha256": "",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "confirm_remaining_ms": 0,
+    "uptime_ms": 18411
+  },
+  "rollback_stage": {
+    "image": {
+      "bytes": 917488,
+      "sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "version": "current_pid_v1-ota1",
+      "project": "balance_car"
+    },
+    "seconds": 10.36,
+    "response": {
+      "ok": true,
+      "staged": true,
+      "locked": true
+    },
+    "staged_status": {
+      "schema": "current_pid_v1",
+      "running": "ota_1",
+      "boot": "ota_1",
+      "state": 2,
+      "pending_verify": false,
+      "healthy": true,
+      "locked": true,
+      "motor_ack": true,
+      "staged": true,
+      "target": "ota_0",
+      "staged_sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "confirm_remaining_ms": 0,
+      "uptime_ms": 28914
+    }
+  },
+  "rollback_pending": {
+    "schema": "current_pid_v1",
+    "running": "ota_0",
+    "boot": "ota_0",
+    "state": 1,
+    "pending_verify": true,
+    "healthy": true,
+    "locked": true,
+    "motor_ack": true,
+    "staged": false,
+    "target": "",
+    "staged_sha256": "",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "confirm_remaining_ms": 54597,
+    "uptime_ms": 5453
+  },
+  "rollback_recovered": {
+    "schema": "current_pid_v1",
+    "running": "ota_1",
+    "boot": "ota_1",
+    "state": 2,
+    "pending_verify": false,
+    "healthy": true,
+    "locked": false,
+    "motor_ack": false,
+    "staged": false,
+    "target": "",
+    "staged_sha256": "",
+    "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+    "confirm_remaining_ms": 0,
+    "uptime_ms": 16512
+  },
+  "second_slot_update": {
+    "image": {
+      "bytes": 917488,
+      "sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "version": "current_pid_v1-ota1",
+      "project": "balance_car"
+    },
+    "seconds": 10.444,
+    "response": {
+      "ok": true,
+      "staged": true,
+      "locked": true
+    },
+    "staged_status": {
+      "schema": "current_pid_v1",
+      "running": "ota_1",
+      "boot": "ota_1",
+      "state": 2,
+      "pending_verify": false,
+      "healthy": true,
+      "locked": true,
+      "motor_ack": true,
+      "staged": true,
+      "target": "ota_0",
+      "staged_sha256": "16055765490a375b0c95a9732e4827adcff62e0ba362b97a61455e8ce727c7b9",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "confirm_remaining_ms": 0,
+      "uptime_ms": 27179
+    },
+    "boot_status": {
+      "schema": "current_pid_v1",
+      "running": "ota_0",
+      "boot": "ota_0",
+      "state": 2,
+      "pending_verify": false,
+      "healthy": true,
+      "locked": false,
+      "motor_ack": false,
+      "staged": false,
+      "target": "",
+      "staged_sha256": "",
+      "elf_sha256": "6b23a64914f951e14a683fa47b95de30fda3ae854b4a65ae1e097253bc3ce538",
+      "confirm_remaining_ms": 0,
+      "uptime_ms": 6076
+    }
+  },
+  "stopped_after": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.2080 imu_us=6169644 pitch=0.016368 roll=0.190898 yaw=-0.000019 raw_a=0.000000 raw_b=0.169597 dir_a=0 dir_b=0 active=0",
+  "complete": true
+}
