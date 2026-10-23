@@ -1,0 +1,13 @@
+{
+  "port": "COM10",
+  "mac": "34:CD:B0:38:AC:90",
+  "transport": "UART",
+  "wireless": false,
+  "image_sha256": "396ed4b4977627eaf3f84bb2ea4790b74dd6f847be46f002d4d8cf5b86211220",
+  "main": "9faaf7f22f017444cb60e80a31227c53518281e4",
+  "written_regions": [
+    "factory application",
+    "OTA boot selection"
+  ],
+  "nvs_preserved": true
+}

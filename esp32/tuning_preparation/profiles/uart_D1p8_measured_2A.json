@@ -1,0 +1,41 @@
+{
+  "schema": "current_pid_v1",
+  "period_s": 0.005,
+  "current_limit_A": 2,
+  "origin": "Measured UART200Hz D-only trial after MATLAB controller replay, empirical-model screening and physical-model stability cross-check. Limited observed improvement; not a globally optimal PID.",
+  "gains": {
+    "velocity_kp": 0.5,
+    "velocity_ki": 0.03,
+    "pitch_kd": 1.8,
+    "pitch_kp": 24,
+    "pitch_ki": 0.375602,
+    "yaw_kp": 7.887644188341826,
+    "yaw_ki": 0.7512042084135073,
+    "yaw_kd": 1.5024084168270146,
+    "position_kp": 0.6,
+    "pitch_trim_rad": -0.0015642080886889029
+  },
+  "legacy_conversion_Kt_Nm_A": 0.013311959501823515,
+  "units": {
+    "pitch_kp": "A/rad (total two-wheel effort)",
+    "pitch_ki": "A/(rad*s)",
+    "pitch_kd": "A*s/rad",
+    "yaw_kp": "A/rad (differential effort)",
+    "yaw_ki": "A/(rad*s)",
+    "yaw_kd": "A*s/rad",
+    "velocity_kp": "rad/(m/s)",
+    "velocity_ki": "rad/m",
+    "position_kp": "1/s",
+    "pitch_trim_rad": "rad"
+  },
+  "validation": {
+    "session": "uart200_20261023_204537",
+    "revision": 3,
+    "comparison_file": "D_comparison.json",
+    "observed_comparison_duration_s": 39.995,
+    "baseline_pitch_std_deg": 0.5955004479528748,
+    "candidate_pitch_std_deg": 0.2519138544253972,
+    "current_limit_A": 2,
+    "note": "All other gains unchanged; stationary trial, not a quantified push-recovery test."
+  }
+}

@@ -63,6 +63,8 @@ namespace motor
         uint32_t adc_age_us = 0;
         uint32_t heartbeat_age_us = 0;
         uint32_t control_phase = 0;
+        uint32_t sample_flags = 0, sample_start_tick = 0, sample_end_tick = 0;
+        uint32_t sample_duty_a = 0, sample_duty_b = 0;
     };
 
     struct foc_info

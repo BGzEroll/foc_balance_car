@@ -91,6 +91,10 @@ explore_current_pid(fullfile(folder,'identified_plant.mat'));
 - MATLAB 离屏绘图在当前批处理环境阻塞，已将绘图设为显式可选；数值导入、辨识、搜索无需绘图即可运行。
 - 固件与本地/开发机源码及三份刷入镜像使用 verify_identity.py 核对；不更改 main。
 
+## 当前连接方式：串口，无线关闭
+
+用户结束无线调试后，已通过 COM10 / 115200 刷入并重启验证 UART 固件。realtime_config.h 中 WIRELESS_DEBUG_ENABLED=false，启动时不初始化 Wi-Fi、不启动 TCP/UDP 与 OTA HTTP 服务；启动日志为 DEBUG transport=UART wireless=OFF ready=1。STATUS/GAINS/FAULT 串口命令已验证，running=0、active=0、fault=0；本次没有执行 CAL 或 BALANCE。串口刷写与验证证据在 results/uart_only_flash.json、results/uart_only_verify.json 和 results/uart_only_boot.log。旧 OTA build_identity 仍是此前无线镜像的记录，不应作为本次 UART 镜像身份；本次镜像 SHA256 记录在 uart_only_flash.json。
+
 ## 2026-10-23 现场更新
 
 用户要求上层每轮目标电流上限改为 2 A，默认 limits 与命令范围已同步。内层目标电流矢量上限原本就是 2 A。现场用户另行明确授权仅将 ADC 相电流跳闸线从 ±2 A 提高到 ±2.5 A；故障锁存、采样窗口判定、ADC 读错及全部超时保护保持原样，没有新增清故障或恢复对齐接口。旧 wired_B_current.json 的 0.7 A 作为历史基线保留；MATLAB 辨识/仿真从实测 current_limit_A 读取本次限流。

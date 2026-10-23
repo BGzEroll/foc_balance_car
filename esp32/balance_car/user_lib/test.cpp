@@ -10,6 +10,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/queue.h"
+#include "freertos/semphr.h"
+#include "esp_rom_crc.h"
 #include <stdarg.h>
 #include "esp_timer.h"
 
@@ -23,7 +25,8 @@ namespace test
     {
         constexpr float FORWARD_SIGN[2] = {-1.0f, 1.0f};
         constexpr float MAX_CURRENT_A = 2.0f;
-        constexpr float MAX_WHEEL_SPEED_RAD_S = 12.0f;
+        constexpr float MAX_WHEEL_SPEED_RAD_S = 40.0f;
+        constexpr float MAX_TILT_RAD = 0.7853981634f;
         constexpr uint32_t ROW_COUNT = 400;
 
         enum class mode : uint32_t
@@ -80,6 +83,9 @@ namespace test
         struct network_request { char line[96]; };
         struct network_reply { char text[768]; };
         QueueHandle_t command_queue = nullptr, reply_queue = nullptr;
+        SemaphoreHandle_t uart_tx_lock = nullptr;
+        TaskHandle_t uart_stream_handle = nullptr;
+        uint32_t uart_stream_enabled = 0;
         char *reply_text = nullptr;
         size_t reply_used = 0;
         // Only the console task executes commands, for both UART and TCP.
@@ -93,7 +99,11 @@ namespace test
                 int n = vsnprintf(reply_text + reply_used, remaining, format, args);
                 if(n > 0) reply_used += static_cast<size_t>(n) < remaining ? n : remaining - 1;
             }
-            else vprintf(format, args);
+            else {
+                if(uart_tx_lock) xSemaphoreTake(uart_tx_lock, portMAX_DELAY);
+                vprintf(format, args);fflush(stdout);
+                if(uart_tx_lock) xSemaphoreGive(uart_tx_lock);
+            }
             va_end(args);
         }
 
@@ -150,6 +160,29 @@ namespace test
             }
             memcpy(t.gains,values,sizeof(values));
             portENTER_CRITICAL(&telemetry_lock); latest_telemetry=t;portEXIT_CRITICAL(&telemetry_lock);
+            if(uart_stream_handle && __atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE))
+                xTaskNotifyGive(uart_stream_handle);
+        }
+
+        void uart_stream_task(void *)
+        {
+            struct __attribute__((packed)) frame {
+                uint32_t magic,sequence;uint64_t sent_us;telemetry data;uint32_t crc;
+            };
+            static_assert(sizeof(frame)==224);
+            uint32_t sequence=0,last_cycle=UINT32_MAX;
+            while(true) {
+                ulTaskNotifyTake(pdTRUE,portMAX_DELAY);
+                if(!__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE))continue;
+                frame f{};get_telemetry(f.data);
+                if(f.data.cycle==last_cycle)continue;
+                last_cycle=f.data.cycle;f.magic=0x32554342U;f.sequence=sequence++;
+                f.sent_us=esp_timer_get_time();
+                f.crc=esp_rom_crc32_le(0,reinterpret_cast<const uint8_t*>(&f),sizeof(f)-4);
+                xSemaphoreTake(uart_tx_lock,portMAX_DELAY);
+                uart_write_bytes(UART_NUM_0,&f,sizeof(f));
+                xSemaphoreGive(uart_tx_lock);
+            }
         }
 
         /**
@@ -291,8 +324,8 @@ namespace test
                 {
                     result = 4;
                 }
-                else if(fabsf(sensors.imu.angle[0]) > 0.26179939f ||
-                        fabsf(sensors.imu.angle[1]) > 0.26179939f ||
+                else if(fabsf(sensors.imu.angle[0]) > MAX_TILT_RAD ||
+                        fabsf(sensors.imu.angle[1]) > MAX_TILT_RAD ||
                         fabsf(sensors.left_encoder.speed_rad_s) > MAX_WHEEL_SPEED_RAD_S ||
                         fabsf(sensors.right_encoder.speed_rad_s) > MAX_WHEEL_SPEED_RAD_S)
                 {
@@ -511,17 +544,30 @@ namespace test
             {
                 status();
             }
+            else if(!strcmp(line,"UARTSTREAM 200") || !strcmp(line,"UARTSTREAM 0"))
+            {
+                const bool enabled=!strcmp(line,"UARTSTREAM 200");
+                if(reply_text)respond("REJECT UART command only\n");
+                else {
+                    __atomic_store_n(&uart_stream_enabled,enabled?1U:0U,__ATOMIC_RELEASE);
+                    respond("UARTSTREAM hz=%u baud=921600 bytes=224 crc=CRC32\n",enabled?200:0);
+                }
+            }
             else if(strcmp(line, "FAULT") == 0)
             {
                 motor::foc_info m{}; motor::get_info(m);
-                respond("FAULT code=%lu motor=%u time_us=%llu source=%lu age_or_dt_us=%lu raw_a=%u raw_b=%u adc_age_us=%lu heartbeat_age_us=%lu control_phase=%lu\n",
+                respond("FAULT code=%lu motor=%u time_us=%llu source=%lu age_or_dt_us=%lu raw_a=%u raw_b=%u adc_age_us=%lu heartbeat_age_us=%lu control_phase=%lu sample_flags=%lu sample_start_tick=%lu sample_end_tick=%lu duty_a=%lu duty_b=%lu\n",
                     (unsigned long)m.fault.code,m.fault.motor_index,(unsigned long long)m.fault.timestamp_us,
                     (unsigned long)(m.fault.detail>>24),(unsigned long)(m.fault.detail&0xffffffU),m.fault.raw_a,m.fault.raw_b,
-                    (unsigned long)m.fault.adc_age_us,(unsigned long)m.fault.heartbeat_age_us,(unsigned long)m.fault.control_phase);
+                    (unsigned long)m.fault.adc_age_us,(unsigned long)m.fault.heartbeat_age_us,(unsigned long)m.fault.control_phase,
+                    (unsigned long)m.fault.sample_flags,(unsigned long)m.fault.sample_start_tick,
+                    (unsigned long)m.fault.sample_end_tick,(unsigned long)m.fault.sample_duty_a,
+                    (unsigned long)m.fault.sample_duty_b);
             }
             else if(strcmp(line, "DUMP") == 0)
             {
                 if(reply_text) respond("REJECT use STREAM or serial DUMP\n");
+                else if(__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE)) respond("REJECT use active UARTSTREAM; DUMP would interrupt streaming\n");
                 else dump();
             }
             else if(strcmp(line,"GAINS")==0) report_gains();
@@ -625,6 +671,13 @@ namespace test
         void console_task(void *)
         {
             uart_driver_install(UART_NUM_0, 1024, 0, 0, nullptr, 0);
+            uart_set_baudrate(UART_NUM_0,921600);
+            uart_tx_lock=xSemaphoreCreateMutex();
+            if(!uart_tx_lock || xTaskCreatePinnedToCore(uart_stream_task,"uart_telemetry",4096,
+                nullptr,realtime_config::NETWORK_PRIORITY,&uart_stream_handle,0)!=pdPASS)
+            {
+                motor::stop();vTaskDelete(nullptr);return;
+            }
             char line[96] = {};
             uint32_t used = 0;
             respond("UPPER_BENCH_READY 200Hz default=STOP forward_sign=-1,+1\n");
@@ -716,6 +769,7 @@ namespace test
                    nullptr, realtime_config::UPPER_PRIORITY, nullptr,
                    realtime_config::NETWORK_CORE) == pdPASS &&
                xTaskCreatePinnedToCore(console_task, "upper_console", 6144,
-                   nullptr, 1, nullptr, 0) == pdPASS && wifi_debug::init();
+                   nullptr, 1, nullptr, 0) == pdPASS &&
+               (!realtime_config::WIRELESS_DEBUG_ENABLED || wifi_debug::init());
     }
 }

@@ -2,6 +2,7 @@
 #include "sdkconfig.h"
 
 namespace realtime_config {
+constexpr bool WIRELESS_DEBUG_ENABLED = false;
 constexpr unsigned SENSOR_FOC_PRIORITY = 5;
 constexpr unsigned UPPER_PRIORITY = 2;
 constexpr unsigned NETWORK_PRIORITY = 1;

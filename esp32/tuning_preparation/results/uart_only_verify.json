@@ -1,0 +1,18 @@
+{
+  "events": [
+    {
+      "command": "STATUS",
+      "reply": "STATUS calibrated=0 running=0 ready=0 fault=0 bus=8.1870 imu_us=6740525 pitch=-0.270773 roll=0.115163 yaw=0.000006 raw_a=-0.219244 raw_b=0.000000 dir_a=0 dir_b=0 active=0 pwm_core=0\r\n"
+    },
+    {
+      "command": "GAINS",
+      "reply": "GAINS schema=current_pid_v1 revision=1 velocity_kp=0.5 velocity_ki=0.200000003 pitch_kd=3.75602102 pitch_kp=30.0481682 pitch_ki=0.375602096 yaw_kp=7.88764429 yaw_ki=0.751204193 yaw_kd=1.50240839 position_kp=1.29999995 pitch_trim_rad=-0.00156420807\r\n"
+    },
+    {
+      "command": "FAULT",
+      "reply": "FAULT code=0 motor=255 time_us=0 source=0 age_or_dt_us=0 raw_a=0 raw_b=0 adc_age_us=0 heartbeat_age_us=0 control_phase=0 sample_flags=0 sample_start_tick=0 sample_end_tick=0 duty_a=0 duty_b=0\r\n"
+    }
+  ],
+  "wireless_disabled_at_boot": true,
+  "motors_started": false
+}

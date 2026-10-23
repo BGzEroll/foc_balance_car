@@ -321,6 +321,8 @@ namespace pwm
         uint32_t fault_adc_age_us = 0, fault_heartbeat_age_us = 0;
         uint32_t irq_core = 0;
         uint32_t control_phase = 0, fault_control_phase = 0;
+        uint32_t fault_sample_flags = 0, fault_sample_start_tick = 0, fault_sample_end_tick = 0;
+        uint32_t fault_sample_duty_a = 0, fault_sample_duty_b = 0;
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -445,7 +447,8 @@ namespace pwm
         uint16_t raw_b = 0,
         uint32_t detail = 0,
         uint32_t adc_age_us = 0,
-        uint32_t heartbeat_age_us = 0)
+        uint32_t heartbeat_age_us = 0,
+        const sample *source_sample = nullptr)
     {
         uint32_t expected = 0;
 
@@ -460,6 +463,14 @@ namespace pwm
             __atomic_store_n(&fault_control_phase, __atomic_load_n(&control_phase,__ATOMIC_RELAXED),__ATOMIC_RELAXED);
             __atomic_store_n(&fault_adc_age_us, adc_age_us, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_heartbeat_age_us, heartbeat_age_us, __ATOMIC_RELAXED);
+            if(source_sample)
+            {
+                fault_sample_flags = source_sample->flags;
+                fault_sample_start_tick = source_sample->a_start;
+                fault_sample_end_tick = source_sample->b_end;
+                fault_sample_duty_a = source_sample->duty_a;
+                fault_sample_duty_b = source_sample->duty_b;
+            }
             __atomic_store_n(&fault_us, now32(), __ATOMIC_RELEASE);
         }
 
@@ -494,6 +505,11 @@ namespace pwm
         out.control_phase = __atomic_load_n(&fault_control_phase,__ATOMIC_RELAXED);
         out.adc_age_us = __atomic_load_n(&fault_adc_age_us, __ATOMIC_RELAXED);
         out.heartbeat_age_us = __atomic_load_n(&fault_heartbeat_age_us, __ATOMIC_RELAXED);
+        out.sample_flags = fault_sample_flags;
+        out.sample_start_tick = fault_sample_start_tick;
+        out.sample_end_tick = fault_sample_end_tick;
+        out.sample_duty_a = fault_sample_duty_a;
+        out.sample_duty_b = fault_sample_duty_b;
 
         const uint32_t stamp = __atomic_load_n(&fault_us, __ATOMIC_ACQUIRE);
 
@@ -877,10 +893,12 @@ namespace pwm
 
         const bool over = adc::overcurrent(index, a, b);
 
-        if(output_enabled && (!raw_ok || over))
+        // Only an electrically valid low-side aperture represents phase current.
+        // Reject late samples; the unchanged 1ms valid-sample watchdog remains.
+        if(output_enabled && (!raw_ok || (over && window_a && window_b && same_cycle)))
         {
             trip(raw_ok ? motor::fault_code::OVERCURRENT
-                        : motor::fault_code::ADC_READ, index, a, b);
+                        : motor::fault_code::ADC_READ, index, a, b, 0, 0, 0, &out);
         }
 
         if(output_enabled && raw_ok && !over && window_a && window_b && same_cycle)
@@ -963,6 +981,7 @@ namespace pwm
         ESP_ERROR_CHECK(mcpwm_new_timer_sync_src(timer, &sync_config, &sync));
         mcpwm_timer_sync_phase_config_t phase_config{};
         phase_config.sync_src = sync;
+        // Restore the previously powered, turning-motor timing for UART use.
         phase_config.count_value = 1600;
         phase_config.direction = MCPWM_TIMER_DIRECTION_UP;
         ESP_ERROR_CHECK(mcpwm_timer_set_phase_on_sync(sample_timer, &phase_config));
