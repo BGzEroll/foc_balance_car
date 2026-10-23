@@ -67,7 +67,6 @@ namespace balance
     output update(const observation &measured,const reference &target,const limits &limit,
                   state &controller,const gains &tuning)
     {
-        (void)tuning;
         if(!controller.first_sample)
             controller.distance_m += lqi_config::PERIOD_S *
                 (controller.previous_speed_m_s + measured.speed_m_s) * 0.5f;
@@ -80,7 +79,7 @@ namespace balance
         float effort[2]={};
         for(unsigned row=0;row<2;++row)
             for(unsigned column=0;column<8;++column)
-                effort[row]-=lqi_config::K[row][column]*error[column];
+                effort[row]-=lqi_config::K[row][column]*tuning.lqi_scale[column]*error[column];
         const float current[2]={(effort[0]-effort[1])*0.5f,(effort[0]+effort[1])*0.5f};
         const float cap=fminf(6.0f,fabsf(limit.current_A));
         output out{};out.saturated=fmaxf(fabsf(current[0]),fabsf(current[1]))>cap;

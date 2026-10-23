@@ -110,16 +110,24 @@ namespace test
 
         void gain_values(const balance::gains &g, float v[10])
         {
-            (void)g;memset(v,0,10*sizeof(float));
+            memset(v,0,10*sizeof(float));
+            memcpy(v,g.lqi_scale,8*sizeof(float));
+            v[9]=lqi_config::HARDWARE_TRIM_RAD;
         }
         void report_gains()
         {
+            balance::gains g{};uint32_t revision;
+            portENTER_CRITICAL(&request_lock);
+            g=tuning;revision=parameter_revision;
+            portEXIT_CRITICAL(&request_lock);
             respond("LQI schema=lqi_current_v1 revision=%lu design=%s Ts_us=5000 max_current_A=6 telemetry=BCU3 trim=%.9g\n",
-                (unsigned long)lqi_config::REVISION,lqi_config::DESIGN_SHA256,lqi_config::HARDWARE_TRIM_RAD);
+                (unsigned long)revision,lqi_config::DESIGN_SHA256,lqi_config::HARDWARE_TRIM_RAD);
             for(unsigned r=0;r<2;++r)
                 respond("LQI_K row=%u %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",r,
-                    lqi_config::K[r][0],lqi_config::K[r][1],lqi_config::K[r][2],lqi_config::K[r][3],
-                    lqi_config::K[r][4],lqi_config::K[r][5],lqi_config::K[r][6],lqi_config::K[r][7]);
+                    lqi_config::K[r][0]*g.lqi_scale[0],lqi_config::K[r][1]*g.lqi_scale[1],
+                    lqi_config::K[r][2]*g.lqi_scale[2],lqi_config::K[r][3]*g.lqi_scale[3],
+                    lqi_config::K[r][4]*g.lqi_scale[4],lqi_config::K[r][5]*g.lqi_scale[5],
+                    lqi_config::K[r][6]*g.lqi_scale[6],lqi_config::K[r][7]*g.lqi_scale[7]);
         }
         void publish(const sensor::package &s,const motor::foc_info &m,uint64_t now,uint32_t dt,
                      const balance::state &state,const balance::output &out,uint32_t calc,uint32_t current_mode,const balance::gains *applied=nullptr,uint32_t applied_revision=0,float current_cap=0,float yaw_reference=0)
@@ -562,6 +570,29 @@ namespace test
                 else dump();
             }
             else if(strcmp(line,"LQI")==0 || strcmp(line,"GAINS")==0) report_gains();
+            else if(strncmp(line,"LQISET ",7)==0)
+            {
+                float values[8];char extra;
+                if(sscanf(line+7,"%f %f %f %f %f %f %f %f %c",
+                    &values[0],&values[1],&values[2],&values[3],
+                    &values[4],&values[5],&values[6],&values[7],&extra)!=8)
+                {respond("REJECT LQISET requires eight scales\n");return;}
+                bool valid=true;
+                for(unsigned i=0;i<8;++i)
+                    valid=valid&&isfinite(values[i])&&values[i]>=0.5f&&values[i]<=1.5f;
+                uint32_t revision=0;
+                portENTER_CRITICAL(&request_lock);
+                for(unsigned i=0;i<8;++i)
+                    valid=valid&&fabsf(values[i]-tuning.lqi_scale[i])<=0.0501f;
+                if(valid)
+                {
+                    memcpy(tuning.lqi_scale,values,sizeof(values));
+                    revision=++parameter_revision;
+                }
+                portEXIT_CRITICAL(&request_lock);
+                if(valid)respond("LQISET accepted=1 revision=%lu\n",(unsigned long)revision);
+                else respond("REJECT LQISET range=.5..1.5 step<=.05\n");
+            }
             else if(strncmp(line,"TUNE ",5)==0 || strncmp(line,"TUNEA ",6)==0 ||
                     strncmp(line,"SET ",4)==0 || strncmp(line,"GAINSSET ",9)==0)
                 respond("REJECT fixed LQI controller; PID tuning commands disabled\n");

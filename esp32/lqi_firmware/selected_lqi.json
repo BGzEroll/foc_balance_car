@@ -1,0 +1,90 @@
+{
+  "schema": "online_lqi_selection_v1",
+  "base_design_sha256": "50659c3c9ee783bec1e8c2cf337aaae11e0ce3a2d7e7159eda2b5297846508bf",
+  "scale": [
+    0.81899,
+    0.864511,
+    0.921312,
+    0.911372,
+    1.0,
+    1.0,
+    0.686495,
+    1.0
+  ],
+  "Kaug": [
+    [
+      -22.091995277622882,
+      -13.653377108118727,
+      -20.33828506109879,
+      -1.6792609696237064,
+      1.9142802216884578e-14,
+      -5.561333861422848e-18,
+      -9.40301954013206,
+      4.3411791271636314e-13
+    ],
+    [
+      -2.0571867468443032e-13,
+      1.9336970398527202e-14,
+      4.3368011692637675e-15,
+      1.4566341025367968e-15,
+      3.115963064877302,
+      0.6947101949965655,
+      -7.045878747047799e-14,
+      2.491671498228273
+    ]
+  ],
+  "Q": [
+    156.25,
+    16,
+    44.4444,
+    0.25,
+    4,
+    0.111111,
+    60,
+    4
+  ],
+  "R": [
+    0.52,
+    0.6
+  ],
+  "current_limit_each_A": 6,
+  "phase_overcurrent_A": 6,
+  "voltage_bus_ratio": 0.48,
+  "Ts_s": 0.005,
+  "applied_revision": 1348836425,
+  "validation": {
+    "label": "reference_validation",
+    "samples": 12002,
+    "scale": [
+      0.81899,
+      0.864511,
+      0.921312,
+      0.911372,
+      1.0,
+      1.0,
+      0.686495,
+      1.0
+    ],
+    "revision": 1348836425,
+    "pitch_rms_deg": 1.626694682022874,
+    "pitch_ac_rms_deg": 1.0455942114777192,
+    "pitch_mean_deg": -1.2461413777921773,
+    "pitch_peak_deg": 3.551589745720465,
+    "pitch_rate_rms": 0.2593718642791232,
+    "speed_rms": 0.015217700892358337,
+    "distance_std": 0.0031169595032702825,
+    "yaw_rms_deg": 0.6288413600284191,
+    "yaw_ac_rms_deg": 0.6249267440513409,
+    "current_rms_A": 0.2630344654505479,
+    "current_peak_A": 1.8556337356567383,
+    "saturation_fraction": 0.0,
+    "bus_mean_V": 8.158205387771497,
+    "crc_errors": 0
+  },
+  "rejected_candidate_score": 1.6342666925570124,
+  "persistence": "RAM; restart restores compiled defaults. Reload online scales before BALANCE.",
+  "reload_target": "LQISET 0.81899 0.864511 0.921312 0.911372 1 1 0.686495 1",
+  "reload_limit": "Ramp each scale by at most .05 per command; do not send the final target directly from all ones.",
+  "evidence": "results/online_lqi/final_run/",
+  "limitation": "Natural standing windows only. Initial full baseline comparisons interrupted by faults 2 and 6. No standardized push test, global optimum, or fully identified plant claim."
+}

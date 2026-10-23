@@ -30,6 +30,8 @@ namespace balance
 
     struct gains
     {
+        // Multipliers of the eight columns of the MATLAB LQI matrix.
+        float lqi_scale[8] = {1,1,1,1,1,1,1,1};
         float velocity_kp = 1.4f;
         float velocity_ki = 1.2f;
         float pitch_kd = 1.878010521f; // A*s/rad, total common effort

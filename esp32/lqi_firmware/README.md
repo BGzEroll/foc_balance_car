@@ -1,5 +1,7 @@
 # 小车 LQI 固件
 
+当前在线版本：母线电压矢量上限为 0.48×Vbus；每轮目标电流上限和采样相电流过流保护均为 6A。新增 `LQISET` 在线更新，操作与遥测槽位见 [ONLINE_TUNING.md](ONLINE_TUNING.md)。下文中的 2A、±2.5A、固定矩阵及旧遥测说明属于首次部署记录。
+
 当前分支 codex/test-lqi，main保持9faaf7f不变。只读借用 codex/test-upper-controller 的已用硬件/串口框架，再把上层替换为LQI；没有将PID代码合入main，也没有修改原PID工作区。本地已迁回 D:/code/Embedded-related/balance_car；开发机已迁回 /home/bgzerol/embedded_project/foc_balance_car，同样切到 codex/test-lqi，不再使用额外LQI工作树。
 
 ## 本次烧录

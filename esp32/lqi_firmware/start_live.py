@@ -22,6 +22,11 @@ def pump(seconds):
   b=s.read(max(1,s.in_waiting))
   if b:raw.write(b);buf.extend(b)
   while buf:
+   if buf.startswith((b'LQI ',b'LQI_K ')):
+    nl=buf.find(b'\n')
+    if nl<0:break
+    line=bytes(buf[:nl]).decode(errors='replace').strip();del buf[:nl+1]
+    lines.append(line);log.write(line+'\n');print(line,flush=True);continue
    if buf.startswith(b'BCU3'):
     if len(buf)<224:break
     packet=bytes(buf[:224]);del buf[:224]
