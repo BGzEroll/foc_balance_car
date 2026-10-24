@@ -2238,7 +2238,7 @@ namespace foc
                 return false;
             }
 
-            // 计算电角度对应的 cogging 补偿
+            // 根据单圈机械角查表，补偿 q 轴目标电流
             const float position =
                 encoder.single_turn_rad * (COGGING_TABLE_SIZE / TWO_PI);
             const uint32_t point =
