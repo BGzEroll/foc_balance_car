@@ -93,7 +93,7 @@ try:
   slots=FIELDS2[-10:-2];scales=[last[k] for k in slots]
   while max(abs(a-b) for a,b in zip(scales,target))>2e-6:
    step=[round(a+max(-.04,min(.04,b-a)),6) for a,b in zip(scales,target)]
-   assert 'accepted=1' in command('LQISET '+' '.join(format(v,'.6g') for v in step))
+   assert 'accepted=1' in command('LQISET '+' '.join(format(v,'.6f') for v in step))
    deadline=time.monotonic()+1
    while time.monotonic()<deadline:
     pump(.03)
@@ -102,6 +102,17 @@ try:
    scales=[last[k] for k in slots]
   meta['reloaded_lqi_scales']=scales
   print('SAVED_LQI_RELOADED '+str(scales),flush=True)
+  ff=selected.get('friction_ff_N',0.0)
+  assert 0<=ff<=.35
+  if ff:
+   line=command('LQI');match=re.search(r'friction_ff_N=([^ ]+)',line);assert match,'Firmware lacks motion feedforward'
+   applied=float(match.group(1))
+   while abs(applied-ff)>2e-6:
+    step=round(applied+max(-.05,min(.05,ff-applied)),6)
+    line=command('LQIFF '+format(step,'.6f'));assert 'accepted=1' in line
+    applied=float(re.search(r'force_N=([^ ]+)',line).group(1))
+   line=command('LQI');assert abs(float(re.search(r'friction_ff_N=([^ ]+)',line).group(1))-ff)<2e-6
+   meta['reloaded_friction_ff_N']=applied;print('SAVED_MOTION_FF_RELOADED '+str(applied),flush=True)
   notch=selected.get('common_notch_mix',0.0)
   assert 0<=notch<=1
   if notch:

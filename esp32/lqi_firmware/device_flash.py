@@ -7,7 +7,7 @@ import argparse
 from serial.tools import list_ports
 import serial,esptool
 from telemetry import WIRE2,FIELDS2
-parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--port');args=parser.parse_args()
+parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--port');parser.add_argument('--skip-backup',action='store_true');args=parser.parse_args()
 ports=[p.device for p in list_ports.comports() if p.serial_number=='5A33014245']
 PORT=args.port or (ports[0] if len(ports)==1 else None)
 assert PORT,'USB/IP device 5A33014245 is not attached to develop'
@@ -44,9 +44,13 @@ for i in range(0,3072,32):
 assert entries['factory']==(0x10000,0x180000) and entries['otadata']==(0x190000,0x2000)
 assert entries['nvs']==(0x9000,0x6000)
 assert table[:(FW/'partition_table/partition-table.bin').stat().st_size]==(FW/'partition_table/partition-table.bin').read_bytes(),'Partition table differs; preserve device and abort'
-for name,offset,size in [('factory.bin','0x10000','0x180000'),('bootloader.bin','0x0','0x8000'),('otadata.bin','0x190000','0x2000')]:
- command(base+['read-flash',offset,size,str(backup/name)])
-print('BACKUP_OK factory, bootloader, partition, OTA selection; NVS retained',flush=True)
+if not args.skip_backup:
+ for name,offset,size in [('factory.bin','0x10000','0x180000'),('bootloader.bin','0x0','0x8000'),('otadata.bin','0x190000','0x2000')]:
+  command(base+['read-flash',offset,size,str(backup/name)])
+ print('BACKUP_OK factory, bootloader, partition, OTA selection; NVS retained',flush=True)
+else:
+ assert any((p/'factory.bin').exists() for p in (H/'firmware').glob('backup_*')),'No earlier factory backup exists'
+ print('REUSING_PRIOR_BACKUP partition check and write/readback verification retained',flush=True)
 image=FW/'balance_car.bin';assert image.stat().st_size<entries['factory'][1]
 command(base+['write-flash','--flash-mode','dio','--flash-size','8MB','--flash-freq','80m','0x10000',str(image)])
 command(base+['read-flash','0x10000',hex(image.stat().st_size),str(OUT/'readback_lqi.bin')])

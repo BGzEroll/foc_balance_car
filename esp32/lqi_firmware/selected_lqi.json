@@ -2,34 +2,34 @@
   "schema": "online_lqi_selection_v1",
   "base_design_sha256": "50659c3c9ee783bec1e8c2cf337aaae11e0ce3a2d7e7159eda2b5297846508bf",
   "scale": [
-    0.81899,
+    0.655192,
     0.864511,
     0.921312,
     0.747325,
     1.0,
     1.0,
-    0.686495,
+    0.514871,
     1.0
   ],
   "Kaug": [
     [
-      -22.091995277622882,
+      -17.673596222098304,
       -13.653377108118727,
       -20.33828506109879,
       -1.376993921388891,
       1.9142802216884578e-14,
       -5.561333861422848e-18,
-      -9.40301954013206,
+      -7.052261230813531,
       4.3411791271636314e-13
     ],
     [
-      -2.0571867468443032e-13,
+      -1.6457493974754426e-13,
       1.9336970398527202e-14,
       4.3368011692637675e-15,
       1.1944399001486898e-15,
       3.115963064877302,
       0.6947101949965655,
-      -7.045878747047799e-14,
+      -5.2844064943972605e-14,
       2.491671498228273
     ]
   ],
@@ -144,5 +144,105 @@
     "mix_0_6": "Rejected: 90s confirmation band-rate RMS +16.6%, current +45.4%",
     "evidence": "results/jitter_refine/notch_full and results/jitter_refine/notch_60pct",
     "scope": "Previous 18% pitch-rate gain reduction retained; residual jitter remains. No velocity-tracking validation."
+  },
+  "settling_selection": {
+    "prior_scale": [
+      0.81899,
+      0.864511,
+      0.921312,
+      0.747325,
+      1.0,
+      1.0,
+      0.686495,
+      1.0
+    ],
+    "position_factor": 0.8,
+    "position_integral_factor": 0.75,
+    "reference": {
+      "band_rate_rms": 0.056095655857751135,
+      "band_common_current_rms": 0.1879066520514669,
+      "current_rms": 0.16051378702894037,
+      "speed_rms": 0.015613516209976662,
+      "pitch_rms_deg": 1.0503193751644078,
+      "pitch_ac_std_deg": 0.5682592088969503,
+      "rate_rms": 0.16523045914310341,
+      "burst_fraction": 0.0
+    },
+    "confirmation": {
+      "label": "B_validation",
+      "samples": 24003,
+      "scale": [
+        0.655192,
+        0.864511,
+        0.921312,
+        0.747325,
+        1.0,
+        1.0,
+        0.514871,
+        1.0
+      ],
+      "notch_mix": 0.0,
+      "revision": 1348836457,
+      "band_rate_rms": 0.010310448779491072,
+      "band_common_current_rms": 0.01561236909732814,
+      "burst_fraction": 0.0,
+      "rate_rms": 0.10677643396453777,
+      "pitch_rms_deg": 0.5637716618844,
+      "pitch_mean_deg": 0.4937919164022542,
+      "pitch_ac_std_deg": 0.27204416928081243,
+      "pitch_peak_deg": 1.3403617455199772,
+      "current_peak_A": 0.49586164951324463,
+      "distance_peak_m": 0.0017074269708245993,
+      "speed_rms": 0.006550705616843413,
+      "current_rms": 0.11536926383178234,
+      "saturation_fraction": 0.0,
+      "faults": 0.0
+    },
+    "comparison": {
+      "reference": {
+        "band_rate_rms": 0.056095655857751135,
+        "band_common_current_rms": 0.1879066520514669,
+        "current_rms": 0.16051378702894037,
+        "speed_rms": 0.015613516209976662,
+        "pitch_rms_deg": 1.0503193751644078,
+        "pitch_ac_std_deg": 0.5682592088969503,
+        "rate_rms": 0.16523045914310341,
+        "burst_fraction": 0.0
+      },
+      "score": 0.1155359532568553,
+      "eligible": true,
+      "candidate": {
+        "label": "B_validation",
+        "samples": 24003,
+        "scale": [
+          0.655192,
+          0.864511,
+          0.921312,
+          0.747325,
+          1.0,
+          1.0,
+          0.514871,
+          1.0
+        ],
+        "notch_mix": 0.0,
+        "revision": 1348836457,
+        "band_rate_rms": 0.010310448779491072,
+        "band_common_current_rms": 0.01561236909732814,
+        "burst_fraction": 0.0,
+        "rate_rms": 0.10677643396453777,
+        "pitch_rms_deg": 0.5637716618844,
+        "pitch_mean_deg": 0.4937919164022542,
+        "pitch_ac_std_deg": 0.27204416928081243,
+        "pitch_peak_deg": 1.3403617455199772,
+        "current_peak_A": 0.49586164951324463,
+        "distance_peak_m": 0.0017074269708245993,
+        "speed_rms": 0.006550705616843413,
+        "current_rms": 0.11536926383178234,
+        "saturation_fraction": 0.0,
+        "faults": 0.0
+      }
+    },
+    "source": "results/settling/confirmed/report.json",
+    "scope": "120s natural balance confirmation after bracketing A/B trials. No standardized push settling-time or commanded motion validation. Current-growth rejection temporarily disabled by user; 6A protection retained."
   }
 }

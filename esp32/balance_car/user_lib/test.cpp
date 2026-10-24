@@ -3,6 +3,8 @@
 
 #include "balance.h"
 #include "lqi_config.h"
+#include "motion_test.h"
+#include "motion_integral.h"
 #include "wifi_debug.h"
 #include "hw/motor.h"
 #include "hw/sensor.h"
@@ -67,6 +69,9 @@ namespace test
         uint32_t requested = 0;
         uint32_t active = 0;
         uint32_t cancel = 0;
+        uint32_t dynamic_request=0;
+        motion_test::state dynamic_status{};
+        float dynamic_integral_limit=0;
         uint32_t ended = 0;
         uint32_t count = 0;
         uint32_t result = 0;
@@ -120,8 +125,8 @@ namespace test
             portENTER_CRITICAL(&request_lock);
             g=tuning;revision=parameter_revision;
             portEXIT_CRITICAL(&request_lock);
-            respond("LQI schema=lqi_current_v1 revision=%lu design=%s Ts_us=5000 max_current_A=6 telemetry=BCU3 trim=%.9g notch_Hz=12.5 notch_mix=%.6g\n",
-                (unsigned long)revision,lqi_config::DESIGN_SHA256,lqi_config::HARDWARE_TRIM_RAD,g.common_notch_mix);
+            respond("LQI schema=lqi_current_v1 revision=%lu design=%s Ts_us=5000 max_current_A=6 telemetry=BCU3 trim=%.9g notch_Hz=12.5 notch_mix=%.6g friction_ff_N=%.6f\n",
+                (unsigned long)revision,lqi_config::DESIGN_SHA256,lqi_config::HARDWARE_TRIM_RAD,g.common_notch_mix,g.friction_ff_N);
             for(unsigned r=0;r<2;++r)
                 respond("LQI_K row=%u %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",r,
                     lqi_config::K[r][0]*g.lqi_scale[0],lqi_config::K[r][1]*g.lqi_scale[1],
@@ -215,6 +220,8 @@ namespace test
             TickType_t wake = xTaskGetTickCount();
             run current{};
             balance::state controller{};
+            motion_test::state dynamic{};
+            motion_integral::state dynamic_integral{};
             uint64_t began_us = 0;
             uint64_t previous_us = 0;
             float yaw_zero = 0.0f;
@@ -272,6 +279,11 @@ namespace test
                     portEXIT_CRITICAL(&request_lock);
                     controller = balance::state{};
                     began_us = now;
+                    dynamic=motion_test::state{};
+                    __atomic_store_n(&dynamic_request,0U,__ATOMIC_RELEASE);
+                    portENTER_CRITICAL(&request_lock);
+                    dynamic_status=dynamic;
+                    portEXIT_CRITICAL(&request_lock);
                     previous_us = now;
                     const float stopped_speed[2] = {};
                     yaw_zero = balance::observe(sensors.imu.angle, sensors.imu.gyro, stopped_speed).yaw_rad;
@@ -370,8 +382,31 @@ namespace test
                 measured.yaw_rad -= yaw_zero;
                 balance::limits limit{};
                 limit.current_A = fabsf(current.current_A);
+                const uint32_t dynamic_action=__atomic_exchange_n(&dynamic_request,0U,__ATOMIC_ACQ_REL);
+                if(dynamic_action==1)
+                {
+                    dynamic.start(now,controller.distance_m);
+                    controller.velocity_integral=dynamic_integral.begin(controller.velocity_integral,dynamic.origin,
+                        lqi_config::K[0][0]*current.tuning.lqi_scale[0],lqi_config::K[0][6]*current.tuning.lqi_scale[6]);
+                }
+                else if(dynamic_action==2)
+                {controller.velocity_integral=dynamic_integral.end(controller.velocity_integral);dynamic=motion_test::state{};}
+                dynamic.advance(now,controller.distance_m);
+                float integral_limit=0;
+                portENTER_CRITICAL(&request_lock);
+                dynamic_status=dynamic;
+                integral_limit=dynamic_integral_limit;
+                portEXIT_CRITICAL(&request_lock);
+                if(dynamic.hard_stop)
+                {
+                    result=9;motor::stop();continue;
+                }
+                balance::reference target{};
+                if(dynamic.armed){target.position_m=dynamic.position;target.speed_m_s=dynamic.speed;}
+                if(dynamic.armed)controller.velocity_integral=dynamic_integral.update(controller.velocity_integral,
+                    (now-dynamic.began_us)*1e-6,integral_limit);
                 balance::output output = balance::update(
-                    measured, balance::reference{}, limit, controller, current.tuning);
+                    measured, target, limit, controller, current.tuning);
 
                 if(current.type == mode::PROBE)
                 {
@@ -385,7 +420,7 @@ namespace test
 
                 for(uint32_t i = 0; i < 2; ++i)
                 {
-                    if(!isfinite(output.current_A[i]))
+                    if(!std::isfinite(output.current_A[i]))
                     {
                         accepted = false;
                     }
@@ -568,10 +603,56 @@ namespace test
                 else dump();
             }
             else if(strcmp(line,"LQI")==0 || strcmp(line,"GAINS")==0) report_gains();
+            else if(strncmp(line,"LQIFF ",6)==0)
+            {
+                float force=0;char extra;
+                if(sscanf(line+6,"%f %c",&force,&extra)!=1 || !std::isfinite(force) || force<0 || force>.4f)
+                {respond("REJECT LQIFF requires force_N 0..0.4\n");return;}
+                uint32_t revision=0;
+                portENTER_CRITICAL(&request_lock);
+                if(fabsf(force-tuning.friction_ff_N)<=.0501f)
+                {tuning.friction_ff_N=force;revision=++parameter_revision;}
+                portEXIT_CRITICAL(&request_lock);
+                if(revision)respond("LQIFF accepted=1 force_N=%.6f revision=%lu\n",force,(unsigned long)revision);
+                else respond("REJECT LQIFF step<=.05N\n");
+            }
+            else if(strcmp(line,"DYNSTAT")==0)
+            {
+                motion_test::state d;
+                portENTER_CRITICAL(&request_lock);d=dynamic_status;portEXIT_CRITICAL(&request_lock);
+                float integral_limit;
+                portENTER_CRITICAL(&request_lock);integral_limit=dynamic_integral_limit;portEXIT_CRITICAL(&request_lock);
+                respond("DYNSTAT armed=%u aborted=%u hard_stop=%u began_us=%llu phase=%u origin=%.6f position=%.6f speed=%.6f peak=%.6f integral_limit=%.6f\n",
+                    d.armed,d.aborted,d.hard_stop,(unsigned long long)d.began_us,d.phase,d.origin,d.position,d.speed,d.peak,integral_limit);
+            }
+            else if(strncmp(line,"DYNINT ",7)==0)
+            {
+                float limit=0;char extra;
+                if(sscanf(line+7,"%f %c",&limit,&extra)!=1 || !std::isfinite(limit) || limit<0 || limit>.12f)
+                {respond("REJECT DYNINT requires 0..0.12 m*s\n");return;}
+                portENTER_CRITICAL(&request_lock);dynamic_integral_limit=limit;portEXIT_CRITICAL(&request_lock);
+                respond("DYNINT accepted=1 limit=%.6f\n",limit);
+            }
+            else if(strcmp(line,"DYNTEST")==0)
+            {
+                motion_test::state d;
+                portENTER_CRITICAL(&request_lock);d=dynamic_status;portEXIT_CRITICAL(&request_lock);
+                const bool accepted=__atomic_load_n(&active,__ATOMIC_ACQUIRE)==2 && !d.armed;
+                if(accepted)__atomic_store_n(&dynamic_request,1U,__ATOMIC_RELEASE);
+                respond("DYNTEST accepted=%u excursion_m=.05 duration_s=48 soft_return_m=.10 hard_stop_m=.15\n",accepted);
+            }
+            else if(strcmp(line,"DYNEND")==0)
+            {
+                motion_test::state d;
+                portENTER_CRITICAL(&request_lock);d=dynamic_status;portEXIT_CRITICAL(&request_lock);
+                const bool accepted=d.armed && d.phase>=4;
+                if(accepted)__atomic_store_n(&dynamic_request,2U,__ATOMIC_RELEASE);
+                respond("DYNEND accepted=%u\n",accepted);
+            }
             else if(strncmp(line,"LQINOTCH ",9)==0)
             {
                 float mix=0;char extra;
-                if(sscanf(line+9,"%f %c",&mix,&extra)!=1 || !isfinite(mix) || mix<0 || mix>1)
+                if(sscanf(line+9,"%f %c",&mix,&extra)!=1 || !std::isfinite(mix) || mix<0 || mix>1)
                 {respond("REJECT LQINOTCH requires mix 0..1\n");return;}
                 uint32_t revision=0;
                 portENTER_CRITICAL(&request_lock);
@@ -590,7 +671,7 @@ namespace test
                 {respond("REJECT LQISET requires eight scales\n");return;}
                 bool valid=true;
                 for(unsigned i=0;i<8;++i)
-                    valid=valid&&isfinite(values[i])&&values[i]>=0.5f&&values[i]<=1.5f;
+                    valid=valid&&std::isfinite(values[i])&&values[i]>=0.5f&&values[i]<=1.5f;
                 uint32_t revision=0;
                 portENTER_CRITICAL(&request_lock);
                 for(unsigned i=0;i<8;++i)
@@ -647,7 +728,7 @@ namespace test
 
                 if(next.type == mode::IDLE || (duration == 0 && next.type != mode::BALANCE) ||
                    (duration != 0 && duration < 50) || duration > 10000 ||
-                   !isfinite(cap) || fabsf(cap) > MAX_CURRENT_A || fabsf(cap) < 0.001f)
+                   !std::isfinite(cap) || fabsf(cap) > MAX_CURRENT_A || fabsf(cap) < 0.001f)
                 {
                     respond("REJECT command\n");
                     return;

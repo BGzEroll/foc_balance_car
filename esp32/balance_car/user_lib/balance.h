@@ -34,6 +34,7 @@ namespace balance
         // Multipliers of the eight columns of the MATLAB LQI matrix.
         float lqi_scale[8] = {1,1,1,1,1,1,1,1};
         float common_notch_mix = 0.0f;
+        float friction_ff_N = 0.0f; // Only active for a nonzero motion speed reference.
         float velocity_kp = 1.4f;
         float velocity_ki = 1.2f;
         float pitch_kd = 1.878010521f; // A*s/rad, total common effort

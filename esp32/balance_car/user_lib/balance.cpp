@@ -72,14 +72,19 @@ namespace balance
                 (controller.previous_speed_m_s + measured.speed_m_s) * 0.5f;
         controller.first_sample=false;controller.previous_speed_m_s=measured.speed_m_s;
         const float yaw=measured.yaw_rad-target.yaw_rad;
+        // Matched steady-motion references: drive force and body reaction torque.
+        const float ff_force=fmaxf(0.0f,fminf(.4f,tuning.friction_ff_N))*tanhf(target.speed_m_s/.003f);
+        const float ff_common=2.75092903575523f*ff_force;
+        const float ff_pitch=asinf(fmaxf(-.2f,fminf(.2f,.11901611068648812f*ff_common)));
         const float error[8]={controller.distance_m-target.position_m,
-            measured.speed_m_s-target.speed_m_s,measured.pitch_rad-lqi_config::HARDWARE_TRIM_RAD,
+            measured.speed_m_s-target.speed_m_s,measured.pitch_rad-lqi_config::HARDWARE_TRIM_RAD-ff_pitch,
             measured.pitch_rate_rad_s,atan2f(sinf(yaw),cosf(yaw)),
             measured.yaw_rate_rad_s-target.yaw_rate_rad_s,controller.velocity_integral,controller.yaw_integral};
         float effort[2]={};
         for(unsigned row=0;row<2;++row)
             for(unsigned column=0;column<8;++column)
                 effort[row]-=lqi_config::K[row][column]*tuning.lqi_scale[column]*error[column];
+        effort[0]+=ff_common;
         // Always warm the filter so online blend changes do not reset its history.
         const float filtered=controller.notch.update(effort[0]);
         const float mix=fmaxf(0.0f,fminf(1.0f,tuning.common_notch_mix));
@@ -88,7 +93,7 @@ namespace balance
         const float cap=fminf(6.0f,fabsf(limit.current_A));
         output out{};out.saturated=fmaxf(fabsf(current[0]),fabsf(current[1]))>cap;
         out.current_A[0]=clamp(current[0],cap);out.current_A[1]=clamp(current[1],cap);
-        out.target_speed_m_s=target.speed_m_s;out.target_pitch_rad=lqi_config::HARDWARE_TRIM_RAD;
+        out.target_speed_m_s=target.speed_m_s;out.target_pitch_rad=lqi_config::HARDWARE_TRIM_RAD+ff_pitch;
         if(!out.saturated)
         {
             controller.velocity_integral=clamp(controller.velocity_integral+lqi_config::PERIOD_S*error[0],lqi_config::POSITION_INTEGRAL_LIMIT);
