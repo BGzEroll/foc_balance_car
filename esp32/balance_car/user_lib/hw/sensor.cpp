@@ -293,7 +293,7 @@ namespace as5600
 
         constexpr float TWO_PI = 6.28318530717958647692f;
         constexpr float COUNT_TO_RAD = TWO_PI / static_cast<float>(RESOLUTION);
-        constexpr float SPEED_FILTER_S = 0.003f;        // 速度低通时间常数：3 ms
+        constexpr float OBSERVER_TAU_S = 0.004f;
 
         struct state
         {
@@ -307,6 +307,7 @@ namespace as5600
 
             int32_t turns = 0;
             float speed_rad_s = 0.0f;
+            float observer_error_rad = 0.0f;
         };
 
         state left;
@@ -361,9 +362,18 @@ namespace as5600
                     const float dt = static_cast<float>(dt_us) * 1.0e-6f;
                     const float delta_rad = static_cast<float>(delta) * COUNT_TO_RAD;
 
-                    encoder.speed_rad_s =
-                        (encoder.speed_rad_s * SPEED_FILTER_S + delta_rad) /
-                        (SPEED_FILTER_S + dt);
+                    const float pole = OBSERVER_TAU_S /
+                   (OBSERVER_TAU_S + 2.0f * dt);
+
+                    const float beta = (1.0f - pole) * (1.0f - pole);
+
+                    const float prediction =
+                        encoder.observer_error_rad + dt * encoder.speed_rad_s;
+
+                    const float residual = delta_rad - prediction;
+
+                    encoder.observer_error_rad = -pole * pole * residual;
+                    encoder.speed_rad_s += beta / dt * residual;
                 }
 
                 encoder.last_raw = raw;
