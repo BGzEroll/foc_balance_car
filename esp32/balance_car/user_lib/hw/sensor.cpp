@@ -363,7 +363,7 @@ namespace as5600
                     const float delta_rad = static_cast<float>(delta) * COUNT_TO_RAD;
 
                     const float pole = OBSERVER_TAU_S /
-                   (OBSERVER_TAU_S + 2.0f * dt);
+                        (OBSERVER_TAU_S + 2.0f * dt);
 
                     const float beta = (1.0f - pole) * (1.0f - pole);
 
