@@ -145,8 +145,9 @@ namespace test
             t.encoder_age_us=now-(s.left_encoder.timestamp_us<s.right_encoder.timestamp_us?s.left_encoder.timestamp_us:s.right_encoder.timestamp_us);
             t.current_age_a_us=now-m.current[0].timestamp_us;t.current_age_b_us=now-m.current[1].timestamp_us;
             t.raw_a=s.left_encoder.speed_rad_s;t.raw_b=s.right_encoder.speed_rad_s;
-            const float forward[]={FORWARD_SIGN[0]*m.current[0].encoder_direction*t.raw_a,
-                                   FORWARD_SIGN[1]*m.current[1].encoder_direction*t.raw_b};
+            const bool encoder_ab=sensor::encoder_observer_us()!=0;
+            const float forward[]={FORWARD_SIGN[0]*m.current[0].encoder_direction*(encoder_ab?s.left_encoder.observer_speed_rad_s:t.raw_a),
+                                   FORWARD_SIGN[1]*m.current[1].encoder_direction*(encoder_ab?s.right_encoder.observer_speed_rad_s:t.raw_b)};
             const auto observed=balance::observe(s.imu.angle,s.imu.gyro,forward);
             t.pitch=observed.pitch_rad;t.roll=s.imu.angle[1];t.pitch_rate=observed.pitch_rate_rad_s;
             t.yaw=observed.yaw_rad-yaw_reference;t.yaw_rate=observed.yaw_rate_rad_s;t.speed=observed.speed_m_s;
@@ -370,12 +371,13 @@ namespace test
                 portEXIT_CRITICAL(&request_lock);
                 const uint64_t calculate_began_us = esp_timer_get_time();
                 const float roll = sensors.imu.angle[1];
+                const bool encoder_ab=sensor::encoder_observer_us()!=0;
                 const float forward_speed[2] =
                 {
                     FORWARD_SIGN[0] * foc.current[0].encoder_direction *
-                        sensors.left_encoder.speed_rad_s,
+                        (encoder_ab?sensors.left_encoder.observer_speed_rad_s:sensors.left_encoder.speed_rad_s),
                     FORWARD_SIGN[1] * foc.current[1].encoder_direction *
-                        sensors.right_encoder.speed_rad_s
+                        (encoder_ab?sensors.right_encoder.observer_speed_rad_s:sensors.right_encoder.speed_rad_s)
                 };
                 balance::observation measured = balance::observe(
                     sensors.imu.angle, sensors.imu.gyro, forward_speed);
@@ -575,6 +577,39 @@ namespace test
             else if(strcmp(line, "STATUS") == 0)
             {
                 status();
+            }
+            else if(!strcmp(line,"ENCCAP"))
+            {
+                respond("ENCCAP accepted=%u\n",sensor::begin_encoder_capture());
+            }
+            else if(!strcmp(line,"ENCDUMP"))
+            {
+                sensor::encoder_capture_header header{};
+                const auto *records=sensor::get_encoder_capture(header);
+                if(!records){respond("ENCDUMP ready=0 count=%lu\n",(unsigned long)header.count);return;}
+                static_assert(sizeof(sensor::encoder_record)==16);
+                uint32_t crc=esp_rom_crc32_le(0,reinterpret_cast<const uint8_t*>(&header),sizeof(header));
+                xSemaphoreTake(uart_tx_lock,portMAX_DELAY);
+                uart_write_bytes(UART_NUM_0,&header,sizeof(header));
+                for(uint32_t i=0;i<header.count;i+=256){
+                    const uint32_t bytes=(header.count-i<256?header.count-i:256)*sizeof(*records);
+                    crc=esp_rom_crc32_le(crc,reinterpret_cast<const uint8_t*>(records+i),bytes);
+                    uart_write_bytes(UART_NUM_0,records+i,bytes);
+                }
+                uart_write_bytes(UART_NUM_0,&crc,sizeof(crc));
+                xSemaphoreGive(uart_tx_lock);
+                respond("ENCDUMP ready=1 count=%lu\n",(unsigned long)header.count);
+            }
+            else if(!strcmp(line,"ENCAB"))
+            {
+                respond("ENCAB selected_us=%lu\n",(unsigned long)sensor::encoder_observer_us());
+            }
+            else if(!strncmp(line,"ENCAB ",6))
+            {
+                unsigned us=0;char extra;
+                if(sscanf(line+6,"%u %c",&us,&extra)!=1 || (us!=0&&(us<1000||us>10000)))
+                {respond("REJECT ENCAB requires 0 (LPF) or 1000..10000 us\n");return;}
+                sensor::set_encoder_observer(us);respond("ENCAB selected_us=%u\n",us);
             }
             else if(!strcmp(line,"UARTSTREAM 200") || !strcmp(line,"UARTSTREAM 0"))
             {

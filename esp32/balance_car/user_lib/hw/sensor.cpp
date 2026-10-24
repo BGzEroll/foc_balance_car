@@ -7,6 +7,20 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+namespace {
+    sensor::encoder_record encoder_records[2048];
+    uint32_t encoder_record_count=2048, encoder_ab_us=0;
+    uint64_t encoder_first_us=0;
+    uint32_t capture_tau_us=3000,capture_enabled=0;
+    void capture_encoder(uint32_t motor,uint64_t now,uint16_t raw,int16_t delta,float lpf,float ab) {
+        const uint32_t n=__atomic_load_n(&encoder_record_count,__ATOMIC_RELAXED);
+        if(n>=2048)return;
+        if(n==0){encoder_first_us=now;capture_enabled=__atomic_load_n(&encoder_ab_us,__ATOMIC_RELAXED);capture_tau_us=capture_enabled?capture_enabled:3000;}
+        encoder_records[n]={static_cast<uint32_t>(now),static_cast<uint16_t>(raw|(motor<<12)),delta,lpf,ab};
+        __atomic_store_n(&encoder_record_count,n+1,__ATOMIC_RELEASE);
+    }
+}
+
 namespace i2c
 {
     constexpr uint32_t LEFT_DONE = (1U << 0);
@@ -307,6 +321,8 @@ namespace as5600
 
             int32_t turns = 0;
             float speed_rad_s = 0.0f;
+            float observer_error_rad = 0.0f;
+            float observer_speed_rad_s = 0.0f;
         };
 
         state left;
@@ -320,8 +336,9 @@ namespace as5600
          *
          * @return 编码器数据
          */
-        sensor::encoder_data process(state &encoder, uint64_t now_us)
+        sensor::encoder_data process(state &encoder, uint64_t now_us,uint32_t motor)
         {
+            int32_t delta=0;
             const uint16_t raw =
                 static_cast<uint16_t>(
                     ((static_cast<uint16_t>(encoder.raw[0]) & 0x0F) << 8) |
@@ -339,7 +356,7 @@ namespace as5600
             }
             else
             {
-                int32_t delta =
+                delta =
                     static_cast<int32_t>(raw) -
                     static_cast<int32_t>(encoder.last_raw);
 
@@ -364,6 +381,14 @@ namespace as5600
                     encoder.speed_rad_s =
                         (encoder.speed_rad_s * SPEED_FILTER_S + delta_rad) /
                         (SPEED_FILTER_S + dt);
+                    const uint32_t selected=__atomic_load_n(&encoder_ab_us,__ATOMIC_RELAXED);
+                    const float tau=(selected?selected:3000)*1e-6f;
+                    const float pole=tau/(tau+2.0f*dt);
+                    const float beta=(1.0f-pole)*(1.0f-pole);
+                    const float prediction=encoder.observer_error_rad+dt*encoder.observer_speed_rad_s;
+                    const float residual=delta_rad-prediction;
+                    encoder.observer_error_rad=-pole*pole*residual;
+                    encoder.observer_speed_rad_s+=beta/dt*residual;
                 }
 
                 encoder.last_raw = raw;
@@ -376,6 +401,8 @@ namespace as5600
             data.angle_rad = static_cast<float>(encoder.turns) * TWO_PI +
                              data.single_turn_rad;
             data.speed_rad_s = encoder.speed_rad_s;
+            data.observer_speed_rad_s = encoder.observer_speed_rad_s;
+            capture_encoder(motor,now_us,raw,static_cast<int16_t>(delta),data.speed_rad_s,data.observer_speed_rad_s);
 
             return data;
         }
@@ -706,7 +733,7 @@ namespace sensor
         void handle_left_encoder()
         {
             i2c::left.pending = false;
-            publish_left(as5600::process(as5600::left, i2c::left.completion_time_us));
+            publish_left(as5600::process(as5600::left, i2c::left.completion_time_us,0));
             as5600::start_left_read();
         }
 
@@ -718,7 +745,7 @@ namespace sensor
             i2c::right.pending = false;
 
             const uint64_t now_us = i2c::right.completion_time_us;
-            publish_right(as5600::process(as5600::right, now_us));
+            publish_right(as5600::process(as5600::right, now_us,1));
 
             // 到达 IMU 采样时刻时，暂时切换到 MPU6050
             if(now_us >= next_imu_time_us)
@@ -878,4 +905,18 @@ namespace sensor
 
         return snapshot.imu.timestamp_us != 0;
     }
+
+    bool begin_encoder_capture() {
+        if(__atomic_load_n(&encoder_record_count,__ATOMIC_ACQUIRE)<2048)return false;
+        encoder_first_us=0;__atomic_store_n(&encoder_record_count,0U,__ATOMIC_RELEASE);return true;
+    }
+    const encoder_record *get_encoder_capture(encoder_capture_header &header) {
+        const uint32_t n=__atomic_load_n(&encoder_record_count,__ATOMIC_ACQUIRE);
+        header={0x31434e45U,n,0,0,0};
+        if(n<2048)return nullptr;
+        header={0x31434e45U,n,capture_tau_us,capture_enabled,encoder_first_us};
+        return n==2048&&encoder_first_us?encoder_records:nullptr;
+    }
+    void set_encoder_observer(uint32_t tau_us) {__atomic_store_n(&encoder_ab_us,tau_us,__ATOMIC_RELEASE);}
+    uint32_t encoder_observer_us(){return __atomic_load_n(&encoder_ab_us,__ATOMIC_ACQUIRE);}
 }

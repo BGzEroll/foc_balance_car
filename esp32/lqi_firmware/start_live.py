@@ -7,7 +7,7 @@ sys.path[:0]=[r'D:/code/Embedded-related/balance_car/esp32/wifi_debug/.tools',r'
 import serial
 from serial.tools import list_ports
 from telemetry import WIRE2,FIELDS2
-parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--port');parser.add_argument('--wait-ground',action='store_true',help='After calibration wait for GROUND on stdin before BALANCE');args=parser.parse_args()
+parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--port');parser.add_argument('--wait-cal',action='store_true');parser.add_argument('--wait-ground',action='store_true',help='After calibration wait for GROUND on stdin before BALANCE');args=parser.parse_args()
 ports=[p.device for p in list_ports.comports() if p.serial_number=='5A33014245']
 port=args.port or (ports[0] if len(ports)==1 else None)
 assert port,'Expected unique serial device 5A33014245; specify --port if necessary'
@@ -27,6 +27,17 @@ def pump(seconds):
   b=s.read(max(1,s.in_waiting))
   if b:raw.write(b);buf.extend(b)
   while buf:
+   if buf.startswith(b'ENC1'):
+    if len(buf)<24:break
+    magic,count,tau_us,enabled,first_us=struct.unpack_from('<4I Q',buf)
+    assert count==2048,('Unexpected encoder capture size',count)
+    size=24+count*16+4
+    if len(buf)<size:break
+    packet=bytes(buf[:size]);del buf[:size]
+    if zlib.crc32(packet[:-4])&0xffffffff!=struct.unpack_from('<I',packet,size-4)[0]:
+     crc_errors+=1;print('ENC_CAPTURE_CRC_ERROR',flush=True);continue
+    capture=folder/('encoder_'+str(first_us)+'.bin');capture.write_bytes(packet)
+    print('ENC_CAPTURE '+str(capture)+' tau_us='+str(tau_us)+' enabled='+str(enabled),flush=True);continue
    if buf.startswith((b'LQI ',b'LQI_K ')):
     nl=buf.find(b'\n')
     if nl<0:break
@@ -41,11 +52,11 @@ def pump(seconds):
     if previous_cycle is not None and cycle>previous_cycle:missing+=max(0,cycle-previous_cycle-1)
     previous_cycle=cycle
    else:
-    magic=buf.find(b'BCU3');nl=buf.find(b'\n')
+    positions=[v for v in [buf.find(b'BCU3'),buf.find(b'ENC1')] if v>=0];magic=min(positions) if positions else -1;nl=buf.find(b'\n')
     if nl>=0 and (magic<0 or nl<magic):
      line=bytes(buf[:nl]).decode(errors='replace').strip();del buf[:nl+1]
      lines.append(line);log.write(line+'\n')
-     if line.startswith(('STATUS ','LQI ','CAL ','RUN ','DONE ','FAULT ','REJECT')):print(line,flush=True)
+     if line.startswith(('STATUS ','LQI ','CAL ','RUN ','DONE ','FAULT ','REJECT','ENC')):print(line,flush=True)
     elif magic>0:del buf[:magic]
     elif len(buf)>8192:del buf[:-3]
     else:break
@@ -75,6 +86,16 @@ try:
   while int(st['imu_us'])==0:
    if time.monotonic()>deadline:raise TimeoutError('IMU startup bias calibration did not complete')
    pump(.25);st=status();assert st['fault']=='0',st
+  if args.wait_cal:
+   command('UARTSTREAM 200');print('WAITING_FOR_CAL motors off; encoder capture available; send CAL when wheels are free',flush=True)
+   waiting=True
+   while waiting:
+    pump(.05)
+    while not commands.empty():
+     text=commands.get()
+     if text=='QUIT':raise SystemExit
+     if text=='CAL':waiting=False;break
+     if text:command(text)
   assert 'accepted=1' in command('CAL'),'Calibration not accepted'
   deadline=time.monotonic()+20
   while time.monotonic()<deadline:
@@ -102,6 +123,8 @@ try:
    scales=[last[k] for k in slots]
   meta['reloaded_lqi_scales']=scales
   print('SAVED_LQI_RELOADED '+str(scales),flush=True)
+  encoder_us=selected['encoder_ab_us'];assert 'selected_us='+str(encoder_us) in command('ENCAB '+str(encoder_us))
+  meta['encoder_ab_us']=encoder_us
   ff=selected.get('friction_ff_N',0.0)
   assert 0<=ff<=.35
   if ff:

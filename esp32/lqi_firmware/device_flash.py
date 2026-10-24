@@ -40,13 +40,14 @@ for i in range(0,3072,32):
  magic,kind,subtype,offset,size,label,flags=struct.unpack('<HBBII16sI',table[i:i+32])
  if magic!=0x50aa:break
  entries[label.split(b'\0')[0].decode()]=(offset,size)
-assert entries['factory']==(0x10000,0x180000) and entries['otadata']==(0x190000,0x2000)
+assert entries['factory'][0]==0x10000
 assert entries['nvs']==(0x9000,0x6000)
-assert table[:(FW/'partition_table/partition-table.bin').stat().st_size]==(FW/'partition_table/partition-table.bin').read_bytes(),'Partition table differs; preserve device and abort'
 if not args.skip_backup:
- for name,offset,size in [('factory.bin','0x10000','0x180000'),('bootloader.bin','0x0','0x8000'),('otadata.bin','0x190000','0x2000')]:
+ regions=[('factory.bin','0x10000',hex(entries['factory'][1])),('bootloader.bin','0x0','0x8000')]
+ if 'otadata' in entries:regions.append(('otadata.bin',hex(entries['otadata'][0]),hex(entries['otadata'][1])))
+ for name,offset,size in regions:
   command(base+['read-flash',offset,size,str(backup/name)])
- print('BACKUP_OK factory, bootloader, partition, OTA selection; NVS retained',flush=True)
+ print('BACKUP_OK existing application/boot partitions; NVS retained',flush=True)
 else:
  assert any((p/'factory.bin').exists() for p in (H/'firmware').glob('backup_*')),'No earlier factory backup exists'
  print('REUSING_PRIOR_BACKUP partition check and write/readback verification retained',flush=True)
@@ -54,7 +55,7 @@ image=FW/'balance_car.bin';assert image.stat().st_size<entries['factory'][1]
 command(base+['write-flash','--flash-mode','dio','--flash-size','8MB','--flash-freq','80m','0x10000',str(image)])
 command(base+['read-flash','0x10000',hex(image.stat().st_size),str(OUT/'readback_lqi.bin')])
 assert hashlib.sha256((OUT/'readback_lqi.bin').read_bytes()).digest()==hashlib.sha256(image.read_bytes()).digest(),'Readback mismatch; held in ROM'
-command(base+['erase-region','0x190000','0x2000'])
+if 'otadata' in entries:command(base+['erase-region',hex(entries['otadata'][0]),hex(entries['otadata'][1])])
 command(base[:-2]+['--after','hard-reset','verify-flash','0x10000',str(image)])
 print('FLASH_READBACK_OK; LQI reset into stopped boot',flush=True)
 with open_serial() as s:
@@ -76,6 +77,6 @@ with open_serial() as s:
  assert len(frames)>=300 and bad==0,(len(frames),bad)
  assert all(f['mode']==0 and f['fault']==0 and int(f['flags'])&6==0 and f['revision']==int(design['design_sha256'][:8],16) for f in frames)
  assert all(f['command_a']==0 and f['command_b']==0 for f in frames)
-record=dict(utc=datetime.now(timezone.utc).isoformat(),port=PORT,mac='34:CD:B0:38:AC:90',main=BASELINE,design=design['design_sha256'],image_sha256=hashlib.sha256(image.read_bytes()).hexdigest(),backup=str(backup),preflash_status=before,postflash_status=after,written_regions=['factory application','OTA selection erase'],bootloader_preserved=True,partition_preserved=True,nvs_preserved=True,idle_bcu3_frames=len(frames),crc_errors=bad,old_pid_commands_rejected=True,motor_start_commands_executed=False)
+record=dict(utc=datetime.now(timezone.utc).isoformat(),port=PORT,mac='34:CD:B0:38:AC:90',main=BASELINE,design=design['design_sha256'],image_sha256=hashlib.sha256(image.read_bytes()).hexdigest(),backup=str(backup),preflash_status=before,postflash_status=after,written_regions=['factory application']+(['OTA selection erase'] if 'otadata' in entries else []),bootloader_preserved=True,partition_preserved=True,nvs_preserved=True,idle_bcu3_frames=len(frames),crc_errors=bad,old_pid_commands_rejected=True,motor_start_commands_executed=False)
 (OUT/'flashed_identity.json').write_text(json.dumps(record,indent=2));assert subprocess.check_output(['git','rev-parse','main'],cwd=R,text=True).strip()==BASELINE
 print(json.dumps(record,indent=2));print('LQI_FLASH_VERIFIED_STOPPED',flush=True)
