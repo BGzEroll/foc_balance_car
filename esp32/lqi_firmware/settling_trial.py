@@ -70,7 +70,7 @@ def ramp(target,guard=True):
  target=[round(v,6) for v in target]
  while max(abs(a-b) for a,b in zip(current,target))>1e-6:
   new=[round(a+max(-.04,min(.04,b-a)),6) for a,b in zip(current,target)]
-  command='LQISET '+' '.join(format(v,'.6g') for v in new);assert len(command)<96
+  command='LQISET '+' '.join(format(v,'.6f') for v in new);assert len(command)<96
   fd=os.open('/dev/ttyACM0',os.O_RDWR|os.O_NOCTTY|os.O_NONBLOCK)
   try:os.write(fd,(command+'\n').encode())
   finally:os.close(fd)
