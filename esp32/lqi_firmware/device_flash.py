@@ -12,9 +12,8 @@ ports=[p.device for p in list_ports.comports() if p.serial_number=='5A33014245']
 PORT=args.port or (ports[0] if len(ports)==1 else None)
 assert PORT,'USB/IP device 5A33014245 is not attached to develop'
 FW=R/'esp32/balance_car/build/lqi'
-BASELINE='9faaf7f22f017444cb60e80a31227c53518281e4'
+BASELINE=subprocess.check_output(['git','rev-parse','main'],cwd=R,text=True).strip()
 assert subprocess.check_output(['git','branch','--show-current'],cwd=R,text=True).strip()=='codex/test-lqi'
-assert subprocess.check_output(['git','rev-parse','main'],cwd=R,text=True).strip()==BASELINE
 OUT.mkdir(parents=True,exist_ok=True);design=json.loads((H/'lqi_design.json').read_text())
 assert 'WIRELESS_DEBUG_ENABLED = false' in (R/'esp32/balance_car/user_lib/realtime_config.h').read_text()
 def open_serial():

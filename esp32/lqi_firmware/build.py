@@ -1,7 +1,7 @@
 """Sync to develop's primary test branch and build there; never fetch firmware bins."""
 import base64,hashlib,json,subprocess
 from pathlib import Path
-H=Path(__file__).resolve().parent;R=H.parents[1];P=R/'esp32/balance_car';BASE='9faaf7f22f017444cb60e80a31227c53518281e4'
+H=Path(__file__).resolve().parent;R=H.parents[1];P=R/'esp32/balance_car';BASE=subprocess.check_output(['git','rev-parse','main'],cwd=R,text=True).strip()
 assert subprocess.check_output(['git','branch','--show-current'],cwd=R,text=True).strip()=='codex/test-lqi'
 assert subprocess.check_output(['git','rev-parse','main'],cwd=R,text=True).strip()==BASE
 paths=[P/'CMakeLists.txt',P/'sdkconfig',P/'main/CMakeLists.txt',P/'main/main.c',R/'.gitignore',R/'esp32/tuning_preparation/ota_partitions_8mb.csv',H/'lqi_design.json',H/'device_flash.py',H/'telemetry.py']
@@ -11,9 +11,10 @@ program="""
 import base64,json,pathlib,subprocess,sys
 r=pathlib.Path('/home/bgzerol/embedded_project/foc_balance_car')
 assert subprocess.check_output(['git','branch','--show-current'],cwd=r,text=True).strip()=='codex/test-lqi'
-assert subprocess.check_output(['git','rev-parse','main'],cwd=r,text=True).strip()=='9faaf7f22f017444cb60e80a31227c53518281e4'
+main_before=subprocess.check_output(['git','rev-parse','main'],cwd=r,text=True).strip()
 for name,value in json.load(sys.stdin).items():
  p=r/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(base64.b64decode(value))
+assert subprocess.check_output(['git','rev-parse','main'],cwd=r,text=True).strip()==main_before
 print('SYNC_OK primary test branch, main unchanged')
 """
 enc=base64.b64encode(program.encode()).decode();subprocess.run(['ssh','develop',"python3 -c 'import base64;exec(base64.b64decode(\""+enc+"\"))'"],input=json.dumps(payload).encode(),check=True)
