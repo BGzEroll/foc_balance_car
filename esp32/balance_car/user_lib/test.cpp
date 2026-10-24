@@ -24,7 +24,7 @@ namespace test
         constexpr float TARGET_SPEED_RAD_S = 10.0f;
         constexpr float SPEED_KP = 0.2f;
         constexpr float SPEED_KI = 0.4f;
-        constexpr float CURRENT_LIMIT_A = 0.7f;
+        constexpr float CURRENT_LIMIT_A = 2.0f;
 
         /**
          * @brief 按 v18 的斜坡、编码器门控和速度 PI 执行定速测试
