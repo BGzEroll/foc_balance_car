@@ -1717,14 +1717,6 @@ namespace motor
                         break;
                     }
 
-                    if(fabsf(encoder.speed_rad_s) > 40.0f)
-                    {
-                        pwm::trip(fault_code::SENSOR_TIMEOUT, index);
-                        printf("ENCODER_OVERSPEED m=%lu speed=%.5f\n",
-                               static_cast<unsigned long>(index), encoder.speed_rad_s);
-                        break;
-                    }
-
                     process_sample(index, sample, encoder);
                 }
 

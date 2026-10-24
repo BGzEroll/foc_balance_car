@@ -14,7 +14,7 @@
 namespace test {
 namespace {
 constexpr float PI2 = 6.28318530718f;
-constexpr unsigned N = 360;
+constexpr unsigned N = 1024;
 struct Record { float t, angle, speed, iq, target, id; };
 Record records[4000];
 unsigned count = 0;
@@ -32,7 +32,8 @@ float servo_speed = 0, servo_angle = 0;
 float friction_A = 0.065f;
 float velocity_kp = 0.04f, velocity_ki = 0.3f;
 struct DemoState {
-    float trajectory, angle, speed, integral;
+    double trajectory;
+    float angle, speed, integral;
     uint64_t stamp;
 };
 DemoState demo[2] = {};

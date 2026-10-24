@@ -57,10 +57,10 @@ try:
                 v=line()
                 if v.startswith('C,'):
                     rows.append(v.split(',')[1:])
-                    if len(rows)%60==0: print(f'motor={motor} points={len(rows)}/720',flush=True)
+                    if len(rows)%128==0: print(f'motor={motor} points={len(rows)}/2048',flush=True)
                 elif v=='SCAN_END': break
                 elif v.startswith(('SCAN_FAIL','ABORT')): raise RuntimeError(v)
-            if len(rows)!=720: raise RuntimeError(f'incomplete motor {motor}: {len(rows)}')
+            if len(rows)!=2048: raise RuntimeError(f'incomplete motor {motor}: {len(rows)}')
             with open(out/f'scan_m{motor}.csv','w',newline='') as f:
                 w=csv.writer(f); w.writerow(['motor','step','direction','angle','speed','iq','target','id','samples','error']); w.writerows(rows)
             print(f'SCAN_SAVED motor={motor}',flush=True)
@@ -80,7 +80,18 @@ try:
             for speed in (a.speed if a.speed is not None else [.5,-.5]):
                 send(f'{a.controller} {motor} {speed} 19 6 {enable}'); until('RUN_BEGIN',3)
                 print(f'RUN motor={motor} speed={speed} ff={enable}',flush=True)
-                until('RUN_END',25)
+                try:
+                    until('RUN_END',25)
+                except RuntimeError:
+                    send('DUMP'); until('DATA_BEGIN',3)
+                    failed=[]
+                    while True:
+                        v=line()
+                        if v=='DATA_END': break
+                        if v.startswith('D,'): failed.append(v.split(',')[1:])
+                    with open(out/f'{a.label or a.action}_failed_m{motor}.csv','w',newline='') as f:
+                        w=csv.writer(f); w.writerow(['t','angle','speed','iq','target','id']); w.writerows(failed)
+                    raise
                 send('DUMP'); until('DATA_BEGIN',3)
                 rows=[]
                 while True:

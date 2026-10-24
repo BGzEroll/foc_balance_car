@@ -1,16 +1,19 @@
 function fit_cogging(dataDir)
 % 两方向静态保持电流拟合；编码器原始单圈角度索引，Iq 保留FOC符号。
-if nargin == 0, dataDir = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'results', 'anticogging'); end
+if nargin == 0, dataDir = fullfile(fileparts(fileparts(mfilename('fullpath'))), 'results', 'anticogging_1024'); end
 n = 4096; order = 120; angles = (0:n-1)'*2*pi/n;
 map = zeros(n,2); metrics = struct([]);
 f = figure('Visible','off','Color','w','Name','双电机齿槽标定','Position',[100 100 1350 760]);
 tiledlayout(2,2);
 for m = 0:1
     t = readtable(fullfile(dataDir,sprintf('scan_m%d.csv',m)));
-    assert(height(t)==720 && all(isfinite(t.iq)), '扫描数据不完整');
+    assert(height(t)==2048 && all(isfinite(t.iq)), '1024位置双向扫描数据不完整');
+    assert(isequal(t.step,(0:2047)'), '标定位置编号不连续');
     curves = zeros(n,2); residual = zeros(2,1); coefficients = zeros(2*order+1,2);
     for d = 1:2
         pick = t.direction == (3-2*d);
+        % 换向第一点与正向末点同位置，尚未建立反向摩擦，保留原始记录但不用于拟合。
+        if d==2, pick=pick & t.step~=1024; end
         x = t.angle(pick); y = t.iq(pick);
         A = basis(x,order); G = basis(angles,order);
         % 四阶频率惩罚抑制高次拟合噪声；直流只参与辨识，不作为补偿。
@@ -23,14 +26,15 @@ for m = 0:1
     amplitude = abs(mean(spatial,2));
     % 仅保留双方向相位一致、且幅值高于拟合噪声的空间谐波。
     keep = real(spatial(:,1).*conj(spatial(:,2))) > 0 & ...
-           amplitude > max(0.004, 3*sqrt(mean(residual.^2)/180));
+           amplitude > max(0.004, 3*sqrt(mean(residual.^2)/512));
     common = mean(coefficients,2);
     common(2:2:end) = common(2:2:end).*keep;
     common(3:2:end) = common(3:2:end).*keep;
     map(:,m+1) = G*common;
     assert(max(abs(map(:,m+1)))<=6,'补偿电流超过main的6A阈值，拒绝导出');
     metrics(m+1).motor=m;
-    metrics(m+1).measured_positions_per_direction=360;
+    metrics(m+1).measured_positions_per_direction=1024;
+    metrics(m+1).fit_samples_per_direction=[1024 1023];
     metrics(m+1).lookup_points=n;
     metrics(m+1).peak_current_A=max(abs(map(:,m+1)));
     metrics(m+1).fit_rms_A=residual';
