@@ -18,7 +18,7 @@ constexpr unsigned N = 360;
 struct Record { float t, angle, speed, iq, target, id; };
 Record records[4000];
 unsigned count = 0;
-enum Mode { IDLE, SCAN, SPEED };
+enum Mode { IDLE, SCAN, SPEED, TRACK, DEMO };
 Mode mode = IDLE;
 unsigned selected = 0, step = 0, ticks = 0, samples = 0;
 float integral = 0, origin = 0, reference = 0, trajectory = 0, cap = 6.0f;
@@ -29,8 +29,17 @@ uint64_t last_encoder = 0;
 bool ff = false;
 float position_kp = 20.0f, position_ki = 10.0f, position_kd = 0.04f;
 float servo_speed = 0, servo_angle = 0;
+float friction_A = 0.065f;
+float velocity_kp = 0.04f, velocity_ki = 0.3f;
+struct DemoState {
+    float trajectory, angle, speed, integral;
+    uint64_t stamp;
+};
+DemoState demo[2] = {};
+uint32_t demo_active = 0;
 float clamp(float x, float limit) { return fmaxf(-limit, fminf(limit, x)); }
 void idle() {
+    __atomic_store_n(&demo_active,0U,__ATOMIC_RELEASE);
     mode = IDLE; motor::enable_cogging(false); ff = false; integral = 0;
     for(unsigned i = 0; i < 2; ++i)
         motor::set_target_current(static_cast<motor::motor_id>(i), {});
@@ -46,6 +55,19 @@ void command(const char *line, const motor::foc_info &foc, const sensor::package
     else if(!strcmp(line, "IDLE")) { idle(); puts("IDLE"); }
     else if(sscanf(line, "GAINS %f %f %f", &value, &seconds, &current) == 3) {
         position_kp=value; position_ki=seconds; position_kd=current; puts("GAINS_OK");
+    }
+    else if(sscanf(line, "FRICTION %f", &value) == 1) {
+        friction_A=value; puts("FRICTION_OK");
+    }
+    else if(sscanf(line, "VELOCITY %f %f", &value, &seconds) == 2) {
+        velocity_kp=value; velocity_ki=seconds; puts("VELOCITY_OK");
+    }
+    else if(sscanf(line, "DEMO %f", &value) == 1 && fabsf(value)<=.5f && foc.ready) {
+        idle(); speed_ref=value; mode=DEMO; began=esp_timer_get_time();
+        demo[0]={sensors.left_encoder.angle_rad,sensors.left_encoder.angle_rad,0,0,0};
+        demo[1]={sensors.right_encoder.angle_rad,sensors.right_encoder.angle_rad,0,0,0};
+        ff=true; motor::enable_cogging(true);
+        __atomic_store_n(&demo_active,1U,__ATOMIC_RELEASE); puts("DEMO_BEGIN");
     }
     else if(!strcmp(line, "STATUS"))
         printf("STATUS ready=%u fault=%lu bus=%.3f dir=%.0f,%.0f mode=%u ff=%u\n",
@@ -63,12 +85,16 @@ void command(const char *line, const motor::foc_info &foc, const sensor::package
         began = segment = esp_timer_get_time(); previous = 0; mode = SCAN;
         puts("SCAN_BEGIN motor,step,direction,angle,speed,iq,target,id,samples,error");
     }
-    else if(sscanf(line, "RUN %u %f %f %f %u", &m, &value, &seconds, &current, &enable) == 5 &&
+    else if((sscanf(line, "RUN %u %f %f %f %u", &m, &value, &seconds, &current, &enable) == 5 ||
+             sscanf(line, "TRACK %u %f %f %f %u", &m, &value, &seconds, &current, &enable) == 5) &&
             m < 2 && fabsf(value) <= 3 && seconds > 0 && seconds <= 19 &&
             current > 0 && current <= 6.0f && enable < 2 && foc.ready) {
         idle(); selected = m; speed_ref = value; duration = seconds; cap = current;
         ff = enable; motor::enable_cogging(ff); count = ticks = 0;
-        began = esp_timer_get_time(); previous = 0; mode = SPEED; puts("RUN_BEGIN");
+        const auto &enc = m == 0 ? sensors.left_encoder : sensors.right_encoder;
+        trajectory = enc.angle_rad; servo_angle = enc.angle_rad; servo_speed = 0;
+        began = esp_timer_get_time(); previous = 0;
+        mode = !strncmp(line,"TRACK ",6) ? TRACK : SPEED; puts("RUN_BEGIN");
     }
     else if(!strcmp(line, "DUMP") && mode == IDLE) {
         puts("DATA_BEGIN t,angle,speed,iq,target,id");
@@ -103,6 +129,29 @@ void task(void *) {
             if(mode != IDLE) { idle(); printf("ABORT fault=%lu\n", static_cast<unsigned long>(foc.fault.code)); }
             continue;
         }
+        if(mode == DEMO) {
+            const uint64_t now=esp_timer_get_time();
+            const float desired=speed_ref*fminf((now-began)*1e-6f/.7f,1.0f);
+            for(unsigned i=0;i<2;++i) {
+                const auto &enc=i==0?sensors.left_encoder:sensors.right_encoder;
+                auto &state=demo[i];
+                if(enc.timestamp_us==state.stamp) continue;
+                const float dt=state.stamp?(enc.timestamp_us-state.stamp)*1e-6f:.001f;
+                state.stamp=enc.timestamp_us;
+                const float direction=foc.current[i].encoder_direction;
+                state.trajectory+=direction*desired*dt;
+                state.speed=(.0005f*state.speed+direction*(enc.angle_rad-state.angle))/(.0005f+dt);
+                state.angle=enc.angle_rad;
+                const float error=direction*(state.trajectory-enc.angle_rad);
+                const float candidate=state.integral+position_ki*dt*error;
+                const float output=position_kp*error+position_kd*(desired-state.speed)+candidate+
+                                   friction_A*clamp(desired/.2f,1.0f);
+                if(fabsf(output)<=6 || output*error<0) state.integral=candidate;
+                motor::target_current target{}; target.iq_A=clamp(output,6);
+                motor::set_target_current(static_cast<motor::motor_id>(i),target);
+            }
+            continue;
+        }
         for(unsigned i = 0; i < 2; ++i)
             if(mode == IDLE || i != selected)
                 motor::set_target_current(static_cast<motor::motor_id>(i), {});
@@ -115,25 +164,32 @@ void task(void *) {
         const float dt = previous ? (now-previous)*1e-6f : 0.001f; previous = now;
         const float speed = feedback.encoder_direction * enc.speed_rad_s;
         float error, proportional;
-        if(mode == SCAN) {
-            trajectory += clamp(reference - trajectory, 0.8f * dt);
+        if(mode == SCAN || mode == TRACK) {
+            float desired_speed = 0;
+            if(mode == SCAN) trajectory += clamp(reference - trajectory, 0.8f * dt);
+            else {
+                desired_speed = speed_ref * fminf((now-began)*1e-6f/0.7f, 1.0f);
+                trajectory += feedback.encoder_direction * desired_speed * dt;
+            }
             error = feedback.encoder_direction * (trajectory - enc.angle_rad);
             servo_speed = (0.0005f * servo_speed + feedback.encoder_direction *
                            (enc.angle_rad-servo_angle)) / (0.0005f+dt);
             servo_angle = enc.angle_rad;
-            proportional = position_kp * error - position_kd * servo_speed;
+            proportional = position_kp * error + position_kd * (desired_speed-servo_speed);
+            if(mode == TRACK) proportional += friction_A * clamp(desired_speed/0.2f,1.0f);
         }
         else {
             const float ramp = fminf((now-began)*1e-6f/0.7f, 1.0f);
-            error = speed_ref*ramp - speed; proportional = 0.02f * error;
+            error = speed_ref*ramp - speed;
+            proportional = velocity_kp * error + friction_A * clamp(speed_ref*ramp/0.2f,1.0f);
         }
-        const float candidate = integral + (mode == SCAN ? position_ki : 0.08f)*dt*error;
+        const float candidate = integral + (mode != SPEED ? position_ki : velocity_ki)*dt*error;
         const float output = proportional + candidate;
         if(fabsf(output) <= cap || output*error < 0) integral = candidate;
         motor::target_current target{}; target.iq_A = clamp(output, cap);
         motor::set_target_current(static_cast<motor::motor_id>(selected), target);
         ++ticks;
-        if(mode == SPEED) {
+        if(mode == SPEED || mode == TRACK) {
             if(ticks % 5 == 0 && count < 4000)
                 records[count++] = {(now-began)*1e-6f, enc.single_turn_rad, speed,
                                     feedback.iq_A, target.iq_A, feedback.id_A};
@@ -166,9 +222,23 @@ void task(void *) {
         }
     }
 }
+void display(void *) {
+    while(true) {
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        if(!__atomic_load_n(&demo_active,__ATOMIC_ACQUIRE)) continue;
+        sensor::package sensors{}; sensor::get_package(sensors);
+        motor::foc_info foc{}; motor::get_info(foc);
+        printf("LIVE,%.3f,%.6f,%.5f,%.4f,%.6f,%.5f,%.4f,%u,%lu\n",
+            esp_timer_get_time()*1e-6,sensors.left_encoder.angle_rad,
+            sensors.left_encoder.speed_rad_s,foc.current[0].iq_A,
+            sensors.right_encoder.angle_rad,sensors.right_encoder.speed_rad_s,foc.current[1].iq_A,
+            foc.ready,static_cast<unsigned long>(foc.fault.code));
+    }
+}
 }
 bool init() {
-    return xTaskCreatePinnedToCore(task, "anticogging", 6144, nullptr, 2, nullptr, 0) == pdPASS;
+    return xTaskCreatePinnedToCore(task, "anticogging", 6144, nullptr, 2, nullptr, 0) == pdPASS &&
+           xTaskCreatePinnedToCore(display,"rotation_display",4096,nullptr,1,nullptr,0)==pdPASS;
 }
 }
 
