@@ -5,7 +5,7 @@ H=Path(__file__).resolve().parent
 parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('source');parser.add_argument('--resume');parser.add_argument('--notch',action='store_true');parser.add_argument('--notch-mix',type=float,default=1.0);parser.add_argument('--factors',nargs='+',type=float,default=[.9,.82]);parser.add_argument('--candidate-index',type=int);parser.add_argument('--reference-report');parser.add_argument('--ignore-current-growth',action='store_true');parser.add_argument('--confirm-report');parser.add_argument('--friction-force',type=float);parser.add_argument('--integral-limit',type=float);args=parser.parse_args()
 source=Path(args.source);resume=json.loads(Path(args.resume).read_text()) if args.resume else None
 base=resume['current'] if resume else json.loads((H/'selected_lqi.json').read_text())['scale']
-checks=json.loads((H/'results/dynamic/tuning_screen.json').read_text())['cases']
+checks=json.loads((H/'results/dynamic/tuning_screen.json').read_text())['cases'] if args.candidate_index else []
 assert all(c['nonlinear_pass'] and c['max_radius']<1 for c in checks)
 if args.notch:
  assert not resume

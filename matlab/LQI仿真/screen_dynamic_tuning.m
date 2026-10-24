@@ -3,7 +3,7 @@ root=fileparts(fileparts(fileparts(mfilename('fullpath'))));
 out=fullfile(root,'esp32','lqi_firmware','results','dynamic');
 selected=jsondecode(fileread(fullfile(root,'esp32','lqi_firmware','selected_lqi.json')));
 d=hardware_lqi_design;d.current_limit_each=6;base=selected.scale(:)';reports=struct([]);
-factors=[1 1 1 1 1;.95 1.05 1.03 1.05 1;1 1 1 .85 1];
+factors=[1 1 1 1 1;.95 1.05 1.03 1.05 1;1 1 1 .925 1];
 for k=1:size(factors,1)
  scale=base;scale([1 2 3 4 7])=base([1 2 3 4 7]).*factors(k,:);K=d.Kaug.*scale;radii=[];
  for kt=[.7 1 1.3]
