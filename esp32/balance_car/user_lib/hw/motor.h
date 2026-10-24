@@ -78,6 +78,9 @@ namespace motor
     bool init();
     bool set_target_current(motor_id id, const target_current &target);
     bool get_info(foc_info &snapshot);
+    bool set_cogging_point(uint32_t motor, uint32_t point, float current_A);
+    void enable_cogging(bool enabled);
+    void stop();
 }
 
 #endif

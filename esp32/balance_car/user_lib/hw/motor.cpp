@@ -1,4 +1,6 @@
 #include "motor.h"
+#include "cogging_map.h"
+#include <stdio.h>
 
 #include "sensor.h"
 #include <math.h>
@@ -1205,7 +1207,16 @@ namespace foc
 
             const float dt = dt_us * 1.0e-6f;
             const float error_d = target.id_A - id;
-            const float error_q = target.iq_A - iq;
+            float feedforward = 0.0f;
+            if(__atomic_load_n(&cogging::enabled, __ATOMIC_ACQUIRE))
+            {
+                const float position = encoder.single_turn_rad * (cogging::SIZE / TWO_PI);
+                const uint32_t bin = static_cast<uint32_t>(position + 0.5f) & (cogging::SIZE - 1);
+                feedforward = cogging::table[index][bin];
+            }
+            const float q_limit = sqrtf(fmaxf(0.0f, 36.0f - target.id_A * target.id_A));
+            const float desired_q = fmaxf(-q_limit, fminf(q_limit, target.iq_A + feedforward));
+            const float error_q = desired_q - iq;
             const float candidate_d = motors[index].integral_d + KI * dt * error_d;
             const float candidate_q = motors[index].integral_q + KI * dt * error_q;
 
@@ -1287,6 +1298,7 @@ namespace motor
         uint32_t task_ready = 0;
         uint32_t sensor_ok = 0;
         uint32_t ready = 0;
+        uint32_t command_us[2] = {};
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -1408,6 +1420,9 @@ namespace motor
                        !fresh(encoders[i], now64))
                     {
                         pwm::trip(fault_code::SENSOR_TIMEOUT, i);
+                        printf("ENCODER_TIMEOUT m=%lu age=%llu speed=%.5f\n",
+                               static_cast<unsigned long>(i), now64-encoders[i].timestamp_us,
+                               encoders[i].speed_rad_s);
                     }
                 }
                 return;
@@ -1609,6 +1624,13 @@ namespace motor
             current_info current{};
             pwm::command output{};
 
+            const uint32_t target_stamp = __atomic_load_n(&command_us[index], __ATOMIC_ACQUIRE);
+            if(!aligning && target_stamp && now32() - target_stamp > 30000U)
+            {
+                pwm::trip(fault_code::TASK_TIMEOUT, index);
+                return;
+            }
+
             if(!foc::update(
                 index, sample, encoder, get_target(index),
                 aligning, theta, voltage, current, output))
@@ -1689,12 +1711,17 @@ namespace motor
                     if(!fresh(encoder, now64))
                     {
                         pwm::trip(fault_code::SENSOR_TIMEOUT, index);
+                        printf("ENCODER_TIMEOUT m=%lu age=%llu speed=%.5f\n",
+                               static_cast<unsigned long>(index), now64-encoder.timestamp_us,
+                               encoder.speed_rad_s);
                         break;
                     }
 
                     if(fabsf(encoder.speed_rad_s) > 40.0f)
                     {
                         pwm::trip(fault_code::SENSOR_TIMEOUT, index);
+                        printf("ENCODER_OVERSPEED m=%lu speed=%.5f\n",
+                               static_cast<unsigned long>(index), encoder.speed_rad_s);
                         break;
                     }
 
@@ -1786,7 +1813,26 @@ namespace motor
         portENTER_CRITICAL(&info_lock);
         latest.target[index] = target;
         portEXIT_CRITICAL(&info_lock);
+        __atomic_store_n(&command_us[index], now32(), __ATOMIC_RELEASE);
         return true;
+    }
+
+    bool set_cogging_point(uint32_t index, uint32_t point, float current_A)
+    {
+        if(index > 1 || point >= cogging::SIZE || !isfinite(current_A) ||
+           fabsf(current_A) > MAX_TARGET_A || __atomic_load_n(&cogging::enabled, __ATOMIC_ACQUIRE))
+            return false;
+        cogging::table[index][point] = current_A;
+        return true;
+    }
+    void enable_cogging(bool enabled)
+    {
+        __atomic_store_n(&cogging::enabled, enabled ? 1U : 0U, __ATOMIC_RELEASE);
+    }
+    void stop()
+    {
+        enable_cogging(false);
+        pwm::trip(fault_code::TASK_TIMEOUT);
     }
 
     /**

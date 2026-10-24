@@ -1,4 +1,5 @@
 #include "sensor.h"
+#include <stdio.h>
 
 #include "sys_time.h"
 #include <math.h>
@@ -155,6 +156,31 @@ namespace i2c
             RIGHT_SCL,
             RIGHT_FREQ_HZ,
             RIGHT_DONE);
+    }
+
+    void configure_encoders()
+    {
+        context *buses[2] = {&left, &right};
+        for(unsigned i = 0; i < 2; ++i)
+        {
+            context &ctx = *buses[i];
+            uint8_t reg = 0x07;
+            uint8_t config[2] = {};
+            uint32_t notification = 0;
+            ESP_ERROR_CHECK(i2c_master_transmit_receive(ctx.dev, &reg, 1, config, 2, 20));
+            configASSERT(xTaskNotifyWait(0, ctx.notify_bit, &notification, pdMS_TO_TICKS(20)) == pdTRUE);
+            configASSERT(notification & ctx.notify_bit);
+            config[0] = (config[0] & ~0x03U) | 0x03U;
+            uint8_t data[3] = {reg, config[0], config[1]};
+            ESP_ERROR_CHECK(i2c_master_transmit(ctx.dev, data, sizeof(data), 20));
+            configASSERT(xTaskNotifyWait(0, ctx.notify_bit, &notification, pdMS_TO_TICKS(20)) == pdTRUE);
+            configASSERT(notification & ctx.notify_bit);
+            ESP_ERROR_CHECK(i2c_master_transmit_receive(ctx.dev, &reg, 1, config, 2, 20));
+            configASSERT(xTaskNotifyWait(0, ctx.notify_bit, &notification, pdMS_TO_TICKS(20)) == pdTRUE);
+            configASSERT(notification & ctx.notify_bit);
+            configASSERT((config[0] & 0x03U) == 0x03U);
+            printf("AS5600_FAST m=%u conf=%02x%02x\n", i, config[0], config[1]);
+        }
     }
 
     /**
@@ -812,6 +838,7 @@ namespace sensor
         owner_task = current_task;
 
         i2c::init(owner_task);
+        i2c::configure_encoders();
         mpu6050::init();
 
         next_imu_time_us =
