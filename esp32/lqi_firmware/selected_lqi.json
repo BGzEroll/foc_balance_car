@@ -1,0 +1,248 @@
+{
+  "schema": "online_lqi_selection_v1",
+  "base_design_sha256": "50659c3c9ee783bec1e8c2cf337aaae11e0ce3a2d7e7159eda2b5297846508bf",
+  "scale": [
+    0.655192,
+    0.864511,
+    0.921312,
+    0.747325,
+    1.0,
+    1.0,
+    0.514871,
+    1.0
+  ],
+  "Kaug": [
+    [
+      -17.673596222098304,
+      -13.653377108118727,
+      -20.33828506109879,
+      -1.376993921388891,
+      1.9142802216884578e-14,
+      -5.561333861422848e-18,
+      -7.052261230813531,
+      4.3411791271636314e-13
+    ],
+    [
+      -1.6457493974754426e-13,
+      1.9336970398527202e-14,
+      4.3368011692637675e-15,
+      1.1944399001486898e-15,
+      3.115963064877302,
+      0.6947101949965655,
+      -5.2844064943972605e-14,
+      2.491671498228273
+    ]
+  ],
+  "Q": [
+    156.25,
+    16,
+    44.4444,
+    0.25,
+    4,
+    0.111111,
+    60,
+    4
+  ],
+  "R": [
+    0.52,
+    0.6
+  ],
+  "current_limit_each_A": 6,
+  "phase_overcurrent_A": 6,
+  "voltage_bus_ratio": 0.48,
+  "Ts_s": 0.005,
+  "applied_revision": 1348836452,
+  "validation": {
+    "label": "B_validation",
+    "samples": 18004,
+    "scale": [
+      0.81899,
+      0.864511,
+      0.921312,
+      0.747325,
+      1.0,
+      1.0,
+      0.686495,
+      1.0
+    ],
+    "revision": 1348836452,
+    "band_rate_rms": 0.08461047544927852,
+    "band_common_current_rms": 0.11856995922068159,
+    "burst_fraction": 0.03333333333333333,
+    "pitch_rms_deg": 0.8887461032711571,
+    "pitch_mean_deg": 0.2671469880830677,
+    "pitch_ac_std_deg": 0.8476450453095397,
+    "pitch_peak_deg": 4.503637821276855,
+    "speed_rms": 0.014934552342584456,
+    "current_rms": 0.20344209890767243,
+    "saturation_fraction": 0.0,
+    "faults": 0.0
+  },
+  "rejected_candidate_score": 1.6342666925570124,
+  "persistence": "Gains are RAM-only on the MCU. Normal start_live.py reloads this saved file while stopped before BALANCE. Direct BALANCE after power-up still uses compiled defaults.",
+  "reload_target": "LQISET 0.81899 0.864511 0.921312 0.747325 1 1 0.686495 1",
+  "reload_limit": "Ramp each scale by at most .05 per command; do not send the final target directly from all ones.",
+  "evidence": "results/jitter/final_run/",
+  "limitation": "Residual short micro-jitter remains. No full plant identification, standardized physical push test, or velocity-reference acceptance claim.",
+  "Q_R_scope": "Weights of the previous Riccati design only. Final matrix has a measured single-column pitch-rate adjustment; not a newly solved Riccati optimum.",
+  "jitter_adjustment": {
+    "previous_scale": [
+      0.81899,
+      0.864511,
+      0.921312,
+      0.911372,
+      1.0,
+      1.0,
+      0.686495,
+      1.0
+    ],
+    "rate_factor": 0.8199999561101285,
+    "reference": {
+      "band_rate_rms": 0.22816440464920074,
+      "band_common_current_rms": 0.3794308329962952,
+      "current_rms": 0.3481521411948958,
+      "speed_rms": 0.01694478313022129,
+      "pitch_rms_deg": 1.313978463187785,
+      "burst_fraction": 0.35833333333333334
+    },
+    "confirmation": {
+      "label": "B_validation",
+      "samples": 18004,
+      "scale": [
+        0.81899,
+        0.864511,
+        0.921312,
+        0.747325,
+        1.0,
+        1.0,
+        0.686495,
+        1.0
+      ],
+      "revision": 1348836452,
+      "band_rate_rms": 0.08461047544927852,
+      "band_common_current_rms": 0.11856995922068159,
+      "burst_fraction": 0.03333333333333333,
+      "pitch_rms_deg": 0.8887461032711571,
+      "pitch_mean_deg": 0.2671469880830677,
+      "pitch_ac_std_deg": 0.8476450453095397,
+      "pitch_peak_deg": 4.503637821276855,
+      "speed_rms": 0.014934552342584456,
+      "current_rms": 0.20344209890767243,
+      "saturation_fraction": 0.0,
+      "faults": 0.0
+    },
+    "band_rate_reduction": 0.6291688198281156,
+    "burst_fraction_before": 0.35833333333333334,
+    "burst_fraction_after": 0.03333333333333333,
+    "scope": "Fixed-detector natural-balance A/B and 90s confirmation, not standardized push or velocity tracking tests."
+  },
+  "common_notch_mix": 0.0,
+  "common_notch_frequency_Hz": 12.5,
+  "notch_trial_conclusion": {
+    "retained": false,
+    "full_mix": "Rejected: target current RMS +41% versus bracketing baseline",
+    "mix_0_6": "Rejected: 90s confirmation band-rate RMS +16.6%, current +45.4%",
+    "evidence": "results/jitter_refine/notch_full and results/jitter_refine/notch_60pct",
+    "scope": "Previous 18% pitch-rate gain reduction retained; residual jitter remains. No velocity-tracking validation."
+  },
+  "settling_selection": {
+    "prior_scale": [
+      0.81899,
+      0.864511,
+      0.921312,
+      0.747325,
+      1.0,
+      1.0,
+      0.686495,
+      1.0
+    ],
+    "position_factor": 0.8,
+    "position_integral_factor": 0.75,
+    "reference": {
+      "band_rate_rms": 0.056095655857751135,
+      "band_common_current_rms": 0.1879066520514669,
+      "current_rms": 0.16051378702894037,
+      "speed_rms": 0.015613516209976662,
+      "pitch_rms_deg": 1.0503193751644078,
+      "pitch_ac_std_deg": 0.5682592088969503,
+      "rate_rms": 0.16523045914310341,
+      "burst_fraction": 0.0
+    },
+    "confirmation": {
+      "label": "B_validation",
+      "samples": 24003,
+      "scale": [
+        0.655192,
+        0.864511,
+        0.921312,
+        0.747325,
+        1.0,
+        1.0,
+        0.514871,
+        1.0
+      ],
+      "notch_mix": 0.0,
+      "revision": 1348836457,
+      "band_rate_rms": 0.010310448779491072,
+      "band_common_current_rms": 0.01561236909732814,
+      "burst_fraction": 0.0,
+      "rate_rms": 0.10677643396453777,
+      "pitch_rms_deg": 0.5637716618844,
+      "pitch_mean_deg": 0.4937919164022542,
+      "pitch_ac_std_deg": 0.27204416928081243,
+      "pitch_peak_deg": 1.3403617455199772,
+      "current_peak_A": 0.49586164951324463,
+      "distance_peak_m": 0.0017074269708245993,
+      "speed_rms": 0.006550705616843413,
+      "current_rms": 0.11536926383178234,
+      "saturation_fraction": 0.0,
+      "faults": 0.0
+    },
+    "comparison": {
+      "reference": {
+        "band_rate_rms": 0.056095655857751135,
+        "band_common_current_rms": 0.1879066520514669,
+        "current_rms": 0.16051378702894037,
+        "speed_rms": 0.015613516209976662,
+        "pitch_rms_deg": 1.0503193751644078,
+        "pitch_ac_std_deg": 0.5682592088969503,
+        "rate_rms": 0.16523045914310341,
+        "burst_fraction": 0.0
+      },
+      "score": 0.1155359532568553,
+      "eligible": true,
+      "candidate": {
+        "label": "B_validation",
+        "samples": 24003,
+        "scale": [
+          0.655192,
+          0.864511,
+          0.921312,
+          0.747325,
+          1.0,
+          1.0,
+          0.514871,
+          1.0
+        ],
+        "notch_mix": 0.0,
+        "revision": 1348836457,
+        "band_rate_rms": 0.010310448779491072,
+        "band_common_current_rms": 0.01561236909732814,
+        "burst_fraction": 0.0,
+        "rate_rms": 0.10677643396453777,
+        "pitch_rms_deg": 0.5637716618844,
+        "pitch_mean_deg": 0.4937919164022542,
+        "pitch_ac_std_deg": 0.27204416928081243,
+        "pitch_peak_deg": 1.3403617455199772,
+        "current_peak_A": 0.49586164951324463,
+        "distance_peak_m": 0.0017074269708245993,
+        "speed_rms": 0.006550705616843413,
+        "current_rms": 0.11536926383178234,
+        "saturation_fraction": 0.0,
+        "faults": 0.0
+      }
+    },
+    "source": "results/settling/confirmed/report.json",
+    "scope": "120s natural balance confirmation after bracketing A/B trials. No standardized push settling-time or commanded motion validation. Current-growth rejection temporarily disabled by user; 6A protection retained."
+  }
+}
