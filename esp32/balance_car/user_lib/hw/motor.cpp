@@ -1249,7 +1249,7 @@ namespace motor
         constexpr uint32_t ALIGN_SETTLE_US = 100000;
         constexpr uint32_t ALIGN_FINAL_US = 400000;
         constexpr uint32_t ALIGN_FINAL_TIMEOUT_US = 700000;
-        constexpr float ALIGN_VOLTAGE = 0.18f;
+        constexpr float ALIGN_VOLTAGE = 0.24f;
         constexpr float ALIGN_MIN_DELTA = 1.2f;
         constexpr float ALIGN_MAX_DELTA = 2.3f;
         constexpr float ALIGN_MAX_SPEED = 0.5f;
@@ -1595,10 +1595,14 @@ namespace motor
                         static_cast<float>(elapsed) / ALIGN_SWEEP_US, 1.0f);
                     voltage = ALIGN_VOLTAGE;
                 }
-                else
+                else if(calibration.state == stage::LOCK)
                 {
                     voltage = ALIGN_VOLTAGE * fminf(
                         static_cast<float>(elapsed) / 50000.0f, 1.0f);
+                }
+                else
+                {
+                    voltage = ALIGN_VOLTAGE;
                 }
             }
 
