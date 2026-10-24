@@ -21,7 +21,7 @@ namespace test
         constexpr uint32_t MOTOR_SPEED_TEST = 1;
 
         constexpr uint32_t SPEED_PERIOD_MS = 1;
-        constexpr float TARGET_SPEED_RAD_S = 10.0f;
+        constexpr float TARGET_SPEED_RAD_S = 1.0f;
         constexpr float SPEED_KP = 0.2f;
         constexpr float SPEED_KI = 0.4f;
         constexpr float CURRENT_LIMIT_A = 2.0f;

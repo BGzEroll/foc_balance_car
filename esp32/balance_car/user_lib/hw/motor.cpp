@@ -1242,15 +1242,16 @@ namespace motor
     {
         constexpr uint32_t ENCODER_TIMEOUT_US = 1500;
         constexpr uint32_t WAIT_TIMEOUT_US = 3000000;
+        constexpr uint32_t ALIGN_GAP_US = 2000000;
         constexpr uint32_t ALIGN_LOCK_US = 200000;
         constexpr uint32_t ALIGN_LOCK_TIMEOUT_US = 600000;
-        constexpr uint32_t ALIGN_SWEEP_US = 1200000;
+        constexpr uint32_t ALIGN_SWEEP_US = 2400000;
         constexpr uint32_t ALIGN_SETTLE_US = 100000;
         constexpr uint32_t ALIGN_FINAL_US = 400000;
         constexpr uint32_t ALIGN_FINAL_TIMEOUT_US = 700000;
-        constexpr float ALIGN_VOLTAGE = 0.24f;
-        constexpr float ALIGN_MIN_DELTA = 0.25f;
-        constexpr float ALIGN_MAX_DELTA = 1.5f;
+        constexpr float ALIGN_VOLTAGE = 0.18f;
+        constexpr float ALIGN_MIN_DELTA = 1.2f;
+        constexpr float ALIGN_MAX_DELTA = 2.3f;
         constexpr float ALIGN_MAX_SPEED = 0.5f;
         constexpr float TWO_PI = 6.28318530718f;
         constexpr float MAX_TARGET_A = 6.0f;
@@ -1421,6 +1422,11 @@ namespace motor
 
                 if(calibration.motor == 0)
                 {
+                    if(now - calibration.began_us < ALIGN_GAP_US)
+                    {
+                        return;
+                    }
+
                     begin_alignment(1, now);
                 }
                 else
@@ -1514,6 +1520,7 @@ namespace motor
                     foc::set_alignment(index, calibration.start_angle, final_angle);
                     pwm::stop();
                     calibration.state = stage::STOP;
+                    calibration.began_us = now;
                 }
                 else if(elapsed > ALIGN_FINAL_TIMEOUT_US)
                 {
@@ -1584,7 +1591,7 @@ namespace motor
 
                 if(calibration.state == stage::SWEEP)
                 {
-                    theta = TWO_PI * fminf(
+                    theta = 2.0f * TWO_PI * fminf(
                         static_cast<float>(elapsed) / ALIGN_SWEEP_US, 1.0f);
                     voltage = ALIGN_VOLTAGE;
                 }
