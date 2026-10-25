@@ -7,7 +7,8 @@ d=json.loads((folder/'dynamic_result.json').read_text());rows=list(csv.DictReade
 t=np.array([float(r['sample_us']) for r in rows])*1e-6-d['started_us']*1e-6
 x=np.array([float(r['distance']) for r in rows])-d['origin_m'];v=np.array([float(r['speed']) for r in rows]);pitch=np.array([float(r['pitch'])-float(r['target_pitch']) for r in rows])*180/np.pi
 ref=np.zeros(len(rows));rv=np.zeros(len(rows))
-for k,(a,b) in enumerate(zip([0,.05,0,-.05],[.05,0,-.05,0])):
+amp=d.get('excursion_m',.05)
+for k,(a,b) in enumerate(zip([0,amp,0,-amp],[amp,0,-amp,0])):
  m=(t>=12*k)&(t<12*(k+1));u=np.clip((t[m]-12*k)/6,0,1);h=u**3*(10-15*u+6*u*u);dh=30*u*u*(1-u)**2/6
  ref[m]=a+(b-a)*h;rv[m]=(b-a)*dh
 trim=json.loads((H/'lqi_design.json').read_text())['hardware_pitch_trim_rad'];body_pitch=(np.array([float(r['pitch']) for r in rows])-trim)*180/np.pi;reference_pitch=(np.array([float(r['target_pitch']) for r in rows])-trim)*180/np.pi

@@ -84,7 +84,7 @@ namespace balance
         for(unsigned row=0;row<2;++row)
             for(unsigned column=0;column<8;++column)
                 effort[row]-=lqi_config::K[row][column]*tuning.lqi_scale[column]*error[column];
-        effort[0]+=ff_common;
+        effort[0]+=ff_common+target.common_current_bias_A;
         // Always warm the filter so online blend changes do not reset its history.
         const float filtered=controller.notch.update(effort[0]);
         const float mix=fmaxf(0.0f,fminf(1.0f,tuning.common_notch_mix));

@@ -3,10 +3,9 @@
 namespace motion_integral {
 inline float clamp(float x){return std::fmax(-.3f,std::fmin(.3f,x));}
 struct state {
- float anchor=0,offset=0;
- float begin(float current,float origin,float position_gain,float integral_gain){
-  offset=position_gain/integral_gain*origin;
-  anchor=clamp(current+offset);return anchor;
+ float anchor=0;
+ float begin(float current){
+  anchor=clamp(current);return anchor;
  }
  float update(float current,double seconds,float limit) const {
   if(limit<=0 || seconds>=48)return current;
@@ -15,6 +14,6 @@ struct state {
    current=anchor+(current-anchor)*.9834714538f;
   return clamp(current);
  }
- float end(float current)const{return clamp(current-offset);}
+ float end(float current)const{return clamp(current);}
 };
 }

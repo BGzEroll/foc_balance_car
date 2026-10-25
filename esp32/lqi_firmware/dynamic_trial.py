@@ -2,7 +2,9 @@
 import argparse,csv,json,math,os,statistics,sys,time
 from pathlib import Path
 H=Path(__file__).resolve().parent
-parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('source');parser.add_argument('--resume');parser.add_argument('--notch',action='store_true');parser.add_argument('--notch-mix',type=float,default=1.0);parser.add_argument('--factors',nargs='+',type=float,default=[.9,.82]);parser.add_argument('--candidate-index',type=int);parser.add_argument('--reference-report');parser.add_argument('--ignore-current-growth',action='store_true');parser.add_argument('--confirm-report');parser.add_argument('--friction-force',type=float);parser.add_argument('--integral-limit',type=float);parser.add_argument('--encoder-ab-us',type=int);args=parser.parse_args()
+parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('source');parser.add_argument('--resume');parser.add_argument('--notch',action='store_true');parser.add_argument('--notch-mix',type=float,default=1.0);parser.add_argument('--factors',nargs='+',type=float,default=[.9,.82]);parser.add_argument('--candidate-index',type=int);parser.add_argument('--reference-report');parser.add_argument('--ignore-current-growth',action='store_true');parser.add_argument('--confirm-report');parser.add_argument('--friction-force',type=float);parser.add_argument('--integral-limit',type=float);parser.add_argument('--encoder-ab-us',type=int);parser.add_argument('--excursion-m',type=float,default=.05);parser.add_argument('--minimum-m',type=float);args=parser.parse_args()
+assert .05<=args.excursion_m<=.14
+assert args.minimum_m is None or 0<args.minimum_m<=args.excursion_m
 source=Path(args.source);resume=json.loads(Path(args.resume).read_text()) if args.resume else None
 base=resume['current'] if resume else json.loads((H/'selected_lqi.json').read_text())['scale']
 checks=json.loads((H/'results/dynamic/tuning_screen.json').read_text())['cases'] if args.candidate_index else []
@@ -16,6 +18,7 @@ folder=H/'results'/('dynamic_'+time.strftime('%Y%m%d_%H%M%S'));folder.mkdir(pare
 fp=source.open();fields=next(csv.reader([fp.readline()]));fp.seek(0,2)
 stream=(folder/'samples.csv').open('w',newline='');writer=csv.writer(stream);writer.writerow(['trial_stage',*fields,'band_rate','band_common_current'])
 log=(folder/'events.jsonl').open('w',buffering=1);buf='';last=None;stage='attach';current=base.copy();history=[];rows=[];last_progress=0
+guard_origin=None
 notch_mix=0.0
 scale_fields=['velocity_kp','velocity_ki','pitch_kd','pitch_kp','pitch_ki','yaw_kp','yaw_ki','yaw_kd']
 
@@ -33,7 +36,7 @@ def event(kind,**kw):
  item=dict(time=time.time(),stage=stage,kind=kind,**kw);log.write(json.dumps(item)+'\n');print(json.dumps(item),flush=True)
 
 def read(seconds,guard=True):
- global buf,last,last_progress
+ global buf,last,last_progress,guard_origin
  end=time.monotonic()+seconds;seen=time.monotonic()
  while time.monotonic()<end:
   text=fp.read(65536)
@@ -45,11 +48,12 @@ def read(seconds,guard=True):
    line,buf=buf.split('\n',1);values=next(csv.reader([line]))
    if len(values)!=len(fields):raise RuntimeError('Incomplete CSV record')
    r={k:(v if k=='stage' else float(v)) for k,v in zip(fields,values)};last=r
+   if guard_origin is None:guard_origin=r['distance']
    r['band_rate']=qfilter.update(r['pitch_rate']);r['band_common_current']=ifilter.update(r['command_a']+r['command_b'])
    writer.writerow([stage,*values,r['band_rate'],r['band_common_current']]);rows.append(r)
    if guard:
     if r['fault'] or r['mode']!=2 or int(r['flags'])&6!=6:raise RuntimeError('Controller stopped: fault='+str(r['fault']))
-    if abs(r['distance'])>.18:raise ValueError('Unexpected 18cm encoder displacement')
+    if abs(r['distance']-guard_origin)>.19:raise ValueError('Unexpected 19cm displacement from test attachment')
     if abs(r['pitch'])>.2618 or abs(r['speed'])>.35:raise ValueError('Trial tilt/speed guard')
   if time.monotonic()-last_progress>10:
    event('live',fault=int(last['fault']),pitch_deg=last['pitch']*180/math.pi,revision=int(last['revision']));last_progress=time.monotonic()
@@ -148,16 +152,17 @@ try:
  else:raise RuntimeError('Candidate did not reach stationary start gate within 90s')
  event('stationary_gate_passed',distance=last['distance'],speed=last['speed'])
  assert command('DYNSTAT')['armed']=='0'
- assert command('DYNTEST')['accepted']=='1';st=command('DYNSTAT');assert st['armed']=='1'
+ assert command('DYNTEST '+format(args.excursion_m,'.6f'))['accepted']=='1';st=command('DYNSTAT');assert st['armed']=='1'
  began=int(st['began_us']);origin=float(st['origin']);stage='motion_and_recovery';rows=[];read(65)
  st=command('DYNSTAT');assert st['aborted']=='0' and st['hard_stop']=='0' and st['phase']=='4',st
- peak=max(abs(r['distance']-origin) for r in rows);assert peak<.10
+ peak=max(abs(r['distance']-origin) for r in rows);assert peak<.17
  assert command('DYNEND')['accepted']=='1';assert command('DYNSTAT')['armed']=='0'
  stage='post_test_balance';read(10)
- result=dict(started_us=began,origin_m=origin,peak_encoder_displacement_m=peak,status=st,scale=current.copy(),friction_force_N=args.friction_force,motion_integral_limit=args.integral_limit,encoder_ab_us=args.encoder_ab_us,
+ forward=max(r['distance']-origin for r in rows);backward=max(origin-r['distance'] for r in rows)
+ result=dict(excursion_m=args.excursion_m,minimum_m=args.minimum_m,minimum_achieved=args.minimum_m is None or min(forward,backward)>=args.minimum_m,forward_excursion_m=forward,backward_excursion_m=backward,started_us=began,origin_m=origin,peak_encoder_displacement_m=peak,status=st,scale=current.copy(),friction_force_N=args.friction_force,motion_integral_limit=args.integral_limit,encoder_ab_us=args.encoder_ab_us,
   current_peak_A=max(abs(r[k]) for r in rows for k in ('command_a','command_b')),
   pitch_peak_deg=max(abs(r['pitch']-r['target_pitch'])*180/math.pi for r in rows),body_pitch_peak_deg=max(abs(r['pitch'])*180/math.pi for r in rows),
-  saturated_fraction=statistics.fmean(r['saturated'] for r in rows),scope='One 5cm forward/return/backward/return trajectory; encoder-based position, no independent ground measurement.')
+  saturated_fraction=statistics.fmean(r['saturated'] for r in rows),scope='One forward/return/backward/return trajectory with recorded amplitude; encoder-based position, no independent ground measurement.')
  (folder/'dynamic_result.json').write_text(json.dumps(result,indent=2))
  if args.candidate_index:stage='ramp_reference';ramp(base)
  if args.friction_force is not None:
@@ -171,7 +176,9 @@ except Exception as exc:
  event('ERROR',reason=str(exc));(folder/'dynamic_result.json').write_text(json.dumps(dict(error=str(exc),last=last),indent=2))
  try:
   st=command('DYNSTAT')
-  if st.get('phase') in ('4','5'):command('DYNEND')
+  if st.get('armed')=='1':
+   if st.get('phase') not in ('4','5'):command('DYNABORT');read(.1,False)
+   command('DYNEND')
  except Exception:pass
  if args.encoder_ab_us is not None:
   try:command('ENCAB 0')

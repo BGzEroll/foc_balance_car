@@ -11,7 +11,7 @@ if ismember('body_pitch_deg',T.Properties.VariableNames)
 else,plot(T.time_s,T.pitch_error_deg);end
 grid on;
 ylabel('俯仰角 (°)');xlabel('轨迹开始后时间 (s)');xlim([0 75]);
-sgtitle('±5cm 慢速往返：实机动态跟踪');
+sgtitle(sprintf('±%.0f cm 慢速往返：实机动态跟踪',100*max(abs(T.reference_m))));
 exportgraphics(fig,fullfile(folder,'tracking.png'),'Resolution',140);close(fig);
 disp('DYNAMIC_FIGURE_READY');
 end

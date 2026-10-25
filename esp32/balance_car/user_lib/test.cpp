@@ -8,6 +8,7 @@
 #include "wifi_debug.h"
 #include "hw/motor.h"
 #include "hw/sensor.h"
+#include "hw/attitude_eskf.h"
 
 #include "driver/uart.h"
 #include "freertos/FreeRTOS.h"
@@ -70,6 +71,7 @@ namespace test
         uint32_t active = 0;
         uint32_t cancel = 0;
         uint32_t dynamic_request=0;
+        float dynamic_amplitude=.05f;
         motion_test::state dynamic_status{};
         float dynamic_integral_limit=0;
         uint32_t ended = 0;
@@ -92,6 +94,17 @@ namespace test
         TaskHandle_t uart_stream_handle = nullptr;
         uint32_t uart_stream_enabled = 0;
         uint32_t imu_stream_enabled = 0;
+        uint32_t attitude_stream_enabled=0,attitude_selected=1,attitude_confirmed_rest=0;
+        struct __attribute__((packed)) attitude_frame {
+            uint32_t magic,sequence;uint64_t timestamp_us;
+            float q[4],bias[3],angle[3],legacy_angle[3],gyro[3],covariance_diag[6];
+            uint32_t compute_us,gravity_updates,gravity_rejected,rest_updates,selected,confirmed_rest,stack_high_water;
+            float nis;uint32_t crc;
+        };
+        static_assert(sizeof(attitude_frame)==140);
+        attitude_frame latest_attitude{};
+        portMUX_TYPE attitude_lock=portMUX_INITIALIZER_UNLOCKED;
+        void get_attitude(attitude_frame &a){portENTER_CRITICAL(&attitude_lock);a=latest_attitude;portEXIT_CRITICAL(&attitude_lock);}
         char *reply_text = nullptr;
         size_t reply_used = 0;
         // Only the console task executes commands, for both UART and TCP.
@@ -167,7 +180,7 @@ namespace test
             memcpy(t.gains,values,sizeof(values));
             portENTER_CRITICAL(&telemetry_lock); latest_telemetry=t;portEXIT_CRITICAL(&telemetry_lock);
             if(uart_stream_handle && (__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE) ||
-                __atomic_load_n(&imu_stream_enabled,__ATOMIC_ACQUIRE)))
+                __atomic_load_n(&imu_stream_enabled,__ATOMIC_ACQUIRE) || __atomic_load_n(&attitude_stream_enabled,__ATOMIC_ACQUIRE)))
                 xTaskNotifyGive(uart_stream_handle);
         }
 
@@ -179,6 +192,7 @@ namespace test
             static_assert(sizeof(frame)==224);
             uint32_t sequence=0,last_cycle=UINT32_MAX;
             uint32_t imu_sequence=0;uint64_t last_imu_us=0;
+            uint64_t last_attitude_us=0;
             while(true) {
                 ulTaskNotifyTake(pdTRUE,portMAX_DELAY);
                 if(__atomic_load_n(&imu_stream_enabled,__ATOMIC_ACQUIRE)) {
@@ -200,6 +214,14 @@ namespace test
                         uart_write_bytes(UART_NUM_0,&f,sizeof(f));xSemaphoreGive(uart_tx_lock);
                     }
                 }
+                if(__atomic_load_n(&attitude_stream_enabled,__ATOMIC_ACQUIRE)){
+                    attitude_frame a{};get_attitude(a);
+                    if(a.timestamp_us && a.timestamp_us!=last_attitude_us){
+                        last_attitude_us=a.timestamp_us;
+                        a.crc=esp_rom_crc32_le(0,reinterpret_cast<const uint8_t*>(&a),sizeof(a)-4);
+                        xSemaphoreTake(uart_tx_lock,portMAX_DELAY);uart_write_bytes(UART_NUM_0,&a,sizeof(a));xSemaphoreGive(uart_tx_lock);
+                    }
+                }
                 if(!__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE))continue;
                 frame f{};get_telemetry(f.data);
                 if(f.data.cycle==last_cycle)continue;
@@ -219,6 +241,8 @@ namespace test
         {
             sensor::package sensors{};
             sensor::get_package(sensors);
+            attitude_frame a{};get_attitude(a);
+            if(a.selected && a.timestamp_us){sensors.imu.timestamp_us=a.timestamp_us;memcpy(sensors.imu.angle,a.angle,sizeof(a.angle));}
             motor::foc_info foc{};
             motor::get_info(foc);
             respond("STATUS calibrated=%u running=%u ready=%u fault=%lu bus=%.4f "
@@ -250,6 +274,8 @@ namespace test
             uint32_t log_stride = 1;
             uint64_t previous_wake_us = 0;
             uint32_t applied_revision=1;
+            attitude_eskf::filter estimator;
+            uint64_t previous_attitude_us=0;uint32_t attitude_sequence=0;
 
             while(true)
             {
@@ -283,6 +309,26 @@ namespace test
                     now - sensors.left_encoder.timestamp_us <= 1500 &&
                     sensors.right_encoder.timestamp_us != 0 &&
                     now - sensors.right_encoder.timestamp_us <= 1500;
+
+                if(sensors.imu.timestamp_us && sensors.imu.timestamp_us!=previous_attitude_us){
+                    const uint64_t filter_began=esp_timer_get_time();
+                    const float dt=previous_attitude_us?(sensors.imu.timestamp_us-previous_attitude_us)*1e-6f:.005f;
+                    previous_attitude_us=sensors.imu.timestamp_us;
+                    const bool rest=__atomic_load_n(&attitude_confirmed_rest,__ATOMIC_ACQUIRE)!=0;
+                    estimator.update(sensors.imu.acc,sensors.imu.gyro,dt,rest);
+                    attitude_frame a{};a.magic=0x31545441;a.sequence=attitude_sequence++;a.timestamp_us=sensors.imu.timestamp_us;
+                    memcpy(a.q,estimator.q,sizeof(a.q));memcpy(a.bias,estimator.bias,sizeof(a.bias));
+                    float angles[3];estimator.euler(angles);memcpy(a.angle,angles,sizeof(angles));
+                    memcpy(a.legacy_angle,sensors.imu.angle,sizeof(a.legacy_angle));
+                    for(int i=0;i<3;++i)a.gyro[i]=sensors.imu.gyro[i]-estimator.bias[i];
+                    for(int i=0;i<6;++i)a.covariance_diag[i]=estimator.P[i][i];
+                    a.compute_us=esp_timer_get_time()-filter_began;a.gravity_updates=estimator.gravity_updates;
+                    a.gravity_rejected=estimator.gravity_rejected;a.rest_updates=estimator.rest_updates;
+                    a.selected=__atomic_load_n(&attitude_selected,__ATOMIC_ACQUIRE);a.confirmed_rest=rest;a.nis=estimator.nis;
+                    a.stack_high_water=uxTaskGetStackHighWaterMark(nullptr);
+                    portENTER_CRITICAL(&attitude_lock);latest_attitude=a;portEXIT_CRITICAL(&attitude_lock);
+                    if(a.selected){memcpy(sensors.imu.angle,a.angle,sizeof(a.angle));memcpy(sensors.imu.gyro,a.gyro,sizeof(a.gyro));}
+                }
 
                 if(motor::update_locked())
                 {
@@ -319,6 +365,7 @@ namespace test
                     __atomic_store_n(&cancel, 0U, __ATOMIC_RELEASE);
                     __atomic_store_n(&active, static_cast<uint32_t>(current.type), __ATOMIC_RELEASE);
 
+                    if(current.type!=mode::SHADOW)__atomic_store_n(&attitude_confirmed_rest,0U,__ATOMIC_RELEASE);
                     if(!fresh || !foc.calibrated || foc.fault.active)
                     {
                         result = 1;
@@ -408,12 +455,14 @@ namespace test
                 const uint32_t dynamic_action=__atomic_exchange_n(&dynamic_request,0U,__ATOMIC_ACQ_REL);
                 if(dynamic_action==1)
                 {
-                    dynamic.start(now,controller.distance_m);
-                    controller.velocity_integral=dynamic_integral.begin(controller.velocity_integral,dynamic.origin,
-                        lqi_config::K[0][0]*current.tuning.lqi_scale[0],lqi_config::K[0][6]*current.tuning.lqi_scale[6]);
+                    float amplitude;
+                    portENTER_CRITICAL(&request_lock);amplitude=dynamic_amplitude;portEXIT_CRITICAL(&request_lock);
+                    dynamic.start(now,controller.distance_m,amplitude);
+                    controller.velocity_integral=dynamic_integral.begin(controller.velocity_integral);
                 }
                 else if(dynamic_action==2)
                 {controller.velocity_integral=dynamic_integral.end(controller.velocity_integral);dynamic=motion_test::state{};}
+                else if(dynamic_action==3){dynamic.aborted=true;}
                 dynamic.advance(now,controller.distance_m);
                 float integral_limit=0;
                 portENTER_CRITICAL(&request_lock);
@@ -425,7 +474,10 @@ namespace test
                     result=9;motor::stop();continue;
                 }
                 balance::reference target{};
-                if(dynamic.armed){target.position_m=dynamic.position;target.speed_m_s=dynamic.speed;}
+                if(dynamic.armed){
+                    target.position_m=dynamic.position;target.speed_m_s=dynamic.speed;
+                    target.common_current_bias_A=-lqi_config::K[0][0]*current.tuning.lqi_scale[0]*dynamic.origin;
+                }
                 if(dynamic.armed)controller.velocity_integral=dynamic_integral.update(controller.velocity_integral,
                     (now-dynamic.began_us)*1e-6,integral_limit);
                 balance::output output = balance::update(
@@ -621,6 +673,23 @@ namespace test
                 xSemaphoreGive(uart_tx_lock);
                 respond("ENCDUMP ready=1 count=%lu\n",(unsigned long)header.count);
             }
+            else if(!strcmp(line,"ATTITUDE") || !strcmp(line,"ATTITUDE 0") || !strcmp(line,"ATTITUDE 1") ||
+                    !strcmp(line,"ATTREST 0") || !strcmp(line,"ATTREST 1"))
+            {
+                motor::foc_info m{};motor::get_info(m);
+                if(strcmp(line,"ATTITUDE") && m.running){respond("REJECT attitude selection/rest calibration requires stopped motors\n");return;}
+                if(!strcmp(line,"ATTITUDE 0") || !strcmp(line,"ATTITUDE 1"))__atomic_store_n(&attitude_selected,line[9]=='1'?1U:0U,__ATOMIC_RELEASE);
+                if(!strcmp(line,"ATTREST 0") || !strcmp(line,"ATTREST 1"))__atomic_store_n(&attitude_confirmed_rest,line[8]=='1'?1U:0U,__ATOMIC_RELEASE);
+                attitude_frame a{};get_attitude(a);
+                respond("ATTITUDE selected=%lu confirmed_rest=%lu compute_us=%lu bias=%.9g,%.9g,%.9g\n",
+                    (unsigned long)__atomic_load_n(&attitude_selected,__ATOMIC_ACQUIRE),(unsigned long)__atomic_load_n(&attitude_confirmed_rest,__ATOMIC_ACQUIRE),
+                    (unsigned long)a.compute_us,a.bias[0],a.bias[1],a.bias[2]);
+            }
+            else if(!strcmp(line,"ATTSTREAM 200") || !strcmp(line,"ATTSTREAM 0"))
+            {
+                const bool enabled=!strcmp(line,"ATTSTREAM 200");__atomic_store_n(&attitude_stream_enabled,enabled,__ATOMIC_RELEASE);
+                respond("ATTSTREAM hz=%u bytes=140\n",enabled?200:0);
+            }
             else if(!strcmp(line,"IMUINFO"))
             {
                 const auto c=sensor::get_imu_config();
@@ -690,8 +759,8 @@ namespace test
                 portENTER_CRITICAL(&request_lock);d=dynamic_status;portEXIT_CRITICAL(&request_lock);
                 float integral_limit;
                 portENTER_CRITICAL(&request_lock);integral_limit=dynamic_integral_limit;portEXIT_CRITICAL(&request_lock);
-                respond("DYNSTAT armed=%u aborted=%u hard_stop=%u began_us=%llu phase=%u origin=%.6f position=%.6f speed=%.6f peak=%.6f integral_limit=%.6f\n",
-                    d.armed,d.aborted,d.hard_stop,(unsigned long long)d.began_us,d.phase,d.origin,d.position,d.speed,d.peak,integral_limit);
+                respond("DYNSTAT armed=%u aborted=%u hard_stop=%u began_us=%llu phase=%u origin=%.6f position=%.6f speed=%.6f peak=%.6f integral_limit=%.6f amplitude=%.6f\n",
+                    d.armed,d.aborted,d.hard_stop,(unsigned long long)d.began_us,d.phase,d.origin,d.position,d.speed,d.peak,integral_limit,d.amplitude);
             }
             else if(strncmp(line,"DYNINT ",7)==0)
             {
@@ -701,13 +770,22 @@ namespace test
                 portENTER_CRITICAL(&request_lock);dynamic_integral_limit=limit;portEXIT_CRITICAL(&request_lock);
                 respond("DYNINT accepted=1 limit=%.6f\n",limit);
             }
-            else if(strcmp(line,"DYNTEST")==0)
+            else if(strcmp(line,"DYNTEST")==0 || strncmp(line,"DYNTEST ",8)==0)
             {
+                float amplitude=.05f;char extra;
+                if(line[7] && (sscanf(line+8,"%f %c",&amplitude,&extra)!=1 || !std::isfinite(amplitude) || amplitude<.05f || amplitude>.14f))
+                {respond("REJECT DYNTEST requires 0.05..0.14 m\n");return;}
                 motion_test::state d;
                 portENTER_CRITICAL(&request_lock);d=dynamic_status;portEXIT_CRITICAL(&request_lock);
                 const bool accepted=__atomic_load_n(&active,__ATOMIC_ACQUIRE)==2 && !d.armed;
-                if(accepted)__atomic_store_n(&dynamic_request,1U,__ATOMIC_RELEASE);
-                respond("DYNTEST accepted=%u excursion_m=.05 duration_s=48 soft_return_m=.10 hard_stop_m=.15\n",accepted);
+                if(accepted){portENTER_CRITICAL(&request_lock);dynamic_amplitude=amplitude;portEXIT_CRITICAL(&request_lock);__atomic_store_n(&dynamic_request,1U,__ATOMIC_RELEASE);}
+                respond("DYNTEST accepted=%u excursion_m=%.6f duration_s=48 soft_return_m=.17 hard_stop_m=.19\n",accepted,amplitude);
+            }
+            else if(strcmp(line,"DYNABORT")==0)
+            {
+                motion_test::state d;portENTER_CRITICAL(&request_lock);d=dynamic_status;portEXIT_CRITICAL(&request_lock);
+                if(d.armed)__atomic_store_n(&dynamic_request,3U,__ATOMIC_RELEASE);
+                respond("DYNABORT accepted=%u\n",d.armed);
             }
             else if(strcmp(line,"DYNEND")==0)
             {
@@ -763,6 +841,7 @@ namespace test
             }
             else if(strcmp(line, "CAL") == 0)
             {
+                __atomic_store_n(&attitude_confirmed_rest,0U,__ATOMIC_RELEASE);
                 sensor::package sensors{};
                 sensor::get_package(sensors);
                 const bool imu_ready = sensors.imu.timestamp_us != 0 &&

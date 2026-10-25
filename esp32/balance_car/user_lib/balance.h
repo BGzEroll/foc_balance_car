@@ -20,6 +20,7 @@ namespace balance
         float speed_m_s = 0.0f;
         float yaw_rad = 0.0f;
         float yaw_rate_rad_s = 0.0f;
+        float common_current_bias_A = 0.0f;
     };
 
     struct limits
