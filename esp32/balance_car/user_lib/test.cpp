@@ -91,6 +91,7 @@ namespace test
         SemaphoreHandle_t uart_tx_lock = nullptr;
         TaskHandle_t uart_stream_handle = nullptr;
         uint32_t uart_stream_enabled = 0;
+        uint32_t imu_stream_enabled = 0;
         char *reply_text = nullptr;
         size_t reply_used = 0;
         // Only the console task executes commands, for both UART and TCP.
@@ -165,7 +166,8 @@ namespace test
             }
             memcpy(t.gains,values,sizeof(values));
             portENTER_CRITICAL(&telemetry_lock); latest_telemetry=t;portEXIT_CRITICAL(&telemetry_lock);
-            if(uart_stream_handle && __atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE))
+            if(uart_stream_handle && (__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE) ||
+                __atomic_load_n(&imu_stream_enabled,__ATOMIC_ACQUIRE)))
                 xTaskNotifyGive(uart_stream_handle);
         }
 
@@ -176,8 +178,28 @@ namespace test
             };
             static_assert(sizeof(frame)==224);
             uint32_t sequence=0,last_cycle=UINT32_MAX;
+            uint32_t imu_sequence=0;uint64_t last_imu_us=0;
             while(true) {
                 ulTaskNotifyTake(pdTRUE,portMAX_DELAY);
+                if(__atomic_load_n(&imu_stream_enabled,__ATOMIC_ACQUIRE)) {
+                    sensor::package s{};sensor::get_package(s);
+                    if(s.imu.timestamp_us && s.imu.timestamp_us!=last_imu_us) {
+                        struct __attribute__((packed)) imu_frame {
+                            uint32_t magic,sequence;uint64_t timestamp_us,read_began_us;
+                            uint32_t sample_sequence;
+                            int16_t raw[7];uint16_t reserved;
+                            float gyro[3],angle[3];uint32_t crc;
+                        } f{};
+                        static_assert(sizeof(f)==72);
+                        last_imu_us=s.imu.timestamp_us;f.magic=0x32554d49;f.sequence=imu_sequence++;
+                        f.timestamp_us=s.imu.timestamp_us;f.read_began_us=s.imu.read_began_us;
+                        f.sample_sequence=s.imu.sequence;memcpy(f.raw,s.imu.raw,sizeof(f.raw));
+                        memcpy(f.gyro,s.imu.gyro,sizeof(f.gyro));memcpy(f.angle,s.imu.angle,sizeof(f.angle));
+                        f.crc=esp_rom_crc32_le(0,reinterpret_cast<const uint8_t*>(&f),sizeof(f)-4);
+                        xSemaphoreTake(uart_tx_lock,portMAX_DELAY);
+                        uart_write_bytes(UART_NUM_0,&f,sizeof(f));xSemaphoreGive(uart_tx_lock);
+                    }
+                }
                 if(!__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE))continue;
                 frame f{};get_telemetry(f.data);
                 if(f.data.cycle==last_cycle)continue;
@@ -218,7 +240,6 @@ namespace test
          */
         void control_task(void *)
         {
-            TickType_t wake = xTaskGetTickCount();
             run current{};
             balance::state controller{};
             motion_test::state dynamic{};
@@ -232,7 +253,7 @@ namespace test
 
             while(true)
             {
-                vTaskDelayUntil(&wake, pdMS_TO_TICKS(5));
+                if(!sensor::wait_for_imu())continue;
                 if(!__atomic_load_n(&monitor_enabled,__ATOMIC_ACQUIRE)) continue;
                 motor::foc_info foc{};
                 motor::get_info(foc);
@@ -599,6 +620,18 @@ namespace test
                 uart_write_bytes(UART_NUM_0,&crc,sizeof(crc));
                 xSemaphoreGive(uart_tx_lock);
                 respond("ENCDUMP ready=1 count=%lu\n",(unsigned long)header.count);
+            }
+            else if(!strcmp(line,"IMUINFO"))
+            {
+                const auto c=sensor::get_imu_config();
+                respond("IMUINFO who_am_i=0x%02x sample_divider=%u dlpf=%u gyro_range=0x%02x accel_range=0x%02x power=0x%02x host_period_us=5000\n",
+                    c.who_am_i,c.sample_divider,c.dlpf,c.gyro_range,c.accel_range,c.power);
+            }
+            else if(!strcmp(line,"IMUSTREAM 200") || !strcmp(line,"IMUSTREAM 0"))
+            {
+                const bool enabled=!strcmp(line,"IMUSTREAM 200");
+                __atomic_store_n(&imu_stream_enabled,enabled,__ATOMIC_RELEASE);
+                respond("IMUSTREAM hz=%u\n",enabled?200:0);
             }
             else if(!strcmp(line,"ENCAB"))
             {

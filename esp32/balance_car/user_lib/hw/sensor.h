@@ -18,6 +18,9 @@ namespace sensor
     struct imu_data
     {
         uint64_t timestamp_us = 0;
+        int16_t raw[7] = {}; // Body-frame accel XYZ, temperature, gyro XYZ.
+        uint64_t read_began_us = 0;
+        uint32_t sequence = 0;
 
         float temperature = 0.0f;
 
@@ -36,6 +39,9 @@ namespace sensor
     bool init();
     void poll(uint32_t notifications, bool allow_recovery = true);
     bool get_package(package &snapshot);
+    bool wait_for_imu(); // Single control consumer, notified after each new IMU package.
+    struct imu_config {uint8_t sample_divider,dlpf,gyro_range,accel_range,power,who_am_i;};
+    imu_config get_imu_config();
 
     struct encoder_record {
         uint32_t time_us;

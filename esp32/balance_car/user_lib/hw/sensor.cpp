@@ -8,6 +8,8 @@
 #include "freertos/task.h"
 
 namespace {
+    sensor::imu_config imu_registers{};
+    TaskHandle_t imu_control_task=nullptr;
     sensor::encoder_record encoder_records[2048];
     uint32_t encoder_record_count=2048, encoder_ab_us=0;
     uint64_t encoder_first_us=0;
@@ -292,6 +294,15 @@ namespace i2c
 
         ESP_ERROR_CHECK(ESP_ERR_TIMEOUT);
     }
+
+    void read_right_sync(uint8_t reg,uint8_t *data,size_t size)
+    {
+        read(right,&reg,data,size);
+        uint32_t notification=0;
+        const bool done=xTaskNotifyWait(0,RIGHT_DONE,&notification,pdMS_TO_TICKS(20))==pdTRUE && (notification&RIGHT_DONE);
+        ESP_ERROR_CHECK(done?ESP_OK:ESP_ERR_TIMEOUT);
+        right.pending=false;
+    }
 }
 
 namespace as5600
@@ -459,6 +470,7 @@ namespace mpu6050
         float gyro_offset[3] = {};
 
         uint32_t calibration_count = 0;
+        uint32_t sample_sequence = 0;
         uint64_t last_time_us = 0;
 
         float pitch_rad = 0.0f;     // 俯仰角，绕 X 轴，车头抬起为正，单位 rad
@@ -538,14 +550,21 @@ namespace mpu6050
         // DLPF_CFG = 3，带宽约 44 Hz
         i2c::write_right_sync(REG_CONFIG, 0x03);
 
-        // 1000 / (1 + 4) = 200 Hz
-        i2c::write_right_sync(REG_SMPLRT_DIV, 0x04);
+        // Update output registers at 1 kHz; host reads remain at 200 Hz.
+        i2c::write_right_sync(REG_SMPLRT_DIV, 0x00);
 
         // ±500 deg/s，65.5 LSB/(deg/s)
         i2c::write_right_sync(REG_GYRO_CONFIG, 0x08);
 
         // ±2 g，16384 LSB/g
         i2c::write_right_sync(REG_ACCEL_CONFIG, 0x00);
+
+        uint8_t config[4];
+        i2c::read_right_sync(REG_SMPLRT_DIV,config,sizeof(config));
+        imu_registers.sample_divider=config[0];imu_registers.dlpf=config[1];
+        imu_registers.gyro_range=config[2];imu_registers.accel_range=config[3];
+        i2c::read_right_sync(REG_PWR_MGMT_1,&imu_registers.power,1);
+        i2c::read_right_sync(0x75,&imu_registers.who_am_i,1);
 
         i2c::set_right_address(as5600::ADDRESS);
     }
@@ -592,12 +611,18 @@ namespace mpu6050
         raw_gyro[0] = -raw_gyro[0];
         raw_gyro[1] = -raw_gyro[1];
 
+        ++sample_sequence;
         if(!process_calibration(raw_gyro))
         {
             return false;
         }
 
         data.timestamp_us = now_us;
+        data.read_began_us=i2c::right.submitted_us;
+        data.sequence=sample_sequence;
+
+        for(uint8_t i=0;i<3;i++){data.raw[i]=raw_acc[i];data.raw[i+4]=raw_gyro[i];}
+        data.raw[3]=raw_temperature;
 
         data.temperature = 
             static_cast<float>(raw_temperature) /
@@ -725,6 +750,8 @@ namespace sensor
             portENTER_CRITICAL(&package_lock);
             latest_package.imu = data;
             portEXIT_CRITICAL(&package_lock);
+            const auto task=__atomic_load_n(&imu_control_task,__ATOMIC_ACQUIRE);
+            if(task)xTaskNotifyGive(task);
         }
 
         /**
@@ -909,6 +936,11 @@ namespace sensor
     bool begin_encoder_capture() {
         if(__atomic_load_n(&encoder_record_count,__ATOMIC_ACQUIRE)<2048)return false;
         encoder_first_us=0;__atomic_store_n(&encoder_record_count,0U,__ATOMIC_RELEASE);return true;
+    }
+    imu_config get_imu_config(){return imu_registers;}
+    bool wait_for_imu(){
+        __atomic_store_n(&imu_control_task,xTaskGetCurrentTaskHandle(),__ATOMIC_RELEASE);
+        return ulTaskNotifyTake(pdTRUE,pdMS_TO_TICKS(10))!=0;
     }
     const encoder_record *get_encoder_capture(encoder_capture_header &header) {
         const uint32_t n=__atomic_load_n(&encoder_record_count,__ATOMIC_ACQUIRE);
