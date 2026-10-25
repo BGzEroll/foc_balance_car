@@ -59,11 +59,12 @@ if 'otadata' in entries:command(base+['erase-region',hex(entries['otadata'][0]),
 command(base[:-2]+['--after','hard-reset','verify-flash','0x10000',str(image)])
 print('FLASH_READBACK_OK; PID reset into stopped boot',flush=True)
 with open_serial() as s:
- boot=receive(s,5);s.write(b'STATUS\nPID\nFAULT\n');replies=receive(s,2)
+ boot=receive(s,5);s.write(b'STATUS\nPID\nYAW\nFAULT\n');replies=receive(s,2)
  text=(boot+replies).decode(errors='replace');(OUT/'boot_and_verify.log').write_text(text,encoding='utf-8')
  statuses=re.findall(r'STATUS [^\r\n]+',text);assert statuses,statuses
  after=statuses[-1];assert all(v in after for v in ['running=0','active=0','fault=0','controller=PID']),after
  assert design['design_sha256'] in text and 'schema=pid_current_v1' in text and 'telemetry=BCU3' in text
+ assert 'mode=zero_rate_bias' in text,text
  assert 'DEBUG transport=UART wireless=OFF ready=1' in text,text
  s.write(b'SET pitch_kp 24\n');reject=receive(s,.3).decode(errors='replace');assert 'REJECT PID controller' in reject,reject
  s.write(b'UARTSTREAM 200\n');binary=receive(s,2);s.write(b'UARTSTREAM 0\n');receive(s,.3)

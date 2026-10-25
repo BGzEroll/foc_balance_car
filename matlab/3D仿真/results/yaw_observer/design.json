@@ -1,0 +1,32 @@
+{
+  "samples": 24001,
+  "seconds": 119.999811,
+  "wheel_radius_m": 0.0325,
+  "track_m": 0.1325364,
+  "gyro_encoder_endpoint_deg": 3.1236383604802684,
+  "fused_encoder_endpoint_deg": 0.011612043975632575,
+  "bias_deg_s": 0.02992854933980852,
+  "scope": "Baseline agreement with wheel odometry, not external heading ground truth. Bias learns only while wheel/common motion and yaw rates are small.",
+  "measured_geometry": {
+    "scale_gyro_over_cad_encoder": 0.98618830748296182,
+    "effective_track_m": 0.134392589117459,
+    "residual_bias_deg_s": 0.014526695415601625,
+    "residual_rms_deg": 0.12865007857796124,
+    "residual_peak_deg": 0.41348332597105764,
+    "scope": "Short-turn gyro integration versus wheel odometry, with initial static bias removed. No external heading reference; does not prove absence of slip."
+  },
+  "synthetic": [
+    {
+      "slip_deg": 0,
+      "final_heading_error_deg": -4.35889416994648E-5,
+      "final_bias_error_deg_s": 3.9618057348239187E-5,
+      "peak_heading_error_deg": 0.52999726394736912
+    },
+    {
+      "slip_deg": 4,
+      "final_heading_error_deg": 4.003709706149631,
+      "final_bias_error_deg_s": -0.0058670341457855739,
+      "peak_heading_error_deg": 4.170738058324126
+    }
+  ]
+}

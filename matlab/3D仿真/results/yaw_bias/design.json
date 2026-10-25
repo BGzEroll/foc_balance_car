@@ -1,0 +1,50 @@
+{
+  "seconds": 179.99985300000003,
+  "accepted_seconds": 142.429931640625,
+  "accepted_fraction": 0.79127804421387482,
+  "final_bias_deg_s": 0.0075221060092335547,
+  "raw_rate_integral_drift_deg_min": 0.33675306580275632,
+  "corrected_integral_drift_deg_min": 0.081390513805626591,
+  "encoder_drift_deg_min": -0.059315104820407638,
+  "window_s": 1,
+  "bias_learning_time_constant_s": 15,
+  "scope": "Recorded uncorrected-control replay. Encoder angle is diagnostic only; only near-zero wheel-motion windows qualify gyro-mean bias updates.",
+  "synthetic": [
+    {
+      "scenario": 1,
+      "encoder_jump_deg": 0,
+      "unseen_external_slow_turn": false,
+      "final_heading_error_deg": 0.60574130295810458,
+      "final_bias_error_deg_s": -6.0956335680057871E-5,
+      "learned_seconds_during_fast_turn": 0,
+      "corrected_jump_at_encoder_step_deg": 0.00011990183644545821
+    },
+    {
+      "scenario": 2,
+      "encoder_jump_deg": 4,
+      "unseen_external_slow_turn": false,
+      "final_heading_error_deg": 0.60655526940809967,
+      "final_bias_error_deg_s": -6.5125152312145736E-5,
+      "learned_seconds_during_fast_turn": 0,
+      "corrected_jump_at_encoder_step_deg": 0.00011990183644545821
+    },
+    {
+      "scenario": 3,
+      "encoder_jump_deg": 0,
+      "unseen_external_slow_turn": true,
+      "final_heading_error_deg": -0.717503379801456,
+      "final_bias_error_deg_s": 0.011896447069924329,
+      "learned_seconds_during_fast_turn": 0,
+      "corrected_jump_at_encoder_step_deg": 0.00025933374504892164
+    },
+    {
+      "scenario": 4,
+      "encoder_jump_deg": 0,
+      "unseen_external_slow_turn": false,
+      "final_heading_error_deg": 0.646690676651161,
+      "final_bias_error_deg_s": -0.00042511747623280805,
+      "learned_seconds_during_fast_turn": 0,
+      "corrected_jump_at_encoder_step_deg": 0.00038088976793399231
+    }
+  ]
+}

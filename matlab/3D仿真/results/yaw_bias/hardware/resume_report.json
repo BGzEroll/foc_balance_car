@@ -1,0 +1,9 @@
+{
+  "seconds_after_turn": 77.80497199999999,
+  "learned_seconds_after_turn": 24.055313110351562,
+  "bias_deg_s": 0.017042315825066903,
+  "position_cm": 0.09690768201835454,
+  "velocity_integral": 0.10760648548603058,
+  "mode": 2,
+  "fault": 0
+}

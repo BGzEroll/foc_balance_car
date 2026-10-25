@@ -1,0 +1,24 @@
+{
+  "selected": 1,
+  "aborted": false,
+  "duration_s": 20.159892,
+  "gyro_yaw": {
+    "left_peak_deg": 56.80398006618861,
+    "right_peak_deg": 59.62528916749216,
+    "final_delta_deg": 0.7515792886728053
+  },
+  "encoder_yaw": {
+    "left_peak_deg": 57.04855982222783,
+    "right_peak_deg": 61.10037004444914,
+    "final_delta_deg": 0.043104436727771166
+  },
+  "fused_yaw": {
+    "left_peak_deg": 56.81881226219833,
+    "right_peak_deg": 60.524824640955806,
+    "final_delta_deg": -0.001280080170102204
+  },
+  "peak_current_A": 0.5987046360969543,
+  "position_span_cm": 10.326694324612617,
+  "final_fault": 0.0,
+  "final_mode": 2.0
+}

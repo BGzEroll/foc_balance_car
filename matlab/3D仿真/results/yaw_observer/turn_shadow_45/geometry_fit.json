@@ -1,0 +1,8 @@
+{
+  "scale_gyro_over_cad_encoder": 0.98618830748296182,
+  "effective_track_m": 0.134392589117459,
+  "residual_bias_deg_s": 0.014526695415601625,
+  "residual_rms_deg": 0.12865007857796124,
+  "residual_peak_deg": 0.41348332597105764,
+  "scope": "Short-turn gyro integration versus wheel odometry, with initial static bias removed. No external heading reference; does not prove absence of slip."
+}

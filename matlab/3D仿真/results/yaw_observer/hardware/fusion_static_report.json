@@ -1,0 +1,9 @@
+{
+  "seconds": 117.405006,
+  "encoder_drift_deg_min": -0.06945707874218372,
+  "gyro_drift_deg_min": 0.5756969828169185,
+  "fused_drift_deg_min": -0.06588438964384083,
+  "encoder_span_deg": 0.19396326098406252,
+  "bias_deg_s": 0.015413183973413288,
+  "scope": "Wheel-odometry heading consistency while stationary; no external absolute heading reference"
+}

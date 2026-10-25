@@ -1,0 +1,9 @@
+{
+  "selected": 0,
+  "aborted": false,
+  "duration_s": 20.019892,
+  "peak_gyro_deg": 48.85360444068744,
+  "peak_encoder_deg": 50.022559620788506,
+  "initial_bias_deg_s": 0.022039482992057234,
+  "final_bias_deg_s": 0.01972481926073652
+}

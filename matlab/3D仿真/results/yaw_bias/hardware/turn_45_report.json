@@ -1,0 +1,26 @@
+{
+  "mode": "zero_rate_bias",
+  "aborted": false,
+  "bias_change_during_turn_deg_s": 0.0,
+  "accepted_seconds_during_turn": 0.0,
+  "learning_flag_samples": 0,
+  "peak_current_A": 0.4652436375617981,
+  "position_span_cm": 8.8313527405262,
+  "final_fault": 0.0,
+  "final_mode": 2.0,
+  "raw_yaw": {
+    "left_peak_deg": 46.414795537858126,
+    "right_peak_deg": 44.94282317737597,
+    "final_delta_deg": -0.9231551347274065
+  },
+  "corrected_yaw": {
+    "left_peak_deg": 46.33284404671026,
+    "right_peak_deg": 45.19081656724685,
+    "final_delta_deg": -1.2503230102400156
+  },
+  "encoder_yaw": {
+    "left_peak_deg": 46.552649112474356,
+    "right_peak_deg": 45.84144056402541,
+    "final_delta_deg": -1.8965952160219313
+  }
+}

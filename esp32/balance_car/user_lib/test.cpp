@@ -4,6 +4,8 @@
 #include "balance.h"
 #include "pid_config.h"
 #include "motion_test.h"
+#include "yaw_observer.h"
+#include "yaw_test.h"
 #include "motion_integral.h"
 #include "wifi_debug.h"
 #include "hw/motor.h"
@@ -71,6 +73,15 @@ namespace test
         uint32_t active = 0;
         uint32_t cancel = 0;
         uint32_t dynamic_request=0;
+        uint32_t attitude_align_requested=0,yaw_bias_enabled=1,yaw_stream_enabled=0,yaw_request=0;
+        float yaw_amplitude=.7853981634f;
+        struct __attribute__((packed)) yaw_frame {
+            uint32_t magic,sequence;uint64_t timestamp_us;
+            float raw_yaw,encoder_yaw,corrected_yaw,bias,gyro_rate,encoder_rate,corrected_rate,quiet_time,target,rate;
+            uint32_t selected,flags,phase,crc;
+        };
+        static_assert(sizeof(yaw_frame)==72);
+        yaw_frame latest_yaw{};
         float dynamic_amplitude=.05f;
         motion_test::state dynamic_status{};
         float dynamic_integral_limit=0;
@@ -171,7 +182,7 @@ namespace test
             memcpy(t.gains,values,sizeof(values));
             portENTER_CRITICAL(&telemetry_lock); latest_telemetry=t;portEXIT_CRITICAL(&telemetry_lock);
             if(uart_stream_handle && (__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE) ||
-                __atomic_load_n(&imu_stream_enabled,__ATOMIC_ACQUIRE) || __atomic_load_n(&attitude_stream_enabled,__ATOMIC_ACQUIRE)))
+                __atomic_load_n(&imu_stream_enabled,__ATOMIC_ACQUIRE) || __atomic_load_n(&attitude_stream_enabled,__ATOMIC_ACQUIRE) || __atomic_load_n(&yaw_stream_enabled,__ATOMIC_ACQUIRE)))
                 xTaskNotifyGive(uart_stream_handle);
         }
 
@@ -183,7 +194,7 @@ namespace test
             static_assert(sizeof(frame)==224);
             uint32_t sequence=0,last_cycle=UINT32_MAX;
             uint32_t imu_sequence=0;uint64_t last_imu_us=0;
-            uint64_t last_attitude_us=0;
+            uint64_t last_attitude_us=0,last_yaw_us=0;
             while(true) {
                 ulTaskNotifyTake(pdTRUE,portMAX_DELAY);
                 if(__atomic_load_n(&imu_stream_enabled,__ATOMIC_ACQUIRE)) {
@@ -211,6 +222,13 @@ namespace test
                         last_attitude_us=a.timestamp_us;
                         a.crc=esp_rom_crc32_le(0,reinterpret_cast<const uint8_t*>(&a),sizeof(a)-4);
                         xSemaphoreTake(uart_tx_lock,portMAX_DELAY);uart_write_bytes(UART_NUM_0,&a,sizeof(a));xSemaphoreGive(uart_tx_lock);
+                    }
+                }
+                if(__atomic_load_n(&yaw_stream_enabled,__ATOMIC_ACQUIRE)){
+                    yaw_frame y;portENTER_CRITICAL(&attitude_lock);y=latest_yaw;portEXIT_CRITICAL(&attitude_lock);
+                    if(y.timestamp_us-last_yaw_us>=20000){
+                        last_yaw_us=y.timestamp_us;y.crc=esp_rom_crc32_le(0,reinterpret_cast<const uint8_t*>(&y),sizeof(y)-4);
+                        xSemaphoreTake(uart_tx_lock,portMAX_DELAY);uart_write_bytes(UART_NUM_0,&y,sizeof(y));xSemaphoreGive(uart_tx_lock);
                     }
                 }
                 if(!__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE))continue;
@@ -268,6 +286,8 @@ namespace test
             attitude_eskf::filter estimator;
             uint64_t previous_attitude_us=0;uint32_t attitude_sequence=0;
             bool previous_calibrated=false;
+            yaw_observer::bias_observer heading;
+            yaw_test::state yaw_motion;
 
             while(true)
             {
@@ -302,12 +322,13 @@ namespace test
                     sensors.right_encoder.timestamp_us != 0 &&
                     now - sensors.right_encoder.timestamp_us <= 1500;
 
-                if(foc.calibrated && !previous_calibrated){
+                const bool align=__atomic_exchange_n(&attitude_align_requested,0U,__ATOMIC_ACQ_REL)!=0;
+                if((foc.calibrated && !previous_calibrated) || (align && !foc.running)){
                     // Calibration may follow a boot on the side. Rebuild gravity
                     // magnitude and tilt in the held calibration pose, retaining gyro bias.
                     float bias[3];memcpy(bias,estimator.bias,sizeof(bias));
                     estimator=attitude_eskf::filter{};memcpy(estimator.bias,bias,sizeof(bias));
-                    previous_attitude_us=0;
+                    previous_attitude_us=0;heading.initialized=false;
                 }
                 previous_calibrated=foc.calibrated;
                 float imu_dt_s=.005f;
@@ -316,12 +337,30 @@ namespace test
                     imu_dt_s=previous_attitude_us?(sensors.imu.timestamp_us-previous_attitude_us)*1e-6f:.005f;
                     previous_attitude_us=sensors.imu.timestamp_us;
                     const bool rest=__atomic_load_n(&attitude_confirmed_rest,__ATOMIC_ACQUIRE)!=0;
-                    estimator.update(sensors.imu.acc,sensors.imu.gyro,imu_dt_s,rest);
+                    const bool enabled=__atomic_load_n(&yaw_bias_enabled,__ATOMIC_ACQUIRE)!=0;
+                    const bool grounded=current.type==mode::BALANCE && foc.ready && fresh;
+                    const float left=FORWARD_SIGN[0]*foc.current[0].encoder_direction*sensors.left_encoder.angle_rad;
+                    const float right=FORWARD_SIGN[1]*foc.current[1].encoder_direction*sensors.right_encoder.angle_rad;
+                    float before_angles[3],before_gyro[3],gravity[3];const float no_speed[2]={};
+                    estimator.euler(before_angles);estimator.gravity(gravity);
+                    for(int i=0;i<3;++i)before_gyro[i]=sensors.imu.gyro[i]-estimator.bias[i];
+                    const auto raw_pose=balance::observe(before_angles,before_gyro,no_speed);
+                    if(grounded)heading.update(raw_pose.yaw_rad,raw_pose.yaw_rate_rad_s,left,right,imu_dt_s,!yaw_motion.armed && __atomic_load_n(&yaw_request,__ATOMIC_ACQUIRE)==0);
+                    else heading.initialized=false;
+                    const float correction=enabled && grounded?heading.bias:0;
+                    float gyro_input[3];for(int i=0;i<3;++i)gyro_input[i]=sensors.imu.gyro[i]-correction*gravity[i];
+                    estimator.update(sensors.imu.acc,gyro_input,imu_dt_s,rest);
                     attitude_frame a{};a.magic=0x31545441;a.sequence=attitude_sequence++;a.timestamp_us=sensors.imu.timestamp_us;
                     memcpy(a.q,estimator.q,sizeof(a.q));memcpy(a.bias,estimator.bias,sizeof(a.bias));
-                    float angles[3];estimator.euler(angles);memcpy(a.angle,angles,sizeof(angles));
+                    float angles[3],corrected_gyro[3];estimator.euler(angles);estimator.gravity(gravity);memcpy(a.angle,angles,sizeof(angles));
                     memcpy(a.legacy_angle,sensors.imu.angle,sizeof(a.legacy_angle));
-                    for(int i=0;i<3;++i)a.gyro[i]=sensors.imu.gyro[i]-estimator.bias[i];
+                    for(int i=0;i<3;++i){a.bias[i]+=correction*gravity[i];corrected_gyro[i]=sensors.imu.gyro[i]-a.bias[i];a.gyro[i]=corrected_gyro[i];}
+                    const auto corrected_pose=balance::observe(angles,corrected_gyro,no_speed);
+                    yaw_frame y{};y.magic=0x32574159;y.sequence=attitude_sequence;y.timestamp_us=a.timestamp_us;
+                    y.raw_yaw=heading.raw_yaw;y.encoder_yaw=heading.encoder_yaw;y.corrected_yaw=corrected_pose.yaw_rad;y.bias=heading.bias;
+                    y.gyro_rate=heading.gyro_rate;y.encoder_rate=heading.encoder_rate;y.corrected_rate=heading.corrected_rate;y.quiet_time=heading.quiet_time;
+                    y.target=yaw_motion.target;y.rate=yaw_motion.rate;y.selected=enabled;y.flags=(heading.initialized?1U:0U)|(heading.candidate?2U:0U)|((heading.learning && heading.candidate)?4U:0U);y.phase=yaw_motion.armed?yaw_motion.phase:UINT32_MAX;
+                    portENTER_CRITICAL(&attitude_lock);latest_yaw=y;portEXIT_CRITICAL(&attitude_lock);
                     for(int i=0;i<6;++i)a.covariance_diag[i]=estimator.P[i][i];
                     a.compute_us=esp_timer_get_time()-filter_began;a.gravity_updates=estimator.gravity_updates;
                     a.gravity_rejected=estimator.gravity_rejected;a.rest_updates=estimator.rest_updates;
@@ -348,7 +387,7 @@ namespace test
                     portEXIT_CRITICAL(&request_lock);
                     controller = balance::state{};
                     began_us = now;
-                    dynamic=motion_test::state{};
+                    dynamic=motion_test::state{};yaw_motion=yaw_test::state{};heading.initialized=false;
                     __atomic_store_n(&dynamic_request,0U,__ATOMIC_RELEASE);
                     portENTER_CRITICAL(&request_lock);
                     dynamic_status=dynamic;
@@ -474,7 +513,14 @@ namespace test
                 {
                     result=9;motor::stop();continue;
                 }
+                const uint32_t yaw_action=__atomic_exchange_n(&yaw_request,0U,__ATOMIC_ACQ_REL);
+                if(yaw_action==1){
+                    float amp;portENTER_CRITICAL(&request_lock);amp=yaw_amplitude;portEXIT_CRITICAL(&request_lock);
+                    yaw_motion.start(now,heading.raw_yaw-yaw_zero,heading.encoder_yaw,controller.distance_m,amp);
+                }else if(yaw_action==2)yaw_motion=yaw_test::state{};
+                yaw_motion.advance(now,heading.raw_yaw-yaw_zero,heading.encoder_yaw,controller.distance_m);
                 balance::reference target{};
+                if(yaw_motion.armed){target.yaw_rad=yaw_motion.target;target.yaw_rate_rad_s=yaw_motion.rate;}
                 if(dynamic.armed){
                     target.position_m=dynamic.position;target.speed_m_s=dynamic.speed;
                     target.pitch_bias_rad=-current.tuning.velocity_kp*current.tuning.position_kp*dynamic.origin;
@@ -674,6 +720,43 @@ namespace test
                 xSemaphoreGive(uart_tx_lock);
                 respond("ENCDUMP ready=1 count=%lu\n",(unsigned long)header.count);
             }
+            else if(!strcmp(line,"ATTALIGN")){
+                motor::foc_info m{};motor::get_info(m);sensor::package p{};sensor::get_package(p);
+                const float rate=sqrtf(p.imu.gyro[0]*p.imu.gyro[0]+p.imu.gyro[1]*p.imu.gyro[1]+p.imu.gyro[2]*p.imu.gyro[2]);
+                const bool accepted=!m.running && m.calibrated && !m.fault.active && rate<.05f &&
+                    fmaxf(fabsf(p.left_encoder.speed_rad_s),fabsf(p.right_encoder.speed_rad_s))<1 &&
+                    p.imu.timestamp_us && esp_timer_get_time()-p.imu.timestamp_us<=20000;
+                if(accepted)__atomic_store_n(&attitude_align_requested,1U,__ATOMIC_RELEASE);
+                respond("ATTALIGN accepted=%u\n",accepted);
+            }
+            else if(!strcmp(line,"YAW") || !strcmp(line,"YAW 0") || !strcmp(line,"YAW 1")){
+                if(line[3])__atomic_store_n(&yaw_bias_enabled,line[4]=='1'?1U:0U,__ATOMIC_RELEASE);
+                yaw_frame y;portENTER_CRITICAL(&attitude_lock);y=latest_yaw;portEXIT_CRITICAL(&attitude_lock);
+                respond("YAW mode=zero_rate_bias selected=%lu initialized=%u raw=%.7f encoder=%.7f corrected=%.7f bias=%.9g quiet_s=%.3f phase=%lu\n",
+                    (unsigned long)__atomic_load_n(&yaw_bias_enabled,__ATOMIC_ACQUIRE),(unsigned)(y.flags&1U),
+                    y.raw_yaw,y.encoder_yaw,y.corrected_yaw,y.bias,y.quiet_time,(unsigned long)y.phase);
+            }
+            else if(!strcmp(line,"YAWSTREAM 50") || !strcmp(line,"YAWSTREAM 0")){
+                const bool enabled=!strcmp(line,"YAWSTREAM 50");__atomic_store_n(&yaw_stream_enabled,enabled?1U:0U,__ATOMIC_RELEASE);
+                respond("YAWSTREAM hz=%u bytes=72\n",enabled?50:0);
+            }
+            else if(!strcmp(line,"YAWTEST") || !strncmp(line,"YAWTEST ",8)){
+                float degrees=45;char extra;
+                if(line[7] && (sscanf(line+8,"%f %c",&degrees,&extra)!=1 || !std::isfinite(degrees) || degrees<15 || degrees>60)){
+                    respond("REJECT YAWTEST requires 15..60 deg\n");return;
+                }
+                yaw_frame y;portENTER_CRITICAL(&attitude_lock);y=latest_yaw;portEXIT_CRITICAL(&attitude_lock);
+                motion_test::state d;portENTER_CRITICAL(&request_lock);d=dynamic_status;portEXIT_CRITICAL(&request_lock);
+                const bool accepted=__atomic_load_n(&active,__ATOMIC_ACQUIRE)==2 && (y.flags&1U) && !d.armed && y.phase==UINT32_MAX;
+                if(accepted){portENTER_CRITICAL(&request_lock);yaw_amplitude=degrees*.01745329252f;portEXIT_CRITICAL(&request_lock);__atomic_store_n(&yaw_request,1U,__ATOMIC_RELEASE);}
+                respond("YAWTEST accepted=%u amplitude_deg=%.3f duration_s=20 return_at_deg=65\n",accepted,degrees);
+            }
+            else if(!strcmp(line,"YAWEND")){
+                yaw_frame y;portENTER_CRITICAL(&attitude_lock);y=latest_yaw;portEXIT_CRITICAL(&attitude_lock);
+                const bool accepted=y.phase==4 || y.phase==5;
+                if(accepted)__atomic_store_n(&yaw_request,2U,__ATOMIC_RELEASE);
+                respond("YAWEND accepted=%u\n",accepted);
+            }
             else if(!strcmp(line,"ATTITUDE") || !strcmp(line,"ATTITUDE 0") || !strcmp(line,"ATTITUDE 1") ||
                     !strcmp(line,"ATTREST 0") || !strcmp(line,"ATTREST 1"))
             {
@@ -682,9 +765,13 @@ namespace test
                 if(!strcmp(line,"ATTITUDE 0") || !strcmp(line,"ATTITUDE 1"))__atomic_store_n(&attitude_selected,line[9]=='1'?1U:0U,__ATOMIC_RELEASE);
                 if(!strcmp(line,"ATTREST 0") || !strcmp(line,"ATTREST 1"))__atomic_store_n(&attitude_confirmed_rest,line[8]=='1'?1U:0U,__ATOMIC_RELEASE);
                 attitude_frame a{};get_attitude(a);
-                respond("ATTITUDE selected=%lu confirmed_rest=%lu compute_us=%lu bias=%.9g,%.9g,%.9g\n",
+                sensor::package p{};sensor::get_package(p);
+                const float g[3]={2*(a.q[1]*a.q[3]-a.q[0]*a.q[2]),2*(a.q[2]*a.q[3]+a.q[0]*a.q[1]),1-2*(a.q[1]*a.q[1]+a.q[2]*a.q[2])};
+                const float n=sqrtf(p.imu.acc[0]*p.imu.acc[0]+p.imu.acc[1]*p.imu.acc[1]+p.imu.acc[2]*p.imu.acc[2]);
+                const float dot=(p.imu.acc[0]*g[0]+p.imu.acc[1]*g[1]+p.imu.acc[2]*g[2])/n;
+                respond("ATTITUDE selected=%lu confirmed_rest=%lu compute_us=%lu bias=%.9g,%.9g,%.9g tilt_error_rad=%.7g gravity_updates=%lu gravity_rejected=%lu\n",
                     (unsigned long)__atomic_load_n(&attitude_selected,__ATOMIC_ACQUIRE),(unsigned long)__atomic_load_n(&attitude_confirmed_rest,__ATOMIC_ACQUIRE),
-                    (unsigned long)a.compute_us,a.bias[0],a.bias[1],a.bias[2]);
+                    (unsigned long)a.compute_us,a.bias[0],a.bias[1],a.bias[2],acosf(fmaxf(-1,fminf(1,dot))),(unsigned long)a.gravity_updates,(unsigned long)a.gravity_rejected);
             }
             else if(!strcmp(line,"ATTSTREAM 200") || !strcmp(line,"ATTSTREAM 0"))
             {

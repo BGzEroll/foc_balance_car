@@ -1,0 +1,11 @@
+{
+  "mode": "zero_rate_bias",
+  "seconds": 132.79486599999998,
+  "final_bias_deg_s": 0.014536079961761879,
+  "accepted_fraction": 0.4454986107809197,
+  "last60_raw_drift_deg_min": 1.5997968164256315,
+  "last60_corrected_drift_deg_min": 0.5149872661446996,
+  "last60_encoder_drift_deg_min": 0.6006333638149755,
+  "raw_minus_encoder_drift_deg_min": 0.9991634526106561,
+  "corrected_minus_encoder_drift_deg_min": -0.08564609767027587
+}
