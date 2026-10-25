@@ -1,8 +1,8 @@
 #ifndef BALANCE_H
 #define BALANCE_H
-#include "common_notch.h"
+#include "pid_config.h"
 
-// Fixed LQI update; observe() retains the hardware-tested coordinate mapping.
+// Cascaded position P, velocity PI, pitch PID and yaw PID. Output is amperes.
 namespace balance
 {
     struct observation
@@ -20,43 +20,38 @@ namespace balance
         float speed_m_s = 0.0f;
         float yaw_rad = 0.0f;
         float yaw_rate_rad_s = 0.0f;
-        float common_current_bias_A = 0.0f;
+        float pitch_bias_rad = 0.0f;
     };
 
     struct limits
     {
         float current_A = 6.0f;
-        float speed_m_s = 0.65f;
-        float pitch_rad = 0.13962634f;
+        float speed_m_s = pid_config::SPEED_LIMIT;
+        float pitch_rad = pid_config::PITCH_TARGET_LIMIT;
     };
 
     struct gains
     {
-        // Multipliers of the eight columns of the MATLAB LQI matrix.
-        float lqi_scale[8] = {1,1,1,1,1,1,1,1};
-        float common_notch_mix = 0.0f;
-        float friction_ff_N = 0.0f; // Only active for a nonzero motion speed reference.
-        float velocity_kp = 1.4f;
-        float velocity_ki = 1.2f;
-        float pitch_kd = 1.878010521f; // A*s/rad, total common effort
-        float pitch_kp = 30.04816834f;
-        float pitch_ki = 0.3756021042f;
-        float yaw_kp = 7.887644188f;
-        float yaw_ki = 0.7512042084f;
-        float yaw_kd = 1.502408417f;
-        float position_kp = 1.3f;
-        float pitch_trim_rad = -0.001564208089f;
+        float velocity_kp = pid_config::DEFAULT_GAINS[0];
+        float velocity_ki = pid_config::DEFAULT_GAINS[1];
+        float pitch_kd = pid_config::DEFAULT_GAINS[2]; // common A*s/rad
+        float pitch_kp = pid_config::DEFAULT_GAINS[3]; // common A/rad
+        float pitch_ki = pid_config::DEFAULT_GAINS[4];
+        float yaw_kp = pid_config::DEFAULT_GAINS[5];
+        float yaw_ki = pid_config::DEFAULT_GAINS[6];
+        float yaw_kd = pid_config::DEFAULT_GAINS[7];
+        float position_kp = pid_config::DEFAULT_GAINS[8];
+        float pitch_trim_rad = pid_config::DEFAULT_GAINS[9];
     };
 
     struct state
     {
         float distance_m = 0.0f;
         float previous_speed_m_s = 0.0f;
-        float velocity_integral = 0.0f; // LQI position error integral, m*s
-        float pitch_integral = 0.0f; // LQI unused zero
+        float velocity_integral = 0.0f; // velocity-error integral, m
+        float pitch_integral = 0.0f; // rad*s
         float yaw_integral = 0.0f;
         bool first_sample = true;
-        common_notch::state notch{};
     };
 
     struct output
@@ -77,6 +72,7 @@ namespace balance
         const reference &target,
         const limits &limit,
         state &controller,
+        float dt_s,
         const gains &tuning = gains{});
 }
 

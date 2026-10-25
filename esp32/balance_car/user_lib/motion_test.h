@@ -14,17 +14,17 @@ struct state {
         if(!armed)return;
         const float displacement=std::fabs(x-origin);
         peak=std::fmax(peak,displacement);
-        if(!std::isfinite(x) || displacement>=.19f)hard_stop=true;
-        if(displacement>=.17f || hard_stop)aborted=true;
+        if(!std::isfinite(x) || displacement>=.25f)hard_stop=true;
+        if(displacement>=.23f || hard_stop)aborted=true;
         if(aborted){position=origin;speed=0;phase=5;return;}
         const double seconds=static_cast<double>(now-began_us)*1e-6;
-        if(seconds>=48){position=origin;speed=0;phase=4;return;}
-        phase=static_cast<unsigned>(seconds/12);
+        if(seconds>=16){position=origin;speed=0;phase=4;return;}
+        phase=static_cast<unsigned>(seconds/4);
         const float from[4]={0,amplitude,0,-amplitude},to[4]={amplitude,0,-amplitude,0};
-        const double u=std::fmin(1.0,(seconds-12*phase)/6);
+        const double u=std::fmin(1.0,(seconds-4*phase)/2);
         const double u2=u*u,u3=u2*u;
         const double h=u3*(10+u*(-15+6*u));
-        const double dh=30*u2*(1-u)*(1-u)/6;
+        const double dh=30*u2*(1-u)*(1-u)/2;
         position=origin+from[phase]+(to[phase]-from[phase])*h;
         speed=(to[phase]-from[phase])*dh;
     }

@@ -2,7 +2,7 @@
 #include "realtime_config.h"
 
 #include "balance.h"
-#include "lqi_config.h"
+#include "pid_config.h"
 #include "motion_test.h"
 #include "motion_integral.h"
 #include "wifi_debug.h"
@@ -63,7 +63,7 @@ namespace test
 
         run pending{};
         balance::gains tuning{};
-        uint32_t parameter_revision = lqi_config::REVISION;
+        uint32_t parameter_revision = pid_config::REVISION;
         telemetry latest_telemetry{};
         portMUX_TYPE telemetry_lock = portMUX_INITIALIZER_UNLOCKED;
         portMUX_TYPE request_lock = portMUX_INITIALIZER_UNLOCKED;
@@ -126,27 +126,18 @@ namespace test
             va_end(args);
         }
 
-        void gain_values(const balance::gains &g, float v[10])
+        void gain_values(const balance::gains &g,float v[10])
         {
-            memset(v,0,10*sizeof(float));
-            memcpy(v,g.lqi_scale,8*sizeof(float));
-            v[8]=g.common_notch_mix;
-            v[9]=lqi_config::HARDWARE_TRIM_RAD;
+            const float values[10]={g.velocity_kp,g.velocity_ki,g.pitch_kd,g.pitch_kp,g.pitch_ki,g.yaw_kp,g.yaw_ki,g.yaw_kd,g.position_kp,g.pitch_trim_rad};
+            memcpy(v,values,sizeof(values));
         }
         void report_gains()
         {
-            balance::gains g{};uint32_t revision;
-            portENTER_CRITICAL(&request_lock);
-            g=tuning;revision=parameter_revision;
-            portEXIT_CRITICAL(&request_lock);
-            respond("LQI schema=lqi_current_v1 revision=%lu design=%s Ts_us=5000 max_current_A=6 telemetry=BCU3 trim=%.9g notch_Hz=12.5 notch_mix=%.6g friction_ff_N=%.6f\n",
-                (unsigned long)revision,lqi_config::DESIGN_SHA256,lqi_config::HARDWARE_TRIM_RAD,g.common_notch_mix,g.friction_ff_N);
-            for(unsigned r=0;r<2;++r)
-                respond("LQI_K row=%u %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",r,
-                    lqi_config::K[r][0]*g.lqi_scale[0],lqi_config::K[r][1]*g.lqi_scale[1],
-                    lqi_config::K[r][2]*g.lqi_scale[2],lqi_config::K[r][3]*g.lqi_scale[3],
-                    lqi_config::K[r][4]*g.lqi_scale[4],lqi_config::K[r][5]*g.lqi_scale[5],
-                    lqi_config::K[r][6]*g.lqi_scale[6],lqi_config::K[r][7]*g.lqi_scale[7]);
+            balance::gains g;uint32_t revision;
+            portENTER_CRITICAL(&request_lock);g=tuning;revision=parameter_revision;portEXIT_CRITICAL(&request_lock);
+            float v[10];gain_values(g,v);
+            respond("PID schema=pid_current_v1 revision=%lu design=%s Ts_us=5000 actual_dt=1 max_current_A=6 telemetry=BCU3 gains=%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g,%.9g\n",
+                (unsigned long)revision,pid_config::DESIGN_SHA256,v[0],v[1],v[2],v[3],v[4],v[5],v[6],v[7],v[8],v[9]);
         }
         void publish(const sensor::package &s,const motor::foc_info &m,uint64_t now,uint32_t dt,
                      const balance::state &state,const balance::output &out,uint32_t calc,uint32_t current_mode,const balance::gains *applied=nullptr,uint32_t applied_revision=0,float current_cap=0,float yaw_reference=0)
@@ -247,7 +238,7 @@ namespace test
             motor::get_info(foc);
             respond("STATUS calibrated=%u running=%u ready=%u fault=%lu bus=%.4f "
                    "imu_us=%llu pitch=%.6f roll=%.6f yaw=%.6f "
-                   "raw_a=%.6f raw_b=%.6f dir_a=%.0f dir_b=%.0f active=%lu pwm_core=%lu controller=LQI\n",
+                   "raw_a=%.6f raw_b=%.6f dir_a=%.0f dir_b=%.0f active=%lu pwm_core=%lu controller=PID\n",
                    foc.calibrated, foc.running, foc.ready,
                    static_cast<unsigned long>(foc.fault.code), foc.bus_voltage_V,
                    static_cast<unsigned long long>(sensors.imu.timestamp_us),
@@ -276,6 +267,7 @@ namespace test
             uint32_t applied_revision=1;
             attitude_eskf::filter estimator;
             uint64_t previous_attitude_us=0;uint32_t attitude_sequence=0;
+            bool previous_calibrated=false;
 
             while(true)
             {
@@ -310,12 +302,21 @@ namespace test
                     sensors.right_encoder.timestamp_us != 0 &&
                     now - sensors.right_encoder.timestamp_us <= 1500;
 
+                if(foc.calibrated && !previous_calibrated){
+                    // Calibration may follow a boot on the side. Rebuild gravity
+                    // magnitude and tilt in the held calibration pose, retaining gyro bias.
+                    float bias[3];memcpy(bias,estimator.bias,sizeof(bias));
+                    estimator=attitude_eskf::filter{};memcpy(estimator.bias,bias,sizeof(bias));
+                    previous_attitude_us=0;
+                }
+                previous_calibrated=foc.calibrated;
+                float imu_dt_s=.005f;
                 if(sensors.imu.timestamp_us && sensors.imu.timestamp_us!=previous_attitude_us){
                     const uint64_t filter_began=esp_timer_get_time();
-                    const float dt=previous_attitude_us?(sensors.imu.timestamp_us-previous_attitude_us)*1e-6f:.005f;
+                    imu_dt_s=previous_attitude_us?(sensors.imu.timestamp_us-previous_attitude_us)*1e-6f:.005f;
                     previous_attitude_us=sensors.imu.timestamp_us;
                     const bool rest=__atomic_load_n(&attitude_confirmed_rest,__ATOMIC_ACQUIRE)!=0;
-                    estimator.update(sensors.imu.acc,sensors.imu.gyro,dt,rest);
+                    estimator.update(sensors.imu.acc,sensors.imu.gyro,imu_dt_s,rest);
                     attitude_frame a{};a.magic=0x31545441;a.sequence=attitude_sequence++;a.timestamp_us=sensors.imu.timestamp_us;
                     memcpy(a.q,estimator.q,sizeof(a.q));memcpy(a.bias,estimator.bias,sizeof(a.bias));
                     float angles[3];estimator.euler(angles);memcpy(a.angle,angles,sizeof(angles));
@@ -476,12 +477,12 @@ namespace test
                 balance::reference target{};
                 if(dynamic.armed){
                     target.position_m=dynamic.position;target.speed_m_s=dynamic.speed;
-                    target.common_current_bias_A=-lqi_config::K[0][0]*current.tuning.lqi_scale[0]*dynamic.origin;
+                    target.pitch_bias_rad=-current.tuning.velocity_kp*current.tuning.position_kp*dynamic.origin;
                 }
                 if(dynamic.armed)controller.velocity_integral=dynamic_integral.update(controller.velocity_integral,
-                    (now-dynamic.began_us)*1e-6,integral_limit);
+                    (now-dynamic.began_us)*1e-6,integral_limit,imu_dt_s);
                 balance::output output = balance::update(
-                    measured, target, limit, controller, current.tuning);
+                    measured, target, limit, controller, imu_dt_s,current.tuning);
 
                 if(current.type == mode::PROBE)
                 {
@@ -739,20 +740,7 @@ namespace test
                 else if(__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE)) respond("REJECT use active UARTSTREAM; DUMP would interrupt streaming\n");
                 else dump();
             }
-            else if(strcmp(line,"LQI")==0 || strcmp(line,"GAINS")==0) report_gains();
-            else if(strncmp(line,"LQIFF ",6)==0)
-            {
-                float force=0;char extra;
-                if(sscanf(line+6,"%f %c",&force,&extra)!=1 || !std::isfinite(force) || force<0 || force>.4f)
-                {respond("REJECT LQIFF requires force_N 0..0.4\n");return;}
-                uint32_t revision=0;
-                portENTER_CRITICAL(&request_lock);
-                if(fabsf(force-tuning.friction_ff_N)<=.0501f)
-                {tuning.friction_ff_N=force;revision=++parameter_revision;}
-                portEXIT_CRITICAL(&request_lock);
-                if(revision)respond("LQIFF accepted=1 force_N=%.6f revision=%lu\n",force,(unsigned long)revision);
-                else respond("REJECT LQIFF step<=.05N\n");
-            }
+            else if(strcmp(line,"PID")==0 || strcmp(line,"GAINS")==0) report_gains();
             else if(strcmp(line,"DYNSTAT")==0)
             {
                 motion_test::state d;
@@ -773,13 +761,13 @@ namespace test
             else if(strcmp(line,"DYNTEST")==0 || strncmp(line,"DYNTEST ",8)==0)
             {
                 float amplitude=.05f;char extra;
-                if(line[7] && (sscanf(line+8,"%f %c",&amplitude,&extra)!=1 || !std::isfinite(amplitude) || amplitude<.05f || amplitude>.14f))
-                {respond("REJECT DYNTEST requires 0.05..0.14 m\n");return;}
+                if(line[7] && (sscanf(line+8,"%f %c",&amplitude,&extra)!=1 || !std::isfinite(amplitude) || amplitude<.05f || amplitude>.20f))
+                {respond("REJECT DYNTEST requires 0.05..0.20 m\n");return;}
                 motion_test::state d;
                 portENTER_CRITICAL(&request_lock);d=dynamic_status;portEXIT_CRITICAL(&request_lock);
                 const bool accepted=__atomic_load_n(&active,__ATOMIC_ACQUIRE)==2 && !d.armed;
                 if(accepted){portENTER_CRITICAL(&request_lock);dynamic_amplitude=amplitude;portEXIT_CRITICAL(&request_lock);__atomic_store_n(&dynamic_request,1U,__ATOMIC_RELEASE);}
-                respond("DYNTEST accepted=%u excursion_m=%.6f duration_s=48 soft_return_m=.17 hard_stop_m=.19\n",accepted,amplitude);
+                respond("DYNTEST accepted=%u excursion_m=%.6f duration_s=16 soft_return_m=.23 hard_stop_m=.25\n",accepted,amplitude);
             }
             else if(strcmp(line,"DYNABORT")==0)
             {
@@ -795,45 +783,20 @@ namespace test
                 if(accepted)__atomic_store_n(&dynamic_request,2U,__ATOMIC_RELEASE);
                 respond("DYNEND accepted=%u\n",accepted);
             }
-            else if(strncmp(line,"LQINOTCH ",9)==0)
+            else if(strncmp(line,"PIDSET ",7)==0)
             {
-                float mix=0;char extra;
-                if(sscanf(line+9,"%f %c",&mix,&extra)!=1 || !std::isfinite(mix) || mix<0 || mix>1)
-                {respond("REJECT LQINOTCH requires mix 0..1\n");return;}
-                uint32_t revision=0;
-                portENTER_CRITICAL(&request_lock);
-                if(fabsf(mix-tuning.common_notch_mix)<=.1001f)
-                {tuning.common_notch_mix=mix;revision=++parameter_revision;}
-                portEXIT_CRITICAL(&request_lock);
-                if(revision)respond("LQINOTCH accepted=1 revision=%lu\n",(unsigned long)revision);
-                else respond("REJECT LQINOTCH step<=.1\n");
+                float v[10];char extra;
+                if(sscanf(line+7,"%f %f %f %f %f %f %f %f %f %f %c",&v[0],&v[1],&v[2],&v[3],&v[4],&v[5],&v[6],&v[7],&v[8],&v[9],&extra)!=10)
+                {respond("REJECT PIDSET requires ten gains\n");return;}
+                bool valid=true;for(int i=0;i<10;++i)valid=valid&&std::isfinite(v[i])&&(i==9?fabsf(v[i])<=.1f:v[i]>=0);
+                if(!valid){respond("REJECT invalid PID gains\n");return;}
+                balance::gains g;g.velocity_kp=v[0];g.velocity_ki=v[1];g.pitch_kd=v[2];g.pitch_kp=v[3];g.pitch_ki=v[4];
+                g.yaw_kp=v[5];g.yaw_ki=v[6];g.yaw_kd=v[7];g.position_kp=v[8];g.pitch_trim_rad=v[9];
+                portENTER_CRITICAL(&request_lock);tuning=g;const uint32_t revision=++parameter_revision;portEXIT_CRITICAL(&request_lock);
+                respond("PIDSET accepted=1 revision=%lu\n",(unsigned long)revision);
             }
-            else if(strncmp(line,"LQISET ",7)==0)
-            {
-                float values[8];char extra;
-                if(sscanf(line+7,"%f %f %f %f %f %f %f %f %c",
-                    &values[0],&values[1],&values[2],&values[3],
-                    &values[4],&values[5],&values[6],&values[7],&extra)!=8)
-                {respond("REJECT LQISET requires eight scales\n");return;}
-                bool valid=true;
-                for(unsigned i=0;i<8;++i)
-                    valid=valid&&std::isfinite(values[i])&&values[i]>=0.5f&&values[i]<=1.5f;
-                uint32_t revision=0;
-                portENTER_CRITICAL(&request_lock);
-                for(unsigned i=0;i<8;++i)
-                    valid=valid&&fabsf(values[i]-tuning.lqi_scale[i])<=0.0501f;
-                if(valid)
-                {
-                    memcpy(tuning.lqi_scale,values,sizeof(values));
-                    revision=++parameter_revision;
-                }
-                portEXIT_CRITICAL(&request_lock);
-                if(valid)respond("LQISET accepted=1 revision=%lu\n",(unsigned long)revision);
-                else respond("REJECT LQISET range=.5..1.5 step<=.05\n");
-            }
-            else if(strncmp(line,"TUNE ",5)==0 || strncmp(line,"TUNEA ",6)==0 ||
-                    strncmp(line,"SET ",4)==0 || strncmp(line,"GAINSSET ",9)==0)
-                respond("REJECT fixed LQI controller; PID tuning commands disabled\n");
+            else if(strncmp(line,"LQI",3)==0 || strncmp(line,"TUNE",4)==0 || strncmp(line,"SET ",4)==0 || strncmp(line,"GAINSSET",8)==0)
+                respond("REJECT PID controller; use PIDSET\n");
             else if(__atomic_load_n(&active, __ATOMIC_ACQUIRE) ||
                     __atomic_load_n(&requested, __ATOMIC_ACQUIRE))
             {
@@ -888,7 +851,7 @@ namespace test
                 pending = next;
                 portEXIT_CRITICAL(&request_lock);
                 __atomic_store_n(&requested, 1U, __ATOMIC_RELEASE);
-                respond("RUN accepted=1 mode=%lu duration_ms=%u cap=%.4f controller=LQI legacy_gains_unused=%.4f,%.4f,%.4f\n",
+                respond("RUN accepted=1 mode=%lu duration_ms=%u cap=%.4f controller=PID velocity_kp_ki_pitch_kd=%.4f,%.4f,%.4f\n",
                        static_cast<unsigned long>(next.type), duration, cap,
                        tuning.velocity_kp, tuning.velocity_ki, tuning.pitch_kd);
             }

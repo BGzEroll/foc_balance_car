@@ -1,4 +1,4 @@
-"""Normal calibration and continuous LQI start; operator present and start authorized."""
+"""Normal calibration and continuous PID start; operator present and start authorized."""
 import argparse,csv,json,queue,re,struct,sys,threading,time,zlib
 from datetime import datetime,timezone
 from pathlib import Path
@@ -16,7 +16,7 @@ s=serial.Serial(port=None,baudrate=921600,timeout=.02);s.dtr=False;s.rts=False;s
 raw=(folder/'serial.bin').open('wb');log=(folder/'commands.log').open('w',encoding='utf-8',buffering=1)
 events=(folder/'events.jsonl').open('w',encoding='utf-8',buffering=1);csvfile=(folder/'samples.csv').open('w',newline='',encoding='utf-8');writer=csv.writer(csvfile);writer.writerow(['received_monotonic',*FIELDS2])
 buf=bytearray();lines=[];last=None;frames=0;crc_errors=0;missing=0;previous_cycle=None
-meta=dict(controller='LQI',operator_present=True,calibration_and_start_authorized=True,control_period_s=.005,current_limit_A=6,normal_operation_timeout=False)
+meta=dict(controller='PID',operator_present=True,calibration_and_start_authorized=True,control_period_s=.005,current_limit_A=6,normal_operation_timeout=False)
 def save():
  meta.update(frames=frames,crc_errors=crc_errors,missing_cycles=missing,latest=last)
  (folder/'metadata.json').write_text(json.dumps(meta,indent=2),encoding='utf-8')
@@ -38,7 +38,7 @@ def pump(seconds):
      crc_errors+=1;print('ENC_CAPTURE_CRC_ERROR',flush=True);continue
     capture=folder/('encoder_'+str(first_us)+'.bin');capture.write_bytes(packet)
     print('ENC_CAPTURE '+str(capture)+' tau_us='+str(tau_us)+' enabled='+str(enabled),flush=True);continue
-   if buf.startswith((b'LQI ',b'LQI_K ')):
+   if buf.startswith((b'PID ',b'PID_K ')):
     nl=buf.find(b'\n')
     if nl<0:break
     line=bytes(buf[:nl]).decode(errors='replace').strip();del buf[:nl+1]
@@ -56,13 +56,13 @@ def pump(seconds):
     if nl>=0 and (magic<0 or nl<magic):
      line=bytes(buf[:nl]).decode(errors='replace').strip();del buf[:nl+1]
      lines.append(line);log.write(line+'\n')
-     if line.startswith(('STATUS ','LQI ','CAL ','RUN ','DONE ','FAULT ','REJECT','ENC')):print(line,flush=True)
+     if line.startswith(('STATUS ','PID ','CAL ','RUN ','DONE ','FAULT ','REJECT','ENC')):print(line,flush=True)
     elif magic>0:del buf[:magic]
     elif len(buf)>8192:del buf[:-3]
     else:break
  csvfile.flush();raw.flush()
 def command(text,prefix=None,seconds=3):
- before=len(lines);s.write((text+'\n').encode());prefix=prefix or text.split()[0];end=time.monotonic()+seconds
+ before=len(lines);s.write((text+'\n').encode());prefix=prefix or ('RUN' if text.split()[0] in ('SHADOW','BALANCE','PROBE') else text.split()[0]);end=time.monotonic()+seconds
  while time.monotonic()<end:
   pump(.03)
   for line in lines[before:]:
@@ -78,9 +78,9 @@ def inputs():
  for line in sys.stdin:commands.put(line.strip())
 threading.Thread(target=inputs,daemon=True).start()
 try:
- pump(5);st=status();assert st['controller']=='LQI' and st['fault']=='0',st
+ pump(5);st=status();assert st['controller']=='PID' and st['fault']=='0',st
  assert st['running']=='0' and st['active']=='0',st
- meta['initial_status']=st;meta['design']=json.loads((H/'lqi_design.json').read_text())['design_sha256'];save();print('LQI_LIVE_SESSION '+str(folder),flush=True)
+ meta['initial_status']=st;meta['design']=json.loads((H/'pid_design.json').read_text())['design_sha256'];save();print('PID_LIVE_SESSION '+str(folder),flush=True)
  if st['calibrated']!='1':
   deadline=time.monotonic()+20
   while int(st['imu_us'])==0:
@@ -104,54 +104,20 @@ try:
    if st['calibrated']=='1' and st['running']=='0':break
   else:raise TimeoutError('Normal motor calibration did not finish')
  assert st['dir_a']=='1' and st['dir_b']=='1',('Calibration directions differ from tested hardware',st)
- selected_path=H/'selected_lqi.json'
- if selected_path.exists():
-  selected=json.loads(selected_path.read_text(encoding='utf-8'))
-  assert selected['base_design_sha256']==meta['design'],'Saved LQI uses a different base matrix'
-  target=selected['scale'];assert len(target)==8 and all(.5<=v<=1.5 for v in target)
-  command('UARTSTREAM 200','UARTSTREAM');pump(.15)
-  assert last and last['mode']==0 and last['fault']==0,'Expected idle LQI telemetry before reload'
-  slots=FIELDS2[-10:-2];scales=[last[k] for k in slots]
-  while max(abs(a-b) for a,b in zip(scales,target))>2e-6:
-   step=[round(a+max(-.04,min(.04,b-a)),6) for a,b in zip(scales,target)]
-   assert 'accepted=1' in command('LQISET '+' '.join(format(v,'.6f') for v in step))
-   deadline=time.monotonic()+1
-   while time.monotonic()<deadline:
-    pump(.03)
-    if max(abs(last[k]-v) for k,v in zip(slots,step))<2e-6:break
-   else:raise TimeoutError('Saved LQI scales were not observed in telemetry')
-   scales=[last[k] for k in slots]
-  meta['reloaded_lqi_scales']=scales
-  print('SAVED_LQI_RELOADED '+str(scales),flush=True)
-  encoder_us=selected['encoder_ab_us'];assert 'selected_us='+str(encoder_us) in command('ENCAB '+str(encoder_us))
-  meta['encoder_ab_us']=encoder_us
-  ff=selected.get('friction_ff_N',0.0)
-  assert 0<=ff<=.35
-  if ff:
-   line=command('LQI');match=re.search(r'friction_ff_N=([^ ]+)',line);assert match,'Firmware lacks motion feedforward'
-   applied=float(match.group(1))
-   while abs(applied-ff)>2e-6:
-    step=round(applied+max(-.05,min(.05,ff-applied)),6)
-    line=command('LQIFF '+format(step,'.6f'));assert 'accepted=1' in line
-    applied=float(re.search(r'force_N=([^ ]+)',line).group(1))
-   line=command('LQI');assert abs(float(re.search(r'friction_ff_N=([^ ]+)',line).group(1))-ff)<2e-6
-   meta['reloaded_friction_ff_N']=applied;print('SAVED_MOTION_FF_RELOADED '+str(applied),flush=True)
-  notch=selected.get('common_notch_mix',0.0)
-  assert 0<=notch<=1
-  if notch:
-   assert selected.get('common_notch_frequency_Hz')==12.5,'Saved filter does not match firmware'
-   observed=last['position_kp']
-   while abs(observed-notch)>2e-6:
-    step=round(observed+max(-.1,min(.1,notch-observed)),6)
-    assert 'accepted=1' in command('LQINOTCH '+str(step))
-    deadline=time.monotonic()+1
-    while time.monotonic()<deadline:
-     pump(.03)
-     if abs(last['position_kp']-step)<2e-6:break
-    else:raise TimeoutError('Saved notch mix was not observed in telemetry')
-    observed=last['position_kp']
-   meta['reloaded_common_notch_mix']=observed
-   print('SAVED_NOTCH_RELOADED '+str(observed),flush=True)
+ selected=json.loads((H/'selected_pid.json').read_text(encoding='utf-8'))
+ assert selected['design_sha256']==meta['design']
+ target=selected['gains'];assert len(target)==10
+ command('UARTSTREAM 200');pump(.15)
+ assert last and last['mode']==0 and last['fault']==0
+ assert 'accepted=1' in command('PIDSET '+' '.join(format(v,'.10g') for v in target))
+ deadline=time.monotonic()+1
+ while time.monotonic()<deadline:
+  pump(.03)
+  if max(abs(last[k]-v) for k,v in zip(FIELDS2[-10:],target))<2e-6:break
+ else:raise TimeoutError('PID gains not observed in telemetry')
+ meta['reloaded_pid_gains']=target
+ encoder_us=selected['encoder_ab_us'];assert 'selected_us='+str(encoder_us) in command('ENCAB '+str(encoder_us))
+ meta['encoder_ab_us']=encoder_us
  meta['calibration_status']=st;save();print('CALIBRATION_COMPLETE waiting for upright stationary pose',flush=True)
  if args.wait_ground:
   print('WAITING_FOR_GROUND no BALANCE sent; send GROUND after wheels touch floor',flush=True)
@@ -176,7 +142,7 @@ try:
  meta['start_status']=st;assert 'accepted=1' in command('BALANCE 0 6.0','RUN')
  command('UARTSTREAM 200','UARTSTREAM');pump(.3);st=status()
  assert st['running']=='1' and st['ready']=='1' and st['fault']=='0',st
- meta['running_status']=st;save();print('LQI_CONTINUOUS_RUNNING logging enabled; no timed torque cutoff',flush=True)
+ meta['running_status']=st;save();print('PID_CONTINUOUS_RUNNING logging enabled; no timed torque cutoff',flush=True)
  due=time.monotonic()+5;reported_fault=False
  while True:
   pump(.05)

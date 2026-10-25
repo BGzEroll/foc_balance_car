@@ -1,5 +1,5 @@
 #include "balance.h"
-#include "lqi_config.h"
+
 
 #include <math.h>
 
@@ -53,52 +53,32 @@ namespace balance
         return measured;
     }
 
-    /**
-     * @brief 固定LQI：六状态加位置及偏航误差积分，直接输出电流
-     *
-     * @param[in] measured 车身前进坐标下的观测值，俯仰以前倾为正
-     * @param[in] target 位置、速度和偏航参考值
-     * @param[in] limit 控制输出限制
-     * @param[in, out] controller 积分及里程状态
-     * @param[in] tuning 速度 PI 和俯仰阻尼，默认使用仿真选定值
-     *
-     * @return 左右车轮前进为正的电流，单位 A
-     */
     output update(const observation &measured,const reference &target,const limits &limit,
-                  state &controller,const gains &tuning)
+                  state &controller,float dt_s,const gains &tuning)
     {
         if(!controller.first_sample)
-            controller.distance_m += lqi_config::PERIOD_S *
-                (controller.previous_speed_m_s + measured.speed_m_s) * 0.5f;
+            controller.distance_m += dt_s*(controller.previous_speed_m_s+measured.speed_m_s)*.5f;
         controller.first_sample=false;controller.previous_speed_m_s=measured.speed_m_s;
-        const float yaw=measured.yaw_rad-target.yaw_rad;
-        // Matched steady-motion references: drive force and body reaction torque.
-        const float ff_force=fmaxf(0.0f,fminf(.4f,tuning.friction_ff_N))*tanhf(target.speed_m_s/.003f);
-        const float ff_common=2.75092903575523f*ff_force;
-        const float ff_pitch=asinf(fmaxf(-.2f,fminf(.2f,.11901611068648812f*ff_common)));
-        const float error[8]={controller.distance_m-target.position_m,
-            measured.speed_m_s-target.speed_m_s,measured.pitch_rad-lqi_config::HARDWARE_TRIM_RAD-ff_pitch,
-            measured.pitch_rate_rad_s,atan2f(sinf(yaw),cosf(yaw)),
-            measured.yaw_rate_rad_s-target.yaw_rate_rad_s,controller.velocity_integral,controller.yaw_integral};
-        float effort[2]={};
-        for(unsigned row=0;row<2;++row)
-            for(unsigned column=0;column<8;++column)
-                effort[row]-=lqi_config::K[row][column]*tuning.lqi_scale[column]*error[column];
-        effort[0]+=ff_common+target.common_current_bias_A;
-        // Always warm the filter so online blend changes do not reset its history.
-        const float filtered=controller.notch.update(effort[0]);
-        const float mix=fmaxf(0.0f,fminf(1.0f,tuning.common_notch_mix));
-        effort[0]+=mix*(filtered-effort[0]);
-        const float current[2]={(effort[0]-effort[1])*0.5f,(effort[0]+effort[1])*0.5f};
+        output out{};
+        out.target_speed_m_s=clamp(target.speed_m_s+tuning.position_kp*(target.position_m-controller.distance_m),limit.speed_m_s);
+        const float ve=out.target_speed_m_s-measured.speed_m_s;
+        const float vi=clamp(controller.velocity_integral+dt_s*ve,pid_config::VELOCITY_INTEGRAL_LIMIT);
+        const float lean=tuning.velocity_kp*ve+tuning.velocity_ki*vi+target.pitch_bias_rad;
+        out.target_pitch_rad=tuning.pitch_trim_rad+clamp(lean,limit.pitch_rad);
+        const float pe=measured.pitch_rad-out.target_pitch_rad;
+        const float pi=tuning.pitch_ki>0?clamp(controller.pitch_integral+dt_s*pe,pid_config::PITCH_INTEGRAL_LIMIT):0;
+        const float ye=atan2f(sinf(target.yaw_rad-measured.yaw_rad),cosf(target.yaw_rad-measured.yaw_rad));
+        const float yi=clamp(controller.yaw_integral+dt_s*ye,pid_config::YAW_INTEGRAL_LIMIT);
+        const float common=tuning.pitch_kp*pe+tuning.pitch_ki*pi+tuning.pitch_kd*measured.pitch_rate_rad_s;
+        const float differential=tuning.yaw_kp*ye+tuning.yaw_ki*yi+tuning.yaw_kd*(target.yaw_rate_rad_s-measured.yaw_rate_rad_s);
+        const float current[2]={(common-differential)*.5f,(common+differential)*.5f};
         const float cap=fminf(6.0f,fabsf(limit.current_A));
-        output out{};out.saturated=fmaxf(fabsf(current[0]),fabsf(current[1]))>cap;
+        out.saturated=fmaxf(fabsf(current[0]),fabsf(current[1]))>cap;
         out.current_A[0]=clamp(current[0],cap);out.current_A[1]=clamp(current[1],cap);
-        out.target_speed_m_s=target.speed_m_s;out.target_pitch_rad=lqi_config::HARDWARE_TRIM_RAD+ff_pitch;
-        if(!out.saturated)
-        {
-            controller.velocity_integral=clamp(controller.velocity_integral+lqi_config::PERIOD_S*error[0],lqi_config::POSITION_INTEGRAL_LIMIT);
-            controller.yaw_integral=clamp(controller.yaw_integral+lqi_config::PERIOD_S*error[4],lqi_config::YAW_INTEGRAL_LIMIT);
+        if(!out.saturated){
+            controller.pitch_integral=pi;controller.yaw_integral=yi;
+            if(fabsf(lean)<=limit.pitch_rad)controller.velocity_integral=vi;
         }
-        controller.pitch_integral=0.0f;return out;
+        return out;
     }
 }

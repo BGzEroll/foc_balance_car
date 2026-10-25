@@ -1,0 +1,52 @@
+{
+  "gains": [
+    0.95,
+    0.1,
+    2.1,
+    20,
+    0,
+    3.1,
+    0.8,
+    0.7,
+    2.2,
+    -0.001564208089
+  ],
+  "amplitude_m": 0.2,
+  "origin_m": -0.003547,
+  "forward_peak_cm": 22.86507061214447,
+  "backward_peak_cm": 22.23271110563278,
+  "tracking_rms_cm": 1.5454533775380939,
+  "late_span_cm": 0.2268140553496778,
+  "late_speed_rms_m_s": 0.0014433453110519402,
+  "peak_current_A": 0.6856501698493958,
+  "saturated_samples": 0.0,
+  "final_mode": 2.0,
+  "final_fault": 0.0,
+  "dyn_status": [
+    "DYNSTAT armed=1 aborted=0 hard_stop=0 began_us=243571611 phase=0 origin=-0.003547 position=0.001764 speed=0.048706 peak=0.000417 integral_limit=0.000000 amplitude=0.200000",
+    "DYNSTAT armed=1 aborted=0 hard_stop=0 began_us=243571611 phase=0 origin=-0.003547 position=0.196453 speed=0.000000 peak=0.228651 integral_limit=0.000000 amplitude=0.200000",
+    "DYNSTAT armed=1 aborted=0 hard_stop=0 began_us=243571611 phase=1 origin=-0.003547 position=0.196438 speed=-0.001136 peak=0.228651 integral_limit=0.000000 amplitude=0.200000",
+    "DYNSTAT armed=1 aborted=0 hard_stop=0 began_us=243571611 phase=1 origin=-0.003547 position=-0.003547 speed=-0.000000 peak=0.228651 integral_limit=0.000000 amplitude=0.200000",
+    "DYNSTAT armed=1 aborted=0 hard_stop=0 began_us=243571611 phase=2 origin=-0.003547 position=-0.003577 speed=-0.001765 peak=0.228651 integral_limit=0.000000 amplitude=0.200000",
+    "DYNSTAT armed=1 aborted=0 hard_stop=0 began_us=243571611 phase=2 origin=-0.003547 position=-0.203547 speed=-0.000000 peak=0.228651 integral_limit=0.000000 amplitude=0.200000",
+    "DYNSTAT armed=1 aborted=0 hard_stop=0 began_us=243571611 phase=3 origin=-0.003547 position=-0.203508 speed=0.002134 peak=0.228651 integral_limit=0.000000 amplitude=0.200000",
+    "DYNSTAT armed=1 aborted=0 hard_stop=0 began_us=243571611 phase=3 origin=-0.003547 position=-0.003547 speed=0.000000 peak=0.228651 integral_limit=0.000000 amplitude=0.200000",
+    "DYNSTAT armed=1 aborted=0 hard_stop=0 began_us=243571611 phase=4 origin=-0.003547 position=-0.003547 speed=0.000000 peak=0.228651 integral_limit=0.000000 amplitude=0.200000",
+    "DYNSTAT armed=0 aborted=0 hard_stop=0 began_us=0 phase=0 origin=0.000000 position=0.000000 speed=0.000000 peak=0.000000 integral_limit=0.000000 amplitude=0.050000",
+    "DYNSTAT armed=0 aborted=0 hard_stop=0 began_us=0 phase=0 origin=0.000000 position=0.000000 speed=0.000000 peak=0.000000 integral_limit=0.000000 amplitude=0.050000",
+    "DYNSTAT armed=0 aborted=0 hard_stop=0 began_us=0 phase=0 origin=0.000000 position=0.000000 speed=0.000000 peak=0.000000 integral_limit=0.000000 amplitude=0.050000",
+    "DYNSTAT armed=0 aborted=0 hard_stop=0 began_us=0 phase=0 origin=0.000000 position=0.000000 speed=0.000000 peak=0.000000 integral_limit=0.000000 amplitude=0.050000",
+    "DYNSTAT armed=0 aborted=0 hard_stop=0 began_us=0 phase=0 origin=0.000000 position=0.000000 speed=0.000000 peak=0.000000 integral_limit=0.000000 amplitude=0.050000",
+    "DYNSTAT armed=0 aborted=0 hard_stop=0 began_us=0 phase=0 origin=0.000000 position=0.000000 speed=0.000000 peak=0.000000 integral_limit=0.000000 amplitude=0.050000",
+    "DYNSTAT armed=0 aborted=0 hard_stop=0 began_us=0 phase=0 origin=0.000000 position=0.000000 speed=0.000000 peak=0.000000 integral_limit=0.000000 amplitude=0.050000",
+    "DYNSTAT armed=0 aborted=0 hard_stop=0 began_us=0 phase=0 origin=0.000000 position=0.000000 speed=0.000000 peak=0.000000 integral_limit=0.000000 amplitude=0.050000"
+  ],
+  "postmotion_attitude_check": {
+    "frames": 400,
+    "gravity_updates": 391,
+    "gravity_rejects": 8,
+    "nis_mean": 1.9625621625455096,
+    "kf_roll_deg": -2.4703297130511332,
+    "legacy_roll_deg": -2.5617456180394234
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "torque_scale": 0.63825819169892362,
+  "friction_N": 0.081758777394805734,
+  "viscous_N_s_m": 0.13298432704318075,
+  "pitch_damping_N_m_s": 0.0047644704715119248,
+  "pitch_sensor_offset_rad": 0.012069030616830175,
+  "constant_force_N": 0.00053309920299965819,
+  "regressor_condition": 153.19566051401642,
+  "train_windows": 727,
+  "method": "100 ms integrated CAD mechanical equations, positive torque/friction/damping; first two runs fitted, third run held out. Offset includes IMU and COM alignment; not an accelerometer calibration.",
+  "train": {
+    "windows": 727,
+    "delta_speed_rms_m_s": 0.023666615870164436,
+    "delta_pitch_rate_rms_rad_s": 0.61271836189685369,
+    "weighted_rms": 0.022292960805010725
+  },
+  "validation_before": {
+    "windows": 338,
+    "delta_speed_rms_m_s": 0.062701278930518925,
+    "delta_pitch_rate_rms_rad_s": 1.43113513228274,
+    "weighted_rms": 0.043786635365331811
+  },
+  "validation_offset_only": {
+    "windows": 338,
+    "delta_speed_rms_m_s": 0.062519413013287964,
+    "delta_pitch_rate_rms_rad_s": 1.4037462116578276,
+    "weighted_rms": 0.041339064198101849
+  },
+  "validation_after": {
+    "windows": 338,
+    "delta_speed_rms_m_s": 0.024017045064422288,
+    "delta_pitch_rate_rms_rad_s": 0.60469152250395353,
+    "weighted_rms": 0.02205504350561387
+  },
+  "parameters": {
+    "M": 0.2771,
+    "mw": 0.0627,
+    "r": 0.0325,
+    "l": 0.036529272109234422,
+    "I": 0.00031184766836104503,
+    "Jw": 2.9967889984098441E-5,
+    "Kt": 0.013311959501823515,
+    "g": 9.80665
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "pid_current_v1",
+  "gain_names": [
+    "velocity_kp",
+    "velocity_ki",
+    "pitch_kd",
+    "pitch_kp",
+    "pitch_ki",
+    "yaw_kp",
+    "yaw_ki",
+    "yaw_kd",
+    "position_kp",
+    "pitch_trim_rad"
+  ],
+  "gains": [
+    0.95,
+    0.1,
+    2.1,
+    20,
+    0,
+    3.1,
+    0.8,
+    0.7,
+    2.2,
+    -0.001564208089
+  ],
+  "Ts_s": 0.005,
+  "actual_dt": true,
+  "current_limit_each_A": 6,
+  "phase_overcurrent_A": 6,
+  "voltage_bus_ratio": 0.48,
+  "speed_limit_m_s": 0.35,
+  "pitch_target_limit_rad": 0.2617993877991494,
+  "velocity_integral_limit_m": 0.5,
+  "pitch_integral_limit_rad_s": 0.25,
+  "yaw_integral_limit_rad_s": 0.5,
+  "encoder_ab_us": 4000,
+  "worst_planar_radius": 0.9994744346013936,
+  "worst_yaw_radius": 0.9986294279587238,
+  "scope": "Measured effective torque/friction/damping model with held-out 100ms validation, sensor/encoder lag and uncertainty cases; candidates require powered validation. Pitch target limit 15deg; active-firmware limit change requires flashing.",
+  "design_sha256": "2a3239b9803e7bc9c6240f27c92e51715e20464322a6ce820f6f9b76ac4263eb"
+}
