@@ -2,7 +2,7 @@
 import argparse,csv,json,math,os,statistics,sys,time
 from pathlib import Path
 H=Path(__file__).resolve().parent
-parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('source');parser.add_argument('--resume');parser.add_argument('--notch',action='store_true');parser.add_argument('--notch-mix',type=float,default=1.0);parser.add_argument('--factors',nargs='+',type=float,default=[.9,.82]);parser.add_argument('--candidate-index',type=int);parser.add_argument('--reference-report');parser.add_argument('--ignore-current-growth',action='store_true');parser.add_argument('--confirm-report');parser.add_argument('--friction-force',type=float);parser.add_argument('--integral-limit',type=float);parser.add_argument('--encoder-ab-us',type=int);parser.add_argument('--excursion-m',type=float,default=.05);parser.add_argument('--minimum-m',type=float);args=parser.parse_args()
+parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('source');parser.add_argument('--resume');parser.add_argument('--notch',action='store_true');parser.add_argument('--notch-mix',type=float,default=1.0);parser.add_argument('--factors',nargs='+',type=float,default=[.9,.82]);parser.add_argument('--candidate-index',type=int);parser.add_argument('--reference-report');parser.add_argument('--ignore-current-growth',action='store_true');parser.add_argument('--confirm-report');parser.add_argument('--friction-force',type=float);parser.add_argument('--integral-limit',type=float);parser.add_argument('--excursion-m',type=float,default=.05);parser.add_argument('--minimum-m',type=float);args=parser.parse_args()
 assert .05<=args.excursion_m<=.14
 assert args.minimum_m is None or 0<args.minimum_m<=args.excursion_m
 source=Path(args.source);resume=json.loads(Path(args.resume).read_text()) if args.resume else None
@@ -124,10 +124,6 @@ def command(text):
 try:
  read(.5);assert max(abs(last[k]-v) for k,v in zip(scale_fields,base))<2e-6
  event('attached',folder=str(folder));stage='baseline';read(10)
- if args.encoder_ab_us is not None:
-  assert args.encoder_ab_us==0 or 1000<=args.encoder_ab_us<=10000
-  assert command('ENCAB '+str(args.encoder_ab_us))['selected_us']==str(args.encoder_ab_us)
-  stage='observer_settle';read(5)
  if args.friction_force is not None:
   assert 0<=args.friction_force<=.35
   applied=float(command('LQI').get('friction_ff_N',0))
@@ -159,7 +155,7 @@ try:
  assert command('DYNEND')['accepted']=='1';assert command('DYNSTAT')['armed']=='0'
  stage='post_test_balance';read(10)
  forward=max(r['distance']-origin for r in rows);backward=max(origin-r['distance'] for r in rows)
- result=dict(excursion_m=args.excursion_m,minimum_m=args.minimum_m,minimum_achieved=args.minimum_m is None or min(forward,backward)>=args.minimum_m,forward_excursion_m=forward,backward_excursion_m=backward,started_us=began,origin_m=origin,peak_encoder_displacement_m=peak,status=st,scale=current.copy(),friction_force_N=args.friction_force,motion_integral_limit=args.integral_limit,encoder_ab_us=args.encoder_ab_us,
+ result=dict(excursion_m=args.excursion_m,minimum_m=args.minimum_m,minimum_achieved=args.minimum_m is None or min(forward,backward)>=args.minimum_m,forward_excursion_m=forward,backward_excursion_m=backward,started_us=began,origin_m=origin,peak_encoder_displacement_m=peak,status=st,scale=current.copy(),friction_force_N=args.friction_force,motion_integral_limit=args.integral_limit,
   current_peak_A=max(abs(r[k]) for r in rows for k in ('command_a','command_b')),
   pitch_peak_deg=max(abs(r['pitch']-r['target_pitch'])*180/math.pi for r in rows),body_pitch_peak_deg=max(abs(r['pitch'])*180/math.pi for r in rows),
   saturated_fraction=statistics.fmean(r['saturated'] for r in rows),scope='One forward/return/backward/return trajectory with recorded amplitude; encoder-based position, no independent ground measurement.')
@@ -170,7 +166,6 @@ try:
   while applied>1e-6:
    applied=round(max(0,applied-.05),6);assert command('LQIFF '+format(applied,'.6f'))['accepted']=='1'
  if args.integral_limit is not None:assert command('DYNINT 0')['accepted']=='1'
- if args.encoder_ab_us is not None:command('ENCAB 0')
  event('DYNAMIC_TEST_COMPLETE',result=result,folder=str(folder))
 except Exception as exc:
  event('ERROR',reason=str(exc));(folder/'dynamic_result.json').write_text(json.dumps(dict(error=str(exc),last=last),indent=2))
@@ -180,9 +175,6 @@ except Exception as exc:
    if st.get('phase') not in ('4','5'):command('DYNABORT');read(.1,False)
    command('DYNEND')
  except Exception:pass
- if args.encoder_ab_us is not None:
-  try:command('ENCAB 0')
-  except Exception:pass
  if args.integral_limit is not None:
   try:command('DYNINT 0')
   except Exception:pass

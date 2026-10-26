@@ -3,7 +3,7 @@ import argparse,csv,json,re,struct,time,zlib
 from datetime import datetime
 from pathlib import Path
 import serial
-from telemetry import FIELDS2,WIRE2
+from telemetry import FIELDS2,WIRE2,ATTITUDE_WIRE,ATTITUDE_FIELDS
 
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--seconds',type=float,default=180)
@@ -18,8 +18,9 @@ s=serial.Serial(port=None,baudrate=921600,timeout=.02)
 s.dtr=False;s.rts=False;s.port='/dev/ttyACM0';s.open()
 raw=(out/'serial.bin').open('wb');imu_file=(out/'imu.csv').open('w',newline='')
 tele_file=(out/'telemetry.csv').open('w',newline='');log=(out/'commands.log').open('w',buffering=1)
-att_wire=struct.Struct('<IIQ22f7IfI');att_file=(out/'attitude.csv').open('w',newline='');aw=csv.writer(att_file)
-aw.writerow(['stage','sequence','time_us','qw','qx','qy','qz','bx','by','bz','roll','pitch','yaw','legacy_roll','legacy_pitch','legacy_yaw','gyro_x','gyro_y','gyro_z','p_rx','p_ry','p_rz','p_bx','p_by','p_bz','compute_us','gravity_updates','gravity_rejected','rest_updates','selected','confirmed_rest','stack_high_water','nis'])
+att_wire=ATTITUDE_WIRE;att_file=(out/'attitude.csv').open('w',newline='');aw=csv.writer(att_file)
+aw.writerow(['stage',*ATTITUDE_FIELDS[1:-1]])
+
 iw=csv.writer(imu_file);tw=csv.writer(tele_file)
 iw.writerow(['stage','sequence','time_us','ax','ay','az','temperature_raw','gx','gy','gz','gyro_x','gyro_y','gyro_z','pitch','roll','yaw','read_began_us','native_sequence'])
 tw.writerow(['stage',*FIELDS2])
@@ -31,7 +32,7 @@ def pump(seconds):
  while time.monotonic()<end:
   b=s.read(max(1,s.in_waiting));raw.write(b);buf.extend(b)
   while buf:
-   size=72 if buf.startswith(b'IMU2') else 224 if buf.startswith(b'BCU3') else 140 if buf.startswith(b'ATT1') else 0
+   size=72 if buf.startswith(b'IMU2') else 224 if buf.startswith(b'BCU3') else 124 if buf.startswith(b'ATT2') else 0
    if size:
     if len(buf)<size:break
     packet=bytes(buf[:size]);del buf[:size]
@@ -40,14 +41,14 @@ def pump(seconds):
      v=imu_wire.unpack(packet);iw.writerow([stage,v[1],v[2],*v[5:12],*v[13:19],v[3],v[4]]);nimu+=1
      if last_sequence is not None:missing+=(v[1]-last_sequence-1)&0xffffffff
      last_sequence=v[1]
-    elif size==140:
+    elif size==124:
      v=att_wire.unpack(packet);aw.writerow([stage,*v[1:-1]])
     else:
      v=WIRE2.unpack(packet[:-4]);latest=dict(zip(FIELDS2,v));tw.writerow([stage,*v])
      if stage.startswith('probe') and (latest['fault'] or max(abs(latest['raw_a']),abs(latest['raw_b']))>6):
       s.write(b'STOP\n');stage_change='probe_speed_stop';log.write(stage_change+'\n')
     continue
-   positions=[x for x in (buf.find(b'IMU2'),buf.find(b'BCU3'),buf.find(b'ATT1')) if x>=0]
+   positions=[x for x in (buf.find(b'IMU2'),buf.find(b'BCU3'),buf.find(b'ATT2')) if x>=0]
    magic=min(positions) if positions else -1;nl=buf.find(b'\n')
    if nl>=0 and (magic<0 or nl<magic):
     text=bytes(buf[:nl]).decode(errors='replace').strip();del buf[:nl+1]

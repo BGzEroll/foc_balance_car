@@ -55,8 +55,7 @@ namespace sensor
     };
     bool begin_encoder_capture();
     const encoder_record *get_encoder_capture(encoder_capture_header &header);
-    void set_encoder_observer(uint32_t tau_us);
-    uint32_t encoder_observer_us();
+    void publish_attitude(const float angle[3]);
 }
 
 #endif

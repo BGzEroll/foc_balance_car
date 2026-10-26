@@ -29,8 +29,8 @@ def pump(seconds):
   b=s.read(max(1,s.in_waiting))
   if b:raw.write(b);buf.extend(b)
   while buf:
-   if buf.startswith((b'ATT1',b'YAW2')):
-    is_att=buf.startswith(b'ATT1');size=140 if is_att else 72
+   if buf.startswith((b'ATT2',b'YAW3')):
+    is_att=buf.startswith(b'ATT2');size=124 if is_att else 68
     if len(buf)<size:break
     packet=bytes(buf[:size]);del buf[:size]
     if zlib.crc32(packet[:-4])&0xffffffff!=struct.unpack_from('<I',packet,size-4)[0]:crc_errors+=1;continue
@@ -62,7 +62,7 @@ def pump(seconds):
     if previous_cycle is not None and cycle>previous_cycle:missing+=max(0,cycle-previous_cycle-1)
     previous_cycle=cycle
    else:
-    positions=[v for v in [buf.find(b'BCU3'),buf.find(b'ENC1'),buf.find(b'ATT1'),buf.find(b'YAW2')] if v>=0];magic=min(positions) if positions else -1;nl=buf.find(b'\n')
+    positions=[v for v in [buf.find(b'BCU3'),buf.find(b'ENC1'),buf.find(b'ATT2'),buf.find(b'YAW3')] if v>=0];magic=min(positions) if positions else -1;nl=buf.find(b'\n')
     if nl>=0 and (magic<0 or nl<magic):
      line=bytes(buf[:nl]).decode(errors='replace').strip();del buf[:nl+1]
      lines.append(line);log.write(line+'\n')
@@ -126,8 +126,7 @@ try:
   if max(abs(last[k]-v) for k,v in zip(FIELDS2[-10:],target))<2e-6:break
  else:raise TimeoutError('PID gains not observed in telemetry')
  meta['reloaded_pid_gains']=target
- encoder_us=selected['encoder_ab_us'];assert 'selected_us='+str(encoder_us) in command('ENCAB '+str(encoder_us))
- meta['encoder_ab_us']=encoder_us
+ meta['encoder_ab_us']=4000
  meta['calibration_status']=st;save();print('CALIBRATION_COMPLETE waiting for upright stationary pose',flush=True)
  if args.wait_ground:
   print('WAITING_FOR_GROUND no BALANCE sent; send GROUND after wheels touch floor',flush=True)
@@ -154,7 +153,6 @@ try:
  pose=command('ATTITUDE');match=re.search(r'tilt_error_rad=([^ ]+)',pose);assert match and float(match.group(1))<.035,pose
  meta['start_attitude']=pose
  assert 'mode=zero_rate_bias' in command('YAW')
- assert 'selected=1' in command('YAW 1','YAW')
  meta['yaw_bias_correction_enabled']=True
  meta['start_status']=st;assert 'accepted=1' in command('BALANCE 0 6.0','RUN')
  command('UARTSTREAM 200','UARTSTREAM');pump(.3);st=status()

@@ -1,6 +1,6 @@
 """Attach to the running car without changing DTR/RTS; record yaw and encoders."""
 import argparse,csv,json,os,pathlib,queue,select,signal,struct,sys,termios,threading,time,zlib
-from telemetry import FIELDS2,WIRE2,YAW_WIRE,YAW_FIELDS
+from telemetry import FIELDS2,WIRE2,YAW_WIRE,YAW_FIELDS,ATTITUDE_WIRE,ATTITUDE_FIELDS
 
 parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--overnight',action='store_true',help='Detached long run: save about 20Hz CSV, no full raw binary, no motor commands');args=parser.parse_args()
 h=pathlib.Path(__file__).resolve().parent
@@ -12,8 +12,7 @@ settings[4]=settings[5]=termios.B921600;settings[6][termios.VMIN]=settings[6][te
 termios.tcsetattr(fd,termios.TCSANOW,settings)
 ywire=YAW_WIRE;yfields=YAW_FIELDS
 yc=(folder/'yaw.csv').open('w',newline='');yw=csv.writer(yc);yw.writerow(yfields)
-awire=struct.Struct('<IIQ22f7IfI')
-afields=['magic','sequence','time_us','qw','qx','qy','qz','bx','by','bz','roll','pitch','yaw','legacy_roll','legacy_pitch','legacy_yaw','gyro_x','gyro_y','gyro_z','p_rx','p_ry','p_rz','p_bx','p_by','p_bz','compute_us','gravity_updates','gravity_rejected','rest_updates','selected','confirmed_rest','stack_high_water','nis','crc']
+awire=ATTITUDE_WIRE;afields=ATTITUDE_FIELDS
 raw=None if args.overnight else (folder/'serial.bin').open('wb');log=(folder/'commands.log').open('w',buffering=1)
 bc=(folder/'samples.csv').open('w',newline='');ac=(folder/'attitude.csv').open('w',newline='')
 bw=csv.writer(bc);aw=csv.writer(ac);bw.writerow(FIELDS2);aw.writerow(afields)
@@ -38,7 +37,7 @@ try:
    if raw:raw.write(data)
    buf.extend(data)
   while buf:
-   size=224 if buf.startswith(b'BCU3') else 140 if buf.startswith(b'ATT1') else 72 if buf.startswith(b'YAW2') else 0
+   size=224 if buf.startswith(b'BCU3') else 124 if buf.startswith(b'ATT2') else 68 if buf.startswith(b'YAW3') else 0
    if size:
     if len(buf)<size:break
     packet=bytes(buf[:size]);del buf[:size]
@@ -47,13 +46,13 @@ try:
      values=WIRE2.unpack(packet[:-4]);last=dict(zip(FIELDS2,values));frames+=1
      if not args.overnight or last['sample_us']-last_bc_write>=50000:
       bw.writerow(values);last_bc_write=last['sample_us']
-    elif size==140:aw.writerow(awire.unpack(packet))
+    elif size==124:aw.writerow(awire.unpack(packet))
     else:
      values=ywire.unpack(packet)
      if not args.overnight or values[2]-last_yaw_write>=50000:
       yw.writerow(values);last_yaw_write=values[2]
     continue
-   positions=[p for p in [buf.find(b'BCU3'),buf.find(b'ATT1'),buf.find(b'YAW2')] if p>=0]
+   positions=[p for p in [buf.find(b'BCU3'),buf.find(b'ATT2'),buf.find(b'YAW3')] if p>=0]
    magic=min(positions) if positions else -1;nl=buf.find(b'\n')
    if nl>=0 and (magic<0 or nl<magic):
     line=bytes(buf[:nl]).decode(errors='replace').strip();del buf[:nl+1];log.write(line+'\n');print(line,flush=True)

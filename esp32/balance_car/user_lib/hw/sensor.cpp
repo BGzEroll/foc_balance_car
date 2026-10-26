@@ -11,13 +11,14 @@ namespace {
     sensor::imu_config imu_registers{};
     TaskHandle_t imu_control_task=nullptr;
     sensor::encoder_record encoder_records[2048];
-    uint32_t encoder_record_count=2048, encoder_ab_us=0;
+    uint32_t encoder_record_count=2048;
+    constexpr uint32_t ENCODER_OBSERVER_US=4000;
     uint64_t encoder_first_us=0;
-    uint32_t capture_tau_us=3000,capture_enabled=0;
+
     void capture_encoder(uint32_t motor,uint64_t now,uint16_t raw,int16_t delta,float lpf,float ab) {
         const uint32_t n=__atomic_load_n(&encoder_record_count,__ATOMIC_RELAXED);
         if(n>=2048)return;
-        if(n==0){encoder_first_us=now;capture_enabled=__atomic_load_n(&encoder_ab_us,__ATOMIC_RELAXED);capture_tau_us=capture_enabled?capture_enabled:3000;}
+        if(n==0)encoder_first_us=now;
         encoder_records[n]={static_cast<uint32_t>(now),static_cast<uint16_t>(raw|(motor<<12)),delta,lpf,ab};
         __atomic_store_n(&encoder_record_count,n+1,__ATOMIC_RELEASE);
     }
@@ -392,8 +393,7 @@ namespace as5600
                     encoder.speed_rad_s =
                         (encoder.speed_rad_s * SPEED_FILTER_S + delta_rad) /
                         (SPEED_FILTER_S + dt);
-                    const uint32_t selected=__atomic_load_n(&encoder_ab_us,__ATOMIC_RELAXED);
-                    const float tau=(selected?selected:3000)*1e-6f;
+                    const float tau=ENCODER_OBSERVER_US*1e-6f;
                     const float pole=tau/(tau+2.0f*dt);
                     const float beta=(1.0f-pole)*(1.0f-pole);
                     const float prediction=encoder.observer_error_rad+dt*encoder.observer_speed_rad_s;
@@ -461,7 +461,6 @@ namespace mpu6050
 
         constexpr float PI = 3.14159265358979323846f;
         constexpr float DEG2RAD = PI / 180.0f;
-        constexpr float ACC_COEF = 0.02f;
 
         uint8_t reg = REG_DATA;
         uint8_t raw[14] = {};
@@ -471,11 +470,6 @@ namespace mpu6050
 
         uint32_t calibration_count = 0;
         uint32_t sample_sequence = 0;
-        uint64_t last_time_us = 0;
-
-        float pitch_rad = 0.0f;     // 俯仰角，绕 X 轴，车头抬起为正，单位 rad
-        float roll_rad = 0.0f;      // 横滚角，绕 Y 轴，车身右侧下沉为正，单位 rad
-        float yaw_rad = 0.0f;       // 相对偏航角，绕 Z 轴，左转为正，单位 rad
 
         /**
          * @brief 读取大端有符号 16 位数据
@@ -519,7 +513,7 @@ namespace mpu6050
 
             for(uint8_t i = 0; i < 3; i++)
             {
-                const float raw_offset = 
+                const float raw_offset =
                     static_cast<float>(gyro_offset_sum[i]) /
                     static_cast<float>(CALIBRATION_SAMPLES);
 
@@ -528,8 +522,6 @@ namespace mpu6050
                     65.5f *
                     DEG2RAD;
             }
-
-            last_time_us = 0;
 
             return false;
         }
@@ -624,7 +616,7 @@ namespace mpu6050
         for(uint8_t i=0;i<3;i++){data.raw[i]=raw_acc[i];data.raw[i+4]=raw_gyro[i];}
         data.raw[3]=raw_temperature;
 
-        data.temperature = 
+        data.temperature =
             static_cast<float>(raw_temperature) /
             340.0f +
             36.53f;
@@ -641,59 +633,6 @@ namespace mpu6050
                 DEG2RAD -
                 gyro_offset[i];
         }
-
-        // 利用重力方向计算绕 X 轴的俯仰角
-        const float acc_pitch_rad = atan2f(data.acc[1], data.acc[2]);
-
-        // 利用重力方向计算绕 Y 轴的横滚角
-        const float acc_roll_rad =
-            atan2f(
-                -data.acc[0],
-                sqrtf(
-                    data.acc[1] * data.acc[1] +
-                    data.acc[2] * data.acc[2]));
-
-        if(last_time_us == 0)
-        {
-            pitch_rad = acc_pitch_rad;
-            roll_rad = acc_roll_rad;
-            yaw_rad = 0.0f;
-        }
-        else
-        {
-            const float dt = static_cast<float>(now_us - last_time_us) * 1.0e-6f;
-
-            // 俯仰使用 X 轴角速度进行互补滤波
-            pitch_rad =
-                (1.0f - ACC_COEF) *
-                (pitch_rad + data.gyro[0] * dt) +
-                ACC_COEF * acc_pitch_rad;
-
-            // 横滚使用 Y 轴角速度进行互补滤波
-            roll_rad =
-                (1.0f - ACC_COEF) *
-                (roll_rad + data.gyro[1] * dt) +
-                ACC_COEF * acc_roll_rad;
-
-            // 偏航仅积分 Z 轴角速度，保持原有正负 pi 范围
-            yaw_rad += data.gyro[2] * dt;
-
-            if(yaw_rad > PI)
-            {
-                yaw_rad -= 2.0f * PI;
-            }
-            else if(yaw_rad < -PI)
-            {
-                yaw_rad += 2.0f * PI;
-            }
-        }
-
-        last_time_us = now_us;
-
-        // 对外数组仍按 X、Y、Z 排列，单位为 rad
-        data.angle[0] = pitch_rad;
-        data.angle[1] = roll_rad;
-        data.angle[2] = yaw_rad;
 
         return true;
     }
@@ -748,7 +687,10 @@ namespace sensor
         void publish_imu(const imu_data &data)
         {
             portENTER_CRITICAL(&package_lock);
+            // Attitude is published by the control task after the ESKF update.
+            const float angles[3]={latest_package.imu.angle[0],latest_package.imu.angle[1],latest_package.imu.angle[2]};
             latest_package.imu = data;
+            for(int i=0;i<3;++i)latest_package.imu.angle[i]=angles[i];
             portEXIT_CRITICAL(&package_lock);
             const auto task=__atomic_load_n(&imu_control_task,__ATOMIC_ACQUIRE);
             if(task)xTaskNotifyGive(task);
@@ -946,9 +888,12 @@ namespace sensor
         const uint32_t n=__atomic_load_n(&encoder_record_count,__ATOMIC_ACQUIRE);
         header={0x31434e45U,n,0,0,0};
         if(n<2048)return nullptr;
-        header={0x31434e45U,n,capture_tau_us,capture_enabled,encoder_first_us};
+        header={0x31434e45U,n,ENCODER_OBSERVER_US,1,encoder_first_us};
         return n==2048&&encoder_first_us?encoder_records:nullptr;
     }
-    void set_encoder_observer(uint32_t tau_us) {__atomic_store_n(&encoder_ab_us,tau_us,__ATOMIC_RELEASE);}
-    uint32_t encoder_observer_us(){return __atomic_load_n(&encoder_ab_us,__ATOMIC_ACQUIRE);}
+    void publish_attitude(const float angle[3]) {
+        portENTER_CRITICAL(&package_lock);
+        for(int i=0;i<3;++i)latest_package.imu.angle[i]=angle[i];
+        portEXIT_CRITICAL(&package_lock);
+    }
 }
