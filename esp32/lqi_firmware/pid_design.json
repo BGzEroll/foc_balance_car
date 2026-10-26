@@ -18,9 +18,9 @@
     2.1,
     20,
     0,
-    3.1,
-    0.8,
-    0.7,
+    9.0,
+    0.6,
+    2.0,
     2.2,
     -0.001564208089
   ],
@@ -36,7 +36,7 @@
   "yaw_integral_limit_rad_s": 0.5,
   "encoder_ab_us": 4000,
   "worst_planar_radius": 0.9994744346013936,
-  "worst_yaw_radius": 0.9986294279587238,
-  "scope": "Measured effective torque/friction/damping model with held-out 100ms validation, sensor/encoder lag and uncertainty cases; candidates require powered validation. Pitch target limit 15deg; active-firmware limit change requires flashing.",
-  "design_sha256": "2a3239b9803e7bc9c6240f27c92e51715e20464322a6ce820f6f9b76ac4263eb"
+  "scope": "Planar gains retained; yaw 9/0.6/2 validated on powered variable-speed, independent-amplitude and repeated trials. Firmware defaults match selected startup gains.",
+  "baseline_design_sha256": "2a3239b9803e7bc9c6240f27c92e51715e20464322a6ce820f6f9b76ac4263eb",
+  "design_sha256": "18331b8d16e76252b26f500f1bea07c26af8ef0befba049f730d6dbcc4c832a0"
 }

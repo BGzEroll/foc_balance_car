@@ -37,7 +37,7 @@
   "encoder_ab_us": 4000,
   "worst_planar_radius": 0.9994744346013936,
   "scope": "Planar gains unchanged from the baseline design. Yaw gains 9/0.6/2 selected by powered 30-degree speed comparisons and independent 20/45-degree plus repeated 30-degree tests. Baseline design hash identifies the compatible firmware; startup reapplies these selected gains.",
-  "design_sha256": "2a3239b9803e7bc9c6240f27c92e51715e20464322a6ce820f6f9b76ac4263eb",
+  "design_sha256": "18331b8d16e76252b26f500f1bea07c26af8ef0befba049f730d6dbcc4c832a0",
   "yaw_hardware_validation": {
     "yaw_speed_base_30_1s": {
       "tracking_rms_deg": 6.1211999576597025,
@@ -91,5 +91,6 @@
       "peak_planar_m": 0.022831782802268184,
       "peak_command_A": 0.4709210693836212
     }
-  }
+  },
+  "baseline_design_sha256": "2a3239b9803e7bc9c6240f27c92e51715e20464322a6ce820f6f9b76ac4263eb"
 }

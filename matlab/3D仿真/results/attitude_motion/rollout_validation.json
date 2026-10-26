@@ -1,0 +1,28 @@
+{
+  "horizon_s": [
+    0.025,
+    0.05,
+    0.1
+  ],
+  "nominal_speed_rms_m_s": [
+    0.0051958055262235781,
+    0.0092716868572727054,
+    0.016938667937533475
+  ],
+  "identified_speed_rms_m_s": [
+    0.0058700711880127947,
+    0.010774113253247371,
+    0.020762929989263847
+  ],
+  "nominal_pitch_rate_rms_rad_s": [
+    0.12293477657056297,
+    0.23526021095115282,
+    0.44856846417709184
+  ],
+  "identified_pitch_rate_rms_rad_s": [
+    0.12723731426865165,
+    0.24470429865060905,
+    0.47762484682378736
+  ],
+  "scope": "RK4 open-loop short rollouts on held-out whole runs, initialized from measured states. Actual measured iq input; cogging map included. Not a closed-loop or absolute ground-position validation."
+}

@@ -1,0 +1,30 @@
+{
+  "horizon_s": [
+    0.025,
+    0.05,
+    0.1
+  ],
+  "pitch_integral_consistency_rms_deg": [
+    0.003748216676638179,
+    0.0023751578987595764,
+    0.003377403532649979
+  ],
+  "peak_deg": [
+    0.015112905536062654,
+    0.0084162500377280725,
+    0.01053580766782343
+  ],
+  "windows": [
+    582,
+    301,
+    289
+  ],
+  "best_rate_shift_s": 0.0030000000000000027,
+  "best_derivative_residual_rad_s": 0.010987563038214266,
+  "median_current_age_us": [
+    245,
+    234
+  ],
+  "median_imu_age_us": 120,
+  "scope": "Consistency between ESKF angle and bias-corrected gyro rate; no external attitude truth. Nonzero residual includes gravity corrections and timing, not solely sensor lag."
+}

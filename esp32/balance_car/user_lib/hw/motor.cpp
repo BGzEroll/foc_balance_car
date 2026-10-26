@@ -2277,6 +2277,7 @@ namespace foc
         info.phase_A[2] = ic;
         info.id_A = id;
         info.iq_A = iq;
+        info.cogging_A = 0;
         info.valid = true;
 
         float vd = align_voltage;
@@ -2300,6 +2301,7 @@ namespace foc
             const uint32_t point =
                 static_cast<uint32_t>(position + 0.5f) & COGGING_TABLE_MASK;
             const float compensation = cogging_table[index][point];
+            info.cogging_A = compensation;
 
             const float q_limit = sqrtf(fmaxf(
                 0.0f, MAX_TARGET_A * MAX_TARGET_A - target.id_A * target.id_A));
@@ -2387,6 +2389,7 @@ namespace motor
 
         session calibration{};
         foc_info latest{};
+        torque_window current_window{};
         portMUX_TYPE info_lock = portMUX_INITIALIZER_UNLOCKED;
         uint32_t initialized = 0;
         uint32_t task_ready = 0;
@@ -2439,6 +2442,13 @@ namespace motor
         {
             portENTER_CRITICAL(&info_lock);
             latest.current[index] = current;
+            if(current.valid){
+                if(current_window.count[index]==0)current_window.first_us[index]=current.timestamp_us;
+                current_window.last_us[index]=current.timestamp_us;
+                current_window.iq_sum[index]+=current.iq_A;
+                current_window.net_iq_sum[index]+=current.iq_A-current.cogging_A;
+                ++current_window.count[index];
+            }
             portEXIT_CRITICAL(&info_lock);
         }
 
@@ -3025,6 +3035,13 @@ namespace motor
         latest.target[index] = target;
         portEXIT_CRITICAL(&info_lock);
         return true;
+    }
+
+    void take_torque_window(torque_window &snapshot)
+    {
+        portENTER_CRITICAL(&info_lock);
+        snapshot=current_window;current_window=torque_window{};
+        portEXIT_CRITICAL(&info_lock);
     }
 
     /**

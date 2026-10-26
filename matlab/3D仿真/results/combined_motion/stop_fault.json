@@ -1,0 +1,23 @@
+{
+  "source_directory": "/home/bgzerol/embedded_project/foc_balance_car/esp32/lqi_firmware/results/live_20261027_001045",
+  "fault_line": "FAULT code=7 motor=1 time_us=1206499182 source=2 age_or_dt_us=1050 raw_a=0 raw_b=0 adc_age_us=46 heartbeat_age_us=63 control_phase=1 sample_flags=0 sample_start_tick=0 sample_end_tick=0 duty_a=0 duty_b=0",
+  "fields": {
+    "code": "7",
+    "motor": "1",
+    "time_us": "1206499182",
+    "source": "2",
+    "age_or_dt_us": "1050",
+    "raw_a": "0",
+    "raw_b": "0",
+    "adc_age_us": "46",
+    "heartbeat_age_us": "63",
+    "control_phase": "1",
+    "sample_flags": "0",
+    "sample_start_tick": "0",
+    "sample_end_tick": "0",
+    "duty_a": "0",
+    "duty_b": "0"
+  },
+  "last_completed_test_end_us": 923581251,
+  "scope": "Fault occurred during later stationary collection, after all motion tests. Source 2 is stale PWM command sample age, not an identified ADC outage; control_phase is the stage at the trip instant, not proof of a blocking call."
+}

@@ -1,0 +1,146 @@
+[
+  {
+    "label": "D:\\code\\Embedded-related\\balance_car\\esp32\\lqi_firmware\\results\\identification\\combo_08_15_repeat_clean_train",
+    "position_command_m": 0.08,
+    "yaw_command_deg": 15,
+    "move_s": 2,
+    "peak_planar_m": 0.10930788016372711,
+    "final_xy_m": [
+      -0.00018364282539410175,
+      0.0054518656906013463
+    ],
+    "peak_pitch_deg": 6.58510789532753,
+    "peak_each_command_A": 0.58723556995391846,
+    "yaw_tracking_rms_deg": 1.1646616206172591,
+    "aborted": false,
+    "fault": 0
+  },
+  {
+    "label": "D:\\code\\Embedded-related\\balance_car\\esp32\\lqi_firmware\\results\\identification\\combo_10_30_fast_validate",
+    "position_command_m": 0.1,
+    "yaw_command_deg": 30,
+    "move_s": 1,
+    "peak_planar_m": 0.15350900000963763,
+    "final_xy_m": [
+      -0.0039638405864668349,
+      0.10305103710996309
+    ],
+    "peak_pitch_deg": 5.740681789841922,
+    "peak_each_command_A": 0.61995184421539307,
+    "yaw_tracking_rms_deg": 1.2401908001612105,
+    "aborted": false,
+    "fault": 0
+  },
+  {
+    "label": "D:\\code\\Embedded-related\\balance_car\\esp32\\lqi_firmware\\results\\identification\\combo_10_30_slow_train",
+    "position_command_m": 0.1,
+    "yaw_command_deg": 30,
+    "move_s": 2,
+    "peak_planar_m": 0.14840266247354758,
+    "final_xy_m": [
+      0.00060198376228039847,
+      0.018385901718531484
+    ],
+    "peak_pitch_deg": 9.3557011344964476,
+    "peak_each_command_A": 0.65116757154464722,
+    "yaw_tracking_rms_deg": 1.1569986402321029,
+    "aborted": false,
+    "fault": 0
+  },
+  {
+    "label": "D:\\code\\Embedded-related\\balance_car\\esp32\\lqi_firmware\\results\\identification\\combo_12_40_repeat_clean_validate",
+    "position_command_m": 0.12,
+    "yaw_command_deg": 40,
+    "move_s": 2,
+    "peak_planar_m": 0.19070413843583972,
+    "final_xy_m": [
+      0.007038827355137057,
+      0.083795785082696472
+    ],
+    "peak_pitch_deg": 10.096348065072414,
+    "peak_each_command_A": 3.212155818939209,
+    "yaw_tracking_rms_deg": 3.4683521586910735,
+    "aborted": true,
+    "fault": 0
+  },
+  {
+    "label": "D:\\code\\Embedded-related\\balance_car\\esp32\\lqi_firmware\\results\\identification\\combo_12_40_validate",
+    "position_command_m": 0.12,
+    "yaw_command_deg": 40,
+    "move_s": 2,
+    "peak_planar_m": 0.15647070551962547,
+    "final_xy_m": [
+      -0.00932391549964359,
+      0.019046790396848715
+    ],
+    "peak_pitch_deg": 14.487859173067132,
+    "peak_each_command_A": 2.9207582473754883,
+    "yaw_tracking_rms_deg": 7.0674075550514965,
+    "aborted": false,
+    "fault": 0
+  },
+  {
+    "label": "D:\\code\\Embedded-related\\balance_car\\esp32\\lqi_firmware\\results\\identification\\combo_fixed_08_15_validate",
+    "position_command_m": 0.08,
+    "yaw_command_deg": 15,
+    "move_s": 2,
+    "peak_planar_m": 0.11125926469719441,
+    "final_xy_m": [
+      0.000395172160307213,
+      0.0083537952650302328
+    ],
+    "peak_pitch_deg": 7.8017545511430919,
+    "peak_each_command_A": 0.64782464504241943,
+    "yaw_tracking_rms_deg": 0.90256073325902086,
+    "aborted": false,
+    "fault": 0
+  },
+  {
+    "label": "D:\\code\\Embedded-related\\balance_car\\esp32\\lqi_firmware\\results\\identification\\combo_fixed_10_30_validate",
+    "position_command_m": 0.1,
+    "yaw_command_deg": 30,
+    "move_s": 1,
+    "peak_planar_m": 0.16337930917418161,
+    "final_xy_m": [
+      -0.0035427335494380712,
+      0.10683339279024927
+    ],
+    "peak_pitch_deg": 5.9156831892086963,
+    "peak_each_command_A": 0.66983950138092041,
+    "yaw_tracking_rms_deg": 1.1547318673134417,
+    "aborted": false,
+    "fault": 0
+  },
+  {
+    "label": "D:\\code\\Embedded-related\\balance_car\\esp32\\lqi_firmware\\results\\identification\\combo_fixed_12_40_validate",
+    "position_command_m": 0.12,
+    "yaw_command_deg": 40,
+    "move_s": 2,
+    "peak_planar_m": 0.18137757751875305,
+    "final_xy_m": [
+      4.8811169412971664E-6,
+      0.029234237680290858
+    ],
+    "peak_pitch_deg": 10.468249304058668,
+    "peak_each_command_A": 0.71784412860870361,
+    "yaw_tracking_rms_deg": 0.8115421237118573,
+    "aborted": false,
+    "fault": 0
+  },
+  {
+    "label": "D:\\code\\Embedded-related\\balance_car\\esp32\\lqi_firmware\\results\\identification\\combo_fixed_15_15_boundary_validate",
+    "position_command_m": 0.15,
+    "yaw_command_deg": 15,
+    "move_s": 2,
+    "peak_planar_m": 0.18441209789739438,
+    "final_xy_m": [
+      -0.00285355571760788,
+      0.026187638023551445
+    ],
+    "peak_pitch_deg": 9.2923818657958446,
+    "peak_each_command_A": 0.71653234958648682,
+    "yaw_tracking_rms_deg": 0.70114032573023477,
+    "aborted": true,
+    "fault": 0
+  }
+]

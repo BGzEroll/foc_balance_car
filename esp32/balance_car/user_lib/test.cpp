@@ -81,6 +81,13 @@ namespace test
             uint32_t flags,phase,crc;
         };
         static_assert(sizeof(yaw_frame)==68);
+        struct __attribute__((packed)) torque_frame {
+            uint32_t magic,sequence;uint64_t time_us;
+            uint32_t first_age_us[2],last_age_us[2];
+            float mean_iq[2],mean_net_iq[2];uint32_t count[2],crc;
+        };
+        static_assert(sizeof(torque_frame)==60);
+        torque_frame latest_torque{};
         yaw_frame latest_yaw{};
         float dynamic_amplitude=.05f;
         motion_test::state dynamic_status{};
@@ -193,7 +200,7 @@ namespace test
             static_assert(sizeof(frame)==224);
             uint32_t sequence=0,last_cycle=UINT32_MAX;
             uint32_t imu_sequence=0;uint64_t last_imu_us=0;
-            uint64_t last_attitude_us=0,last_yaw_us=0;
+            uint64_t last_attitude_us=0,last_yaw_us=0;uint32_t last_torque_sequence=UINT32_MAX;
             while(true) {
                 ulTaskNotifyTake(pdTRUE,portMAX_DELAY);
                 if(__atomic_load_n(&imu_stream_enabled,__ATOMIC_ACQUIRE)) {
@@ -231,6 +238,11 @@ namespace test
                     }
                 }
                 if(!__atomic_load_n(&uart_stream_enabled,__ATOMIC_ACQUIRE))continue;
+                torque_frame torque;portENTER_CRITICAL(&attitude_lock);torque=latest_torque;portEXIT_CRITICAL(&attitude_lock);
+                if(torque.time_us && torque.sequence!=last_torque_sequence){
+                    last_torque_sequence=torque.sequence;torque.crc=esp_rom_crc32_le(0,reinterpret_cast<const uint8_t*>(&torque),sizeof(torque)-4);
+                    xSemaphoreTake(uart_tx_lock,portMAX_DELAY);uart_write_bytes(UART_NUM_0,&torque,sizeof(torque));xSemaphoreGive(uart_tx_lock);
+                }
                 frame f{};get_telemetry(f.data);
                 if(f.data.cycle==last_cycle)continue;
                 last_cycle=f.data.cycle;f.magic=0x33554342U;f.sequence=sequence++;
@@ -287,6 +299,7 @@ namespace test
             bool previous_calibrated=false;
             yaw_observer::bias_observer heading;
             yaw_test::state yaw_motion;
+            uint64_t previous_torque_us=0;uint32_t torque_sequence=0;
 
             while(true)
             {
@@ -306,6 +319,19 @@ namespace test
                 {
                     sensor::get_package(sensors);
                     now = esp_timer_get_time();
+                }
+                if(sensors.imu.timestamp_us && sensors.imu.timestamp_us-previous_torque_us>=9000){
+                    previous_torque_us=sensors.imu.timestamp_us;
+                    motor::torque_window window{};motor::take_torque_window(window);
+                    torque_frame torque{};torque.magic=0x31524f54;torque.sequence=torque_sequence++;torque.time_us=esp_timer_get_time();
+                    for(int i=0;i<2;++i){
+                        torque.count[i]=window.count[i];
+                        if(window.count[i]){
+                            torque.first_age_us[i]=torque.time_us-window.first_us[i];torque.last_age_us[i]=torque.time_us-window.last_us[i];
+                            torque.mean_iq[i]=window.iq_sum[i]/window.count[i];torque.mean_net_iq[i]=window.net_iq_sum[i]/window.count[i];
+                        }
+                    }
+                    portENTER_CRITICAL(&attitude_lock);latest_torque=torque;portEXIT_CRITICAL(&attitude_lock);
                 }
                 const uint32_t wake_dt=previous_wake_us ? now-previous_wake_us : 5000U;
                 if(previous_wake_us) {
@@ -515,7 +541,7 @@ namespace test
                     float amp,move_s;portENTER_CRITICAL(&request_lock);amp=yaw_amplitude;move_s=yaw_move_seconds;portEXIT_CRITICAL(&request_lock);
                     yaw_motion.start(now,heading.raw_yaw-yaw_zero,heading.encoder_yaw,controller.distance_m,amp,move_s);
                 }else if(yaw_action==2)yaw_motion=yaw_test::state{};
-                yaw_motion.advance(now,heading.raw_yaw-yaw_zero,heading.encoder_yaw,controller.distance_m);
+                yaw_motion.advance(now,heading.raw_yaw-yaw_zero,heading.encoder_yaw,controller.distance_m,measured.yaw_rad);
                 balance::reference target{};
                 if(yaw_motion.armed){target.yaw_rad=yaw_motion.target;target.yaw_rate_rad_s=yaw_motion.rate;}
                 if(dynamic.armed){

@@ -1,16 +1,26 @@
-function result=identify_measured_plant
+function result=identify_measured_plant(input_source)
+if nargin==0,input_source='measured_iq';end
+assert(any(strcmp(input_source,{'measured_iq','commanded_iq','averaged_iq'})));
 % Fit measured current to CAD mechanics; entire separate runs are held out.
 here=fileparts(mfilename('fullpath'));root=fileparts(fileparts(here));
-folder=fullfile(root,'esp32/lqi_firmware/results/identification');out=fullfile(here,'results/measured_identification');if ~isfolder(out),mkdir(out);end
+folder=fullfile(root,'esp32/lqi_firmware/results/identification');out=fullfile(here,'results/measured_identification');if strcmp(input_source,'commanded_iq'),out=fullfile(here,'results/attitude_motion/command_input_model');end
+if strcmp(input_source,'averaged_iq'),out=fullfile(here,'results/attitude_motion/mean_current_model');end
+if ~isfolder(out),mkdir(out);end
 j=jsondecode(fileread(fullfile(root,'模型/参数与图片/机械参数.json')));b=j.balance_parameters;
 p=struct('M',j.mass_kg.body,'mw',j.mass_kg.left_drive,'r',b.wheel_radius_m,'l',hypot(b.body_com_height_above_axle_m,b.body_com_forward_offset_m),'I',b.body_Ixx_at_com_kg_m2,'Jw',b.left_drive_J_axis_kg_m2,'Iyaw',b.effective_inplace_yaw_kg_m2,'track',b.contact_track_m,'Kt',.013311959501823515,'g',9.80665);
 source=fileread(fullfile(root,'esp32/balance_car/user_lib/hw/motor.cpp'));
 block=regexp(source,'const float cogging_table\[2\]\[COGGING_TABLE_SIZE\]\s*=\s*\{([\s\S]*?)\n        \};','tokens','once');
 values=regexp(block{1},'[-+]?\d+\.\d+(?:[eE][-+]?\d+)?f','match');
 p.cogging_table_A=reshape(str2double(erase(values,'f')),4096,2);
-files=dir(fullfile(folder,'*/report.json'));train={};valid={};yawtrain={};yawvalid={};
+p.input_source=input_source;
+files=dir(fullfile(folder,'*/report.json'));
+if strcmp(input_source,'averaged_iq'),files=dir(fullfile(folder,'linear_mean*/report.json'));end
+train={};valid={};yawtrain={};yawvalid={};
 for n=1:numel(files)
- r=jsondecode(fileread(fullfile(files(n).folder,files(n).name)));t=readtable(fullfile(files(n).folder,'samples.csv'));
+ r=jsondecode(fileread(fullfile(files(n).folder,files(n).name)));
+ if ~any(strcmp(r.kind,{'linear','yaw'})) || (isfield(r,'excluded_from_identification') && r.excluded_from_identification),continue;end
+ t=readtable(fullfile(files(n).folder,'samples.csv'));
+ if strcmp(input_source,'averaged_iq'),t=load_torque_inputs(t,files(n).folder);end
  t=t(t.sample_us>=r.start_us & t.sample_us<=r.start_us+20e6,:);
  if strcmp(r.kind,'linear')
   if contains(files(n).folder,'validate'),valid{end+1}=t;else,train{end+1}=t;end %#ok<AGROW>
@@ -24,7 +34,7 @@ z=fminsearch(@(z)cost(train,p,deg2rad(3)*tanh(z)),0,options);offset=deg2rad(3)*t
 [X,Z,y]=equations(train,p,offset);[coef,constant]=solve(X,Z,y);
 [Xv,Zv,yv,truth]=equations(valid,p,offset);prediction=Xv*coef+Zv*constant;
 [X0,Z0,y0]=equations(valid,p,0);nominal=[1;.015;.02;.0001];
-result=struct('parameters',p,'torque_scale',coef(1),'friction_N',coef(2),'viscous_N_s_m',coef(3),'pitch_damping_N_m_s',coef(4),'pitch_sensor_offset_rad',offset,'constant_force_N',constant(1),'train_runs',numel(train),'validation_runs',numel(valid),'regressor_condition',cond(X-Z*(Z\X)),'validation_nominal',metrics(X0*nominal-y0,p),'validation_identified',metrics(prediction-yv,p),'scope','Effective parameters conditional on CAD inertia and encoder/ESKF observations. Cogging torque approximated using deployed compensation table; whole-run holdout; no independent ground-position truth. Offsets are fitted nuisance terms, not sensor calibration.');
+result=struct('parameters',p,'torque_scale',coef(1),'friction_N',coef(2),'viscous_N_s_m',coef(3),'pitch_damping_N_m_s',coef(4),'pitch_sensor_offset_rad',offset,'constant_force_N',constant(1),'train_runs',numel(train),'validation_runs',numel(valid),'regressor_condition',cond(X-Z*(Z\X)),'validation_nominal',metrics(X0*nominal-y0,p),'validation_identified',metrics(prediction-yv,p),'scope','Effective parameters conditional on CAD inertia and encoder/ESKF observations; input source is parameters.input_source. Measured-current model approximates cogging torque using deployed compensation table; whole-run holdout; no independent ground-position truth. Offsets are fitted nuisance terms, not sensor calibration.');
 if numel(yawtrain)>=2 && ~isempty(yawvalid)
  [A,c]=yaweq(yawtrain,p);[Av,cv]=yaweq(yawvalid,p);coeff=lsqnonneg(A,c);
  result.yaw_candidate=struct('accepted_for_simulation',false,'scope','Slow-turn data give implausibly small torque gain. Keep as diagnostic; do not replace yaw mechanics with this fit.', 'validation_zero_acceleration_rms_rad_s',rms(cv),'torque_scale',coeff(1),'viscous_Nm_s',coeff(2),'coulomb_Nm',coeff(3),'validation_rate_increment_rms_rad_s',rms(Av*coeff-cv),'validation_nominal_rms_rad_s',rms(Av*[1;0;0]-cv),'regressor_condition',cond(A));
@@ -54,7 +64,7 @@ end
 function [X,Z,y,truth]=equations(runs,p,offset)
 X=[];Z=[];y=[];truth=[];m=p.M+2*p.mw+2*p.Jw/p.r^2;J=p.I+p.M*p.l^2;w=[1/m;.1/J];
 for n=1:numel(runs)
- t=runs{n};v=movmean(t.speed,3);q=movmean(t.pitch_rate,3);theta=t.pitch-offset;net=net_current(t,p);u=-net(:,1)+net(:,2);
+ t=runs{n};v=movmean(t.speed,3);q=movmean(t.pitch_rate,3);theta=t.pitch-offset;if strcmp(p.input_source,'commanded_iq'),u=t.command_a+t.command_b;elseif strcmp(p.input_source,'averaged_iq'),u=-t.mean_net_iq_a+t.mean_net_iq_b;else,net=net_current(t,p);u=-net(:,1)+net(:,2);end
  for a=1:10:height(t)-21
   k=a:a+20;s=t.sample_us(k)*1e-6;duration=s(end)-s(1);
   if duration<.095 || duration>.11 || any(t.fault(k)) || any(t.mode(k)~=2) || mean(abs(v(k)))<.008,continue;end

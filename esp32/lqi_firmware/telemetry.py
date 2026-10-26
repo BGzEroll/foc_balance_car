@@ -11,3 +11,6 @@ YAW_FIELDS=['magic','sequence','time_us','raw_yaw','encoder_yaw','corrected_yaw'
 
 IMU_WIRE=struct.Struct('<IIQQI7hH6fI')
 IMU_FIELDS=['magic','sequence','time_us','read_began_us','sample_sequence','acc_x_raw','acc_y_raw','acc_z_raw','temperature_raw','gyro_x_raw','gyro_y_raw','gyro_z_raw','reserved','gyro_x','gyro_y','gyro_z','roll_x','pitch_y','yaw_z','crc']
+
+TORQUE_WIRE=struct.Struct('<IIQ4I4f3I')
+TORQUE_FIELDS=['magic','sequence','time_us','first_age_a_us','first_age_b_us','last_age_a_us','last_age_b_us','mean_iq_a','mean_iq_b','mean_net_iq_a','mean_net_iq_b','count_a','count_b','crc']

@@ -46,6 +46,7 @@ namespace motor
         float id_A = 0.0f;
         float iq_A = 0.0f;
 
+        float cogging_A = 0.0f;
         bool valid = false;
     };
 
@@ -84,6 +85,12 @@ namespace motor
         fault_info fault = {};
     };
 
+    struct torque_window {
+        uint64_t first_us[2]={},last_us[2]={};
+        float iq_sum[2]={},net_iq_sum[2]={};
+        uint32_t count[2]={};
+    };
+    void take_torque_window(torque_window &snapshot);
     bool init();
     bool calibrate();
     bool start(uint32_t duration_ms, uint32_t mask = 3);

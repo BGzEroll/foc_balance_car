@@ -3,9 +3,9 @@
     "M": 0.2771,
     "mw": 0.0627,
     "r": 0.0325,
-    "l": 0.036529272109234422,
+    "l": 0.03652927210923442,
     "I": 0.00031184766836104503,
-    "Jw": 2.9967889984098441E-5,
+    "Jw": 2.996788998409844e-05,
     "Iyaw": 0.0012037540146299514,
     "track": 0.1325364,
     "Kt": 0.013311959501823515,
@@ -6485,7 +6485,7 @@
       ],
       [
         -0.11563894,
-        -9.416E-5
+        -9.416e-05
       ],
       [
         -0.11769821,
@@ -9560,7 +9560,7 @@
         -0.05928634
       ],
       [
-        3.199E-5,
+        3.199e-05,
         -0.05497063
       ],
       [
@@ -15588,7 +15588,7 @@
         0.22170961
       ],
       [
-        -6.842E-5,
+        -6.842e-05,
         0.21421571
       ],
       [
@@ -16395,10 +16395,11 @@
         0.15895647,
         -0.27122026
       ]
-    ]
+    ],
+    "input_source": "measured_iq"
   },
-  "torque_scale": 0.63761048530302855,
-  "friction_N": 0.084781275418403468,
+  "torque_scale": 0.6376104853030286,
+  "friction_N": 0.08478127541840347,
   "viscous_N_s_m": 0.15403955249824644,
   "pitch_damping_N_m_s": 0.0038382716628125495,
   "pitch_sensor_offset_rad": 0.01005162870267033,
@@ -16408,13 +16409,13 @@
   "regressor_condition": 187.66738279229648,
   "validation_nominal": {
     "windows": 394,
-    "delta_speed_rms_m_s": 0.060340271052663277,
+    "delta_speed_rms_m_s": 0.06034027105266328,
     "delta_pitch_rate_rms_rad_s": 1.3401525624915764
   },
   "validation_identified": {
     "windows": 394,
-    "delta_speed_rms_m_s": 0.020237453713858811,
-    "delta_pitch_rate_rms_rad_s": 0.51614714673452311
+    "delta_speed_rms_m_s": 0.02023745371385881,
+    "delta_pitch_rate_rms_rad_s": 0.5161471467345231
   },
   "scope": "Effective parameters conditional on CAD inertia and encoder/ESKF observations. Cogging torque approximated using deployed compensation table; whole-run holdout; no independent ground-position truth. Offsets are fitted nuisance terms, not sensor calibration.",
   "yaw_candidate": {
@@ -16422,10 +16423,10 @@
     "scope": "Slow-turn data give implausibly small torque gain. Keep as diagnostic; do not replace yaw mechanics with this fit.",
     "validation_zero_acceleration_rms_rad_s": 0.046097205401820274,
     "torque_scale": 0.033854222951878385,
-    "viscous_Nm_s": 0.00029002798240441362,
+    "viscous_Nm_s": 0.0002900279824044136,
     "coulomb_Nm": 0.00033647710316736073,
     "validation_rate_increment_rms_rad_s": 0.04164027915209037,
-    "validation_nominal_rms_rad_s": 0.99165921837056525,
+    "validation_nominal_rms_rad_s": 0.9916592183705653,
     "regressor_condition": 195.93152273556836
   },
   "sensor_noise": {
@@ -16434,7 +16435,7 @@
     "acceleration_mean_g": [
       -0.010649467426571038,
       -0.014040031502589936,
-      0.86196743768855311
+      0.8619674376885531
     ],
     "acceleration_std_g": [
       0.0014894657746773008,
@@ -16442,11 +16443,11 @@
       0.0020926569103556026
     ],
     "gyro_std_rad_s": [
-      0.00066819207904761781,
-      0.00070649315642242513,
-      0.00062530377354598585
+      0.0006681920790476178,
+      0.0007064931564224251,
+      0.0006253037735459859
     ],
-    "mean_acceleration_norm_g": 0.86214754959718642,
+    "mean_acceleration_norm_g": 0.8621475495971864,
     "scope": "Fixed stand noise only; not a six-pose calibration or thermal characterization."
   },
   "encoder": {
