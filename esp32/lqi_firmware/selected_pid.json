@@ -18,9 +18,9 @@
     2.1,
     20,
     0,
-    3.1,
-    0.8,
-    0.7,
+    9.0,
+    0.6,
+    2.0,
     2.2,
     -0.001564208089
   ],
@@ -36,7 +36,60 @@
   "yaw_integral_limit_rad_s": 0.5,
   "encoder_ab_us": 4000,
   "worst_planar_radius": 0.9994744346013936,
-  "worst_yaw_radius": 0.9986294279587238,
-  "scope": "Measured effective torque/friction/damping model with held-out 100ms validation, sensor/encoder lag and uncertainty cases; candidates require powered validation. Pitch target limit 15deg; active-firmware limit change requires flashing.",
-  "design_sha256": "2a3239b9803e7bc9c6240f27c92e51715e20464322a6ce820f6f9b76ac4263eb"
+  "scope": "Planar gains unchanged from the baseline design. Yaw gains 9/0.6/2 selected by powered 30-degree speed comparisons and independent 20/45-degree plus repeated 30-degree tests. Baseline design hash identifies the compatible firmware; startup reapplies these selected gains.",
+  "design_sha256": "2a3239b9803e7bc9c6240f27c92e51715e20464322a6ce820f6f9b76ac4263eb",
+  "yaw_hardware_validation": {
+    "yaw_speed_base_30_1s": {
+      "tracking_rms_deg": 6.1211999576597025,
+      "hold_rms_deg": 4.2893321589663005,
+      "max_braking_overshoot_deg": 1.7824129966896818,
+      "settling_s_by_leg": [
+        0.740038,
+        null,
+        null,
+        null
+      ],
+      "peak_planar_m": 0.03442591647057841,
+      "peak_command_A": 0.5373282432556152
+    },
+    "yaw_speed_C_30_1s_repeat_validate": {
+      "tracking_rms_deg": 2.0034912449383997,
+      "hold_rms_deg": 1.3379005816421512,
+      "max_braking_overshoot_deg": 0,
+      "settling_s_by_leg": [
+        0.09496399999999999,
+        0.185,
+        0.260067,
+        0.289973
+      ],
+      "peak_planar_m": 0.03662955583958369,
+      "peak_command_A": 0.5473799705505371
+    },
+    "yaw_speed_C_45_1s_validate": {
+      "tracking_rms_deg": 2.0577832815203916,
+      "hold_rms_deg": 1.4090517510576852,
+      "max_braking_overshoot_deg": 0.8091891435052657,
+      "settling_s_by_leg": [
+        0.164904,
+        0.245113,
+        0.440086,
+        0.230103
+      ],
+      "peak_planar_m": 0.060904015729248834,
+      "peak_command_A": 0.5896264314651489
+    },
+    "yaw_speed_C_20_2s_validate": {
+      "tracking_rms_deg": 2.231642865962993,
+      "hold_rms_deg": 1.4396850151765404,
+      "max_braking_overshoot_deg": 0,
+      "settling_s_by_leg": [
+        0.024943,
+        0.024864999999999998,
+        0.02506,
+        0.115031
+      ],
+      "peak_planar_m": 0.022831782802268184,
+      "peak_command_A": 0.4709210693836212
+    }
+  }
 }

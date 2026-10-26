@@ -1,0 +1,14 @@
+{
+  "lag_s": 0,
+  "input_gain_rad_s2_per_A": 2.3766762894269284,
+  "viscous_per_s": 1.4106720228849445,
+  "coulomb_rad_s2": 0.58173713042421427,
+  "constant_rad_s2": -0.15733966892808096,
+  "train_runs": 9,
+  "validation_runs": 3,
+  "validation_rate_rms_rad_s": 0.13971219146240021,
+  "zero_acceleration_baseline_rms_rad_s": 0.17154873405419541,
+  "improvement_vs_zero": 0.1855830809088771,
+  "accepted_for_short_prediction": false,
+  "scope": "Empirical command-current to yaw-rate response including actuator and ground losses. Not a measured Kt or inertia. 100 ms open-loop whole-run holdout against IMU rate; absolute yaw and long-horizon closed-loop prediction are not validated."
+}

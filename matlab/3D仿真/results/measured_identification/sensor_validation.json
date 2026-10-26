@@ -1,0 +1,7 @@
+{
+  "peak_apparent_tilt_error_deg": 2.0336127542638285,
+  "rms_apparent_tilt_error_deg": 0.54268196291374726,
+  "samples": 3244,
+  "duration_s": 18.019873,
+  "scope": "Acceleration-only apparent tilt minus ESKF pitch after removing final-rest offset; not independent attitude truth."
+}

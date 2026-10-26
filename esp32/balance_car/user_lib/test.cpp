@@ -74,7 +74,7 @@ namespace test
         uint32_t cancel = 0;
         uint32_t dynamic_request=0;
         uint32_t attitude_align_requested=0,yaw_stream_enabled=0,yaw_request=0;
-        float yaw_amplitude=.7853981634f;
+        float yaw_amplitude=.7853981634f,yaw_move_seconds=3;
         struct __attribute__((packed)) yaw_frame {
             uint32_t magic,sequence;uint64_t timestamp_us;
             float raw_yaw,encoder_yaw,corrected_yaw,bias,gyro_rate,encoder_rate,corrected_rate,quiet_time,target,rate;
@@ -512,8 +512,8 @@ namespace test
                 }
                 const uint32_t yaw_action=__atomic_exchange_n(&yaw_request,0U,__ATOMIC_ACQ_REL);
                 if(yaw_action==1){
-                    float amp;portENTER_CRITICAL(&request_lock);amp=yaw_amplitude;portEXIT_CRITICAL(&request_lock);
-                    yaw_motion.start(now,heading.raw_yaw-yaw_zero,heading.encoder_yaw,controller.distance_m,amp);
+                    float amp,move_s;portENTER_CRITICAL(&request_lock);amp=yaw_amplitude;move_s=yaw_move_seconds;portEXIT_CRITICAL(&request_lock);
+                    yaw_motion.start(now,heading.raw_yaw-yaw_zero,heading.encoder_yaw,controller.distance_m,amp,move_s);
                 }else if(yaw_action==2)yaw_motion=yaw_test::state{};
                 yaw_motion.advance(now,heading.raw_yaw-yaw_zero,heading.encoder_yaw,controller.distance_m);
                 balance::reference target{};
@@ -737,15 +737,15 @@ namespace test
                 respond("YAWSTREAM hz=%u bytes=68\n",enabled?50:0);
             }
             else if(!strcmp(line,"YAWTEST") || !strncmp(line,"YAWTEST ",8)){
-                float degrees=45;char extra;
-                if(line[7] && (sscanf(line+8,"%f %c",&degrees,&extra)!=1 || !std::isfinite(degrees) || degrees<15 || degrees>60)){
-                    respond("REJECT YAWTEST requires 15..60 deg\n");return;
+                float degrees=0,move_s=0;char extra;
+                if(!line[7] || sscanf(line+8,"%f %f %c",&degrees,&move_s,&extra)!=2 || !std::isfinite(degrees) || degrees<15 || degrees>60 || !std::isfinite(move_s) || move_s<1 || move_s>4){
+                    respond("REJECT YAWTEST requires 15..60 deg and 1..4 s move time\n");return;
                 }
                 yaw_frame y;portENTER_CRITICAL(&attitude_lock);y=latest_yaw;portEXIT_CRITICAL(&attitude_lock);
                 motion_test::state d;portENTER_CRITICAL(&request_lock);d=dynamic_status;portEXIT_CRITICAL(&request_lock);
                 const bool accepted=__atomic_load_n(&active,__ATOMIC_ACQUIRE)==2 && (y.flags&1U) && !d.armed && y.phase==UINT32_MAX;
-                if(accepted){portENTER_CRITICAL(&request_lock);yaw_amplitude=degrees*.01745329252f;portEXIT_CRITICAL(&request_lock);__atomic_store_n(&yaw_request,1U,__ATOMIC_RELEASE);}
-                respond("YAWTEST accepted=%u amplitude_deg=%.3f duration_s=20 return_at_deg=65\n",accepted,degrees);
+                if(accepted){portENTER_CRITICAL(&request_lock);yaw_amplitude=degrees*.01745329252f;yaw_move_seconds=move_s;portEXIT_CRITICAL(&request_lock);__atomic_store_n(&yaw_request,1U,__ATOMIC_RELEASE);}
+                respond("YAWTEST accepted=%u amplitude_deg=%.3f move_s=%.3f duration_s=%.3f return_at_deg=65\n",accepted,degrees,move_s,4*(move_s+2));
             }
             else if(!strcmp(line,"YAWEND")){
                 yaw_frame y;portENTER_CRITICAL(&attitude_lock);y=latest_yaw;portEXIT_CRITICAL(&attitude_lock);

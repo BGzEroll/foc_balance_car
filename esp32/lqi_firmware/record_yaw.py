@@ -1,6 +1,6 @@
 """Attach to the running car without changing DTR/RTS; record yaw and encoders."""
 import argparse,csv,json,os,pathlib,queue,select,signal,struct,sys,termios,threading,time,zlib
-from telemetry import FIELDS2,WIRE2,YAW_WIRE,YAW_FIELDS,ATTITUDE_WIRE,ATTITUDE_FIELDS
+from telemetry import FIELDS2,WIRE2,YAW_WIRE,YAW_FIELDS,ATTITUDE_WIRE,ATTITUDE_FIELDS,IMU_WIRE,IMU_FIELDS
 
 parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--overnight',action='store_true',help='Detached long run: save about 20Hz CSV, no full raw binary, no motor commands');args=parser.parse_args()
 h=pathlib.Path(__file__).resolve().parent
@@ -16,6 +16,7 @@ awire=ATTITUDE_WIRE;afields=ATTITUDE_FIELDS
 raw=None if args.overnight else (folder/'serial.bin').open('wb');log=(folder/'commands.log').open('w',buffering=1)
 bc=(folder/'samples.csv').open('w',newline='');ac=(folder/'attitude.csv').open('w',newline='')
 bw=csv.writer(bc);aw=csv.writer(ac);bw.writerow(FIELDS2);aw.writerow(afields)
+ic=(folder/'imu.csv').open('w',newline='');iw=csv.writer(ic);iw.writerow(IMU_FIELDS)
 commands=queue.Queue();buf=bytearray();frames=0;bad=0;last=None;quit_requested=False
 last_bc_write=last_yaw_write=0;next_status=time.monotonic()+15;next_attitude=time.monotonic()+60
 def save():
@@ -37,6 +38,12 @@ try:
    if raw:raw.write(data)
    buf.extend(data)
   while buf:
+   if buf.startswith(b'IMU2'):
+    size=IMU_WIRE.size
+    if len(buf)<size:break
+    packet=bytes(buf[:size]);del buf[:size]
+    if zlib.crc32(packet[:-4])&0xffffffff!=struct.unpack_from('<I',packet,size-4)[0]:bad+=1;continue
+    iw.writerow(IMU_WIRE.unpack(packet));continue
    size=224 if buf.startswith(b'BCU3') else 124 if buf.startswith(b'ATT2') else 68 if buf.startswith(b'YAW3') else 0
    if size:
     if len(buf)<size:break
@@ -52,14 +59,14 @@ try:
      if not args.overnight or values[2]-last_yaw_write>=50000:
       yw.writerow(values);last_yaw_write=values[2]
     continue
-   positions=[p for p in [buf.find(b'BCU3'),buf.find(b'ATT2'),buf.find(b'YAW3')] if p>=0]
+   positions=[p for p in [buf.find(b'BCU3'),buf.find(b'ATT2'),buf.find(b'YAW3'),buf.find(b'IMU2')] if p>=0]
    magic=min(positions) if positions else -1;nl=buf.find(b'\n')
    if nl>=0 and (magic<0 or nl<magic):
     line=bytes(buf[:nl]).decode(errors='replace').strip();del buf[:nl+1];log.write(line+'\n');print(line,flush=True)
    elif magic>0:del buf[:magic]
    elif len(buf)>4096:del buf[:-3]
    else:break
-  bc.flush();ac.flush();yc.flush()
+  bc.flush();ac.flush();yc.flush();ic.flush()
   if raw:raw.flush()
   if args.overnight and time.monotonic()>=next_status:
    send('STATUS');save();next_status=time.monotonic()+15
@@ -73,4 +80,4 @@ finally:
  send('ATTSTREAM 0');os.close(fd)
  save()
  if raw:raw.close()
- log.close();bc.close();ac.close();yc.close()
+ log.close();bc.close();ac.close();yc.close();ic.close()

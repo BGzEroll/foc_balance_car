@@ -8,3 +8,6 @@ ATTITUDE_WIRE=struct.Struct('<IIQ19f6IfI')
 ATTITUDE_FIELDS=['magic','sequence','time_us','qw','qx','qy','qz','bx','by','bz','roll','pitch','yaw','gyro_x','gyro_y','gyro_z','p_rx','p_ry','p_rz','p_bx','p_by','p_bz','compute_us','gravity_updates','gravity_rejected','rest_updates','confirmed_rest','stack_high_water','nis','crc']
 YAW_WIRE=struct.Struct('<IIQ10f3I')
 YAW_FIELDS=['magic','sequence','time_us','raw_yaw','encoder_yaw','corrected_yaw','bias','gyro_rate','encoder_rate','corrected_rate','quiet_time','target','target_rate','flags','phase','crc']
+
+IMU_WIRE=struct.Struct('<IIQQI7hH6fI')
+IMU_FIELDS=['magic','sequence','time_us','read_began_us','sample_sequence','acc_x_raw','acc_y_raw','acc_z_raw','temperature_raw','gyro_x_raw','gyro_y_raw','gyro_z_raw','reserved','gyro_x','gyro_y','gyro_z','roll_x','pitch_y','yaw_z','crc']
