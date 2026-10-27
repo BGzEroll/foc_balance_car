@@ -3,11 +3,9 @@
 
 #include "hw/motor.h"
 #include "hw/sensor.h"
-
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-
 #include <math.h>
 
 namespace balance
@@ -367,8 +365,7 @@ namespace balance
                     isfinite(sensors.imu.angle[1]);
 
                 if(!valid ||
-                   fabsf(sensors.imu.angle[0]) > MAX_TILT_RAD ||
-                   fabsf(sensors.imu.angle[1]) > MAX_TILT_RAD)
+                   fabsf(sensors.imu.angle[0]) > MAX_TILT_RAD)
                 {
                     if(active)
                     {

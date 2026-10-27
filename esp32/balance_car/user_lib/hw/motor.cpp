@@ -2724,7 +2724,7 @@ namespace motor
 
                     if(static_cast<int32_t>(now - left_us) >
                         static_cast<int32_t>(CONTROL_TIMEOUT_US) ||
-                    static_cast<int32_t>(now - right_us) >
+                        static_cast<int32_t>(now - right_us) >
                         static_cast<int32_t>(CONTROL_TIMEOUT_US))
                     {
                         pwm::trip(fault_code::COMMAND_TIMEOUT);
