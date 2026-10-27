@@ -431,9 +431,9 @@ namespace mpu6050
 
         constexpr uint32_t CALIBRATION_SAMPLES = 1000;
 
-        constexpr float PI = 3.14159265358979323846f;
-        constexpr float DEG2RAD = PI / 180.0f;
-        constexpr float ACC_COEF = 0.02f;
+        constexpr float DEG2RAD = 0.01745329251994329577f;
+        constexpr float WHEEL_RADIUS_M = 0.0325f;
+        constexpr float WHEEL_FACTOR = WHEEL_RADIUS_M / 0.1325364f;
 
         uint8_t reg = REG_DATA;
         uint8_t raw[14] = {};
@@ -442,11 +442,6 @@ namespace mpu6050
         float gyro_offset[3] = {};
 
         uint32_t calibration_count = 0;
-        uint64_t last_time_us = 0;
-
-        float pitch_rad = 0.0f;     // 俯仰角，绕 X 轴，车头抬起为正，单位 rad
-        float roll_rad = 0.0f;      // 横滚角，绕 Y 轴，车身右侧下沉为正，单位 rad
-        float yaw_rad = 0.0f;       // 相对偏航角，绕 Z 轴，左转为正，单位 rad
 
         /**
          * @brief 读取大端有符号 16 位数据
@@ -490,7 +485,7 @@ namespace mpu6050
 
             for(uint8_t i = 0; i < 3; i++)
             {
-                const float raw_offset = 
+                const float raw_offset =
                     static_cast<float>(gyro_offset_sum[i]) /
                     static_cast<float>(CALIBRATION_SAMPLES);
 
@@ -500,10 +495,639 @@ namespace mpu6050
                     DEG2RAD;
             }
 
-            last_time_us = 0;
-
             return false;
         }
+
+        // 误差状态为世界坐标姿态误差 XYZ 和机体系陀螺仪零偏 XYZ
+        struct attitude_filter
+        {
+            float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};
+            float bias[3] = {};
+            float covariance[6][6] = {};
+
+            float gravity_norm = 1.0f;
+            bool initialized = false;
+
+            /**
+             * @brief 计算 Hamilton 四元数乘积
+             *
+             * @param[in] a 左侧四元数
+             * @param[in] b 右侧四元数
+             * @param[out] out 四元数乘积，允许与输入共用缓冲区
+             */
+            static void multiply(const float a[4], const float b[4], float out[4])
+            {
+                const float result[4] =
+                {
+                    a[0] * b[0] - a[1] * b[1] - a[2] * b[2] - a[3] * b[3],
+                    a[0] * b[1] + a[1] * b[0] + a[2] * b[3] - a[3] * b[2],
+                    a[0] * b[2] - a[1] * b[3] + a[2] * b[0] + a[3] * b[1],
+                    a[0] * b[3] + a[1] * b[2] - a[2] * b[1] + a[3] * b[0]
+                };
+
+                for(uint8_t i = 0; i < 4; ++i)
+                {
+                    out[i] = result[i];
+                }
+            }
+
+            /**
+             * @brief 将旋转向量转换为单位四元数
+             *
+             * @param[in] vector 旋转向量，单位 rad
+             * @param[out] out 对应的四元数
+             */
+            static void rotation(const float vector[3], float out[4])
+            {
+                const float norm = sqrtf(
+                    vector[0] * vector[0] +
+                    vector[1] * vector[1] +
+                    vector[2] * vector[2]);
+
+                const float scale = norm > 1.0e-7f ?
+                    sinf(0.5f * norm) / norm : 0.5f;
+
+                out[0] = cosf(0.5f * norm);
+
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    out[i + 1] = scale * vector[i];
+                }
+            }
+
+            /**
+             * @brief 计算 3×3 矩阵逆矩阵
+             *
+             * @param[in] a 待求逆矩阵
+             * @param[out] out 逆矩阵
+             *
+             * @return true 求逆成功
+             * @return false 矩阵行列式非正
+             */
+            static bool invert(const float a[3][3], float out[3][3])
+            {
+                const float det =
+                    a[0][0] * (a[1][1] * a[2][2] - a[1][2] * a[2][1]) -
+                    a[0][1] * (a[1][0] * a[2][2] - a[1][2] * a[2][0]) +
+                    a[0][2] * (a[1][0] * a[2][1] - a[1][1] * a[2][0]);
+
+                if(!(det > 0.0f))
+                {
+                    return false;
+                }
+
+                out[0][0] = (a[1][1] * a[2][2] - a[1][2] * a[2][1]) / det;
+                out[0][1] = (a[0][2] * a[2][1] - a[0][1] * a[2][2]) / det;
+                out[0][2] = (a[0][1] * a[1][2] - a[0][2] * a[1][1]) / det;
+
+                out[1][0] = (a[1][2] * a[2][0] - a[1][0] * a[2][2]) / det;
+                out[1][1] = (a[0][0] * a[2][2] - a[0][2] * a[2][0]) / det;
+                out[1][2] = (a[0][2] * a[1][0] - a[0][0] * a[1][2]) / det;
+
+                out[2][0] = (a[1][0] * a[2][1] - a[1][1] * a[2][0]) / det;
+                out[2][1] = (a[0][1] * a[2][0] - a[0][0] * a[2][1]) / det;
+                out[2][2] = (a[0][0] * a[1][1] - a[0][1] * a[1][0]) / det;
+
+                return true;
+            }
+
+            /**
+             * @brief 将当前姿态四元数归一化
+             */
+            void normalize()
+            {
+                float norm = 0.0f;
+
+                for(float value : q)
+                {
+                    norm += value * value;
+                }
+
+                const float scale = 1.0f / sqrtf(norm);
+
+                for(float &value : q)
+                {
+                    value *= scale;
+                }
+            }
+
+            /**
+             * @brief 将当前姿态四元数转换为 XYZ 欧拉角
+             *
+             * @param[out] out 绕 X、Y、Z 轴的欧拉角，单位 rad
+             */
+            void euler(float out[3]) const
+            {
+                out[0] = atan2f(
+                    2.0f * (q[0] * q[1] + q[2] * q[3]),
+                    1.0f - 2.0f * (q[1] * q[1] + q[2] * q[2]));
+
+                const float sine = fmaxf(-1.0f, fminf(1.0f,
+                    2.0f * (q[0] * q[2] - q[3] * q[1])));
+
+                out[1] = asinf(sine);
+
+                out[2] = atan2f(
+                    2.0f * (q[0] * q[3] + q[1] * q[2]),
+                    1.0f - 2.0f * (q[2] * q[2] + q[3] * q[3]));
+            }
+
+            /**
+             * @brief 获取机体系下的单位重力方向
+             *
+             * @param[out] out 机体系重力方向向量
+             */
+            void gravity(float out[3]) const
+            {
+                out[0] = 2.0f * (q[1] * q[3] - q[0] * q[2]);
+                out[1] = 2.0f * (q[2] * q[3] + q[0] * q[1]);
+                out[2] = 1.0f - 2.0f * (q[1] * q[1] + q[2] * q[2]);
+            }
+
+            /**
+             * @brief 计算从机体系到世界系的旋转矩阵
+             *
+             * @param[out] r 3×3 旋转矩阵
+             */
+            void matrix(float r[3][3]) const
+            {
+                const float w = q[0];
+                const float x = q[1];
+                const float y = q[2];
+                const float z = q[3];
+
+                r[0][0] = 1.0f - 2.0f * (y * y + z * z);
+                r[0][1] = 2.0f * (x * y - w * z);
+                r[0][2] = 2.0f * (x * z + w * y);
+
+                r[1][0] = 2.0f * (x * y + w * z);
+                r[1][1] = 1.0f - 2.0f * (x * x + z * z);
+                r[1][2] = 2.0f * (y * z - w * x);
+
+                r[2][0] = 2.0f * (x * z - w * y);
+                r[2][1] = 2.0f * (y * z + w * x);
+                r[2][2] = 1.0f - 2.0f * (x * x + y * y);
+            }
+
+            /**
+             * @brief 根据重力方向初始化姿态与协方差
+             *
+             * @param[in] acc 三轴加速度，单位 g
+             *
+             * @return true 初始化成功
+             * @return false 重力数据无效
+             */
+            bool initialize(const float acc[3])
+            {
+                gravity_norm = sqrtf(
+                    acc[0] * acc[0] +
+                    acc[1] * acc[1] +
+                    acc[2] * acc[2]);
+
+                if(!(gravity_norm > 0.1f) || !isfinite(gravity_norm))
+                {
+                    return false;
+                }
+
+                const float roll = atan2f(acc[1], acc[2]);
+                const float pitch = atan2f(-acc[0], hypotf(acc[1], acc[2]));
+
+                const float cx = cosf(roll * 0.5f);
+                const float sx = sinf(roll * 0.5f);
+                const float cy = cosf(pitch * 0.5f);
+                const float sy = sinf(pitch * 0.5f);
+
+                q[0] = cy * cx;
+                q[1] = cy * sx;
+                q[2] = sy * cx;
+                q[3] = -sy * sx;
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    covariance[i][i] = i < 3 ? 0.0009f : 7.615435e-7f;
+                }
+
+                initialized = true;
+                return true;
+            }
+
+            /**
+             * @brief 按状态变换矩阵传播误差协方差
+             *
+             * @param[in] f 六状态变换矩阵
+             */
+            void transform_covariance(const float f[6][6])
+            {
+                float temp[6][6] = {};
+                float next[6][6] = {};
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 6; ++j)
+                    {
+                        for(uint8_t k = 0; k < 6; ++k)
+                        {
+                            temp[i][j] += f[i][k] * covariance[k][j];
+                        }
+                    }
+                }
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 6; ++j)
+                    {
+                        for(uint8_t k = 0; k < 6; ++k)
+                        {
+                            next[i][j] += temp[i][k] * f[j][k];
+                        }
+                    }
+                }
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 6; ++j)
+                    {
+                        covariance[i][j] = next[i][j];
+                    }
+                }
+            }
+
+            /**
+             * @brief 根据重力方向观测执行 ESKF 卡尔曼修正
+             *
+             * @param[in] h 三维观测雅可比矩阵
+             * @param[in] residual 三维观测残差
+             * @param[in] variance 观测噪声方差
+             *
+             * @return true 修正成功
+             * @return false 创新协方差无效或超出 NIS 门限
+             */
+            bool correct(
+                const float h[3][6],
+                const float residual[3],
+                float variance)
+            {
+                float ph[6][3] = {};
+                float s[3][3] = {};
+                float inverse[3][3];
+                float gain[6][3] = {};
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 3; ++j)
+                    {
+                        for(uint8_t k = 0; k < 6; ++k)
+                        {
+                            ph[i][j] += covariance[i][k] * h[j][k];
+                        }
+                    }
+                }
+
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    for(uint8_t j = 0; j < 3; ++j)
+                    {
+                        for(uint8_t k = 0; k < 6; ++k)
+                        {
+                            s[i][j] += h[i][k] * ph[k][j];
+                        }
+
+                        if(i == j)
+                        {
+                            s[i][j] += variance;
+                        }
+                    }
+                }
+
+                if(!invert(s, inverse))
+                {
+                    return false;
+                }
+
+                float nis = 0.0f;
+
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    for(uint8_t j = 0; j < 3; ++j)
+                    {
+                        nis += residual[i] * inverse[i][j] * residual[j];
+                    }
+                }
+
+                if(!(nis <= 9.21f))
+                {
+                    return false;
+                }
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 3; ++j)
+                    {
+                        for(uint8_t k = 0; k < 3; ++k)
+                        {
+                            gain[i][j] += ph[i][k] * inverse[k][j];
+                        }
+                    }
+                }
+
+                // 重力仅约束倾斜方向，不直接修正世界坐标系 Yaw
+                float g[3];
+                gravity(g);
+
+                for(uint8_t j = 0; j < 3; ++j)
+                {
+                    gain[2][j] = 0.0f;
+                    float along = 0.0f;
+
+                    for(uint8_t i = 0; i < 3; ++i)
+                    {
+                        along += g[i] * gain[i + 3][j];
+                    }
+
+                    for(uint8_t i = 0; i < 3; ++i)
+                    {
+                        gain[i + 3][j] -= g[i] * along;
+                    }
+                }
+
+                float dx[6] = {};
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 3; ++j)
+                    {
+                        dx[i] += gain[i][j] * residual[j];
+                    }
+                }
+
+                // Joseph 协方差修正
+                float a[6][6] = {};
+                float ap[6][6] = {};
+                float next[6][6] = {};
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 6; ++j)
+                    {
+                        a[i][j] = i == j ? 1.0f : 0.0f;
+
+                        for(uint8_t k = 0; k < 3; ++k)
+                        {
+                            a[i][j] -= gain[i][k] * h[k][j];
+                        }
+                    }
+                }
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 6; ++j)
+                    {
+                        for(uint8_t k = 0; k < 6; ++k)
+                        {
+                            ap[i][j] += a[i][k] * covariance[k][j];
+                        }
+                    }
+                }
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 6; ++j)
+                    {
+                        for(uint8_t k = 0; k < 6; ++k)
+                        {
+                            next[i][j] += ap[i][k] * a[j][k];
+                        }
+
+                        for(uint8_t k = 0; k < 3; ++k)
+                        {
+                            next[i][j] += variance * gain[i][k] * gain[j][k];
+                        }
+                    }
+                }
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 6; ++j)
+                    {
+                        covariance[i][j] = 0.5f * (next[i][j] + next[j][i]);
+                    }
+                }
+
+                float dq[4];
+                rotation(dx, dq);
+                multiply(dq, q, q);
+                normalize();
+
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    bias[i] += dx[i + 3];
+                }
+
+                // 修正后的误差坐标重置
+                float j[6][6] = {};
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    j[i][i] = 1.0f;
+                }
+
+                j[0][1] -= 0.5f * dx[2];
+                j[0][2] += 0.5f * dx[1];
+                j[1][0] += 0.5f * dx[2];
+                j[1][2] -= 0.5f * dx[0];
+                j[2][0] -= 0.5f * dx[1];
+                j[2][1] += 0.5f * dx[0];
+
+                transform_covariance(j);
+                return true;
+            }
+
+            /**
+             * @brief 预测姿态并利用重力观测修正误差状态
+             *
+             * @param[in] acc 三轴加速度，单位 g
+             * @param[in] gyro 三轴角速度，单位 rad/s
+             * @param[in] dt 采样时间间隔，单位 s
+             *
+             * @return true 更新成功
+             * @return false 重力数据初始化失败
+             */
+            bool update(
+                const float acc[3],
+                const float gyro[3],
+                float dt)
+            {
+                if(!initialized)
+                {
+                    return initialize(acc);
+                }
+
+                float increment[3];
+
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    increment[i] = (gyro[i] - bias[i]) * dt;
+                }
+
+                float dq[4];
+                rotation(increment, dq);
+                multiply(q, dq, q);
+                normalize();
+
+                float f[6][6] = {};
+                float r[3][3];
+                matrix(r);
+
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    f[i][i] = 1.0f;
+                }
+
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    for(uint8_t j = 0; j < 3; ++j)
+                    {
+                        f[i][j + 3] = -r[i][j] * dt;
+                    }
+                }
+
+                transform_covariance(f);
+
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    covariance[i][i] += 0.00070f * 0.00070f * dt * dt;
+                    covariance[i + 3][i + 3] += 5.0e-6f * 5.0e-6f * dt;
+                }
+
+                const float norm = sqrtf(
+                    acc[0] * acc[0] +
+                    acc[1] * acc[1] +
+                    acc[2] * acc[2]);
+
+                if(norm > 0.0f &&
+                   fabsf(norm / gravity_norm - 1.0f) < 0.08f)
+                {
+                    float g[3];
+                    float h[3][6] = {};
+                    float residual[3];
+                    gravity(g);
+
+                    for(uint8_t i = 0; i < 3; ++i)
+                    {
+                        residual[i] = acc[i] / norm - g[i];
+                        h[i][0] = r[1][i];
+                        h[i][1] = -r[0][i];
+                    }
+
+                    correct(h, residual, 0.003f * 0.003f);
+                }
+
+                return true;
+            }
+        };
+
+        struct yaw_observer
+        {
+            float bias = 0.0f;
+
+            float left = 0.0f;
+            float right = 0.0f;
+            float base_left = 0.0f;
+            float base_right = 0.0f;
+            float base_yaw = 0.0f;
+            float encoder_yaw = 0.0f;
+
+            float seconds = 0.0f;
+            float gyro_integral = 0.0f;
+            float travel = 0.0f;
+            float window_angle = 0.0f;
+            float minimum = 0.0f;
+            float maximum = 0.0f;
+
+            bool initialized = false;
+            bool candidate = true;
+
+            /**
+             * @brief 开始新的编码器 Yaw 零偏辨识窗口
+             */
+            void begin_window()
+            {
+                seconds = 0.0f;
+                gyro_integral = 0.0f;
+                travel = 0.0f;
+                window_angle = encoder_yaw;
+                minimum = encoder_yaw;
+                maximum = encoder_yaw;
+                candidate = true;
+            }
+
+            /**
+             * @brief 根据轮运动约束及陀螺仪角速度学习 Yaw 零偏
+             *
+             * @param[in] yaw 当前车体相对 Yaw 角，单位 rad
+             * @param[in] rate 当前车体 Yaw 角速度，单位 rad/s
+             * @param[in] wheel_left 左轮正方向累计角度，单位 rad
+             * @param[in] wheel_right 右轮正方向累计角度，单位 rad
+             * @param[in] dt 采样时间间隔，单位 s
+             * @param[in] allow_learning 当前是否允许学习新的零偏
+             */
+            void update(
+                float yaw,
+                float rate,
+                float wheel_left,
+                float wheel_right,
+                float dt,
+                bool allow_learning)
+            {
+                if(!initialized)
+                {
+                    initialized = true;
+                    base_yaw = yaw;
+                    encoder_yaw = yaw;
+                    base_left = wheel_left;
+                    base_right = wheel_right;
+                    left = wheel_left;
+                    right = wheel_right;
+                    begin_window();
+                    return;
+                }
+
+                const float dl = wheel_left - left;
+                const float dr = wheel_right - right;
+                left = wheel_left;
+                right = wheel_right;
+
+                encoder_yaw = base_yaw + WHEEL_FACTOR *
+                    ((wheel_right - base_right) - (wheel_left - base_left));
+
+                seconds += dt;
+                gyro_integral += rate * dt;
+                travel += WHEEL_RADIUS_M * (fabsf(dl) + fabsf(dr)) * 0.5f;
+                minimum = fminf(minimum, encoder_yaw);
+                maximum = fmaxf(maximum, encoder_yaw);
+                candidate = candidate && allow_learning && fabsf(rate - bias) < 0.02f;
+
+                if(seconds >= 1.0f)
+                {
+                    const float mean = gyro_integral / seconds;
+
+                    if(candidate &&
+                       fabsf(encoder_yaw - window_angle) < 0.00004712389f &&
+                       maximum - minimum < 0.000872664626f &&
+                       travel < 0.005f &&
+                       fabsf(mean - bias) < 0.001745329252f)
+                    {
+                        bias += (1.0f - expf(-seconds / 15.0f)) * (mean - bias);
+                    }
+
+                    begin_window();
+                }
+            }
+        };
+
+        attitude_filter estimator;
+        yaw_observer heading;
+        uint64_t previous_attitude_us = 0;
     }
 
     /**
@@ -582,7 +1206,7 @@ namespace mpu6050
 
         data.timestamp_us = now_us;
 
-        data.temperature = 
+        data.temperature =
             static_cast<float>(raw_temperature) /
             340.0f +
             36.53f;
@@ -600,58 +1224,154 @@ namespace mpu6050
                 gyro_offset[i];
         }
 
-        // 利用重力方向计算绕 X 轴的俯仰角
-        const float acc_pitch_rad = atan2f(data.acc[1], data.acc[2]);
+        return true;
+    }
 
-        // 利用重力方向计算绕 Y 轴的横滚角
-        const float acc_roll_rad =
-            atan2f(
-                -data.acc[0],
-                sqrtf(
-                    data.acc[1] * data.acc[1] +
-                    data.acc[2] * data.acc[2]));
-
-        if(last_time_us == 0)
+    /**
+     * @brief 重新初始化姿态，保留已估计的陀螺仪零偏
+     *
+     * @note 仅允许姿态控制任务调用
+     */
+    void reset_attitude()
+    {
+        const float bias[3] =
         {
-            pitch_rad = acc_pitch_rad;
-            roll_rad = acc_roll_rad;
-            yaw_rad = 0.0f;
+            estimator.bias[0],
+            estimator.bias[1],
+            estimator.bias[2]
+        };
+
+        estimator = attitude_filter{};
+
+        for(uint8_t i = 0; i < 3; ++i)
+        {
+            estimator.bias[i] = bias[i];
+        }
+
+        heading.initialized = false;
+        previous_attitude_us = 0;
+    }
+
+    /**
+     * @brief 根据 IMU 与编码器观测更新姿态及陀螺仪零偏
+     *
+     * @param[in, out] snapshot 传感器快照，输出姿态角和修正角速度
+     * @param[in] wheel_angle_rad 左右轮正方向累计角度，单位 rad
+     * @param[in] grounded 轮地运动信息是否有效
+     * @param[in] allow_yaw_learning 是否允许学习 Yaw 零偏
+     *
+     * @return true 姿态更新成功
+     * @return false IMU 数据无效、重复或姿态初始化失败
+     *
+     * @note 仅允许姿态控制任务调用
+     */
+    bool update_attitude(
+        sensor::package &snapshot,
+        const float wheel_angle_rad[2],
+        bool grounded,
+        bool allow_yaw_learning)
+    {
+        sensor::imu_data &imu = snapshot.imu;
+
+        if(imu.timestamp_us == 0 ||
+           imu.timestamp_us <= previous_attitude_us)
+        {
+            return false;
+        }
+
+        for(uint8_t i = 0; i < 3; ++i)
+        {
+            if(!isfinite(imu.acc[i]) || !isfinite(imu.gyro[i]))
+            {
+                return false;
+            }
+        }
+
+        if(grounded &&
+           (!isfinite(wheel_angle_rad[0]) || !isfinite(wheel_angle_rad[1])))
+        {
+            return false;
+        }
+
+        const float dt = previous_attitude_us ?
+            static_cast<float>(imu.timestamp_us - previous_attitude_us) * 1.0e-6f :
+            0.005f;
+
+        if(!(dt > 0.0f) || !isfinite(dt))
+        {
+            return false;
+        }
+
+        previous_attitude_us = imu.timestamp_us;
+
+        const bool first_sample = !estimator.initialized;
+
+        if(first_sample && !estimator.initialize(imu.acc))
+        {
+            return false;
+        }
+
+        float angle[3];
+        float gravity[3];
+        float corrected_gyro[3];
+
+        estimator.euler(angle);
+        estimator.gravity(gravity);
+
+        for(uint8_t i = 0; i < 3; ++i)
+        {
+            corrected_gyro[i] = imu.gyro[i] - estimator.bias[i];
+        }
+
+        if(grounded)
+        {
+            const float sx = sinf(angle[0]);
+            const float cx = cosf(angle[0]);
+            const float sy = sinf(angle[1]);
+            const float cy = cosf(angle[1]);
+
+            const float roll = atan2f(sy, cy * cx);
+            const float pitch = atan2f(-cy * sx, hypotf(cx, sy * sx));
+            const float yaw = angle[2] + atan2f(-sy * sx, cx);
+
+            const float rate =
+                (-sinf(roll) * corrected_gyro[0] +
+                  cosf(roll) * corrected_gyro[2]) /
+                fmaxf(0.2f, cosf(pitch));
+
+            heading.update(
+                yaw,
+                rate,
+                wheel_angle_rad[0],
+                wheel_angle_rad[1],
+                dt,
+                allow_yaw_learning);
         }
         else
         {
-            const float dt = static_cast<float>(now_us - last_time_us) * 1.0e-6f;
-
-            // 俯仰使用 X 轴角速度进行互补滤波
-            pitch_rad =
-                (1.0f - ACC_COEF) *
-                (pitch_rad + data.gyro[0] * dt) +
-                ACC_COEF * acc_pitch_rad;
-
-            // 横滚使用 Y 轴角速度进行互补滤波
-            roll_rad =
-                (1.0f - ACC_COEF) *
-                (roll_rad + data.gyro[1] * dt) +
-                ACC_COEF * acc_roll_rad;
-
-            // 偏航仅积分 Z 轴角速度，保持原有正负 pi 范围
-            yaw_rad += data.gyro[2] * dt;
-
-            if(yaw_rad > PI)
-            {
-                yaw_rad -= 2.0f * PI;
-            }
-            else if(yaw_rad < -PI)
-            {
-                yaw_rad += 2.0f * PI;
-            }
+            heading.initialized = false;
         }
 
-        last_time_us = now_us;
+        const float correction = grounded ? heading.bias : 0.0f;
+        float gyro_input[3];
 
-        // 对外数组仍按 X、Y、Z 排列，单位为 rad
-        data.angle[0] = pitch_rad;
-        data.angle[1] = roll_rad;
-        data.angle[2] = yaw_rad;
+        for(uint8_t i = 0; i < 3; ++i)
+        {
+            gyro_input[i] = imu.gyro[i] - correction * gravity[i];
+        }
+
+        if(!first_sample)
+        {
+            estimator.update(imu.acc, gyro_input, dt);
+        }
+
+        estimator.euler(imu.angle);
+        estimator.gravity(gravity);
+
+        for(uint8_t i = 0; i < 3; ++i)
+        {
+            imu.gyro[i] -= estimator.bias[i] + correction * gravity[i];
+        }
 
         return true;
     }
@@ -700,7 +1420,7 @@ namespace sensor
         }
 
         /**
-         * @brief 发布 IMU 数据
+         * @brief 发布 IMU 数据并通知控制任务
          *
          * @param[in] data IMU 数据
          */
@@ -882,10 +1602,12 @@ namespace sensor
     }
 
     /**
-     * @brief 等待新的 IMU 数据
+     * @brief 阻塞等待新的 IMU 数据
      *
-     * @return true 收到 IMU 更新
+     * @return true 收到 IMU 更新通知
      * @return false 等待超时
+     *
+     * @note 仅供一个控制任务等待
      */
     bool wait_for_imu()
     {
@@ -914,5 +1636,41 @@ namespace sensor
         portEXIT_CRITICAL(&package_lock);
 
         return snapshot.imu.timestamp_us != 0;
+    }
+
+    /**
+     * @brief 更新姿态与陀螺仪零偏估计
+     *
+     * @param[in, out] snapshot 传感器快照，输出姿态角和修正角速度
+     * @param[in] wheel_angle_rad 左右轮正方向累计角度，单位 rad
+     * @param[in] grounded 轮地运动信息是否有效
+     * @param[in] allow_yaw_learning 是否允许学习 Yaw 零偏
+     *
+     * @return true 姿态更新成功
+     * @return false IMU 数据无效、重复或姿态初始化失败
+     *
+     * @note 转发到 MPU6050，须由姿态控制任务调用
+     */
+    bool update_attitude(
+        package &snapshot,
+        const float wheel_angle_rad[2],
+        bool grounded,
+        bool allow_yaw_learning)
+    {
+        return mpu6050::update_attitude(
+            snapshot,
+            wheel_angle_rad,
+            grounded,
+            allow_yaw_learning);
+    }
+
+    /**
+     * @brief 重新初始化姿态估计
+     *
+     * @note 转发到 MPU6050，须由姿态控制任务调用
+     */
+    void reset_attitude()
+    {
+        mpu6050::reset_attitude();
     }
 }

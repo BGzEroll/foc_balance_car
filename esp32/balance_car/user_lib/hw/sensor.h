@@ -36,6 +36,12 @@ namespace sensor
     void poll(uint32_t notifications, bool allow_recovery = true);
     bool wait_for_imu();
     bool get_package(package &snapshot);
+    bool update_attitude(
+        package &snapshot,
+        const float wheel_angle_rad[2],
+        bool grounded,
+        bool allow_yaw_learning);
+    void reset_attitude();
 }
 
 #endif
