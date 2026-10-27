@@ -512,7 +512,7 @@ namespace balance
                     manual_control = true;
                     limit.speed_m_s = 0.9f;
                     const float speed = fresh ? 0.9f * pad.forward : 0.0f;
-                    const float turn = fresh ? 2.0943951024f * pad.turn : 0.0f;
+                    const float turn = fresh ? 3.1415926536f * pad.turn : 0.0f;
                     const float current_distance_m = controller.distance_m +
                         (controller.first_sample ? 0.0f :
                             dt * (controller.previous_speed_m_s + measured.speed_m_s) * 0.5f);
