@@ -1,6 +1,7 @@
 """Attach to the running car without changing DTR/RTS; record yaw and encoders."""
 import argparse,csv,json,os,pathlib,queue,select,signal,struct,sys,termios,threading,time,zlib
 from telemetry import FIELDS2,WIRE2,YAW_WIRE,YAW_FIELDS,ATTITUDE_WIRE,ATTITUDE_FIELDS,IMU_WIRE,IMU_FIELDS,TORQUE_WIRE,TORQUE_FIELDS
+from live_feed import forward
 
 parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--overnight',action='store_true',help='Detached long run: save about 20Hz CSV, no full raw binary, no motor commands');args=parser.parse_args()
 h=pathlib.Path(__file__).resolve().parent
@@ -18,7 +19,7 @@ bc=(folder/'samples.csv').open('w',newline='');ac=(folder/'attitude.csv').open('
 bw=csv.writer(bc);aw=csv.writer(ac);bw.writerow(FIELDS2);aw.writerow(afields)
 ic=(folder/'imu.csv').open('w',newline='');iw=csv.writer(ic);iw.writerow(IMU_FIELDS)
 tc=(folder/'torque.csv').open('w',newline='');tw=csv.writer(tc);tw.writerow(TORQUE_FIELDS)
-commands=queue.Queue();buf=bytearray();frames=0;bad=0;last=None;quit_requested=False
+commands=queue.Queue();buf=bytearray();frames=0;bad=0;last=None;quit_requested=False;reported_fault=0
 last_bc_write=last_yaw_write=0;next_status=time.monotonic()+15;next_attitude=time.monotonic()+60
 def save():
  (folder/'metadata.json').write_text(json.dumps(dict(pid=os.getpid(),overnight=args.overnight,frames=frames,crc_errors=bad,last=last),indent=2))
@@ -44,18 +45,19 @@ try:
     if len(buf)<size:break
     packet=bytes(buf[:size]);del buf[:size]
     if zlib.crc32(packet[:-4])&0xffffffff!=struct.unpack_from('<I',packet,size-4)[0]:bad+=1;continue
-    tw.writerow(TORQUE_WIRE.unpack(packet));continue
+    forward(packet);tw.writerow(TORQUE_WIRE.unpack(packet));continue
    if buf.startswith(b'IMU2'):
     size=IMU_WIRE.size
     if len(buf)<size:break
     packet=bytes(buf[:size]);del buf[:size]
     if zlib.crc32(packet[:-4])&0xffffffff!=struct.unpack_from('<I',packet,size-4)[0]:bad+=1;continue
-    iw.writerow(IMU_WIRE.unpack(packet));continue
+    forward(packet);iw.writerow(IMU_WIRE.unpack(packet));continue
    size=224 if buf.startswith(b'BCU3') else 124 if buf.startswith(b'ATT2') else 68 if buf.startswith(b'YAW3') else 0
    if size:
     if len(buf)<size:break
     packet=bytes(buf[:size]);del buf[:size]
     if zlib.crc32(packet[:-4])&0xffffffff!=struct.unpack_from('<I',packet,size-4)[0]:bad+=1;continue
+    forward(packet)
     if size==224:
      values=WIRE2.unpack(packet[:-4]);last=dict(zip(FIELDS2,values));frames+=1
      if not args.overnight or last['sample_us']-last_bc_write>=50000:
@@ -73,6 +75,8 @@ try:
    elif magic>0:del buf[:magic]
    elif len(buf)>4096:del buf[:-3]
    else:break
+  if last and last['fault'] and last['fault']!=reported_fault:
+   reported_fault=last['fault'];send('FAULT');save()
   bc.flush();ac.flush();yc.flush();ic.flush();tc.flush()
   if raw:raw.flush()
   if args.overnight and time.monotonic()>=next_status:

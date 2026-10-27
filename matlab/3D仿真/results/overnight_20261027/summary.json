@@ -1,0 +1,102 @@
+{
+  "source_session": "yaw_20261027_013218",
+  "fault_time_beijing": "2026-10-27T03:08:18+08:00",
+  "fault_code": 6,
+  "fault_motor_index": 1,
+  "fault_device_us": 10180151657,
+  "bus_V_before_fault_5s": 8.022,
+  "last_latched_right_iq_A": -6.062418460845947,
+  "recording_stopped_beijing": "2026-10-27T08:12:40+08:00",
+  "recording_stop_reason": "ENOSPC on develop filesystem",
+  "external_heading_ground_truth_available": false,
+  "previous_unsplit_metrics_not_valid_for_natural_drift": {
+    "yaw_statistics_exclude_last_60s_before_fault": true,
+    "yaw_usable_duration_s": 9301.419872,
+    "yaw_statistics_sample_rate_Hz": 1,
+    "yaw_estimate_baseline": "mean of first 60 seconds",
+    "yaw_estimate_last_300s_minus_baseline_deg": -0.6653090313813875,
+    "yaw_estimate_deviation_range_deg": [
+      -1.3479700707969535,
+      0.7502269030773516
+    ],
+    "yaw_estimate_abs_deviation_p95_deg": 0.6605993627990283,
+    "yaw_estimate_deviation_rms_deg": 0.2988513431989169,
+    "pre_online_bias_rate_integral_change_deg": -88.90911286477406,
+    "encoder_heading_change_deg": -17.26328611843537,
+    "bias_range_deg_s": [
+      -0.019985828870071543,
+      0.00623053324544001
+    ],
+    "bias_learning_time_fraction": 0.6248136951652316
+  },
+  "segmented_statistics_baseline": "separate first-60s mean in each segment; endpoint is last-60s mean",
+  "exclusion_window_policy": "120 seconds before and after the user-confirmed 00:39 handling event only; conservative boundary, not measured handling duration",
+  "exclusions": [
+    {
+      "start_beijing": "2026-10-27T00:37:23+08:00",
+      "end_beijing": "2026-10-27T00:41:23+08:00",
+      "start_device_s": 1125.326284,
+      "end_device_s": 1365.326284,
+      "reason": "user-confirmed handling while connecting power"
+    }
+  ],
+  "autonomous_displacement_onset_beijing": "2026-10-27T02:14:08+08:00",
+  "segments": [
+    {
+      "segment": 1,
+      "start_beijing": "2026-10-27T00:32:18+08:00",
+      "end_beijing": "2026-10-27T00:37:23+08:00",
+      "start_device_s": 820.321396,
+      "end_device_s": 1125.326284,
+      "duration_min": 5.072084433333333,
+      "condition": "forward/backward odometry remains within 1 cm; does not prove no rotation",
+      "estimator_first_last_60s_mean_change_deg": -0.21193874598643384,
+      "encoder_first_last_60s_mean_change_deg": 0.06808431323322359,
+      "estimator_abs_deviation_p95_deg": 0.22459720919510712,
+      "estimator_deviation_range_deg": [
+        -0.24195666857922343,
+        0.06429860843783464
+      ],
+      "learning_fraction": 0.6813113974647097
+    },
+    {
+      "segment": 2,
+      "start_beijing": "2026-10-27T00:41:23+08:00",
+      "end_beijing": "2026-10-27T02:14:08+08:00",
+      "start_device_s": 1365.326284,
+      "end_device_s": 6930.326368,
+      "duration_min": 92.73566623333333,
+      "condition": "forward/backward odometry remains within 1 cm; does not prove no rotation",
+      "estimator_first_last_60s_mean_change_deg": -0.6205612200703102,
+      "encoder_first_last_60s_mean_change_deg": -3.8715505032431388,
+      "estimator_abs_deviation_p95_deg": 0.674137337876966,
+      "estimator_deviation_range_deg": [
+        -1.62595183964004,
+        0.35963407116054585
+      ],
+      "learning_fraction": 0.6720915270777479
+    },
+    {
+      "segment": 3,
+      "start_beijing": "2026-10-27T02:14:08+08:00",
+      "end_beijing": "2026-10-27T03:07:18+08:00",
+      "start_device_s": 6930.326368,
+      "end_device_s": 10120.151657,
+      "duration_min": 53.152916966666666,
+      "condition": "autonomous forward/backward displacement >1 cm",
+      "estimator_first_last_60s_mean_change_deg": -1.1573639692226347,
+      "encoder_first_last_60s_mean_change_deg": -12.81915298852747,
+      "estimator_abs_deviation_p95_deg": 1.1876531431190924,
+      "estimator_deviation_range_deg": [
+        -1.5856486929425586,
+        0.3217738403372973
+      ],
+      "learning_fraction": 0.5309635386714923
+    }
+  ],
+  "retained_supply_event": {
+    "time_beijing": "2026-10-27T01:32:23+08:00",
+    "device_s": 4425.326384,
+    "reason": "user unplugged/replugged charger supply side only; no handling of car; data retained without yaw rebase"
+  }
+}

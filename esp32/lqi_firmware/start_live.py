@@ -7,6 +7,7 @@ sys.path[:0]=[r'D:/code/Embedded-related/balance_car/esp32/wifi_debug/.tools',r'
 import serial
 from serial.tools import list_ports
 from telemetry import WIRE2,FIELDS2,ATTITUDE_WIRE,ATTITUDE_FIELDS,YAW_WIRE,YAW_FIELDS,IMU_WIRE,IMU_FIELDS,TORQUE_WIRE,TORQUE_FIELDS
+from live_feed import forward
 parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--port');parser.add_argument('--wait-cal',action='store_true');parser.add_argument('--wait-ground',action='store_true',help='After calibration wait for GROUND on stdin before BALANCE');args=parser.parse_args()
 ports=[p.device for p in list_ports.comports() if p.serial_number=='5A33014245']
 port=args.port or (ports[0] if len(ports)==1 else None)
@@ -36,18 +37,19 @@ def pump(seconds):
     if len(buf)<size:break
     packet=bytes(buf[:size]);del buf[:size]
     if zlib.crc32(packet[:-4])&0xffffffff!=struct.unpack_from('<I',packet,size-4)[0]:crc_errors+=1;continue
-    torquewriter.writerow(TORQUE_WIRE.unpack(packet));continue
+    forward(packet);torquewriter.writerow(TORQUE_WIRE.unpack(packet));continue
    if buf.startswith(b'IMU2'):
     size=IMU_WIRE.size
     if len(buf)<size:break
     packet=bytes(buf[:size]);del buf[:size]
     if zlib.crc32(packet[:-4])&0xffffffff!=struct.unpack_from('<I',packet,size-4)[0]:crc_errors+=1;continue
-    imuwriter.writerow(IMU_WIRE.unpack(packet));continue
+    forward(packet);imuwriter.writerow(IMU_WIRE.unpack(packet));continue
    if buf.startswith((b'ATT2',b'YAW3')):
     is_att=buf.startswith(b'ATT2');size=124 if is_att else 68
     if len(buf)<size:break
     packet=bytes(buf[:size]);del buf[:size]
     if zlib.crc32(packet[:-4])&0xffffffff!=struct.unpack_from('<I',packet,size-4)[0]:crc_errors+=1;continue
+    forward(packet)
     if is_att:attwriter.writerow(ATTITUDE_WIRE.unpack(packet))
     else:yawwriter.writerow(YAW_WIRE.unpack(packet))
     continue
@@ -71,6 +73,7 @@ def pump(seconds):
     if len(buf)<224:break
     packet=bytes(buf[:224]);del buf[:224]
     if zlib.crc32(packet[:220])&0xffffffff!=struct.unpack_from('<I',packet,220)[0]:crc_errors+=1;continue
+    forward(packet)
     values=WIRE2.unpack(packet[:220]);last=dict(zip(FIELDS2,values));writer.writerow([time.perf_counter(),*values]);frames+=1
     cycle=last['cycle']
     if previous_cycle is not None and cycle>previous_cycle:missing+=max(0,cycle-previous_cycle-1)

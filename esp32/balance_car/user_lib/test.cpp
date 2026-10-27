@@ -830,6 +830,16 @@ namespace test
                     (unsigned long)m.fault.sample_flags,(unsigned long)m.fault.sample_start_tick,
                     (unsigned long)m.fault.sample_end_tick,(unsigned long)m.fault.sample_duty_a,
                     (unsigned long)m.fault.sample_duty_b);
+                motor::timing_record timing[32];
+                const uint32_t count = motor::get_fault_timing(timing, 32);
+                for(uint32_t i=0;i<count;++i) {
+                    const auto &t=timing[i];
+                    respond("FOCTIME sample_us=%lu seq=%lu motor=%lu flags=%lu start=%lu end=%lu duty_a=%lu duty_b=%lu seen=%lu process_us=%lu computed_us=%lu command_sample_us=%lu publish_us=%lu phase=%lu\n",
+                        (unsigned long)t.sample_us,(unsigned long)t.sequence,(unsigned long)t.motor,(unsigned long)t.flags,
+                        (unsigned long)t.start_tick,(unsigned long)t.end_tick,(unsigned long)t.duty_a,(unsigned long)t.duty_b,
+                        (unsigned long)t.seen_sequence,(unsigned long)t.process_us,(unsigned long)t.computed_sample_us,
+                        (unsigned long)t.command_sample_us,(unsigned long)t.command_publish_us,(unsigned long)t.control_phase);
+                }
             }
             else if(strcmp(line, "DUMP") == 0)
             {

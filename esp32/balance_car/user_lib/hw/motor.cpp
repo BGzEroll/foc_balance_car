@@ -323,6 +323,11 @@ namespace pwm
         uint32_t fault_adc_age_us = 0, fault_heartbeat_age_us = 0;
         uint32_t irq_core = 0;
         uint32_t control_phase = 0, fault_control_phase = 0;
+        // ADC ISR is the sole writer; freeze the last 3.2 ms on the first fault.
+        motor::timing_record timing_records[32]{};
+        uint32_t timing_count = 0;
+        uint32_t seen_sequence[2]{}, process_us[2]{}, computed_sample_us[2]{};
+        uint32_t command_sample_us[2]{}, command_publish_us[2]{};
         uint32_t fault_sample_flags = 0, fault_sample_start_tick = 0, fault_sample_end_tick = 0;
         uint32_t fault_sample_duty_a = 0, fault_sample_duty_b = 0;
 
@@ -629,6 +634,8 @@ namespace pwm
     void set_command(uint32_t index, const command &value)
     {
         publish(commands[index], value);
+        __atomic_store_n(&command_sample_us[index], value.sample_us, __ATOMIC_RELAXED);
+        __atomic_store_n(&command_publish_us[index], now32(), __ATOMIC_RELEASE);
     }
 
     /**
@@ -791,10 +798,13 @@ namespace pwm
                     now - value[i].sample_us > SAMPLE_TIMEOUT_US)
             {
                 const uint32_t heartbeat_age = now-__atomic_load_n(&heartbeat_us,__ATOMIC_ACQUIRE);
+                sample latest_sample{};
+                const bool have_sample = consume(samples[i], latest_sample);
                 trip(motor::fault_code::SAMPLE_TIMEOUT, i, 0, 0,
                      0x02000000U | ((now-value[i].sample_us) & 0xffffffU),
                      now-__atomic_load_n(&last_valid_sample_us[i],__ATOMIC_ACQUIRE),
-                     static_cast<int32_t>(heartbeat_age)<0 ? 0U : heartbeat_age);
+                     static_cast<int32_t>(heartbeat_age)<0 ? 0U : heartbeat_age,
+                     have_sample ? &latest_sample : nullptr);
                 return false;
             }
         }
@@ -894,6 +904,27 @@ namespace pwm
                     (same_cycle ? 32U : 0U);
 
         const bool over = adc::overcurrent(index, a, b);
+
+        if(__atomic_load_n(&fault, __ATOMIC_ACQUIRE) == 0)
+        {
+            const uint32_t n = __atomic_load_n(&timing_count, __ATOMIC_RELAXED);
+            auto &record = timing_records[n & 31U];
+            record.sample_us = out.timestamp_us;
+            record.sequence = out.sequence;
+            record.motor = index;
+            record.flags = out.flags | (raw_ok ? 64U : 0U) | (over ? 128U : 0U);
+            record.start_tick = out.a_start;
+            record.end_tick = out.b_end;
+            record.duty_a = out.duty_a;
+            record.duty_b = out.duty_b;
+            record.command_publish_us = __atomic_load_n(&command_publish_us[index], __ATOMIC_ACQUIRE);
+            record.command_sample_us = __atomic_load_n(&command_sample_us[index], __ATOMIC_RELAXED);
+            record.computed_sample_us = __atomic_load_n(&computed_sample_us[index], __ATOMIC_ACQUIRE);
+            record.process_us = __atomic_load_n(&process_us[index], __ATOMIC_ACQUIRE);
+            record.seen_sequence = __atomic_load_n(&seen_sequence[index], __ATOMIC_RELAXED);
+            record.control_phase = __atomic_load_n(&control_phase, __ATOMIC_RELAXED);
+            __atomic_store_n(&timing_count, n + 1U, __ATOMIC_RELEASE);
+        }
 
         // Only an electrically valid low-side aperture represents phase current.
         // Reject late samples; the unchanged 1ms valid-sample watchdog remains.
@@ -2739,6 +2770,8 @@ namespace motor
             current_info current{};
             pwm::command output{};
 
+            __atomic_store_n(&pwm::process_us[index], now32(), __ATOMIC_RELEASE);
+
             const uint32_t foc_dt = sample.timestamp_us-foc::motors[index].last_sample_us;
             if(!foc::update(
                 index, sample, encoder, get_target(index),
@@ -2749,6 +2782,7 @@ namespace motor
                 return;
             }
 
+            __atomic_store_n(&pwm::computed_sample_us[index], sample.timestamp_us, __ATOMIC_RELEASE);
             publish_current(index, current);
             pwm::set_command(index, output);
         }
@@ -2850,6 +2884,7 @@ namespace motor
                     }
 
                     calibration.seen_sequence[index] = sample.sequence;
+                    __atomic_store_n(&pwm::seen_sequence[index], sample.sequence, __ATOMIC_RELAXED);
 
                     if(!(sample.flags & 1U) || !pwm::is_running())
                     {
@@ -3035,6 +3070,17 @@ namespace motor
         latest.target[index] = target;
         portEXIT_CRITICAL(&info_lock);
         return true;
+    }
+
+    uint32_t get_fault_timing(timing_record *records, uint32_t capacity)
+    {
+        if(pwm::get_fault_code() == fault_code::NONE) return 0;
+        const uint32_t total = __atomic_load_n(&pwm::timing_count, __ATOMIC_ACQUIRE);
+        const uint32_t count = total < 32U ? total : 32U;
+        const uint32_t n = count < capacity ? count : capacity;
+        for(uint32_t i = 0; i < n; ++i)
+            records[i] = pwm::timing_records[(total - n + i) & 31U];
+        return n;
     }
 
     void take_torque_window(torque_window &snapshot)

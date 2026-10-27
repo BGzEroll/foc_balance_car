@@ -90,6 +90,13 @@ namespace motor
         float iq_sum[2]={},net_iq_sum[2]={};
         uint32_t count[2]={};
     };
+    struct timing_record {
+        uint32_t sample_us, sequence, motor, flags;
+        uint32_t start_tick, end_tick, duty_a, duty_b;
+        uint32_t seen_sequence, process_us, computed_sample_us;
+        uint32_t command_sample_us, command_publish_us, control_phase;
+    };
+    uint32_t get_fault_timing(timing_record *records, uint32_t capacity);
     void take_torque_window(torque_window &snapshot);
     bool init();
     bool calibrate();

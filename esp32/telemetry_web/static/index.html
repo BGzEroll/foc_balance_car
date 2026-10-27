@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>平衡车 · 实时观测台</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="importmap">{"imports":{"three":"/vendor/three.module.js"}}</script>
+</head>
+<body>
+<header><div class="brand"><span class="mark">◈</span><div><h1>平衡车 <span>/ 实时观测台</span></h1><p>DEVELOP · PID · QUATERNION ESKF · ENCODER αβ</p></div></div><div class="connection"><span id="dot" class="dot"></span><b id="status">等待数据</b><span class="pill">100 Hz 推送</span></div></header>
+<main>
+<section class="metrics">
+ <article><span>俯仰角 PITCH</span><strong id="pitch">—</strong><small>目标 <b id="target-pitch">—</b></small></article>
+ <article><span>前向速度</span><strong id="speed">—</strong><small>目标 <b id="target-speed">—</b></small></article>
+ <article><span>相对航向 YAW</span><strong id="yaw">—</strong><small>角速度 <b id="yaw-rate">—</b></small></article>
+ <article><span>里程计位移</span><strong id="distance">—</strong><small>控制器参考原点</small></article>
+ <article><span>母线电压</span><strong id="bus">—</strong><small>电流上限 <b id="current-limit">—</b></small></article>
+ <article><span>数据链路</span><strong id="receive-hz">—</strong><small>新数据 <b id="fresh-hz">—</b> · 延迟 <b id="age">—</b></small></article>
+</section>
+<section class="workspace">
+ <article class="panel model-panel"><div class="panel-heading"><div><span class="eyebrow">LIVE TWIN</span><h2>实时姿态</h2></div><button id="camera-reset">重置视角</button></div><div id="model"><div class="model-loading" id="model-loading">正在载入小车模型…</div></div><div class="pose-values"><span>ROLL <b id="roll">—</b></span><span>PITCH <b id="pose-pitch">—</b></span><span>YAW <b id="pose-yaw">—</b></span></div><p class="caption">拖动旋转 · 滚轮缩放。姿态来自 IMU 估计，航向为相对角度；模型固定在中心，轮子跟随编码器转动。</p></article>
+ <article class="panel health"><div class="panel-heading"><div><span class="eyebrow">CONTROLLER</span><h2>运行状态</h2></div><span id="fault-badge" class="badge">—</span></div><div class="state-grid"><span>工作模式</span><b id="mode">—</b><span>校准 / 运行 / 就绪</span><b id="flags">—</b><span>电流饱和</span><b id="saturation">—</b><span>控制周期</span><b id="dt">—</b><span>PID 计算耗时</span><b id="calculate">—</b><span>IMU 数据年龄</span><b id="imu-age">—</b><span>编码器数据年龄</span><b id="enc-age">—</b><span>电流数据年龄 L / R</span><b id="iq-age">—</b></div><div class="divider"></div><h3>航向零偏学习</h3><div class="state-grid"><span>学习状态</span><b id="learning">—</b><span>学习零偏</span><b id="bias">—</b><span>静止判据持续</span><b id="quiet">—</b><span>陀螺 / 编码器角速度</span><b id="rates">—</b></div><p class="caption">只读监控 · 数据中断或故障会明确提示。网页不发送电机控制指令。</p></article>
+</section>
+<section class="charts"><article class="panel"><div class="chart-title"><h2>俯仰角</h2><span><i></i>实测 <i class="orange"></i>目标 · °</span></div><canvas id="pitch-chart"></canvas></article><article class="panel"><div class="chart-title"><h2>前向速度</h2><span><i></i>实测 <i class="orange"></i>目标 · m/s</span></div><canvas id="speed-chart"></canvas></article><article class="panel"><div class="chart-title"><h2>车轮电流</h2><span><i></i>左 <i class="blue"></i>右 <i class="orange"></i>目标 · A</span></div><canvas id="current-chart"></canvas><p class="caption">前向为正；实测采用 10 ms 平均净电流，已扣除抗齿槽补偿。</p></article><article class="panel"><div class="chart-title"><h2>相对航向</h2><span><i></i>实测 <i class="orange"></i>目标 · °</span></div><canvas id="yaw-chart"></canvas></article></section>
+<section class="panel fields"><div class="panel-heading"><div><span class="eyebrow">TELEMETRY</span><h2>全部实时字段</h2></div><input id="filter" type="search" placeholder="筛选字段，例如 pitch、iq、age" aria-label="筛选字段"></div><div class="tabs"><button data-group="control" class="selected">控制与传感器</button><button data-group="torque">平均电流</button><button data-group="yaw">航向观测</button></div><div id="fields"></div></section>
+<footer><span>最近 10 秒曲线 · 100 Hz 数据接收 · 渲染随显示器刷新率</span><span id="sequence">等待遥测帧</span></footer>
+</main><script type="module" src="/app.js"></script>
+</body></html>
