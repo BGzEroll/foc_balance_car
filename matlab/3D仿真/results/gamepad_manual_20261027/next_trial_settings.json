@@ -1,0 +1,28 @@
+{
+  "changes": {
+    "parking": "Track current odometry during driving and zero-speed braking; latch parking position only after abs(speed)<0.03 m/s continuously for 0.15 s",
+    "velocity_kp": {
+      "before": 0.95,
+      "after": 0.65
+    },
+    "pitch_target_deg": {
+      "before": 15,
+      "after": 25
+    }
+  },
+  "unchanged": {
+    "velocity_ki": 0.1,
+    "pitch_kp": 20,
+    "pitch_kd": 2.1,
+    "yaw_kp": 9,
+    "yaw_ki": 0.6,
+    "yaw_kd": 2,
+    "current_A": 6,
+    "manual_speed_m_s": 1,
+    "manual_yaw_rate_deg_s": 180,
+    "deadzone": 0.03,
+    "control_core": 0,
+    "FOC_sensor_core": 1
+  },
+  "validation": "Firmware compiled on develop; hardware handling improvement pending the next manual run. Earlier effective mechanics model is for candidate screening only."
+}

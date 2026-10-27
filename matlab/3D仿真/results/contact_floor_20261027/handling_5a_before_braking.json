@@ -1,0 +1,195 @@
+{
+  "run_20261027_211707": {
+    "events": [
+      {
+        "release_s": 293.602008,
+        "neutral_s": 1.519317000000001,
+        "initial_speed": -0.6512226462364197,
+        "near_zero_s": 0.5673289999999724,
+        "zero_cross_s": 0.732231000000013,
+        "settle_s": 0.5673289999999724,
+        "reverse_speed_peak": 0.04725697264075279,
+        "reverse_excursion_3s_cm": 2.4701744318008423,
+        "braking_distance_cm": 14.401060342788696
+      },
+      {
+        "release_s": 297.826173,
+        "neutral_s": 1.5752620000000093,
+        "initial_speed": -0.6146439909934998,
+        "near_zero_s": 0.43814300000002504,
+        "zero_cross_s": 0.5329389999999989,
+        "settle_s": 1.0731200000000172,
+        "reverse_speed_peak": 0.05002192407846451,
+        "reverse_excursion_3s_cm": 2.482828311622143,
+        "braking_distance_cm": 11.251949891448021
+      },
+      {
+        "release_s": 299.91103,
+        "neutral_s": 1.4262630000000058,
+        "initial_speed": 0.7738163471221924,
+        "near_zero_s": 0.5981960000000299,
+        "zero_cross_s": 0.768351999999993,
+        "settle_s": 0.5981960000000299,
+        "reverse_speed_peak": 0.0215237345546484,
+        "reverse_excursion_3s_cm": 0.7238924503326416,
+        "braking_distance_cm": 17.333994805812836
+      },
+      {
+        "release_s": 303.826575,
+        "neutral_s": 1.635612999999978,
+        "initial_speed": 0.8828530311584473,
+        "near_zero_s": 0.9826669999999922,
+        "zero_cross_s": 1.2476700000000278,
+        "settle_s": 1.0077190000000087,
+        "reverse_speed_peak": 0.010842317715287209,
+        "reverse_excursion_3s_cm": 0.17595291137695312,
+        "braking_distance_cm": 23.23380336165428
+      },
+      {
+        "release_s": 306.221033,
+        "neutral_s": 4.641479000000004,
+        "initial_speed": -0.7175174951553345,
+        "near_zero_s": 0.5430460000000039,
+        "zero_cross_s": 0.6432020000000307,
+        "settle_s": 0.5430460000000039,
+        "reverse_speed_peak": 0.034979198127985,
+        "reverse_excursion_3s_cm": 1.87816321849823,
+        "braking_distance_cm": 15.516852959990501
+      },
+      {
+        "release_s": 311.520939,
+        "neutral_s": 1.630551999999966,
+        "initial_speed": 0.8412283062934875,
+        "near_zero_s": 0.6132400000000189,
+        "zero_cross_s": 0.7733870000000138,
+        "settle_s": 0.6132400000000189,
+        "reverse_speed_peak": 0.02290467545390129,
+        "reverse_excursion_3s_cm": 0.7113337516784668,
+        "braking_distance_cm": 20.393789699301124
+      },
+      {
+        "release_s": 315.696594,
+        "neutral_s": 1.1748309999999833,
+        "initial_speed": 0.6138737797737122,
+        "near_zero_s": 0.5775019999999813,
+        "zero_cross_s": 0.7874850000000038,
+        "settle_s": 0.5775019999999813,
+        "reverse_speed_peak": 0.021144699305295944,
+        "reverse_excursion_3s_cm": 0.4235982894897461,
+        "braking_distance_cm": 12.315526604652405
+      },
+      {
+        "release_s": 317.690897,
+        "neutral_s": 1.9821000000000026,
+        "initial_speed": -0.8472611904144287,
+        "near_zero_s": 0.6681449999999813,
+        "zero_cross_s": 0.8233349999999859,
+        "settle_s": 0.6681449999999813,
+        "reverse_speed_peak": 0.029952790588140488,
+        "reverse_excursion_3s_cm": 1.5618398785591125,
+        "braking_distance_cm": 21.239851787686348
+      },
+      {
+        "release_s": 320.386226,
+        "neutral_s": 2.860446999999965,
+        "initial_speed": 0.8259854912757874,
+        "near_zero_s": 0.6780159999999569,
+        "zero_cross_s": 0.8528509999999869,
+        "settle_s": 0.6780159999999569,
+        "reverse_speed_peak": 0.01804417558014393,
+        "reverse_excursion_3s_cm": 0.8271187543869019,
+        "braking_distance_cm": 19.157931953668594
+      },
+      {
+        "release_s": 323.962633,
+        "neutral_s": 2.0888400000000047,
+        "initial_speed": -0.6977120637893677,
+        "near_zero_s": 0.5815800000000309,
+        "zero_cross_s": 0.7714819999999918,
+        "settle_s": 0.5815800000000309,
+        "reverse_speed_peak": 0.024065524339675903,
+        "reverse_excursion_3s_cm": 1.1543229222297668,
+        "braking_distance_cm": 16.740909963846207
+      },
+      {
+        "release_s": 326.761029,
+        "neutral_s": 2.041583000000003,
+        "initial_speed": 0.7647400498390198,
+        "near_zero_s": 0.6032839999999737,
+        "zero_cross_s": 0.7580449999999814,
+        "settle_s": 0.6032839999999737,
+        "reverse_speed_peak": 0.02084660530090332,
+        "reverse_excursion_3s_cm": 0.6720647215843201,
+        "braking_distance_cm": 17.65216328203678
+      },
+      {
+        "release_s": 329.516134,
+        "neutral_s": 2.3403449999999566,
+        "initial_speed": -0.8117788434028625,
+        "near_zero_s": 0.6633059999999773,
+        "zero_cross_s": 0.8629489999999578,
+        "settle_s": 0.6633059999999773,
+        "reverse_speed_peak": 0.020402854308485985,
+        "reverse_excursion_3s_cm": 1.150745153427124,
+        "braking_distance_cm": 20.963919162750244
+      },
+      {
+        "release_s": 332.566381,
+        "neutral_s": 1.7350000000000136,
+        "initial_speed": 0.9122053384780884,
+        "near_zero_s": 0.5928010000000086,
+        "zero_cross_s": 0.6827670000000126,
+        "settle_s": 0.5928010000000086,
+        "reverse_speed_peak": 0.02749374322593212,
+        "reverse_excursion_3s_cm": 1.2610822916030884,
+        "braking_distance_cm": 21.12471768632531
+      }
+    ],
+    "n": 13,
+    "quiet_pitch_abs_diff_deg": [
+      0.10226293993848942,
+      0.3271092222833331,
+      1.5034467086300833
+    ],
+    "max_abs_integral": 0.4386373460292816,
+    "max_abs_iq": 5.174446105957031,
+    "saturated_fraction": 0.00011970027052261139,
+    "dt_us_p50_p99_max": [
+      5000.0,
+      5192.0,
+      5313.0
+    ],
+    "active_start_s": 172.854182,
+    "active_last_s": 386.639146,
+    "near_zero_s": {
+      "median": 0.5981960000000299,
+      "max": 0.9826669999999922,
+      "count": 13
+    },
+    "zero_cross_s": {
+      "median": 0.7714819999999918,
+      "max": 1.2476700000000278,
+      "count": 13
+    },
+    "settle_s": {
+      "median": 0.6032839999999737,
+      "max": 1.0731200000000172,
+      "count": 13
+    },
+    "reverse_speed_peak": {
+      "median": 0.02290467545390129,
+      "max": 0.05002192407846451,
+      "count": 13
+    },
+    "reverse_excursion_3s_cm": {
+      "median": 1.150745153427124,
+      "max": 2.482828311622143,
+      "count": 13
+    },
+    "braking_distance_cm": {
+      "median": 17.65216328203678,
+      "max": 23.23380336165428,
+      "count": 13
+    }
+  }
+}

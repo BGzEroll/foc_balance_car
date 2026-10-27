@@ -1,0 +1,208 @@
+{
+  "baseline": [
+    {
+      "start_s": 260,
+      "end_s": 270,
+      "mean_pitch_deg": 1.3490103854208704,
+      "mean_acc_apparent_pitch_difference_deg": 0.004088917973363654,
+      "accepted_fraction": 0.9974760222110045
+    },
+    {
+      "start_s": 320,
+      "end_s": 327,
+      "mean_pitch_deg": 3.539251573970434,
+      "mean_acc_apparent_pitch_difference_deg": 4.10574973227071,
+      "accepted_fraction": 0.0
+    },
+    {
+      "start_s": 375,
+      "end_s": 378,
+      "mean_pitch_deg": 5.884916990237948,
+      "mean_acc_apparent_pitch_difference_deg": 6.339719930021542,
+      "accepted_fraction": 0.0
+    },
+    {
+      "start_s": 405,
+      "end_s": 411,
+      "mean_pitch_deg": 0.7599331495648545,
+      "mean_acc_apparent_pitch_difference_deg": -0.5046424293759163,
+      "accepted_fraction": 0.06739679865206402
+    }
+  ],
+  "q1": [
+    {
+      "start_s": 260,
+      "end_s": 270,
+      "mean_pitch_deg": 1.331308987422017,
+      "mean_acc_apparent_pitch_difference_deg": -0.013612480025489688,
+      "accepted_fraction": 0.9994952044422009
+    },
+    {
+      "start_s": 320,
+      "end_s": 327,
+      "mean_pitch_deg": -0.5569842551990576,
+      "mean_acc_apparent_pitch_difference_deg": 0.009513903101218276,
+      "accepted_fraction": 0.9992748368382887
+    },
+    {
+      "start_s": 375,
+      "end_s": 378,
+      "mean_pitch_deg": 0.13663798515427966,
+      "mean_acc_apparent_pitch_difference_deg": 0.5914409249378748,
+      "accepted_fraction": 0.9965753424657534
+    },
+    {
+      "start_s": 405,
+      "end_s": 411,
+      "mean_pitch_deg": -6.890191216691333,
+      "mean_acc_apparent_pitch_difference_deg": -8.154766795632103,
+      "accepted_fraction": 0.016849199663016005
+    }
+  ],
+  "q2": [
+    {
+      "start_s": 260,
+      "end_s": 270,
+      "mean_pitch_deg": 1.3212874091301712,
+      "mean_acc_apparent_pitch_difference_deg": -0.023634058317335668,
+      "accepted_fraction": 0.9994952044422009
+    },
+    {
+      "start_s": 320,
+      "end_s": 327,
+      "mean_pitch_deg": -0.5335695539301529,
+      "mean_acc_apparent_pitch_difference_deg": 0.032928604370123044,
+      "accepted_fraction": 0.9992748368382887
+    },
+    {
+      "start_s": 375,
+      "end_s": 378,
+      "mean_pitch_deg": -0.009169233751423807,
+      "mean_acc_apparent_pitch_difference_deg": 0.4456337060321711,
+      "accepted_fraction": 0.9965753424657534
+    },
+    {
+      "start_s": 405,
+      "end_s": 411,
+      "mean_pitch_deg": 0.8386493342096993,
+      "mean_acc_apparent_pitch_difference_deg": -0.4259262447310709,
+      "accepted_fraction": 0.8871103622577927
+    }
+  ],
+  "q3": [
+    {
+      "start_s": 260,
+      "end_s": 270,
+      "mean_pitch_deg": 1.3351719752618743,
+      "mean_acc_apparent_pitch_difference_deg": -0.009749492185632288,
+      "accepted_fraction": 0.9994952044422009
+    },
+    {
+      "start_s": 320,
+      "end_s": 327,
+      "mean_pitch_deg": -0.6782808841425565,
+      "mean_acc_apparent_pitch_difference_deg": -0.11178272584228056,
+      "accepted_fraction": 0.9920232052211748
+    },
+    {
+      "start_s": 375,
+      "end_s": 378,
+      "mean_pitch_deg": -1.039636194207967,
+      "mean_acc_apparent_pitch_difference_deg": -0.5848332544243721,
+      "accepted_fraction": 0.9315068493150684
+    },
+    {
+      "start_s": 405,
+      "end_s": 411,
+      "mean_pitch_deg": 0.9273273963641743,
+      "mean_acc_apparent_pitch_difference_deg": -0.337248182576596,
+      "accepted_fraction": 0.8871103622577927
+    }
+  ],
+  "q4": [
+    {
+      "start_s": 260,
+      "end_s": 270,
+      "mean_pitch_deg": 1.307716201132335,
+      "mean_acc_apparent_pitch_difference_deg": -0.037205266315171605,
+      "accepted_fraction": 0.9994952044422009
+    },
+    {
+      "start_s": 320,
+      "end_s": 327,
+      "mean_pitch_deg": -0.6617277187222245,
+      "mean_acc_apparent_pitch_difference_deg": -0.09522956042194854,
+      "accepted_fraction": 0.9992748368382887
+    },
+    {
+      "start_s": 375,
+      "end_s": 378,
+      "mean_pitch_deg": -0.24085743081285024,
+      "mean_acc_apparent_pitch_difference_deg": 0.21394550897074485,
+      "accepted_fraction": 0.9965753424657534
+    },
+    {
+      "start_s": 405,
+      "end_s": 411,
+      "mean_pitch_deg": 0.8201607828709773,
+      "mean_acc_apparent_pitch_difference_deg": -0.44441479606979273,
+      "accepted_fraction": 0.9519797809604044
+    }
+  ],
+  "q5": [
+    {
+      "start_s": 260,
+      "end_s": 270,
+      "mean_pitch_deg": 1.3292559721967672,
+      "mean_acc_apparent_pitch_difference_deg": -0.015665495250739646,
+      "accepted_fraction": 0.9994952044422009
+    },
+    {
+      "start_s": 320,
+      "end_s": 327,
+      "mean_pitch_deg": -0.5438245737202801,
+      "mean_acc_apparent_pitch_difference_deg": 0.02267358457999586,
+      "accepted_fraction": 0.9992748368382887
+    },
+    {
+      "start_s": 375,
+      "end_s": 378,
+      "mean_pitch_deg": -0.3412400328756668,
+      "mean_acc_apparent_pitch_difference_deg": 0.11356290690792818,
+      "accepted_fraction": 0.9965753424657534
+    },
+    {
+      "start_s": 405,
+      "end_s": 411,
+      "mean_pitch_deg": 0.8569227609286562,
+      "mean_acc_apparent_pitch_difference_deg": -0.40765281801211417,
+      "accepted_fraction": 0.8871103622577927
+    }
+  ],
+  "selected": "q4",
+  "scope": "Fixed recorded IMU replay, approximate START reset time. Accelerometer apparent tilt is not external attitude truth; no prediction of changed closed-loop physical response.",
+  "changes": {
+    "attitude_process_variance": "0.003^2 * dt",
+    "gravity_measurement_variance": "0.05^2",
+    "parking": "latch first zero-speed vicinity or zero crossing, no 150ms wait",
+    "velocity_integral": "learn only abs(target_speed)<0.1 and abs(speed)<0.1 m/s, preserve state outside region"
+  },
+  "firmware_sha256": "d000d57ab0e172f051db6166d2f12c9c70b32ceec703c86bb524c1c747214674",
+  "checks": [
+    "IDF build passed",
+    "native recovery and allocation checks passed",
+    "native first-zero parking and velocity integral checks passed"
+  ],
+  "hardware": {
+    "capture_run": "run_20261027_210427",
+    "flash_verified": true,
+    "calibration_direction": [
+      1,
+      1
+    ],
+    "active": true,
+    "fault": 0,
+    "gamepad_connected": true,
+    "baseline_speed_m_s": -4.15171e-05
+  }
+}

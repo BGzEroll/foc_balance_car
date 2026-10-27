@@ -1,0 +1,17 @@
+{
+  "installed_firmware_sha256": "af9a05ec21dcaca0d114d54017ad89ed44b86550217d385a81d6389ed0354852",
+  "final_patch": "Reset shadow derivatives across repeated or missing IMU timestamps; control behavior unchanged.",
+  "frames": 12874,
+  "shadow_frames": 12873,
+  "crc_errors": 0,
+  "fault": 0,
+  "mode": 0,
+  "current_limit_A": 4.0,
+  "last_shadow_condition": 0,
+  "last_rail_flags": 0,
+  "manual_speed_m_s": 0.9,
+  "manual_yaw_rate_deg_s": 120,
+  "accel_range_g": 8,
+  "gyro_range_deg_s": 1000,
+  "scope": "Final firmware static stand smoke check only; no START sent, no ground/flight/slip control test."
+}

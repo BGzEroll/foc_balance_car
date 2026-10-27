@@ -1,0 +1,86 @@
+{
+  "scope": "Corrected gyro X/Z reconstructed from deployed coordinate transform at 200 Hz; raw gyro Y not logged. Acceleration text only 20 Hz; no proof that unsampled impact peaks did not clip.",
+  "runs": [
+    {
+      "run": "run_20261027_161450",
+      "active_frames": 38686,
+      "reconstructed_corrected_gyro_X_peak_dps": 363.0943299561307,
+      "reconstructed_corrected_gyro_Z_peak_dps": 205.0318777010678,
+      "gyro_X_samples_above_490dps": 0,
+      "gyro_Z_samples_above_490dps": 0,
+      "accel_text_samples": 1344,
+      "accel_axis_peak_g_20hz": [
+        0.345,
+        1.407,
+        1.637
+      ],
+      "accel_samples_near_2g_20hz": 0,
+      "accel_norm_peak_g_20hz": 1.6823890750952943
+    },
+    {
+      "run": "run_20261027_163936",
+      "active_frames": 10730,
+      "reconstructed_corrected_gyro_X_peak_dps": 455.9777246182708,
+      "reconstructed_corrected_gyro_Z_peak_dps": 163.27210519669083,
+      "gyro_X_samples_above_490dps": 0,
+      "gyro_Z_samples_above_490dps": 0,
+      "accel_text_samples": 4650,
+      "accel_axis_peak_g_20hz": [
+        0.271,
+        1.297,
+        1.183
+      ],
+      "accel_samples_near_2g_20hz": 0,
+      "accel_norm_peak_g_20hz": 1.3585970705106056
+    },
+    {
+      "run": "run_20261027_165408",
+      "active_frames": 4752,
+      "reconstructed_corrected_gyro_X_peak_dps": 470.63132136597335,
+      "reconstructed_corrected_gyro_Z_peak_dps": 293.96538850574535,
+      "gyro_X_samples_above_490dps": 0,
+      "gyro_Z_samples_above_490dps": 0,
+      "accel_text_samples": 5527,
+      "accel_axis_peak_g_20hz": [
+        0.7,
+        1.79,
+        2.0
+      ],
+      "accel_samples_near_2g_20hz": 3,
+      "accel_norm_peak_g_20hz": 2.4251055647125965
+    }
+  ],
+  "decision": {
+    "accel_before_g": 2,
+    "accel_after_g": 8,
+    "gyro_before_deg_s": 500,
+    "gyro_after_deg_s": 1000,
+    "evidence": "SENSOR at imu_us=138769044 logged accel Z=2.000 g immediately before cable fault; reconstructed corrected gyro X peak 470.63 deg/s in that run. No historical raw Y gyro rail assessment available.",
+    "resolution_before_after": {
+      "accel_mg_per_lsb": [
+        0.06103515625,
+        0.244140625
+      ],
+      "gyro_deg_s_per_lsb": [
+        0.015267175572519083,
+        0.030487804878048783
+      ]
+    },
+    "matched_stand_windows": {
+      "interval_s_after_boot": [
+        20,
+        60
+      ],
+      "old_500dps_XZ_std_deg_s": [
+        0.1379390940486514,
+        0.05207509046193513
+      ],
+      "new_1000dps_XZ_std_deg_s": [
+        0.13498452560881435,
+        0.05454576433103057
+      ],
+      "scope": "Similar static stand intervals from separate boots; not simultaneous ground motion validation."
+    },
+    "reference": "https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map.pdf"
+  }
+}

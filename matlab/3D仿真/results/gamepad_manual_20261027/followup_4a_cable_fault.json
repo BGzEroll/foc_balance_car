@@ -1,0 +1,19 @@
+{
+  "first_fault_code": 12,
+  "fault_device_s": 138.770368,
+  "inference": "Tilt protection is the leading explanation: native X estimated 44.41 degrees at last published sample, 45 degree stop in source, no timing-stop log. fault=12 does not carry a stop subreason.",
+  "last_pitch_deg": 44.325096599971786,
+  "last_native_x_deg_est": -44.4102461263672,
+  "last_second_max_abs_yaw_rate_deg_s": 362.9506517393582,
+  "tail_saturated_samples": 56,
+  "first_saturated_before_fault_s": 0.31485,
+  "max_measured_iq_A": 4.299442768096924,
+  "command_limit_A": 4,
+  "phase_trip_A": 6,
+  "first_saturation_common_per_wheel_unclipped_A": 2.9414508257061245,
+  "first_saturation_commands_A": [
+    4.0,
+    1.790018081665039
+  ],
+  "scope": "200 Hz onboard estimated motion and sampled FOC currents; cable contact time not independently measured; fault subreason not encoded."
+}

@@ -2,6 +2,7 @@
 #include "balance.h"
 
 #include "hw/motor.h"
+#include "hw/gamepad.h"
 #include "hw/sensor.h"
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
@@ -13,7 +14,7 @@ namespace balance
     namespace
     {
         constexpr float WHEEL_RADIUS_M = 0.0325f;
-        constexpr float MAX_CURRENT_A = 6.0f;
+        constexpr float MAX_CURRENT_A = 5.0f;
 
         constexpr float VELOCITY_INTEGRAL_LIMIT = 0.5f;
         constexpr float PITCH_INTEGRAL_LIMIT = 0.25f;
@@ -21,7 +22,7 @@ namespace balance
 
         constexpr float FORWARD_SIGN[2] = {-1.0f, 1.0f};
 
-        constexpr float BALANCE_CURRENT_A = 6.0f;
+        constexpr float BALANCE_CURRENT_A = 5.0f;
         constexpr float ARM_PITCH_RAD = 0.1745329252f;
         constexpr float ARM_SPEED_M_S = 0.10f;
         constexpr float MAX_TILT_RAD = 0.7853981634f;
@@ -149,8 +150,12 @@ namespace balance
             limit.speed_m_s);
 
         const float velocity_error = out.target_speed_m_s - measured.speed_m_s;
+        // 积分只学习低速稳态偏置，不积累加速、制动过程中的大速度误差。
+        const bool learn_velocity_bias = fabsf(out.target_speed_m_s) < 0.10f &&
+            fabsf(measured.speed_m_s) < 0.10f;
         const float velocity_integral = clamp(
-            controller.velocity_integral + dt_s * velocity_error,
+            controller.velocity_integral +
+                (learn_velocity_bias ? dt_s * velocity_error : 0.0f),
             VELOCITY_INTEGRAL_LIMIT);
 
         const float lean =
@@ -182,29 +187,26 @@ namespace balance
             tuning.yaw_ki * yaw_integral +
             tuning.yaw_kd * (target.yaw_rate_rad_s - measured.yaw_rate_rad_s);
 
-        const float current[2] =
-        {
-            (common - differential) * 0.5f,
-            (common + differential) * 0.5f
-        };
-
         const float current_limit = fminf(MAX_CURRENT_A, fabsf(limit.current_A));
-        out.saturated =
-            fmaxf(fabsf(current[0]), fabsf(current[1])) > current_limit;
+        const float balance_current = clamp(common * 0.5f, current_limit);
+        const float yaw_limit = fmaxf(0.0f, current_limit - fabsf(balance_current));
+        const float yaw_current = clamp(differential * 0.5f, yaw_limit);
+        const bool balance_saturated = fabsf(common * 0.5f) > current_limit;
+        const bool yaw_saturated = fabsf(differential * 0.5f) > yaw_limit;
+        out.saturated = balance_saturated || yaw_saturated;
+        out.current_A[0] = balance_current - yaw_current;
+        out.current_A[1] = balance_current + yaw_current;
 
-        out.current_A[0] = clamp(current[0], current_limit);
-        out.current_A[1] = clamp(current[1], current_limit);
-
-        if(!out.saturated)
+        if(!balance_saturated)
         {
             controller.pitch_integral = pitch_integral;
-            controller.yaw_integral = yaw_integral;
 
             if(fabsf(lean) <= limit.pitch_rad)
             {
                 controller.velocity_integral = velocity_integral;
             }
         }
+        if(!yaw_saturated) controller.yaw_integral = yaw_integral;
 
         return out;
     }
@@ -232,23 +234,51 @@ namespace balance
 
             uint32_t arm_samples = 0;
             uint64_t previous_imu_us = 0;
-            uint64_t last_command_us = 0;
+            bool manual_control = false;
+            bool manual_braking = false;
+            float manual_brake_speed_m_s = 0.0f;
+            contact::observer surface_observer{};
+
+            auto send_current = [](const output &command)
+            {
+                bool accepted = true;
+                for(uint32_t i = 0; i < 2; ++i)
+                {
+                    motor::target_current current{};
+                    current.iq_A = FORWARD_SIGN[i] * command.current_A[i];
+                    accepted = motor::set_target_current(
+                        static_cast<motor::motor_id>(i), current) && accepted;
+                }
+                return accepted;
+            };
+
+            auto standby = [&]()
+            {
+                active = false;
+                arm_samples = 0;
+                manual_control = false;
+                manual_braking = false;
+                manual_brake_speed_m_s = 0.0f;
+                controller = state{};
+                target = reference{};
+                portENTER_CRITICAL(&status_lock);
+                latest_status.active = false;
+                latest_status.command = output{};
+                requested_position_m = requested_speed_m_s = 0.0f;
+                portEXIT_CRITICAL(&status_lock);
+                // 保留 FOC 校准，持续下发零电流，等待扶正；不锁存倾倒故障。
+                if(output_enabled && !stopped && !send_current(output{}))
+                {
+                    motor::emergency_stop();
+                    stopped = true;
+                }
+            };
 
             while(true)
             {
                 if(!sensor::wait_for_imu())
                 {
-                    const uint64_t now_us =
-                        static_cast<uint64_t>(esp_timer_get_time());
-
-                    if(active && last_command_us != 0 &&
-                       now_us - last_command_us > IMU_TIMEOUT_US)
-                    {
-                        motor::emergency_stop();
-                        active = false;
-                        stopped = true;
-                    }
-
+                    if(output_enabled && !stopped) standby();
                     continue;
                 }
 
@@ -271,6 +301,10 @@ namespace balance
 
                     previous_ready = false;
                     arm_samples = 0;
+                    portENTER_CRITICAL(&status_lock);
+                    latest_status.active = false;
+                    latest_status.command = output{};
+                    portEXIT_CRITICAL(&status_lock);
                     continue;
                 }
 
@@ -287,6 +321,9 @@ namespace balance
 
                 if(__atomic_exchange_n(&start_requested, 0U, __ATOMIC_ACQ_REL))
                 {
+                    manual_control = false;
+                    manual_braking = false;
+                    manual_brake_speed_m_s = 0.0f;
                     sensor::reset_attitude();
                     controller = state{};
                     target = reference{};
@@ -311,16 +348,11 @@ namespace balance
                     sensors.imu.timestamp_us > previous_imu_us ?
                     sensors.imu.timestamp_us - previous_imu_us : 0;
 
-                if(!fresh_data || dt_us == 0 || dt_us > CONTROL_TIMEOUT_US)
-                {
-                    if(active)
-                    {
-                        motor::emergency_stop();
-                        active = false;
-                        stopped = true;
-                    }
+                if(dt_us == 0) continue;
 
-                    arm_samples = 0;
+                if(!fresh_data || dt_us > CONTROL_TIMEOUT_US)
+                {
+                    standby();
 
                     if(!active && dt_us > CONTROL_TIMEOUT_US)
                     {
@@ -348,14 +380,7 @@ namespace balance
                         active,
                         active))
                 {
-                    if(active)
-                    {
-                        motor::emergency_stop();
-                        active = false;
-                        stopped = true;
-                    }
-
-                    arm_samples = 0;
+                    standby();
                     continue;
                 }
 
@@ -382,22 +407,19 @@ namespace balance
                     isfinite(sensors.imu.angle[0]) &&
                     isfinite(sensors.imu.angle[1]);
 
-                if(!valid ||
-                   fabsf(sensors.imu.angle[0]) > MAX_TILT_RAD)
+                if(!valid)
                 {
-                    if(active)
-                    {
-                        motor::emergency_stop();
-                        active = false;
-                        stopped = true;
-                    }
-
-                    arm_samples = 0;
+                    standby();
                     continue;
                 }
 
                 const float dt = static_cast<float>(dt_us) * 1.0e-6f;
+                const uint64_t shadow_began_us = esp_timer_get_time();
+                contact::estimate surface = contact::update(surface_observer,
+                    sensors.imu, wheel_speed_rad_s, measured.yaw_rate_rad_s, dt);
+                surface.calculate_us = esp_timer_get_time() - shadow_began_us;
 
+                gains applied_gains = tuning;
                 auto publish_status = [&](const output &command, uint32_t calculate_us)
                 {
                     status snapshot{};
@@ -410,10 +432,21 @@ namespace balance
                     snapshot.measured = measured;
                     snapshot.controller = controller;
                     snapshot.command = command;
+                    snapshot.applied_gains = applied_gains;
+                    snapshot.surface = surface;
                     portENTER_CRITICAL(&status_lock);
                     latest_status = snapshot;
                     portEXIT_CRITICAL(&status_lock);
                 };
+
+                const float upright_cos =
+                    cosf(sensors.imu.angle[0]) * cosf(sensors.imu.angle[1]);
+                if(upright_cos < cosf(MAX_TILT_RAD))
+                {
+                    standby();
+                    publish_status(output{}, 0);
+                    continue;
+                }
 
                 if(!output_enabled)
                 {
@@ -429,10 +462,23 @@ namespace balance
                     continue;
                 }
 
+                gamepad::state pad{};
+                gamepad::get_state(pad);
                 if(!active)
                 {
-                    if(fabsf(measured.pitch_rad) <= ARM_PITCH_RAD &&
-                       fabsf(measured.speed_m_s) <= ARM_SPEED_M_S)
+                    if(output_enabled && !send_current(output{}))
+                    {
+                        motor::emergency_stop();
+                        stopped = true;
+                        publish_status(output{}, 0);
+                        continue;
+                    }
+                    const bool centered = !pad.connected ||
+                        (pad.received_us != 0 && now_us - pad.received_us < 300000 &&
+                         pad.forward == 0.0f && pad.turn == 0.0f);
+                    if(upright_cos >= cosf(ARM_PITCH_RAD) &&
+                       fabsf(measured.speed_m_s) <= ARM_SPEED_M_S &&
+                       fabsf(measured.pitch_rate_rad_s) <= 0.35f && centered)
                     {
                         ++arm_samples;
                     }
@@ -453,10 +499,54 @@ namespace balance
                     target.yaw_rad = measured.yaw_rad;
                 }
 
-                portENTER_CRITICAL(&status_lock);
-                target.position_m = requested_position_m;
-                target.speed_m_s = requested_speed_m_s;
-                portEXIT_CRITICAL(&status_lock);
+                if(pad.neutral_seen || manual_control)
+                {
+                    const bool fresh = pad.connected && pad.neutral_seen &&
+                        pad.received_us != 0 && now_us - pad.received_us < 300000;
+                    if(!manual_control)
+                    {
+                        target.position_m = controller.distance_m;
+                        target.speed_m_s = target.yaw_rate_rad_s = 0.0f;
+                        target.yaw_rad = measured.yaw_rad;
+                    }
+                    manual_control = true;
+                    limit.speed_m_s = 0.9f;
+                    const float speed = fresh ? 0.9f * pad.forward : 0.0f;
+                    const float turn = fresh ? 2.0943951024f * pad.turn : 0.0f;
+                    const float current_distance_m = controller.distance_m +
+                        (controller.first_sample ? 0.0f :
+                            dt * (controller.previous_speed_m_s + measured.speed_m_s) * 0.5f);
+                    if(speed != 0.0f)
+                    {
+                        manual_braking = true;
+                        manual_brake_speed_m_s = measured.speed_m_s;
+                    }
+                    if(manual_braking)
+                    {
+                        // 制动到首次零速附近就锁停车点，不等待反向慢走结束。
+                        target.position_m = current_distance_m;
+                        if(speed == 0.0f &&
+                           (fabsf(measured.speed_m_s) < 0.03f ||
+                            measured.speed_m_s * manual_brake_speed_m_s <= 0.0f))
+                        {
+                            manual_braking = false;
+                        }
+                    }
+                    if(turn != 0.0f || target.yaw_rate_rad_s != 0.0f)
+                    {
+                        target.yaw_rad = measured.yaw_rad;
+                        controller.yaw_integral = 0.0f;
+                    }
+                    target.speed_m_s = speed;
+                    target.yaw_rate_rad_s = turn;
+                }
+                else
+                {
+                    portENTER_CRITICAL(&status_lock);
+                    target.position_m = requested_position_m;
+                    target.speed_m_s = requested_speed_m_s;
+                    portEXIT_CRITICAL(&status_lock);
+                }
                 const uint64_t calculate_began_us = esp_timer_get_time();
                 const output command = update(
                     measured,
@@ -464,7 +554,7 @@ namespace balance
                     limit,
                     controller,
                     dt,
-                    tuning);
+                    applied_gains);
                 const uint32_t calculate_us = esp_timer_get_time() - calculate_began_us;
 
                 if(!isfinite(command.current_A[0]) ||
@@ -476,19 +566,7 @@ namespace balance
                     continue;
                 }
 
-                bool accepted = true;
-
-                for(uint32_t i = 0; i < 2; ++i)
-                {
-                    motor::target_current current{};
-                    current.iq_A = FORWARD_SIGN[i] * command.current_A[i];
-
-                    accepted = motor::set_target_current(
-                        static_cast<motor::motor_id>(i),
-                        current) && accepted;
-                }
-
-                if(!accepted)
+                if(!send_current(command))
                 {
                     motor::emergency_stop();
                     active = false;
@@ -496,7 +574,6 @@ namespace balance
                     continue;
                 }
 
-                last_command_us = now_us;
                 publish_status(command, calculate_us);
             }
         }

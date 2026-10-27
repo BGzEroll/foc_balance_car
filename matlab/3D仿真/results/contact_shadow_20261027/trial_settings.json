@@ -1,0 +1,39 @@
+{
+  "firmware_sha256": "72cfdfdc4b90f215ef45e15cc7f4c31ae810ad64f151591b280d7d3d250c5a5b",
+  "manual_speed_m_s": 0.9,
+  "manual_yaw_rate_deg_s": 120,
+  "balance_current_A": 4,
+  "phase_trip_A": 6,
+  "accelerometer_range_g": 8,
+  "accelerometer_lsb_per_g": 4096,
+  "gyro_range_deg_s": 1000,
+  "gyro_lsb_per_deg_s": 32.8,
+  "raw_axes": "native MPU registers before board-axis sign mapping; physical-unit fields use board axes and startup gyro bias correction",
+  "capture": {
+    "BCU3_hz": 200,
+    "CST1_hz": 200,
+    "gamepad_hz": 20
+  },
+  "shadow_only": true,
+  "condition_names": [
+    "unknown",
+    "matched_acceleration",
+    "traction_mismatch",
+    "low_specific_force",
+    "high_specific_force",
+    "imu_near_rail"
+  ],
+  "provisional_shadow_thresholds": {
+    "low_force_ratio": 0.35,
+    "low_force_dwell_s": 0.015,
+    "high_force_ratio": 1.8,
+    "accel_residual_m_s2": 3,
+    "residual_dwell_s": 0.05,
+    "filter_tau_s": 0.02,
+    "quiet_angular_rate_rad_s": 0.5,
+    "quiet_angular_accel_rad_s2": 4,
+    "near_rail_abs_native_counts": 32700
+  },
+  "scope": "No candidate state feeds balance, ESKF gates or zero-bias learning. No six-pose/lever-arm calibration. Quiet stationary stand is unknown, not confirmed grounded. No real slip/free-flight/stair test performed.",
+  "created_unix_s": 1793100533.861897
+}

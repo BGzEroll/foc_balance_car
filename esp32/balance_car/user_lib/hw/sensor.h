@@ -17,12 +17,16 @@ namespace sensor
     struct imu_data
     {
         uint64_t timestamp_us = 0;
+        int16_t raw_acc[3] = {};
+        int16_t raw_gyro[3] = {};
 
         float temperature = 0.0f;
 
         float acc[3] = {};
         float gyro[3] = {};
         float angle[3] = {};
+        float gravity[3] = {};
+        float gravity_norm_g = 0.0f;
     };
 
     struct package

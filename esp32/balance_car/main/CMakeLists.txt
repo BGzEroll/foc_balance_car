@@ -4,8 +4,10 @@ idf_component_register(
         "../user_lib/app.cpp"
         "../user_lib/test.cpp"
         "../user_lib/controller/balance.cpp"
+        "../user_lib/controller/contact.cpp"
         "../user_lib/hw/sensor.cpp"
         "../user_lib/hw/motor.cpp"
+        "../user_lib/hw/gamepad.cpp"
         "../user_lib/sys_time.cpp"
     INCLUDE_DIRS
         "."
@@ -14,6 +16,8 @@ idf_component_register(
     LDFRAGMENTS
         "../user_lib/hw/motor.lf"
     PRIV_REQUIRES
+        bt
+        nvs_flash
         esp_driver_gpio
         esp_driver_uart
         esp_driver_i2c

@@ -1,0 +1,20 @@
+{
+  "firmware_sha256": "b42ef3c1f5c032a209215d485368e611b20a1d3e7b91bbfd577ea081a4febaaa",
+  "control_current_limit_A": 5,
+  "motor_current_limit_A": 6,
+  "braking_gain_schedule": {
+    "only_manual_neutral_braking": true,
+    "speed_weight": "clamp((abs(v)-0.08)/0.32,0,1)",
+    "velocity_kp": "0.65+0.10*weight",
+    "pitch_kp": "20+4*weight",
+    "pitch_kd": 2.1
+  },
+  "checks": [
+    "IDF build",
+    "native 5000 allocation invariants",
+    "native recovery",
+    "native parking and integral",
+    "native gain interpolation and low-speed return"
+  ],
+  "hardware_validation": "Flashed and calibrated. Floor response comparison pending."
+}

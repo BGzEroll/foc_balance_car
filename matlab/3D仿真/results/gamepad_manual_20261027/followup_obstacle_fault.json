@@ -1,0 +1,26 @@
+{
+  "fault_code": 6,
+  "fault_device_us": 99675615,
+  "last_active": {
+    "sample_us": 99670143.0,
+    "speed": 0.18140946328639984,
+    "target_speed": 0.0,
+    "pitch": 0.09657607227563858,
+    "pitch_rate": 2.456758975982666,
+    "yaw_rate": -1.38466215133667,
+    "target_pitch": -0.15725846588611603,
+    "command_a": 3.8059780597686768,
+    "command_b": 6.0,
+    "iq_a": -3.596094846725464,
+    "iq_b": 5.606349945068359,
+    "dt_us": 4965.0
+  },
+  "decomposition_A": {
+    "pitch_P_common_total": 5.076690763235092,
+    "pitch_D_common_total": 5.159193849563599,
+    "common_total": 10.235884612798692,
+    "yaw_difference_inferred_from_unclipped_left": 2.6239284932613387,
+    "right_unclipped_request_inferred": 6.4299065530300155
+  },
+  "scope": "200 Hz controller/FOC snapshots. ADC phase-current threshold is checked at PWM sampling; triggering raw ADC motor index is not present in this telemetry frame."
+}

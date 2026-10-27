@@ -1,0 +1,40 @@
+{
+  "run": "run_20261027_203731",
+  "first_fault": 7,
+  "fault_device_s": 411.750016,
+  "last_healthy": {
+    "sent_us": 411744062.0,
+    "pitch": -0.023133447393774986,
+    "roll": 0.11745201051235199,
+    "pitch_rate": -0.0031389330979436636,
+    "speed": -0.000986984116025269,
+    "command_a": -0.21659240126609802,
+    "command_b": -0.1621382236480713,
+    "iq_a": 0.28209298849105835,
+    "iq_b": -0.16274486482143402,
+    "bus": 8.067000389099121,
+    "dt_us": 4989.0
+  },
+  "first_post_fault_gyro_x_over_5_dps_delay_s": 0.016866,
+  "active_frames": 30409,
+  "active_first_s": 257.499624,
+  "active_last_s": 411.744062,
+  "active_raw_rail_count": 0,
+  "active_raw_accel_peak_g": [
+    1.099365234375,
+    1.817626953125,
+    6.147216796875
+  ],
+  "active_raw_gyro_peak_dps": [
+    557.7708968320566,
+    163.66823040151212,
+    219.71789654203897
+  ],
+  "crc_errors": [
+    {
+      "offset": 1215570,
+      "last_bcu_sent_s": 88.949275
+    }
+  ],
+  "conclusion": "Hardware SAMPLE_TIMEOUT latched before falling. Exact trigger path cannot be distinguished by this telemetry. Cable-crossing timestamps have no external labels. Shadow features do not feed controller."
+}
