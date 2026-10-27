@@ -2335,6 +2335,11 @@ namespace motor
         uint32_t sensor_ok = 0;
         uint32_t ready = 0;
 
+        constexpr uint32_t CONTROL_TIMEOUT_US = 20000;
+
+        uint32_t command_time_us[2] = {};
+        bool command_watchdog_enabled = false;
+
         /**
          * @brief 获取当前 32 位微秒时间
          *
@@ -2707,6 +2712,28 @@ namespace motor
                     calibrate(sensors, now, now64);
                 }
 
+                if(calibration.state == stage::RUN &&
+                    pwm::get_fault_code() == fault_code::NONE)
+                {
+                    bool expired = false;
+
+                    portENTER_CRITICAL(&info_lock);
+
+                    if(command_watchdog_enabled)
+                    {
+                        expired =
+                            now - command_time_us[0] > CONTROL_TIMEOUT_US ||
+                            now - command_time_us[1] > CONTROL_TIMEOUT_US;
+                    }
+
+                    portEXIT_CRITICAL(&info_lock);
+
+                    if(expired)
+                    {
+                        pwm::trip(fault_code::CONTROL_TIMEOUT);
+                    }
+                }
+
                 for(uint32_t index = 0; index < 2; ++index)
                 {
                     pwm::sample sample{};
@@ -2830,10 +2857,33 @@ namespace motor
             return false;
         }
 
+        const uint32_t now = now32();
+
         portENTER_CRITICAL(&info_lock);
+
+        if(!command_watchdog_enabled)
+        {
+            command_watchdog_enabled = true;
+            command_time_us[0] = now;
+            command_time_us[1] = now;
+        }
+
+        command_time_us[index] = now;
         latest.target[index] = target;
+
         portEXIT_CRITICAL(&info_lock);
+
         return true;
+    }
+
+    /**
+     * @brief 锁存平衡控制故障并立即关闭全部 PWM 输出
+     *
+     * @note 故障锁存后需要重启系统才能重新运行电机
+     */
+    void emergency_stop()
+    {
+        pwm::trip(fault_code::BALANCE_STOP);
     }
 
     /**

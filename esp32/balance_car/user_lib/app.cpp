@@ -1,10 +1,13 @@
 #include "hw/motor.h"
-#include "test.h"
+#include "controller/balance.h"
 
 extern "C" void app_init(void)
 {
     if(motor::init())
     {
-        test::init();
+        if(!balance::init())
+        {
+            motor::emergency_stop();
+        }
     }
 }

@@ -24,7 +24,9 @@ namespace motor
         SAMPLE_TIMEOUT,
         PWM_UPDATE,
         ALIGNMENT,
-        TASK_TIMEOUT
+        TASK_TIMEOUT,
+        CONTROL_TIMEOUT,
+        BALANCE_STOP
     };
 
     struct target_current
@@ -77,6 +79,7 @@ namespace motor
 
     bool init();
     bool set_target_current(motor_id id, const target_current &target);
+    void emergency_stop();
     bool get_info(foc_info &snapshot);
 }
 
