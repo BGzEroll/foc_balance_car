@@ -1,0 +1,236 @@
+{
+  "run": "run_20261027_235745",
+  "record_start_device_s": 7091.574782,
+  "recorded_duration_s": 2083.7657529999997,
+  "soft_exits": 20,
+  "events": [
+    {
+      "exit_relative_s": 117.69073500000013,
+      "exit_device_s": 7209.265517,
+      "rearm_relative_s": 117.88984000000073,
+      "inactive_s": 0.19910500000059983,
+      "last_pitch_deg": 6.6049034910895195,
+      "last_roll_deg": -2.2767660798653533,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 409.1952420000007,
+      "exit_device_s": 7500.770024,
+      "rearm_relative_s": 758.8249050000004,
+      "inactive_s": 349.6296629999997,
+      "last_pitch_deg": 5.213131211841654,
+      "last_roll_deg": -17.960737158451813,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 841.7716200000004,
+      "exit_device_s": 7933.346402,
+      "rearm_relative_s": 841.9756620000007,
+      "inactive_s": 0.2040420000002996,
+      "last_pitch_deg": 6.469822839874178,
+      "last_roll_deg": 2.7911252147007994,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 861.0700390000002,
+      "exit_device_s": 7952.644821,
+      "rearm_relative_s": 861.2706690000005,
+      "inactive_s": 0.20063000000027387,
+      "last_pitch_deg": 0.2628445423235875,
+      "last_roll_deg": 6.299476214426767,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 884.135131,
+      "exit_device_s": 7975.709913,
+      "rearm_relative_s": 884.3418600000005,
+      "inactive_s": 0.20672900000045047,
+      "last_pitch_deg": 0.3834355608645559,
+      "last_roll_deg": 6.3146823499533316,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1170.0750069999995,
+      "exit_device_s": 8261.649789,
+      "rearm_relative_s": 1170.28046,
+      "inactive_s": 0.20545300000048883,
+      "last_pitch_deg": -0.44163696348398324,
+      "last_roll_deg": 6.3370200567470345,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1218.8201399999998,
+      "exit_device_s": 8310.394922,
+      "rearm_relative_s": 1219.0254889999997,
+      "inactive_s": 0.2053489999998419,
+      "last_pitch_deg": -0.3382520185554968,
+      "last_roll_deg": 6.3351110188740165,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1286.6200090000002,
+      "exit_device_s": 8378.194791,
+      "rearm_relative_s": 1286.826935000001,
+      "inactive_s": 0.2069260000007489,
+      "last_pitch_deg": -0.13606403837326533,
+      "last_roll_deg": 6.326896435736606,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1293.455016,
+      "exit_device_s": 8385.029798,
+      "rearm_relative_s": 1293.656973000001,
+      "inactive_s": 0.20195700000112993,
+      "last_pitch_deg": -0.248915358687125,
+      "last_roll_deg": 6.346671540931085,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1317.5901150000009,
+      "exit_device_s": 8409.164897,
+      "rearm_relative_s": 1317.7916640000003,
+      "inactive_s": 0.20154899999943154,
+      "last_pitch_deg": -0.2634391956682018,
+      "last_roll_deg": 6.33751652612233,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1422.7151560000002,
+      "exit_device_s": 8514.289938,
+      "rearm_relative_s": 1422.9205430000002,
+      "inactive_s": 0.20538699999997334,
+      "last_pitch_deg": -0.3206672963309023,
+      "last_roll_deg": 6.329024893436712,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1566.9050339999994,
+      "exit_device_s": 8658.479816,
+      "rearm_relative_s": 1567.1068530000011,
+      "inactive_s": 0.20181900000170572,
+      "last_pitch_deg": 0.01694064505751689,
+      "last_roll_deg": 6.334974415090616,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1580.784971000001,
+      "exit_device_s": 8672.359753,
+      "rearm_relative_s": 1580.9854720000003,
+      "inactive_s": 0.200500999999349,
+      "last_pitch_deg": -0.18335981668315085,
+      "last_roll_deg": 6.348741515136423,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1763.3250719999996,
+      "exit_device_s": 8854.899854,
+      "rearm_relative_s": 1763.5304560000004,
+      "inactive_s": 0.20538400000077672,
+      "last_pitch_deg": -0.27345238639357267,
+      "last_roll_deg": 6.345527484245109,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1781.0700429999997,
+      "exit_device_s": 8872.644825,
+      "rearm_relative_s": 1781.270571000001,
+      "inactive_s": 0.2005280000012135,
+      "last_pitch_deg": -0.2303269988609353,
+      "last_roll_deg": 6.356988114785567,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1807.5201140000008,
+      "exit_device_s": 8899.094896,
+      "rearm_relative_s": 1807.727035,
+      "inactive_s": 0.20692099999905622,
+      "last_pitch_deg": -0.2467465601822344,
+      "last_roll_deg": 6.334400679200335,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1886.2351980000003,
+      "exit_device_s": 8977.80998,
+      "rearm_relative_s": 1886.4364189999997,
+      "inactive_s": 0.20122099999935017,
+      "last_pitch_deg": -0.20209673312378834,
+      "last_roll_deg": 6.337361139318713,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1922.8114490000007,
+      "exit_device_s": 9014.386231,
+      "rearm_relative_s": 1923.0104530000008,
+      "inactive_s": 0.19900400000005902,
+      "last_pitch_deg": -0.26453962985694074,
+      "last_roll_deg": 6.330418252027394,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1950.9500669999998,
+      "exit_device_s": 9042.524849,
+      "rearm_relative_s": 1951.155417,
+      "inactive_s": 0.20535000000018044,
+      "last_pitch_deg": -0.24522999138222712,
+      "last_roll_deg": 6.331039372355042,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    },
+    {
+      "exit_relative_s": 1965.6800949999997,
+      "exit_device_s": 9057.254877,
+      "rearm_relative_s": 1965.880462000001,
+      "inactive_s": 0.20036700000127894,
+      "last_pitch_deg": -0.2773655244990346,
+      "last_roll_deg": 6.338291325706304,
+      "snapshot_frozen_on_exit": true,
+      "fault": 0
+    }
+  ],
+  "fault_codes": [
+    0.0
+  ],
+  "long_event": {
+    "exit_relative_s": 409.1952420000007,
+    "last_healthy": {
+      "pitch": 0.09098630398511887,
+      "roll": -0.31347399950027466,
+      "pitch_rate": 0.007774553261697292,
+      "speed": -0.0003001661680173129,
+      "command_a": 0.2943648099899292,
+      "command_b": -0.09135917574167252,
+      "iq_a": -0.33200302720069885,
+      "iq_b": -0.056050851941108704,
+      "bus": 8.067000389099121,
+      "dt_us": 5039.0
+    },
+    "last_raw_imu_s": 7500.763083,
+    "next_raw_imu_s": 7500.768033,
+    "raw_imu_continued": true,
+    "next_control_update_dt_us": 9912,
+    "interpretation": "Soft standby was entered before the fall; likely data-validity/freshness rejection, exact trigger not logged. IMU raw data continued. Estimated tilt already differed strongly from accelerometer apparent gravity tilt, preventing automatic upright rearm while physically near upright.",
+    "pre_exit_apparent_pitch_roll_deg": [
+      0.4301482383643978,
+      6.510191680513857
+    ]
+  },
+  "scope": "No independent pose reference; gravity comparison is restricted to low-motion windows. No firmware changes or restarts."
+}

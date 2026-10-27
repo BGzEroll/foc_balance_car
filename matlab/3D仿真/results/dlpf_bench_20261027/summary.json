@@ -1,0 +1,116 @@
+{
+  "scope": "Same stand, sequential firmware boots, common 20-50 s uptime window. No powered balance, no imposed motion or frequency-response measurement. Welch spectra approximate uniform sampling at median measured rate.",
+  "settings": {
+    "controller_limit_A": 4,
+    "motor_limit_A": 6,
+    "max_yaw_rate_deg_s": 180,
+    "imu_read_rate_Hz": 200,
+    "imu_internal_rate_Hz": 1000,
+    "accel_range_g": 8,
+    "gyro_range_deg_s": 1000
+  },
+  "runs": {
+    "3": {
+      "common_window_s": [
+        20,
+        50
+      ],
+      "window_samples": 5996,
+      "total_frames": 10994,
+      "total_shadow_frames": 10995,
+      "crc_errors": 0,
+      "all_fault_codes": [
+        0
+      ],
+      "all_modes": [
+        0
+      ],
+      "reported_current_limit_A": [
+        4.0
+      ],
+      "imu_dt_us_p50_p99_max": [
+        5000.0,
+        5188.06,
+        10163.0
+      ],
+      "control_dt_us_p50_p99_max": [
+        5000.0,
+        5187.0,
+        5282.0
+      ],
+      "accel_std_mg": [
+        1.5226328518786731,
+        1.6595052739103642,
+        2.813221289572888
+      ],
+      "gyro_std_deg_s": [
+        0.19305606765088937,
+        0.05826173892352294,
+        0.10361875417666565
+      ],
+      "pitch_std_deg": 0.007326109070283745,
+      "pitch_rate_std_deg_s": 0.19917387179573512,
+      "raw_rail_frames": 0,
+      "pitch_PD_equivalent_each_wheel_current_std_A": 0.003980667959183267,
+      "gyro_x_highband_50_100_Hz_std_deg_s": 0.025908351190256432
+    },
+    "2": {
+      "common_window_s": [
+        20,
+        50
+      ],
+      "window_samples": 6000,
+      "total_frames": 19998,
+      "total_shadow_frames": 19997,
+      "crc_errors": 0,
+      "all_fault_codes": [
+        0
+      ],
+      "all_modes": [
+        0
+      ],
+      "reported_current_limit_A": [
+        4.0
+      ],
+      "imu_dt_us_p50_p99_max": [
+        5000.0,
+        5187.0,
+        5307.0
+      ],
+      "control_dt_us_p50_p99_max": [
+        5000.0,
+        5187.0,
+        5307.0
+      ],
+      "accel_std_mg": [
+        2.0428266502188217,
+        2.2462377349110505,
+        3.115532371115896
+      ],
+      "gyro_std_deg_s": [
+        0.2177620746601501,
+        0.061677784034067484,
+        0.11891452560539616
+      ],
+      "pitch_std_deg": 0.009985065121557574,
+      "pitch_rate_std_deg_s": 0.22542660033428996,
+      "raw_rail_frames": 0,
+      "pitch_PD_equivalent_each_wheel_current_std_A": 0.004613886033582177,
+      "gyro_x_highband_50_100_Hz_std_deg_s": 0.04016981330392267
+    }
+  },
+  "noise_ratio_2_over_3": {
+    "accel_std_mg": [
+      1.3416409922446615,
+      1.3535586600566465,
+      1.1074608253049678
+    ],
+    "gyro_std_deg_s": [
+      1.1279732220275902,
+      1.0586327351991434,
+      1.1476158592164876
+    ],
+    "pitch_rate_std_deg_s": 1.1318080946153348,
+    "pitch_PD_equivalent_each_wheel_current_std_A": 1.1590733215861668
+  }
+}

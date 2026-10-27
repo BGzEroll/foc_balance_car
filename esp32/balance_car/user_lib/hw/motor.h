@@ -61,6 +61,10 @@ namespace motor
 
         uint16_t raw_a = 0;
         uint16_t raw_b = 0;
+        uint32_t source = 0;
+        uint32_t detail_us = 0;
+        uint32_t adc_age_us = 0;
+        uint32_t heartbeat_age_us = 0;
     };
 
     struct foc_info

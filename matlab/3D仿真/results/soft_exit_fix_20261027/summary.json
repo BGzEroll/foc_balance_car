@@ -1,0 +1,60 @@
+{
+  "old": {
+    "initial_error_deg": 19.1203613281,
+    "first_below_1deg_s": 118.450054,
+    "last30s_error_median_deg": 20.33182811735
+  },
+  "new": {
+    "initial_error_deg": 19.1203613281,
+    "first_below_1deg_s": 3.704964,
+    "last30s_error_median_deg": 0.182384252548
+  },
+  "scope": "Recorded low-motion IMU replay from run_20261027_235745, device7380.76..7500.76s. Quaternion seeded from logged estimated gravity. Bias Y seeded 0.0008 rad/s and covariance initialized; this approximates a bad state, does not reconstruct the full unlogged live covariance/bias. Gravity apparent tilt is not an external pose truth.",
+  "changes": {
+    "notifications": "wake hints, actual timestamps determine freshness",
+    "short_invalid_sample": "hold previous bounded current without clearing controller/parking state",
+    "continuous_timeout_us": 20000,
+    "gravity_observation": "NIS-based variance inflation instead of hard rejection",
+    "gravity_correction_rate_deg_s": 5,
+    "controller_current_A": 4,
+    "yaw_rate_deg_s": 180,
+    "DLPF_CFG": 2
+  },
+  "native_checks": [
+    "5000 current-allocation invariants",
+    "short encoder stale frames keep active",
+    "15ms actual controller interval after skipped frames",
+    "lost notification with valid data keeps active",
+    "persistent IMU stall transitions to standby",
+    "hardware fault is not cleared",
+    "upright rearm remains functional"
+  ],
+  "pwm_deadline_fix": {
+    "sample_timeout_us": 1000,
+    "pwm_period_us": 100,
+    "old_pwm_command_timeout_us": 1000,
+    "new_pwm_command_timeout_us": 1200,
+    "captured_cases": [
+      {
+        "command_age_us": 1055,
+        "adc_age_us": 56,
+        "heartbeat_age_us": 280,
+        "sample_gap_us": 999
+      },
+      {
+        "command_age_us": 1051,
+        "adc_age_us": 51,
+        "heartbeat_age_us": 18,
+        "sample_gap_us": 1000
+      }
+    ],
+    "reason": "The maximum accepted ADC sample interval and old PWM-command age threshold were equal, leaving no FOC and shadow-register submission budget. Add two PWM periods only to the command-age deadline. Actual ADC timeout and FOC interval limit remain 1ms.",
+    "actual_callback_checks": "captured1051us accepted; ADC1001us still trips; command1201us still trips; heartbeat3001us still trips; command1200us accepted"
+  },
+  "reverted_experiments": [
+    "PWM initialization/IRQ relocation to Core1: calibration sensor timeouts, reverted",
+    "temporary flash read/write diagnostic build hooks removed",
+    "last invalid ADC window capture removed after localization"
+  ],
+  "fixture_fall_run": "run_20261028_005737 is excluded from fault7 causality; user reported unsecured stand fall"
+}

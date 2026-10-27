@@ -14,7 +14,7 @@ namespace balance
     namespace
     {
         constexpr float WHEEL_RADIUS_M = 0.0325f;
-        constexpr float MAX_CURRENT_A = 5.0f;
+        constexpr float MAX_CURRENT_A = 4.0f;
 
         constexpr float VELOCITY_INTEGRAL_LIMIT = 0.5f;
         constexpr float PITCH_INTEGRAL_LIMIT = 0.25f;
@@ -22,14 +22,14 @@ namespace balance
 
         constexpr float FORWARD_SIGN[2] = {-1.0f, 1.0f};
 
-        constexpr float BALANCE_CURRENT_A = 5.0f;
+        constexpr float BALANCE_CURRENT_A = 4.0f;
         constexpr float ARM_PITCH_RAD = 0.1745329252f;
         constexpr float ARM_SPEED_M_S = 0.10f;
         constexpr float MAX_TILT_RAD = 0.7853981634f;
 
         constexpr uint64_t IMU_TIMEOUT_US = 20000;
         constexpr uint64_t ENCODER_TIMEOUT_US = 1500;
-        constexpr uint64_t CONTROL_TIMEOUT_US = 10000;
+        constexpr uint64_t CONTROL_TIMEOUT_US = 20000;
 
         constexpr uint32_t ARM_SAMPLES = 40;
 
@@ -237,6 +237,8 @@ namespace balance
             bool manual_control = false;
             bool manual_braking = false;
             float manual_brake_speed_m_s = 0.0f;
+            output held_command{};
+            uint64_t last_control_us = 0;
             contact::observer surface_observer{};
 
             auto send_current = [](const output &command)
@@ -259,6 +261,8 @@ namespace balance
                 manual_control = false;
                 manual_braking = false;
                 manual_brake_speed_m_s = 0.0f;
+                held_command = output{};
+                last_control_us = 0;
                 controller = state{};
                 target = reference{};
                 portENTER_CRITICAL(&status_lock);
@@ -276,11 +280,8 @@ namespace balance
 
             while(true)
             {
-                if(!sensor::wait_for_imu())
-                {
-                    if(output_enabled && !stopped) standby();
-                    continue;
-                }
+                // 通知只负责唤醒；是否超时由实际采样时间戳判断。
+                sensor::wait_for_imu();
 
                 sensor::package sensors{};
                 motor::foc_info foc{};
@@ -348,16 +349,28 @@ namespace balance
                     sensors.imu.timestamp_us > previous_imu_us ?
                     sensors.imu.timestamp_us - previous_imu_us : 0;
 
-                if(dt_us == 0) continue;
-
-                if(!fresh_data || dt_us > CONTROL_TIMEOUT_US)
+                if(dt_us == 0 || !fresh_data || dt_us > CONTROL_TIMEOUT_US)
                 {
-                    standby();
-
-                    if(!active && dt_us > CONTROL_TIMEOUT_US)
+                    if(active && dt_us <= CONTROL_TIMEOUT_US &&
+                       fresh(last_control_us, now_us, CONTROL_TIMEOUT_US) &&
+                       fresh(sensors.imu.timestamp_us, now_us, IMU_TIMEOUT_US))
                     {
-                        sensor::reset_attitude();
-                        previous_imu_us = 0;
+                        // 单次迟到保持上一有效输出，不清积分和停车点。
+                        if(!send_current(held_command))
+                        {
+                            motor::emergency_stop();
+                            active = false;
+                            stopped = true;
+                        }
+                    }
+                    else
+                    {
+                        standby();
+                        if(dt_us > CONTROL_TIMEOUT_US)
+                        {
+                            sensor::reset_attitude();
+                            previous_imu_us = 0;
+                        }
                     }
 
                     continue;
@@ -574,6 +587,8 @@ namespace balance
                     continue;
                 }
 
+                held_command = command;
+                last_control_us = now_us;
                 publish_status(command, calculate_us);
             }
         }

@@ -230,6 +230,8 @@ namespace pwm
     constexpr uint32_t CYCLES_PER_TICK = CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ / 80;
     constexpr uint32_t NEUTRAL = 2000;
     constexpr uint32_t SAMPLE_TIMEOUT_US = 1000;
+    // 样本间隔上限之外，给 FOC 运算和下一次影子寄存器提交各留一个 PWM 周期。
+    constexpr uint32_t PWM_COMMAND_TIMEOUT_US = SAMPLE_TIMEOUT_US + 2U * (PERIOD / 80U);
     constexpr uint32_t BUS_TIMEOUT_US = 5000;
 
     struct sample
@@ -311,6 +313,10 @@ namespace pwm
         uint32_t fault_raw_a = 0;
         uint32_t fault_raw_b = 0;
         uint32_t fault_us = 0;
+        uint32_t fault_source = 0;
+        uint32_t fault_detail_us = 0;
+        uint32_t fault_adc_age_us = 0;
+        uint32_t fault_heartbeat_age_us = 0;
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -427,12 +433,16 @@ namespace pwm
      * @param[in] index 故障电机索引，0xFF 为公共故障
      * @param[in] raw_a 第一相 ADC 原始值
      * @param[in] raw_b 第二相 ADC 原始值
+     * @param[in] source 采样超时来源：1 ADC间隔、2 PWM命令年龄、3 FOC样本年龄、4 FOC间隔、5 其他FOC拒绝
+     * @param[in] detail_us 对应触发条件的时间值
      */
     void IRAM_ATTR trip(
         motor::fault_code code,
         uint8_t index = 0xFF,
         uint16_t raw_a = 0,
-        uint16_t raw_b = 0)
+        uint16_t raw_b = 0,
+        uint32_t source = 0,
+        uint32_t detail_us = 0)
     {
         uint32_t expected = 0;
 
@@ -443,7 +453,15 @@ namespace pwm
             __atomic_store_n(&fault_motor, index, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_a, raw_a, __ATOMIC_RELAXED);
             __atomic_store_n(&fault_raw_b, raw_b, __ATOMIC_RELAXED);
-            __atomic_store_n(&fault_us, now32(), __ATOMIC_RELEASE);
+            const uint32_t now = now32();
+            __atomic_store_n(&fault_source, source, __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_detail_us, detail_us, __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_adc_age_us, index < 2 ?
+                now - __atomic_load_n(&last_valid_sample_us[index], __ATOMIC_ACQUIRE) : 0,
+                __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_heartbeat_age_us,
+                now - __atomic_load_n(&heartbeat_us, __ATOMIC_ACQUIRE), __ATOMIC_RELAXED);
+            __atomic_store_n(&fault_us, now, __ATOMIC_RELEASE);
         }
 
         stop();
@@ -473,6 +491,10 @@ namespace pwm
         out.motor_index = __atomic_load_n(&fault_motor, __ATOMIC_RELAXED);
         out.raw_a = __atomic_load_n(&fault_raw_a, __ATOMIC_RELAXED);
         out.raw_b = __atomic_load_n(&fault_raw_b, __ATOMIC_RELAXED);
+        out.source = __atomic_load_n(&fault_source, __ATOMIC_RELAXED);
+        out.detail_us = __atomic_load_n(&fault_detail_us, __ATOMIC_RELAXED);
+        out.adc_age_us = __atomic_load_n(&fault_adc_age_us, __ATOMIC_RELAXED);
+        out.heartbeat_age_us = __atomic_load_n(&fault_heartbeat_age_us, __ATOMIC_RELAXED);
 
         const uint32_t stamp = __atomic_load_n(&fault_us, __ATOMIC_ACQUIRE);
 
@@ -641,7 +663,8 @@ namespace pwm
                     if((active & (1U << i)) &&
                        now - last_valid_sample_us[i] > SAMPLE_TIMEOUT_US)
                     {
-                        trip(motor::fault_code::SAMPLE_TIMEOUT, i);
+                        trip(motor::fault_code::SAMPLE_TIMEOUT, i, 0, 0,
+                            1, now - last_valid_sample_us[i]);
                         break;
                     }
                 }
@@ -740,9 +763,10 @@ namespace pwm
                 value[i] = command{};
             }
             else if(enabled && value[i].sample_us != 0 &&
-                    now - value[i].sample_us > SAMPLE_TIMEOUT_US)
+                    now - value[i].sample_us > PWM_COMMAND_TIMEOUT_US)
             {
-                trip(motor::fault_code::SAMPLE_TIMEOUT, i);
+                trip(motor::fault_code::SAMPLE_TIMEOUT, i, 0, 0,
+                    2, now - value[i].sample_us);
                 return false;
             }
         }
@@ -2235,6 +2259,7 @@ namespace foc
 
             if(dt_us == 0 || dt_us > pwm::SAMPLE_TIMEOUT_US)
             {
+                pwm::trip(motor::fault_code::SAMPLE_TIMEOUT, index, 0, 0, 4, dt_us);
                 return false;
             }
 
@@ -2462,7 +2487,8 @@ namespace motor
                        (__atomic_load_n(&pwm::mask, __ATOMIC_ACQUIRE) & (1U << i)) &&
                        !fresh(encoders[i], now64))
                     {
-                        pwm::trip(fault_code::SENSOR_TIMEOUT, i);
+                        pwm::trip(fault_code::SENSOR_TIMEOUT, i, 0, 0,
+                            6, static_cast<uint32_t>(now64 - encoders[i].timestamp_us));
                     }
                 }
                 return;
@@ -2504,7 +2530,8 @@ namespace motor
 
             if(!fresh(encoder, now64))
             {
-                pwm::trip(fault_code::SENSOR_TIMEOUT, index);
+                pwm::trip(fault_code::SENSOR_TIMEOUT, index, 0, 0,
+                    6, static_cast<uint32_t>(now64 - encoder.timestamp_us));
                 return;
             }
 
@@ -2607,7 +2634,8 @@ namespace motor
 
             if(now32() - sample.timestamp_us > pwm::SAMPLE_TIMEOUT_US)
             {
-                pwm::trip(fault_code::SAMPLE_TIMEOUT, index);
+                pwm::trip(fault_code::SAMPLE_TIMEOUT, index, 0, 0,
+                    3, now32() - sample.timestamp_us);
                 return;
             }
 
@@ -2672,7 +2700,7 @@ namespace motor
                 index, sample, encoder, get_target(index),
                 aligning, theta, voltage, current, output))
             {
-                pwm::trip(fault_code::SAMPLE_TIMEOUT, index);
+                pwm::trip(fault_code::SAMPLE_TIMEOUT, index, 0, 0, 5);
                 return;
             }
 
@@ -2770,7 +2798,8 @@ namespace motor
 
                     if(!fresh(encoder, now64))
                     {
-                        pwm::trip(fault_code::SENSOR_TIMEOUT, index);
+                        pwm::trip(fault_code::SENSOR_TIMEOUT, index, 0, 0,
+                            6, static_cast<uint32_t>(now64 - encoder.timestamp_us));
                         break;
                     }
 
@@ -2806,7 +2835,7 @@ namespace motor
             return true;
         }
 
-        // 固定硬件的 PVCC 门控；PWM 在初始化期间保持强制低电平
+        // 固定硬件的 PVCC 门控；PWM 在初始化期间保持强制低电平。
         pwm::init();
         ESP_ERROR_CHECK(gpio_set_direction(GPIO_NUM_7, GPIO_MODE_OUTPUT));
         ESP_ERROR_CHECK(gpio_set_level(GPIO_NUM_7, 1));

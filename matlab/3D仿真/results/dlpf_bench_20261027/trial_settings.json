@@ -1,0 +1,10 @@
+{
+  "firmware_sha256": "8f8abd4243fc40933462fe4c31cb571ffbdf4de0229e4af0c50049461b22ebdb",
+  "DLPF_CFG": 2,
+  "max_yaw_rate_deg_s": 180,
+  "pid_current_limit_A_per_wheel": 4,
+  "motor_current_limit_A": 6,
+  "control_rate_Hz": 200,
+  "hardware_mode": "calibrated standby on stand; no balance START sent",
+  "fault_at_capture_end": 0
+}

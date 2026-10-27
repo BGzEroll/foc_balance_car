@@ -760,14 +760,16 @@ namespace mpu6050
              * @param[in] h 三维观测雅可比矩阵
              * @param[in] residual 三维观测残差
              * @param[in] variance 观测噪声方差
+             * @param[in] dt 本次采样间隔，单位 s
              *
              * @return true 修正成功
-             * @return false 创新协方差无效或超出 NIS 门限
+             * @return false 创新协方差无效
              */
             bool correct(
                 const float h[3][6],
                 const float residual[3],
-                float variance)
+                float variance,
+                float dt)
             {
                 float ph[6][3] = {};
                 float s[3][3] = {};
@@ -816,9 +818,13 @@ namespace mpu6050
                     }
                 }
 
-                if(!(nis <= 9.21f))
+                if(nis > 9.21f)
                 {
-                    return false;
+                    // 大残差降低权重而非永久拒绝，使倾角漂移仍能缓慢纠正。
+                    const float extra = variance * (nis / 9.21f - 1.0f);
+                    variance += extra;
+                    for(uint8_t i = 0; i < 3; ++i) s[i][i] += extra;
+                    if(!invert(s, inverse)) return false;
                 }
 
                 for(uint8_t i = 0; i < 6; ++i)
@@ -851,6 +857,18 @@ namespace mpu6050
                         gain[i + 3][j] -= g[i] * along;
                     }
                 }
+
+                // 将倾角恢复限制为每秒 5 度，同时缩放增益以保持协方差一致。
+                float correction[3] = {};
+                for(uint8_t i = 0; i < 3; ++i)
+                    for(uint8_t j = 0; j < 3; ++j)
+                        correction[i] += gain[i][j] * residual[j];
+                const float norm = sqrtf(correction[0] * correction[0] +
+                    correction[1] * correction[1] + correction[2] * correction[2]);
+                const float scale = norm > 0.0f ?
+                    fminf(1.0f, 0.0872664626f * dt / norm) : 1.0f;
+                for(uint8_t i = 0; i < 6; ++i)
+                    for(uint8_t j = 0; j < 3; ++j) gain[i][j] *= scale;
 
                 float dx[6] = {};
 
@@ -1022,7 +1040,7 @@ namespace mpu6050
                         h[i][1] = -r[0][i];
                     }
 
-                    correct(h, residual, 0.05f * 0.05f);
+                    correct(h, residual, 0.05f * 0.05f, dt);
                 }
 
                 return true;
@@ -1145,8 +1163,8 @@ namespace mpu6050
 
         sys_time::delay_ms(10);
 
-        // DLPF_CFG = 3，带宽约 44 Hz
-        i2c::write_right_sync(REG_CONFIG, 0x03);
+        // DLPF_CFG = 2，加速度带宽 94 Hz，陀螺仪带宽 98 Hz
+        i2c::write_right_sync(REG_CONFIG, 0x02);
 
         // 1000 / (1 + 0) = 1000 Hz
         i2c::write_right_sync(REG_SMPLRT_DIV, 0x00);

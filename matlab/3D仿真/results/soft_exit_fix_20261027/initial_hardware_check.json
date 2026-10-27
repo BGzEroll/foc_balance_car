@@ -1,0 +1,17 @@
+{
+  "current": {
+    "mode": 0,
+    "fault": 7,
+    "pitch": 0.05970645695924759,
+    "roll": 0.11675620079040527,
+    "speed": -2.0977739040972665e-05
+  },
+  "crc_errors": 0,
+  "active_duration_s": 39.069997,
+  "active_to_standby_transitions": [
+    93.048144
+  ],
+  "longer_active_dt_samples": [],
+  "longer_active_dt_count": 0,
+  "firmware_sha256": "7a31b54806ad41251707e73d64b1a071cd04345e73ea0c5c9f3a24b0b1800a5a"
+}

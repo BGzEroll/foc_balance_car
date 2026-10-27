@@ -1,0 +1,5 @@
+p=fileparts(mfilename('fullpath'));a=readtable(fullfile(p,'trend_control.csv'));b=readtable(fullfile(p,'trend_imu.csv'));c=readtable(fullfile(p,'onset_control.csv'));d=readtable(fullfile(p,'onset_imu.csv'));f=figure('Visible','off','Position',[100 100 1200 900]);tiledlayout(3,1);
+nexttile;plot(a.time_s,a.roll_deg,b.time_s,b.acc_apparent_roll_deg);xline(409.195242,'r--');ylabel('横向倾角（度）');xlabel('从开始记录起的时间（秒）');legend('姿态估计','加速度表观重力倾角');title('倒下前：低动态时估计倾角逐渐偏离重力方向');grid on;
+nexttile;yyaxis left;plot(c.time_s,c.mode/2);ylabel('平衡状态（1为运行）');ylim([-.1 1.1]);yyaxis right;plot(c.time_s,[c.command_a c.command_b]);ylabel('上层目标电流（安）');xlim([-.2 .6]);xlabel('相对退出平衡的时间（秒）');title('先退出平衡、上层电流归零');grid on;
+nexttile;plot(c.time_s,c.pitch*180/pi,d.time_s,d.acc_apparent_pitch_deg);xline(0,'r--');ylabel('前后倾角（度）');xlabel('相对退出平衡的时间（秒）');legend('姿态估计','加速度表观倾角（动态时含运动加速度）');title('随后车身倒下，约两秒后落在地面');grid on;
+exportgraphics(f,fullfile(p,'soft_exit_review.png'),'Resolution',140);savefig(f,fullfile(p,'soft_exit_review.fig'));close(f);

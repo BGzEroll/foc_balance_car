@@ -1,0 +1,20 @@
+{
+  "current": {
+    "sent_us": 300198336,
+    "mode": 0,
+    "fault": 0,
+    "flags": 1,
+    "current_limit_A": 4.0,
+    "dt_us": 5087,
+    "pitch": 0.031650934368371964,
+    "roll": 0.1962260901927948
+  },
+  "calibrated_standby_s": 287.430072,
+  "fault_codes": [
+    0
+  ],
+  "frames": 58293,
+  "CRC_errors": 0,
+  "firmware_sha256": "3f84a52ff31b525afd1297b5c372305821c33340f6fd6bd0f0d2ac1226e3d65b",
+  "no_START_sent": true
+}

@@ -67,6 +67,13 @@ namespace test
                 motor::emergency_stop();
                 reply_length=snprintf(reply,sizeof(reply),"STOP accepted=1\n");
             }
+            else if(!strcmp(line,"FAULT"))
+                reply_length=snprintf(reply,sizeof(reply),
+                    "FAULTDIAG code=%lu motor=%u source=%lu detail_us=%lu adc_age_us=%lu heartbeat_age_us=%lu stamp_us=%llu raw_a=%u raw_b=%u\n",
+                    (unsigned long)m.fault.code,m.fault.motor_index,
+                    (unsigned long)m.fault.source,(unsigned long)m.fault.detail_us,
+                    (unsigned long)m.fault.adc_age_us,(unsigned long)m.fault.heartbeat_age_us,
+                    (unsigned long long)m.fault.timestamp_us,m.fault.raw_a,m.fault.raw_b);
             else if(!strcmp(line,"STATUS"))
             {
                 gamepad::state pad{};
@@ -84,6 +91,7 @@ namespace test
         {
             uint32_t sequence=0;
             uint64_t previous_imu_us=0;
+            uint32_t previous_fault=0;
             char line[32]{};
             uint32_t length=0;
             while(true)
@@ -99,6 +107,18 @@ namespace test
                 motor::foc_info m{};
                 balance::status b{};
                 sensor::get_package(s);motor::get_info(m);balance::get_status(b);
+                if(m.fault.active && uint32_t(m.fault.code)!=previous_fault)
+                {
+                    previous_fault=uint32_t(m.fault.code);
+                    char info[192];
+                    const int n=snprintf(info,sizeof(info),
+                        "FAULTDIAG code=%lu motor=%u source=%lu detail_us=%lu adc_age_us=%lu heartbeat_age_us=%lu stamp_us=%llu\n",
+                        (unsigned long)m.fault.code,m.fault.motor_index,
+                        (unsigned long)m.fault.source,(unsigned long)m.fault.detail_us,
+                        (unsigned long)m.fault.adc_age_us,(unsigned long)m.fault.heartbeat_age_us,
+                        (unsigned long long)m.fault.timestamp_us);
+                    uart_write_bytes(UART_NUM_0,info,n);
+                }
                 if(s.imu.timestamp_us && s.imu.timestamp_us!=previous_imu_us)
                 {
                     previous_imu_us=s.imu.timestamp_us;

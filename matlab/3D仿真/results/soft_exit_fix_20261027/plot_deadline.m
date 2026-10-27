@@ -1,0 +1,4 @@
+p=fileparts(mfilename('fullpath'));f=figure('Visible','off','Position',[100 100 1200 650]);tiledlayout(2,1);
+nexttile;hold on;plot([0 1250],[0 0],'k-');scatter([0 1000 1051 1200],[0 0 0 0],70,[0 .4 .8;.2 .6 .2;.9 .3 .1;.3 .2 .8],'filled');text(0,.13,'旧指令引用的样本','HorizontalAlignment','left');text(1000,-.16,'新有效ADC样本（1000微秒）','HorizontalAlignment','right');text(1051,.13,'提交检查（1051微秒）','HorizontalAlignment','right');text(1200,-.34,'新指令截止期（1200微秒）','HorizontalAlignment','right');xline(1000,'r--','旧截止期');ylim([-.5 .5]);yticks([]);xlabel('相对旧样本的时间（微秒）');title('实测故障快照：ADC已恢复，但旧截止期没有留出运算与提交时间');grid on;
+nexttile;bar([1 1.2;1 1;3 3]);xticklabels({'PWM指令年龄','有效ADC采样中断','FOC任务心跳'});ylabel('截止期（毫秒）');legend('修复前','修复后');title('只修正PWM指令预算；ADC断流与任务卡死保护保持不变');grid on;
+exportgraphics(f,fullfile(p,'pwm_deadline.png'),'Resolution',140);savefig(f,fullfile(p,'pwm_deadline.fig'));close(f);
