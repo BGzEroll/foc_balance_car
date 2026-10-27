@@ -1,12 +1,14 @@
 
 #include "balance.h"
 
-#include <math.h>
 #include "hw/motor.h"
 #include "hw/sensor.h"
+
 #include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+
+#include <math.h>
 
 namespace balance
 {
@@ -19,6 +21,22 @@ namespace balance
         constexpr float PITCH_INTEGRAL_LIMIT = 0.25f;
         constexpr float YAW_INTEGRAL_LIMIT = 0.5f;
 
+        constexpr float FORWARD_SIGN[2] = {-1.0f, 1.0f};
+
+        constexpr float BALANCE_CURRENT_A = 2.0f;
+        constexpr float ARM_PITCH_RAD = 0.1745329252f;
+        constexpr float ARM_SPEED_M_S = 0.10f;
+        constexpr float MAX_TILT_RAD = 0.7853981634f;
+
+        constexpr uint64_t IMU_TIMEOUT_US = 20000;
+        constexpr uint64_t ENCODER_TIMEOUT_US = 1500;
+        constexpr uint64_t CONTROL_TIMEOUT_US = 10000;
+
+        constexpr uint32_t ARM_SAMPLES = 40;
+
+        bool output_enabled = false;
+        bool initialized = false;
+
         /**
          * @brief 将输入限制在对称范围内
          *
@@ -30,6 +48,23 @@ namespace balance
         float clamp(float value, float limit)
         {
             return fmaxf(-limit, fminf(limit, value));
+        }
+
+        /**
+         * @brief 检查微秒时间戳是否有效且未超时
+         *
+         * @param[in] timestamp_us 采样时间戳
+         * @param[in] now_us 当前时间
+         * @param[in] timeout_us 最大允许延迟
+         *
+         * @return true 数据有效且未超时
+         * @return false 时间戳无效或数据已超时
+         */
+        bool fresh(uint64_t timestamp_us, uint64_t now_us, uint64_t timeout_us)
+        {
+            return timestamp_us != 0 &&
+                   now_us >= timestamp_us &&
+                   now_us - timestamp_us <= timeout_us;
         }
     }
 
@@ -170,46 +205,9 @@ namespace balance
 
         return out;
     }
-}
 
-
-namespace balance
-{
     namespace
     {
-        constexpr float FORWARD_SIGN[2] = {-1.0f, 1.0f};
-
-        constexpr float BALANCE_CURRENT_A = 2.0f;
-        constexpr float ARM_PITCH_RAD = 0.10f;
-        constexpr float ARM_ROLL_RAD = 0.17f;
-        constexpr float ARM_SPEED_M_S = 0.10f;
-        constexpr float MAX_TILT_RAD = 0.7853981634f;
-
-        constexpr uint64_t IMU_TIMEOUT_US = 20000;
-        constexpr uint64_t ENCODER_TIMEOUT_US = 1500;
-        constexpr uint64_t CONTROL_TIMEOUT_US = 10000;
-
-        constexpr uint32_t ARM_SAMPLES = 40;
-
-        bool output_enabled = false;
-        bool initialized = false;
-
-        /**
-         * @brief 检查微秒时间戳是否有效且未超时
-         *
-         * @param[in] timestamp_us 采样时间戳
-         * @param[in] now_us 当前时间
-         * @param[in] timeout_us 最大允许延迟
-         *
-         * @return true 数据有效且未超时
-         */
-        bool fresh(uint64_t timestamp_us, uint64_t now_us, uint64_t timeout_us)
-        {
-            return timestamp_us != 0 &&
-                   now_us >= timestamp_us &&
-                   now_us - timestamp_us <= timeout_us;
-        }
-
         /**
          * @brief 在 IMU 事件驱动下执行姿态估计及平衡控制
          *
@@ -400,7 +398,6 @@ namespace balance
                 if(!active)
                 {
                     if(fabsf(measured.pitch_rad) <= ARM_PITCH_RAD &&
-                       fabsf(sensors.imu.angle[1]) <= ARM_ROLL_RAD &&
                        fabsf(measured.speed_m_s) <= ARM_SPEED_M_S)
                     {
                         ++arm_samples;

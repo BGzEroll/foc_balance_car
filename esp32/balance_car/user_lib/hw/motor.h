@@ -25,8 +25,8 @@ namespace motor
         PWM_UPDATE,
         ALIGNMENT,
         TASK_TIMEOUT,
-        CONTROL_TIMEOUT,
-        BALANCE_STOP
+        COMMAND_TIMEOUT,
+        EMERGENCY_STOP
     };
 
     struct target_current

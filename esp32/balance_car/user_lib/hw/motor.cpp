@@ -2730,7 +2730,7 @@ namespace motor
 
                     if(expired)
                     {
-                        pwm::trip(fault_code::CONTROL_TIMEOUT);
+                        pwm::trip(fault_code::COMMAND_TIMEOUT);
                     }
                 }
 
@@ -2883,7 +2883,7 @@ namespace motor
      */
     void emergency_stop()
     {
-        pwm::trip(fault_code::BALANCE_STOP);
+        pwm::trip(fault_code::EMERGENCY_STOP);
     }
 
     /**
