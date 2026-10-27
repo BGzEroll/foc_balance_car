@@ -21,7 +21,7 @@ namespace balance
 
         constexpr float FORWARD_SIGN[2] = {-1.0f, 1.0f};
 
-        constexpr float BALANCE_CURRENT_A = 2.0f;
+        constexpr float BALANCE_CURRENT_A = 6.0f;
         constexpr float ARM_PITCH_RAD = 0.1745329252f;
         constexpr float ARM_SPEED_M_S = 0.10f;
         constexpr float MAX_TILT_RAD = 0.7853981634f;
