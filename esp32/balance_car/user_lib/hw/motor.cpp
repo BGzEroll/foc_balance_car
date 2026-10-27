@@ -2338,7 +2338,7 @@ namespace motor
         constexpr uint32_t CONTROL_TIMEOUT_US = 20000;
 
         uint32_t command_time_us[2] = {};
-        bool command_watchdog_enabled = false;
+        uint32_t command_watchdog_enabled = 0;
 
         /**
          * @brief 获取当前 32 位微秒时间
@@ -2713,22 +2713,19 @@ namespace motor
                 }
 
                 if(calibration.state == stage::RUN &&
-                    pwm::get_fault_code() == fault_code::NONE)
+                    pwm::get_fault_code() == fault_code::NONE &&
+                    __atomic_load_n(&command_watchdog_enabled, __ATOMIC_ACQUIRE) != 0)
                 {
-                    bool expired = false;
+                    const uint32_t left_us =
+                        __atomic_load_n(&command_time_us[0], __ATOMIC_ACQUIRE);
 
-                    portENTER_CRITICAL(&info_lock);
+                    const uint32_t right_us =
+                        __atomic_load_n(&command_time_us[1], __ATOMIC_ACQUIRE);
 
-                    if(command_watchdog_enabled)
-                    {
-                        expired =
-                            now - command_time_us[0] > CONTROL_TIMEOUT_US ||
-                            now - command_time_us[1] > CONTROL_TIMEOUT_US;
-                    }
-
-                    portEXIT_CRITICAL(&info_lock);
-
-                    if(expired)
+                    if(static_cast<int32_t>(now - left_us) >
+                        static_cast<int32_t>(CONTROL_TIMEOUT_US) ||
+                    static_cast<int32_t>(now - right_us) >
+                        static_cast<int32_t>(CONTROL_TIMEOUT_US))
                     {
                         pwm::trip(fault_code::COMMAND_TIMEOUT);
                     }
@@ -2848,11 +2845,11 @@ namespace motor
         const uint32_t index = static_cast<uint32_t>(id);
 
         if(index > 1 ||
-           !isfinite(target.id_A) || !isfinite(target.iq_A) ||
-           target.id_A * target.id_A + target.iq_A * target.iq_A >
-               MAX_TARGET_A * MAX_TARGET_A ||
-           !__atomic_load_n(&ready, __ATOMIC_ACQUIRE) ||
-           pwm::get_fault_code() != fault_code::NONE)
+            !isfinite(target.id_A) || !isfinite(target.iq_A) ||
+            target.id_A * target.id_A + target.iq_A * target.iq_A >
+                MAX_TARGET_A * MAX_TARGET_A ||
+            !__atomic_load_n(&ready, __ATOMIC_ACQUIRE) ||
+            pwm::get_fault_code() != fault_code::NONE)
         {
             return false;
         }
@@ -2861,15 +2858,25 @@ namespace motor
 
         portENTER_CRITICAL(&info_lock);
 
-        if(!command_watchdog_enabled)
+        const bool first =
+            __atomic_load_n(&command_watchdog_enabled, __ATOMIC_RELAXED) == 0;
+
+        if(first)
         {
-            command_watchdog_enabled = true;
-            command_time_us[0] = now;
-            command_time_us[1] = now;
+            __atomic_store_n(&command_time_us[0], now, __ATOMIC_RELAXED);
+            __atomic_store_n(&command_time_us[1], now, __ATOMIC_RELAXED);
         }
 
-        command_time_us[index] = now;
         latest.target[index] = target;
+
+        __atomic_store_n(
+            &command_time_us[index], now, __ATOMIC_RELEASE);
+
+        if(first)
+        {
+            __atomic_store_n(
+                &command_watchdog_enabled, 1U, __ATOMIC_RELEASE);
+        }
 
         portEXIT_CRITICAL(&info_lock);
 
