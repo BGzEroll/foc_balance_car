@@ -1,0 +1,116 @@
+{
+  "baseline_trajectory": "four quintic legs, position 0,+0.1,0,-0.1,0 m; 2 s dwell after each leg",
+  "conclusion": "Both FOC velocity sources passed these short bounded dynamic tests; no clear tracking improvement or degradation demonstrated. Single trial per speed/source, separate power-on calibrations.",
+  "trials": [
+    {
+      "label": "lpf_slow",
+      "source": "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/core_audit/run_20261027_141815",
+      "amplitude_m": 0.1,
+      "move_s": 2.0,
+      "start_us": 307045858.0,
+      "aborted": false,
+      "rows": 4881,
+      "forward_peak_cm": 10.741212218999863,
+      "backward_peak_cm": 11.15562841296196,
+      "tracking_rms_cm": 0.8585093459358154,
+      "pitch_peak_deg": 6.625940046846336,
+      "command_peak_A": 0.5227003693580627,
+      "measured_iq_peak_A": 0.8355045318603516,
+      "late_position_mean_cm": 0.3011198423469481,
+      "late_span_cm": 0.3144195186905563,
+      "late_speed_rms_mm_s": 1.754953420314954,
+      "final_fault": 0.0,
+      "final_mode": 2.0,
+      "sampled_iq_residual_rms_A": [
+        0.028919536842342913,
+        0.036576607603808944
+      ],
+      "sampled_iq_residual_scope": "200 Hz asynchronous Iq minus commanded raw-axis current and anticogging lookup; not a 5 kHz FOC bandwidth/ripple measurement",
+      "run_directory": "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/core_audit/trial_lpf_slow_20261027_142322"
+    },
+    {
+      "label": "lpf_fast",
+      "source": "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/core_audit/run_20261027_141815",
+      "amplitude_m": 0.1,
+      "move_s": 1.0,
+      "start_us": 344335876.0,
+      "aborted": false,
+      "rows": 4080,
+      "forward_peak_cm": 12.687861919403076,
+      "backward_peak_cm": 13.388749957084656,
+      "tracking_rms_cm": 1.733630069124505,
+      "pitch_peak_deg": 12.716963583559368,
+      "command_peak_A": 0.8524166941642761,
+      "measured_iq_peak_A": 1.069401741027832,
+      "late_position_mean_cm": 0.09434600758089057,
+      "late_span_cm": 0.13719001435674727,
+      "late_speed_rms_mm_s": 1.3460338933795966,
+      "final_fault": 0.0,
+      "final_mode": 2.0,
+      "sampled_iq_residual_rms_A": [
+        0.03005117218752773,
+        0.036987237252550834
+      ],
+      "sampled_iq_residual_scope": "200 Hz asynchronous Iq minus commanded raw-axis current and anticogging lookup; not a 5 kHz FOC bandwidth/ripple measurement",
+      "run_directory": "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/core_audit/trial_lpf_fast_20261027_142359"
+    },
+    {
+      "label": "ab_slow",
+      "source": "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/core_audit/run_20261027_142725",
+      "amplitude_m": 0.1,
+      "move_s": 2.0,
+      "start_us": 68475846.0,
+      "aborted": false,
+      "rows": 4881,
+      "forward_peak_cm": 10.83810105919838,
+      "backward_peak_cm": 10.95484048128128,
+      "tracking_rms_cm": 0.8598455157932958,
+      "pitch_peak_deg": 7.948104160715309,
+      "command_peak_A": 0.6604505777359009,
+      "measured_iq_peak_A": 0.8103004097938538,
+      "late_position_mean_cm": -0.23139904025105798,
+      "late_span_cm": 0.047842622734606266,
+      "late_speed_rms_mm_s": 1.0900231714603155,
+      "final_fault": 0.0,
+      "final_mode": 2.0,
+      "sampled_iq_residual_rms_A": [
+        0.027598302854440517,
+        0.036095736270630126
+      ],
+      "sampled_iq_residual_scope": "200 Hz asynchronous Iq minus commanded raw-axis current and anticogging lookup; not a 5 kHz FOC bandwidth/ripple measurement",
+      "run_directory": "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/core_audit/trial_ab_slow_20261027_142833"
+    },
+    {
+      "label": "ab_fast",
+      "source": "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/core_audit/run_20261027_142725",
+      "amplitude_m": 0.1,
+      "move_s": 1.0,
+      "start_us": 110350694.0,
+      "aborted": false,
+      "rows": 4081,
+      "forward_peak_cm": 13.398820161819458,
+      "backward_peak_cm": 12.752518057823181,
+      "tracking_rms_cm": 1.7326151950256028,
+      "pitch_peak_deg": 13.531154576023447,
+      "command_peak_A": 0.9689520597457886,
+      "measured_iq_peak_A": 1.0370546579360962,
+      "late_position_mean_cm": -0.04734720998228539,
+      "late_span_cm": 0.01870128617156297,
+      "late_speed_rms_mm_s": 1.6993190348907465,
+      "final_fault": 0.0,
+      "final_mode": 2.0,
+      "sampled_iq_residual_rms_A": [
+        0.028372621102133653,
+        0.037394757966345386
+      ],
+      "sampled_iq_residual_scope": "200 Hz asynchronous Iq minus commanded raw-axis current and anticogging lookup; not a 5 kHz FOC bandwidth/ripple measurement",
+      "run_directory": "/home/bgzerol/embedded_project/foc_balance_car/esp32/balance_car/build/core_audit/trial_ab_fast_20261027_142915"
+    }
+  ],
+  "branch": "codex/test-main-pid-core",
+  "base_main_commit": "c15c2f88489e5bad6e92ec27de8b781f968100cf",
+  "firmware_sha256": {
+    "lpf": "0e81c098426771aa708eaebaee9d876d8eb896f07d92b5094ae6f03946965328",
+    "alpha_beta": "0fb9ceb1468d9101e67b699e7e36f458b685ec7287c832d061b0c5887f921631"
+  }
+}

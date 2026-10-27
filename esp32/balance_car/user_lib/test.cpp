@@ -1,185 +1,117 @@
 #include "test.h"
-
+#include "controller/balance.h"
 #include "hw/motor.h"
 #include "hw/sensor.h"
-
+#include "driver/uart.h"
+#include "esp_rom_crc.h"
+#include "esp_timer.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "esp_timer.h"
-
 #include <math.h>
-
 #include <stdio.h>
+#include <string.h>
 
 namespace test
 {
     namespace
     {
-        constexpr uint32_t DISPLAY_PERIOD_MS = 200;
-
-        // 双电机定速测试：0 仅显示，1 按校准正方向以 10 rad/s 转动
-        constexpr uint32_t MOTOR_SPEED_TEST = 1;
-
-        constexpr uint32_t SPEED_PERIOD_MS = 1;
-        constexpr float TARGET_SPEED_RAD_S = 1.0f;
-        constexpr float SPEED_KP = 0.2f;
-        constexpr float SPEED_KI = 0.4f;
-        constexpr float CURRENT_LIMIT_A = 2.0f;
-
-        /**
-         * @brief 按 v18 的斜坡、编码器门控和速度 PI 执行定速测试
-         */
-        void speed_task(void *)
+        struct __attribute__((packed)) frame
         {
-            float integral[2] = {};
-            uint64_t previous[2] = {};
-            uint64_t seen[2] = {};
-            int64_t began_us = 0;
-            TickType_t wake = xTaskGetTickCount();
+            uint32_t magic, sequence;
+            uint64_t sent_us, sample_us, imu_us;
+            uint32_t values[13];
+            float data[34];
+            uint32_t crc;
+        };
+        static_assert(sizeof(frame) == 224);
 
-            while(true)
-            {
-                vTaskDelayUntil(&wake, pdMS_TO_TICKS(SPEED_PERIOD_MS));
-
-                motor::foc_info foc{};
-                motor::get_info(foc);
-
-                if(!foc.ready || foc.fault.active)
-                {
-                    began_us = 0;
-
-                    for(uint32_t i = 0; i < 2; ++i)
-                    {
-                        integral[i] = 0.0f;
-                        previous[i] = 0;
-                        seen[i] = 0;
-                    }
-                    continue;
-                }
-
-                if(began_us == 0)
-                {
-                    began_us = esp_timer_get_time();
-                }
-
-                sensor::package sensors{};
-                sensor::get_package(sensors);
-                const sensor::encoder_data encoders[2] =
-                {
-                    sensors.left_encoder,
-                    sensors.right_encoder
-                };
-
-                for(uint32_t i = 0; i < 2; ++i)
-                {
-                    const motor::current_info &current = foc.current[i];
-                    const sensor::encoder_data &encoder = encoders[i];
-
-                    if(!current.valid || current.encoder_direction == 0.0f ||
-                       encoder.timestamp_us == 0 || encoder.timestamp_us == seen[i] ||
-                       (previous[i] && current.timestamp_us - previous[i] < 1000))
-                    {
-                        continue;
-                    }
-
-                    const float t = static_cast<float>(
-                        static_cast<int64_t>(current.timestamp_us) - began_us) * 1.0e-6f;
-                    const float speed_ref = t < 0.1f ? 0.0f :
-                        (t < 0.75f ? TARGET_SPEED_RAD_S * (t - 0.1f) / 0.65f :
-                                      TARGET_SPEED_RAD_S);
-                    const float dt = previous[i] ?
-                        static_cast<float>(current.timestamp_us - previous[i]) * 1.0e-6f :
-                        0.001f;
-                    previous[i] = current.timestamp_us;
-                    seen[i] = encoder.timestamp_us;
-
-                    const float error = speed_ref -
-                        current.encoder_direction * encoder.speed_rad_s;
-                    const float candidate = integral[i] + SPEED_KI * dt * error;
-                    const float output = SPEED_KP * error + candidate;
-
-                    motor::target_current target{};
-                    target.iq_A = fmaxf(
-                        -CURRENT_LIMIT_A, fminf(CURRENT_LIMIT_A, output));
-
-                    if(fabsf(output) <= CURRENT_LIMIT_A || output * error < 0.0f)
-                    {
-                        integral[i] = candidate;
-                    }
-
-                    motor::set_target_current(
-                        static_cast<motor::motor_id>(i), target);
-                }
-            }
+        uint32_t age(uint64_t now, uint64_t stamp)
+        {
+            return stamp && now >= stamp ? static_cast<uint32_t>(now-stamp) : 0;
         }
 
-        /**
-         * @brief 显示传感器与电流环快照，不下发目标电流
-         */
-        void display_task(void *)
+        void respond(const char *line)
         {
+            float position_m, speed_m_s;
+            if(sscanf(line,"REF %f %f",&position_m,&speed_m_s)==2)
+            {
+                if(!balance::set_motion_reference(position_m,speed_m_s))
+                    printf("REF accepted=0\n");
+                return;
+            }
+            motor::foc_info m{};
+            balance::status b{};
+            motor::get_info(m);
+            balance::get_status(b);
+            if(!strcmp(line,"START"))
+                printf("START accepted=%u\n",!b.active && balance::start());
+            else if(!strcmp(line,"STOP"))
+            {
+                motor::emergency_stop();
+                printf("STOP accepted=1\n");
+            }
+            else if(!strcmp(line,"STATUS"))
+                printf("STATUS ready=%u active=%u fault=%lu bus=%.3f pitch=%.6f dir_a=%.0f dir_b=%.0f\n",
+                    m.ready,b.active,(unsigned long)m.fault.code,m.bus_voltage_V,
+                    b.measured.pitch_rad,m.current[0].encoder_direction,m.current[1].encoder_direction);
+            fflush(stdout);
+        }
+
+        void task(void *)
+        {
+            uint32_t sequence=0;
+            uint64_t previous_imu_us=0;
+            char line[32]{};
+            uint32_t length=0;
             while(true)
             {
-                sensor::package sensors{};
-                const bool sensor_ready = sensor::get_package(sensors);
-
-                motor::foc_info foc{};
-                motor::get_info(foc);
-
-                printf(
-                    "ready=%u imu=%u bus=%.3f V fault=%lu motor=%u\n",
-                    static_cast<unsigned>(foc.ready),
-                    static_cast<unsigned>(sensor_ready),
-                    foc.bus_voltage_V,
-                    static_cast<unsigned long>(foc.fault.code),
-                    static_cast<unsigned>(foc.fault.motor_index));
-
-                for(uint32_t i = 0; i < 2; ++i)
+                char input[64];
+                const int count=uart_read_bytes(UART_NUM_0,input,sizeof(input),0);
+                for(int i=0;i<count;++i)
                 {
-                    const motor::current_info &current = foc.current[i];
-
-                    printf(
-                        "M%u valid=%u speed=%+.3f rad/s "
-                        "Id=%+.3f/%+.3f A Iq=%+.3f/%+.3f A\n",
-                        static_cast<unsigned>(i + 1),
-                        static_cast<unsigned>(current.valid),
-                        current.mechanical_speed_rad_s,
-                        current.id_A,
-                        foc.target[i].id_A,
-                        current.iq_A,
-                        foc.target[i].iq_A);
+                    if(input[i]=='\n') {line[length]=0;respond(line);length=0;}
+                    else if(input[i]!='\r' && length<sizeof(line)-1) line[length++]=input[i];
                 }
-
-                printf("\n");
-
-                vTaskDelay(pdMS_TO_TICKS(DISPLAY_PERIOD_MS));
+                sensor::package s{};
+                motor::foc_info m{};
+                balance::status b{};
+                sensor::get_package(s);motor::get_info(m);balance::get_status(b);
+                if(s.imu.timestamp_us && s.imu.timestamp_us!=previous_imu_us)
+                {
+                    previous_imu_us=s.imu.timestamp_us;
+                    frame f{};f.magic=0x33554342U;f.sequence=sequence++;
+                    f.sent_us=esp_timer_get_time();f.sample_us=b.sample_us;f.imu_us=b.imu_us;
+                    const bool active=b.active && m.ready && !m.fault.active;
+                    const bool calibrated=fabsf(m.current[0].encoder_direction)==1 && fabsf(m.current[1].encoder_direction)==1;
+                    uint32_t values[13]={sequence,b.dt_us,0,active?2U:0U,0,
+                        static_cast<uint32_t>(m.fault.code),(calibrated?1U:0U)|(active?6U:0U),b.command.saturated?1U:0U,
+                        age(f.sent_us,b.imu_us),age(f.sent_us,s.left_encoder.timestamp_us<s.right_encoder.timestamp_us?s.left_encoder.timestamp_us:s.right_encoder.timestamp_us),
+                        age(f.sent_us,m.current[0].timestamp_us),age(f.sent_us,m.current[1].timestamp_us),b.calculate_us};
+                    memcpy(f.values,values,sizeof(values));
+                    const balance::gains g{};
+                    float data[34]={b.measured.pitch_rad,b.roll_rad,b.measured.pitch_rate_rad_s,b.measured.yaw_rad,b.measured.yaw_rate_rad_s,
+                        b.measured.speed_m_s,b.controller.distance_m,b.command.target_speed_m_s,b.command.target_pitch_rad,
+                        active?b.command.current_A[0]:0,active?b.command.current_A[1]:0,
+                        m.current[0].iq_A,m.current[1].iq_A,m.current[0].id_A,m.current[1].id_A,
+                        s.left_encoder.speed_rad_s,s.right_encoder.speed_rad_s,s.left_encoder.angle_rad,s.right_encoder.angle_rad,
+                        m.bus_voltage_V,6,b.controller.velocity_integral,b.controller.pitch_integral,b.controller.yaw_integral,
+                        g.velocity_kp,g.velocity_ki,g.pitch_kd,g.pitch_kp,g.pitch_ki,g.yaw_kp,g.yaw_ki,g.yaw_kd,g.position_kp,g.pitch_trim_rad};
+                    memcpy(f.data,data,sizeof(data));
+                    f.crc=esp_rom_crc32_le(0,reinterpret_cast<const uint8_t*>(&f),sizeof(f)-4);
+                    uart_write_bytes(UART_NUM_0,&f,sizeof(f));
+                }
+                vTaskDelay(1);
             }
         }
     }
 
-    /**
-     * @brief 启动快照显示及可选定速测试，电流环由 motor 模块负责
-     *
-     * @return true 任务创建成功
-     * @return false 任务创建失败
-     */
     bool init()
     {
-        if(xTaskCreatePinnedToCore(
-                display_task, "foc_test", 4096,
-                nullptr, 1, nullptr, 0) != pdPASS)
-        {
-            return false;
-        }
-
-        if(MOTOR_SPEED_TEST == 1 &&
-           xTaskCreatePinnedToCore(
-               speed_task, "speed_test", 4096,
-               nullptr, 2, nullptr, 0) != pdPASS)
-        {
-            return false;
-        }
-
-        return true;
+        uart_config_t config{};
+        config.baud_rate=921600;config.data_bits=UART_DATA_8_BITS;config.parity=UART_PARITY_DISABLE;
+        config.stop_bits=UART_STOP_BITS_1;config.flow_ctrl=UART_HW_FLOWCTRL_DISABLE;config.source_clk=UART_SCLK_DEFAULT;
+        ESP_ERROR_CHECK(uart_param_config(UART_NUM_0,&config));
+        ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0,1024,4096,0,nullptr,0));
+        return xTaskCreatePinnedToCore(task,"core_monitor",6144,nullptr,1,nullptr,0)==pdPASS;
     }
 }

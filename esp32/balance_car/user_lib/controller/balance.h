@@ -1,5 +1,6 @@
 #ifndef BALANCE_H
 #define BALANCE_H
+#include <stdint.h>
 
 namespace balance
 {
@@ -67,6 +68,19 @@ namespace balance
         bool saturated = false;
     };
 
+    struct status
+    {
+        uint64_t sample_us = 0;
+        uint64_t imu_us = 0;
+        uint32_t dt_us = 0;
+        uint32_t calculate_us = 0;
+        float roll_rad = 0.0f;
+        bool active = false;
+        observation measured{};
+        state controller{};
+        output command{};
+    };
+
     observation observe(
         const float angle_rad[3],
         const float gyro_rad_s[3],
@@ -79,6 +93,9 @@ namespace balance
         float dt_s,
         const gains &tuning = gains{});
     bool init(bool enable_output = false);
+    bool start();
+    bool set_motion_reference(float position_m, float speed_m_s);
+    void get_status(status &snapshot);
 }
 
 #endif

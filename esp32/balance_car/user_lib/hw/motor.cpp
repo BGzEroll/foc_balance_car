@@ -173,7 +173,7 @@ namespace adc
      * @param[in] a A 相原始采样
      * @param[in] b B 相原始采样
      *
-     * @return true 原始采样超出 ±2 A 对应的 ADC 范围
+     * @return true 原始采样超出 ±6 A 对应的 ADC 范围
      */
     bool IRAM_ATTR overcurrent(uint32_t index, uint16_t a, uint16_t b)
     {
@@ -2288,7 +2288,7 @@ namespace motor
     namespace
     {
         constexpr uint32_t ENCODER_TIMEOUT_US = 1500;
-        constexpr uint32_t WAIT_TIMEOUT_US = 3000000;
+        constexpr uint32_t WAIT_TIMEOUT_US = 10000000;
         constexpr uint32_t ALIGN_GAP_US = 2000000;
         constexpr uint32_t ALIGN_LOCK_US = 200000;
         constexpr uint32_t ALIGN_LOCK_TIMEOUT_US = 600000;
@@ -2318,6 +2318,7 @@ namespace motor
             stage state = stage::WAITING;
             uint8_t motor = 0;
             uint32_t began_us = 0;
+            uint64_t began_us64 = 0;
             uint32_t boot_us = 0;
             uint32_t seen_sequence[2] = {};
             uint64_t seen_encoder_us[2] = {};
@@ -2356,11 +2357,12 @@ namespace motor
          * @param[in] index 电机索引
          * @param[in] now 当前时间
          */
-        void begin_alignment(uint8_t index, uint32_t now)
+        void begin_alignment(uint8_t index, uint32_t now, uint64_t now64)
         {
             calibration.motor = index;
             calibration.state = stage::LOCK;
             calibration.began_us = now;
+            calibration.began_us64 = now64;
             calibration.stable_count = 0;
             calibration.final_count = 0;
             calibration.final_angle_sum = 0.0;
@@ -2439,9 +2441,10 @@ namespace motor
                     now32() - bus_us <= pwm::BUS_TIMEOUT_US &&
                     adc::valid_bus(bus_raw);
 
-                if(bus_valid && fresh(encoders[0], now64) && fresh(encoders[1], now64))
+                if(bus_valid && sensors.imu.timestamp_us != 0 &&
+                   fresh(encoders[0], now64) && fresh(encoders[1], now64))
                 {
-                    begin_alignment(0, now);
+                    begin_alignment(0, now, now64);
                 }
                 else if(now - calibration.boot_us > WAIT_TIMEOUT_US)
                 {
@@ -2479,13 +2482,14 @@ namespace motor
                         return;
                     }
 
-                    begin_alignment(1, now);
+                    begin_alignment(1, now, now64);
                 }
                 else
                 {
                     foc::reset();
                     calibration.state = stage::RUN;
                     calibration.began_us = now;
+                    calibration.began_us64 = now64;
 
                     if(!pwm::start(3U))
                     {
@@ -2526,6 +2530,7 @@ namespace motor
                     calibration.start_angle = encoder.angle_rad;
                     calibration.state = stage::SWEEP;
                     calibration.began_us = now;
+                    calibration.began_us64 = now64;
                 }
                 else if(elapsed > ALIGN_LOCK_TIMEOUT_US)
                 {
@@ -2545,6 +2550,7 @@ namespace motor
                     calibration.start_angle = delta > 0.0f ? 1.0f : -1.0f;
                     calibration.state = stage::FINAL;
                     calibration.began_us = now;
+                    calibration.began_us64 = now64;
                     calibration.final_angle_sum = 0.0;
                     calibration.final_count = 0;
                 }
@@ -2573,6 +2579,7 @@ namespace motor
                     pwm::stop();
                     calibration.state = stage::STOP;
                     calibration.began_us = now;
+                    calibration.began_us64 = now64;
                 }
                 else if(elapsed > ALIGN_FINAL_TIMEOUT_US)
                 {
@@ -2691,7 +2698,8 @@ namespace motor
                 return;
             }
 
-            calibration.boot_us = now32();
+            calibration.began_us64 = esp_timer_get_time();
+            calibration.boot_us = static_cast<uint32_t>(calibration.began_us64);
             calibration.began_us = calibration.boot_us;
 
             while(true)
@@ -2748,8 +2756,11 @@ namespace motor
                         continue;
                     }
 
+                    const uint64_t sample_now_us = esp_timer_get_time();
+                    const uint32_t sample_age_us = static_cast<uint32_t>(sample_now_us) - sample.timestamp_us;
                     if(pwm::get_fault_code() != fault_code::NONE ||
-                       static_cast<int32_t>(sample.timestamp_us - calibration.began_us) < 0)
+                       sample_now_us < sample_age_us ||
+                       sample_now_us - sample_age_us < calibration.began_us64)
                     {
                         continue;
                     }
@@ -2758,12 +2769,6 @@ namespace motor
                         index == 0 ? sensors.left_encoder : sensors.right_encoder;
 
                     if(!fresh(encoder, now64))
-                    {
-                        pwm::trip(fault_code::SENSOR_TIMEOUT, index);
-                        break;
-                    }
-
-                    if(fabsf(encoder.speed_rad_s) > 40.0f)
                     {
                         pwm::trip(fault_code::SENSOR_TIMEOUT, index);
                         break;

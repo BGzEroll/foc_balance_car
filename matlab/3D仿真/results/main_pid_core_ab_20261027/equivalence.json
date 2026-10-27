@@ -1,0 +1,1 @@
+{"controller_vectors":100000,"filter_samples":30000,"observe_max_abs":0,"control_max_abs":0,"quaternion_max_abs":0,"eskf_bias_max_abs":0,"yaw_bias_max_abs":0}
