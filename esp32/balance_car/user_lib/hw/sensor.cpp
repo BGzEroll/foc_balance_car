@@ -521,8 +521,8 @@ namespace mpu6050
         // DLPF_CFG = 3，带宽约 44 Hz
         i2c::write_right_sync(REG_CONFIG, 0x03);
 
-        // 1000 / (1 + 4) = 200 Hz
-        i2c::write_right_sync(REG_SMPLRT_DIV, 0x04);
+        // 1000 / (1 + 0) = 1000 Hz
+        i2c::write_right_sync(REG_SMPLRT_DIV, 0x00);
 
         // ±500 deg/s，65.5 LSB/(deg/s)
         i2c::write_right_sync(REG_GYRO_CONFIG, 0x08);
@@ -670,6 +670,7 @@ namespace sensor
 
         TaskHandle_t owner_task = nullptr;
         bool initialized = false;
+        TaskHandle_t control_task = nullptr;
 
         bool right_reading_imu = false;
         uint64_t next_imu_time_us = 0;
@@ -708,6 +709,14 @@ namespace sensor
             portENTER_CRITICAL(&package_lock);
             latest_package.imu = data;
             portEXIT_CRITICAL(&package_lock);
+
+            TaskHandle_t task =
+                __atomic_load_n(&control_task, __ATOMIC_ACQUIRE);
+
+            if(task != nullptr)
+            {
+                xTaskNotifyGive(task);
+            }
         }
 
         /**
@@ -870,6 +879,24 @@ namespace sensor
         }
 
         recover_stalled_transactions(allow_recovery);
+    }
+
+    /**
+     * @brief 等待新的 IMU 数据
+     *
+     * @return true 收到 IMU 更新
+     * @return false 等待超时
+     */
+    bool wait_for_imu()
+    {
+        __atomic_store_n(
+            &control_task,
+            xTaskGetCurrentTaskHandle(),
+            __ATOMIC_RELEASE);
+
+        return ulTaskNotifyTake(
+            pdTRUE,
+            pdMS_TO_TICKS(10)) != 0;
     }
 
     /**

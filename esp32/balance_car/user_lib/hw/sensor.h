@@ -34,6 +34,7 @@ namespace sensor
 
     bool init();
     void poll(uint32_t notifications, bool allow_recovery = true);
+    bool wait_for_imu();
     bool get_package(package &snapshot);
 }
 
