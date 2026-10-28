@@ -81,10 +81,25 @@ namespace motor
         fault_info fault = {};
     };
 
+    struct sampling_info
+    {
+        uint32_t samples = 0;
+        uint32_t valid = 0;
+        uint32_t window_misses = 0;
+        uint32_t fixed_window_misses = 0;
+        uint32_t no_window = 0;
+        uint32_t trigger_min = 8000;
+        uint32_t trigger_max = 0;
+        uint32_t pair_max = 0;
+        uint32_t late_max = 0;
+        int32_t margin_min = 8000;
+    };
+
     bool init();
     bool set_target_current(motor_id id, const target_current &target);
     void emergency_stop();
     bool get_info(foc_info &snapshot);
+    bool get_sampling_info(sampling_info (&snapshot)[2]);
 }
 
 #endif

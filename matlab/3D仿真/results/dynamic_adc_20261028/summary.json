@@ -1,0 +1,156 @@
+{
+  "fixed": {
+    "run": "dynamic_adc_20261028_111907",
+    "sampling": {
+      "0": {
+        "motor": 0,
+        "samples": 214976,
+        "valid": 213341,
+        "misses": 1635,
+        "fixed_misses": 1635,
+        "no_window": 0,
+        "trigger_min": 2400,
+        "trigger_max": 2400,
+        "pair_max": 1335,
+        "late_max": 6850,
+        "margin_min": -3447,
+        "window_miss_percent": 0.7605500148853825
+      },
+      "1": {
+        "motor": 1,
+        "samples": 215008,
+        "valid": 213542,
+        "misses": 1466,
+        "fixed_misses": 1466,
+        "no_window": 0,
+        "trigger_min": 2400,
+        "trigger_max": 2400,
+        "pair_max": 1335,
+        "late_max": 7196,
+        "margin_min": -3422,
+        "window_miss_percent": 0.6818350945081113
+      }
+    },
+    "events": [
+      "BENCH_BEGIN",
+      "BENCH_COMPLETE",
+      "FAULTDIAG code=12 motor=255 source=0 detail_us=0 adc_age_us=0 heartbeat_age_us=98 stamp_us=53325406"
+    ],
+    "telemetry_samples": 7963,
+    "fault_histogram": {
+      "0": 9563,
+      "12": 3999
+    },
+    "measured": {
+      "raw_a": {
+        "mean": -0.005445978999249599,
+        "rms": 8.147852492837176,
+        "min": -13.730607986450195,
+        "max": 13.69672679901123
+      },
+      "raw_b": {
+        "mean": -0.011952760781054651,
+        "rms": 8.237311105196966,
+        "min": -13.6907958984375,
+        "max": 13.669775009155273
+      },
+      "iq_a": {
+        "mean": 0.005690635105016029,
+        "rms": 0.16967901606161617,
+        "min": -0.5687646865844727,
+        "max": 0.48576095700263977
+      },
+      "iq_b": {
+        "mean": -0.013730990464791606,
+        "rms": 0.15364809767195103,
+        "min": -0.48393189907073975,
+        "max": 0.4646863639354706
+      },
+      "bus": {
+        "mean": 8.174885545021832,
+        "rms": 8.1748912815135,
+        "min": 8.102999687194824,
+        "max": 8.217000007629395
+      }
+    }
+  },
+  "dynamic": {
+    "run": "dynamic_adc_20261028_112246",
+    "sampling": {
+      "0": {
+        "motor": 0,
+        "samples": 215040,
+        "valid": 213768,
+        "misses": 1272,
+        "fixed_misses": 1662,
+        "no_window": 0,
+        "trigger_min": 2058,
+        "trigger_max": 2262,
+        "pair_max": 1334,
+        "late_max": 7447,
+        "margin_min": -3429,
+        "window_miss_percent": 0.5915178571428571
+      },
+      "1": {
+        "motor": 1,
+        "samples": 214976,
+        "valid": 213808,
+        "misses": 1168,
+        "fixed_misses": 1495,
+        "no_window": 0,
+        "trigger_min": 2058,
+        "trigger_max": 2261,
+        "pair_max": 1336,
+        "late_max": 6474,
+        "margin_min": -3402,
+        "window_miss_percent": 0.5433164632331051
+      }
+    },
+    "events": [
+      "BENCH_BEGIN",
+      "BENCH_COMPLETE",
+      "FAULTDIAG code=12 motor=255 source=0 detail_us=0 adc_age_us=0 heartbeat_age_us=14 stamp_us=53337617"
+    ],
+    "telemetry_samples": 7971,
+    "fault_histogram": {
+      "0": 9573,
+      "12": 10301
+    },
+    "measured": {
+      "raw_a": {
+        "mean": -0.0012440134993888482,
+        "rms": 8.040110459865224,
+        "min": -13.611613273620605,
+        "max": 13.569079399108887
+      },
+      "raw_b": {
+        "mean": -0.008731095639811422,
+        "rms": 8.134517911411855,
+        "min": -13.523797035217285,
+        "max": 13.548335075378418
+      },
+      "iq_a": {
+        "mean": -0.021705965512962805,
+        "rms": 0.16785781247732062,
+        "min": -0.5109450817108154,
+        "max": 0.4906010925769806
+      },
+      "iq_b": {
+        "mean": 0.0012110512861522357,
+        "rms": 0.15702489784412402,
+        "min": -0.4911087453365326,
+        "max": 0.4656843841075897
+      },
+      "bus": {
+        "mean": 8.206064356807603,
+        "rms": 8.206068026380933,
+        "min": 8.109000205993652,
+        "max": 8.234999656677246
+      }
+    }
+  },
+  "scope": "Powered unloaded stand test: identical nominal 40 s wheel-speed trajectory 0,+15,0,-15,0 rad/s; direct current request limited to +/-0.30 A. Balance output remained disabled. Calibration and stand-run sampling counts are included. Final code has no temporary wheel-speed driver. This is not floor balance validation, a full modulation/load sweep, or oscilloscope proof of analog amplifier settling.",
+  "pwm": "Unmodified centered modulation, duty clamp 320..3680 and original fixed PWM commit phase. Only ADC trigger is dynamically scheduled by timer 2, synchronized to the main timer. Both A/B compare groups use the additional timer, including the fixed-trigger baseline.",
+  "planner": "2 us edge guard, nominal 10 us per conversion and 2 us interrupt allowance; actual A/B windows are still checked after conversion. fixed_misses in the dynamic run is a translated-timing counterfactual, not the separate measured baseline.",
+  "fault12": "BENCH_COMPLETE explicitly calls emergency_stop at 40 s. Fault 12 is expected and excluded from spontaneous failures."
+}

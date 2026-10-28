@@ -16,6 +16,7 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #include "hal/adc_ll.h"
+#include "hal/mcpwm_ll.h"
 #pragma GCC diagnostic pop
 #include "soc/mcpwm_struct.h"
 #include "soc/sens_reg.h"
@@ -277,6 +278,7 @@ namespace pwm
 
         mcpwm_timer_handle_t timer = nullptr;
         mcpwm_timer_handle_t sample_timer = nullptr;
+        mcpwm_timer_handle_t window_timer = nullptr;
         mcpwm_sync_handle_t sync = nullptr;
         mcpwm_oper_handle_t operators[3] = {};
         mcpwm_cmpr_handle_t comparators[6] = {};
@@ -284,6 +286,7 @@ namespace pwm
 
         mailbox<sample> samples[2] = {};
         mailbox<command> commands[2] = {};
+        mailbox<motor::sampling_info> sampling_snapshot[2] = {};
 
         uint32_t queued[6] =
         {
@@ -307,6 +310,10 @@ namespace pwm
         uint32_t last_valid_sample_us[2] = {};
         uint32_t bus_raw = 0;
         uint32_t bus_us = 0;
+        uint32_t sample_index = 0;
+        uint32_t sample_trigger = 2160;
+        bool sample_window = true;
+        motor::sampling_info sampling[2] = {};
 
         uint32_t fault = 0;
         uint32_t fault_motor = 0xFF;
@@ -615,6 +622,27 @@ namespace pwm
     }
 
     /**
+     * @brief 按下一周期的 A/B 低侧窗口安排触发，不改变 PWM 比较值
+     */
+    void IRAM_ATTR schedule_sample()
+    {
+        constexpr int32_t GUARD = 160;
+        constexpr int32_t CONVERSION = 800;
+        constexpr int32_t LATENCY = 160;
+        const int32_t a = queued[3U * sample_index];
+        const int32_t b = queued[3U * sample_index + 1U];
+        const int32_t lower = a > b - CONVERSION ? a + GUARD : b + GUARD - CONVERSION;
+        const int32_t end_a = PERIOD - a - GUARD - CONVERSION;
+        const int32_t end_b = PERIOD - b - GUARD - 2 * CONVERSION;
+        const int32_t upper = (end_a < end_b ? end_a : end_b) - LATENCY;
+        sample_window = lower <= upper;
+        // 无法容纳两次转换时仍测量窗口，已有有效性检查禁止其进入电流环。
+        sample_trigger = sample_window ? lower : (lower + upper) / 2;
+        mcpwm_ll_timer_set_sync_phase_direction(&MCPWM0, 2, MCPWM_TIMER_DIRECTION_UP);
+        mcpwm_ll_timer_set_sync_phase_value(&MCPWM0, 2, 4000U - sample_trigger);
+    }
+
+    /**
      * @brief PWM 周期零点回调：看门狗及母线采样
      *
      * @return false 不要求任务切换
@@ -745,6 +773,7 @@ namespace pwm
         const mcpwm_timer_event_data_t *,
         void *)
     {
+        schedule_sample();
         command value[2]{};
 
         if(!consume(commands[0], value[0]) || !consume(commands[1], value[1]))
@@ -807,6 +836,8 @@ namespace pwm
             queued[i] = duty[i];
         }
 
+        schedule_sample();
+
         return false;
     }
 
@@ -820,10 +851,10 @@ namespace pwm
         const mcpwm_timer_event_data_t *,
         void *)
     {
-        static uint32_t turn = 0;
         static uint32_t sequence[2] = {};
 
-        const uint32_t index = (turn++) & 1U;
+        const uint32_t index = sample_index;
+        sample_index ^= 1U;
         sample out{};
         out.timestamp_us = now32();
         out.cycle = cycle;
@@ -857,6 +888,38 @@ namespace pwm
              out.b_end + 160U <= PERIOD - out.duty_b);
         const bool raw_ok = ok_a && ok_b && a > 0 && b > 0 && a < 4095 && b < 4095;
         const bool same_cycle = out.cycle == cycle && out.b_end < PERIOD;
+
+        motor::sampling_info &stats = sampling[index];
+        if(output_enabled)
+        {
+            ++stats.samples;
+            stats.valid += raw_ok && window_a && window_b && same_cycle;
+            stats.window_misses += !window_a || !window_b || !same_cycle;
+            stats.no_window += !sample_window;
+            if(sample_trigger < stats.trigger_min) stats.trigger_min = sample_trigger;
+            if(sample_trigger > stats.trigger_max) stats.trigger_max = sample_trigger;
+            const uint32_t pair = out.b_end - out.a_start;
+            if(pair > stats.pair_max) stats.pair_max = pair;
+            const uint32_t late = (out.a_start + PERIOD - sample_trigger) % PERIOD;
+            if(late > stats.late_max) stats.late_max = late;
+            const int32_t shift = 2400 - static_cast<int32_t>(sample_trigger);
+            stats.fixed_window_misses +=
+                static_cast<int32_t>(out.a_start) + shift < static_cast<int32_t>(out.duty_a + 160U) ||
+                static_cast<int32_t>(out.a_end) + shift + 160 > static_cast<int32_t>(PERIOD - out.duty_a) ||
+                static_cast<int32_t>(out.b_start) + shift < static_cast<int32_t>(out.duty_b + 160U) ||
+                static_cast<int32_t>(out.b_end) + shift + 160 > static_cast<int32_t>(PERIOD - out.duty_b);
+            int32_t margin = static_cast<int32_t>(out.a_start) - static_cast<int32_t>(out.duty_a) - 160;
+            const int32_t other[3] =
+            {
+                static_cast<int32_t>(PERIOD - out.duty_a) - static_cast<int32_t>(out.a_end) - 160,
+                static_cast<int32_t>(out.b_start) - static_cast<int32_t>(out.duty_b) - 160,
+                static_cast<int32_t>(PERIOD - out.duty_b) - static_cast<int32_t>(out.b_end) - 160
+            };
+            for(int32_t value : other) if(value < margin) margin = value;
+            if(margin < stats.margin_min) stats.margin_min = margin;
+            if((stats.samples & 63U) == 0 || !raw_ok || !window_a || !window_b || !same_cycle)
+                publish(sampling_snapshot[index], stats);
+        }
 
         out.flags = (output_enabled ? 1U : 0U) |
                     (ok_a ? 2U : 0U) |
@@ -957,10 +1020,17 @@ namespace pwm
         ESP_ERROR_CHECK(mcpwm_timer_set_phase_on_sync(sample_timer, &phase_config));
 
         mcpwm_timer_event_callbacks_t adc_events{};
-        adc_events.on_full = on_sample;
         adc_events.on_empty = on_commit;
         ESP_ERROR_CHECK(mcpwm_timer_register_event_callbacks(
             sample_timer, &adc_events, nullptr));
+
+        ESP_ERROR_CHECK(mcpwm_new_timer(&config, &window_timer));
+        phase_config.count_value = 4000U - sample_trigger;
+        ESP_ERROR_CHECK(mcpwm_timer_set_phase_on_sync(window_timer, &phase_config));
+        mcpwm_timer_event_callbacks_t window_events{};
+        window_events.on_full = on_sample;
+        ESP_ERROR_CHECK(mcpwm_timer_register_event_callbacks(
+            window_timer, &window_events, nullptr));
 
         mcpwm_timer_event_callbacks_t pwm_events{};
         pwm_events.on_empty = on_empty;
@@ -969,6 +1039,7 @@ namespace pwm
             timer, &pwm_events, nullptr));
 
         ESP_ERROR_CHECK(mcpwm_timer_enable(sample_timer));
+        ESP_ERROR_CHECK(mcpwm_timer_enable(window_timer));
         ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
     }
 
@@ -979,6 +1050,8 @@ namespace pwm
     {
         ESP_ERROR_CHECK(mcpwm_timer_start_stop(
             sample_timer, MCPWM_TIMER_START_NO_STOP));
+        ESP_ERROR_CHECK(mcpwm_timer_start_stop(
+            window_timer, MCPWM_TIMER_START_NO_STOP));
         ESP_ERROR_CHECK(mcpwm_timer_start_stop(
             timer, MCPWM_TIMER_START_NO_STOP));
     }
@@ -2934,6 +3007,12 @@ namespace motor
      *
      * @return true 模块已初始化
      */
+    bool get_sampling_info(sampling_info (&snapshot)[2])
+    {
+        return pwm::consume(pwm::sampling_snapshot[0], snapshot[0]) &&
+               pwm::consume(pwm::sampling_snapshot[1], snapshot[1]);
+    }
+
     bool get_info(foc_info &snapshot)
     {
         if(!__atomic_load_n(&initialized, __ATOMIC_ACQUIRE))

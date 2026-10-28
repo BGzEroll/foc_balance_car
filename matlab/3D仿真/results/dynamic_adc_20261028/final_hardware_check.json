@@ -1,0 +1,22 @@
+{
+  "state": {
+    "sent_us": 124730445,
+    "mode": 0,
+    "fault": 0,
+    "flags": 1,
+    "raw_a": 0.0032965496648103,
+    "raw_b": 0.021640034392476082,
+    "iq_a": -0.15533974766731262,
+    "iq_b": 0.033905234187841415,
+    "bus": 8.208000183105469
+  },
+  "crc_errors": 0,
+  "sampling_queries": [
+    "ADC motor=0 samples=578752 valid=574647 misses=4105 fixed_misses=5344 no_window=0 trigger_min=2058 trigger_max=2262 pair_max=1339 late_max=7442 margin_min=-3372",
+    "ADC motor=1 samples=578752 valid=574779 misses=3973 fixed_misses=5275 no_window=0 trigger_min=2058 trigger_max=2262 pair_max=1339 late_max=7646 margin_min=-3415"
+  ],
+  "run": "dynamic_adc_20261028_112626",
+  "application_sha256": "326a8caf8abf0f008b42f3ae542c07c0b84e596384def4be55c9ab33a4145b0a",
+  "final_firmware": "Normal application restored. No temporary speed driver, no START command, calibrated, balance disabled.",
+  "geometry_check": "44521 duty pairs checked: nominal 10 us conversions and interrupt delay 0..2 us satisfy both A/B guarded windows whenever planner declares feasible. Not a guarantee of ISR latency or analog settling."
+}

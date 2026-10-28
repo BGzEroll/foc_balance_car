@@ -67,6 +67,23 @@ namespace test
                 motor::emergency_stop();
                 reply_length=snprintf(reply,sizeof(reply),"STOP accepted=1\n");
             }
+            else if(!strcmp(line,"ADC"))
+            {
+                motor::sampling_info info[2]{};
+                if(!motor::get_sampling_info(info)) return;
+                for(uint32_t i=0;i<2;++i)
+                {
+                    const auto &s=info[i];
+                    const int n=snprintf(reply,sizeof(reply),
+                        "ADC motor=%lu samples=%lu valid=%lu misses=%lu fixed_misses=%lu no_window=%lu trigger_min=%lu trigger_max=%lu pair_max=%lu late_max=%lu margin_min=%ld\n",
+                        (unsigned long)i,(unsigned long)s.samples,(unsigned long)s.valid,
+                        (unsigned long)s.window_misses,(unsigned long)s.fixed_window_misses,
+                        (unsigned long)s.no_window,(unsigned long)s.trigger_min,(unsigned long)s.trigger_max,
+                        (unsigned long)s.pair_max,(unsigned long)s.late_max,(long)s.margin_min);
+                    uart_write_bytes(UART_NUM_0,reply,n);
+                }
+                return;
+            }
             else if(!strcmp(line,"FAULT"))
                 reply_length=snprintf(reply,sizeof(reply),
                     "FAULTDIAG code=%lu motor=%u source=%lu detail_us=%lu adc_age_us=%lu heartbeat_age_us=%lu stamp_us=%llu raw_a=%u raw_b=%u\n",
