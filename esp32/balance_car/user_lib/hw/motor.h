@@ -29,6 +29,17 @@ namespace motor
         EMERGENCY_STOP
     };
 
+    enum class fault_source : uint32_t
+    {
+        NONE = 0,
+        ADC_INTERVAL,
+        PWM_COMMAND,
+        FOC_SAMPLE,
+        FOC_INTERVAL,
+        FOC_REJECT,
+        ENCODER_AGE
+    };
+
     struct target_current
     {
         float id_A = 0.0f;
@@ -61,6 +72,11 @@ namespace motor
 
         uint16_t raw_a = 0;
         uint16_t raw_b = 0;
+
+        fault_source source = fault_source::NONE;
+        uint32_t detail_us = 0;
+        uint32_t adc_age_us = 0;
+        uint32_t heartbeat_age_us = 0;
     };
 
     struct foc_info

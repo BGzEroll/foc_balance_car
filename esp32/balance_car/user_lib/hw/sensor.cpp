@@ -432,6 +432,9 @@ namespace mpu6050
         constexpr uint32_t CALIBRATION_SAMPLES = 1000;
 
         constexpr float DEG2RAD = 0.01745329251994329577f;
+        constexpr float GRAVITY_CORRECTION_RAD_S = 5.0f * DEG2RAD;
+        constexpr float ACCEL_LSB_PER_G = 4096.0f;
+        constexpr float GYRO_LSB_PER_DPS = 32.8f;
         constexpr float WHEEL_RADIUS_M = 0.0325f;
         constexpr float WHEEL_FACTOR = WHEEL_RADIUS_M / 0.1325364f;
 
@@ -464,7 +467,7 @@ namespace mpu6050
          * @return true 校准完成
          * @return false 校准进行中
          */
-        bool process_calibration(const int16_t raw_gyro[3])
+        bool process_calibration(const int32_t raw_gyro[3])
         {
             if(calibration_count >= CALIBRATION_SAMPLES)
             {
@@ -491,7 +494,7 @@ namespace mpu6050
 
                 gyro_offset[i] =
                     raw_offset /
-                    65.5f *
+                    GYRO_LSB_PER_DPS *
                     DEG2RAD;
             }
 
@@ -758,14 +761,16 @@ namespace mpu6050
              * @param[in] h 三维观测雅可比矩阵
              * @param[in] residual 三维观测残差
              * @param[in] variance 观测噪声方差
+             * @param[in] dt 本次采样间隔，单位 s
              *
              * @return true 修正成功
-             * @return false 创新协方差无效或超出 NIS 门限
+             * @return false 创新协方差无效
              */
             bool correct(
                 const float h[3][6],
                 const float residual[3],
-                float variance)
+                float variance,
+                float dt)
             {
                 float ph[6][3] = {};
                 float s[3][3] = {};
@@ -814,9 +819,20 @@ namespace mpu6050
                     }
                 }
 
-                if(!(nis <= 9.21f))
+                if(nis > 9.21f)
                 {
-                    return false;
+                    // 大残差降低权重而非永久拒绝，使倾角漂移仍能缓慢纠正。
+                    const float extra = variance * (nis / 9.21f - 1.0f);
+                    variance += extra;
+                    for(uint8_t i = 0; i < 3; ++i)
+                    {
+                        s[i][i] += extra;
+                    }
+
+                    if(!invert(s, inverse))
+                    {
+                        return false;
+                    }
                 }
 
                 for(uint8_t i = 0; i < 6; ++i)
@@ -847,6 +863,27 @@ namespace mpu6050
                     for(uint8_t i = 0; i < 3; ++i)
                     {
                         gain[i + 3][j] -= g[i] * along;
+                    }
+                }
+
+                // 将倾角恢复限制为每秒 5 度，同时缩放增益以保持协方差一致。
+                float correction[3] = {};
+                for(uint8_t i = 0; i < 3; ++i)
+                {
+                    for(uint8_t j = 0; j < 3; ++j)
+                    {
+                        correction[i] += gain[i][j] * residual[j];
+                    }
+                }
+                const float norm = sqrtf(correction[0] * correction[0] +
+                    correction[1] * correction[1] + correction[2] * correction[2]);
+                const float scale = norm > 0.0f ?
+                    fminf(1.0f, GRAVITY_CORRECTION_RAD_S * dt / norm) : 1.0f;
+                for(uint8_t i = 0; i < 6; ++i)
+                {
+                    for(uint8_t j = 0; j < 3; ++j)
+                    {
+                        gain[i][j] *= scale;
                     }
                 }
 
@@ -995,7 +1032,8 @@ namespace mpu6050
 
                 for(uint8_t i = 0; i < 3; ++i)
                 {
-                    covariance[i][i] += 0.00070f * 0.00070f * dt * dt;
+                    // 连续时间姿态模型噪声，包含振动和未建模运动；方差随 dt 累积。
+                    covariance[i][i] += 0.003f * 0.003f * dt;
                     covariance[i + 3][i + 3] += 5.0e-6f * 5.0e-6f * dt;
                 }
 
@@ -1019,7 +1057,7 @@ namespace mpu6050
                         h[i][1] = -r[0][i];
                     }
 
-                    correct(h, residual, 0.003f * 0.003f);
+                    correct(h, residual, 0.05f * 0.05f, dt);
                 }
 
                 return true;
@@ -1142,17 +1180,17 @@ namespace mpu6050
 
         sys_time::delay_ms(10);
 
-        // DLPF_CFG = 3，带宽约 44 Hz
-        i2c::write_right_sync(REG_CONFIG, 0x03);
+        // DLPF_CFG = 2，加速度带宽 94 Hz，陀螺仪带宽 98 Hz
+        i2c::write_right_sync(REG_CONFIG, 0x02);
 
         // 1000 / (1 + 0) = 1000 Hz
         i2c::write_right_sync(REG_SMPLRT_DIV, 0x00);
 
-        // ±500 deg/s，65.5 LSB/(deg/s)
-        i2c::write_right_sync(REG_GYRO_CONFIG, 0x08);
+        // ±1000 deg/s，32.8 LSB/(deg/s)
+        i2c::write_right_sync(REG_GYRO_CONFIG, 0x10);
 
-        // ±2 g，16384 LSB/g
-        i2c::write_right_sync(REG_ACCEL_CONFIG, 0x00);
+        // ±8 g，4096 LSB/g
+        i2c::write_right_sync(REG_ACCEL_CONFIG, 0x10);
 
         i2c::set_right_address(as5600::ADDRESS);
     }
@@ -1180,8 +1218,8 @@ namespace mpu6050
      */
     bool process(uint64_t now_us, sensor::imu_data &data)
     {
-        int16_t raw_acc[3];
-        int16_t raw_gyro[3];
+        int32_t raw_acc[3];
+        int32_t raw_gyro[3];
 
         raw_acc[0] = read_i16(&raw[0]);
         raw_acc[1] = read_i16(&raw[2]);
@@ -1215,11 +1253,11 @@ namespace mpu6050
         {
             data.acc[i] =
                 static_cast<float>(raw_acc[i]) /
-                16384.0f;
+                ACCEL_LSB_PER_G;
 
             data.gyro[i] =
                 static_cast<float>(raw_gyro[i]) /
-                65.5f *
+                GYRO_LSB_PER_DPS *
                 DEG2RAD -
                 gyro_offset[i];
         }
