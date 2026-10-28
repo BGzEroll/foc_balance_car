@@ -238,6 +238,7 @@ namespace balance
             bool previous_ready = false;
             bool active = false;
             bool stopped = false;
+            bool command_started = false;
             bool manual_control = false;
             bool manual_braking = false;
             float brake_speed_m_s = 0.0f;
@@ -264,7 +265,11 @@ namespace balance
                     static_cast<motor::motor_id>(i), current) && accepted;
             }
 
-            if(!accepted)
+            if(accepted)
+            {
+                control.command_started = true;
+            }
+            else
             {
                 motor::emergency_stop();
                 control.active = false;
@@ -276,6 +281,8 @@ namespace balance
 
         /**
          * @brief 清除控制历史和遥控停车状态，不改变硬件故障
+         *
+         * @note 保留命令下发状态，软退出后仍需续发零电流
          */
         void reset_control(session &control)
         {
@@ -303,7 +310,7 @@ namespace balance
         {
             reset_control(control);
 
-            if(output_enabled && !control.stopped)
+            if((output_enabled || control.command_started) && !control.stopped)
             {
                 send_current(control, output{});
             }
@@ -588,6 +595,12 @@ namespace balance
                 else if(!output_enabled)
                 {
                     update(measured, control.target, control.limit, control.controller, dt_s, tuning);
+
+                    // 首次下发后保持零电流续发，正常停止不触发电机命令看门狗。
+                    if(control.command_started && !control.stopped)
+                    {
+                        send_current(control, output{});
+                    }
                 }
                 else if(!control.stopped)
                 {
